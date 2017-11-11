@@ -1,0 +1,9 @@
+# Configuration file #
+config
+nbproject
+*.ini
+*.pyc
+*.pyo
+*.log
+*.png
+*.ico
