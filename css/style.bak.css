@@ -1,0 +1,137 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Jun 28, 2017, 9:32:42 PM
+    Author     : chaniqweb
+*/
+
+body{
+    /* background-color: #eff2f7; */
+    margin: 0px;
+    padding: 0px;
+    font-family: Calibri, Arial, Tahoma;
+}
+
+img.center {
+    display: block;
+    margin: 0 auto;
+}
+
+#loginbody {
+    margin: 0px;
+    background-color: #fff;
+    font-family: Calibri, Arial, Tahoma;
+}
+
+#header {
+    background-color: white;
+    width: 900px;
+    height:80px;
+    align-items: center;
+    margin: 0px auto 0px auto;
+    border: 1px solid #000;
+}
+
+#logo {
+    float: left;
+    margin: 20px auto auto 10px;
+    border: 1px solid #000;
+}
+
+#navbar {
+    float: right;
+    margin: 40px 10px auto auto;
+    border: 1px solid #000;
+}
+
+#content {
+    width: 900px;
+    margin: 0px auto 0px auto;
+    border: 1px solid #000;
+}
+
+#sidebar {
+    width: 150px;
+    float: left;
+    border: 1px solid #000;    
+}
+
+#maincontent {
+    width: 745px;
+    float: left;
+    border: 1px solid #000;
+    }
+
+/* Sidebar Menu Styles */
+.menu-item h4{
+    color: #bfc3c9;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 7px 7px;
+}
+
+.menu-item h4:hover {
+  background: #f2edee; /* Old browsers */
+  background: -moz-linear-gradient(top,  #f2edee 0%, #dbd6d7 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f2edee), color-stop(100%,#dbd6d7)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  #f2edee 0%,#dbd6d7 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  #f2edee 0%,#dbd6d7 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  #f2edee 0%,#dbd6d7 100%); /* IE10+ */
+  background: linear-gradient(top,  #f2edee 0%,#dbd6d7 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2edee', endColorstr='#dbd6d7',GradientType=0 ); /* IE6-9 */
+}
+
+.alpha p {
+    color: black;
+    font-size: 13px;
+    padding: 0px 7px;
+}
+
+.menu-item h4 a {
+    color: blue;
+    display: block;
+    text-decoration: none;
+    width: 180px;
+}
+
+/* menu collapse and annimate */
+.menu-item ul {
+    background: #fff;
+    font-size: 13px;
+    line-height: 20px;
+    height: 0px; /* Collapses the menu */
+    list-style-type: none;
+    overflow: hidden;
+    padding: 0px 15px;
+    
+    /* Animation */
+    -webkit-transition: height 1s ease;
+    -moz-transition: height 1s ease;
+    -o-transition: height 1s ease;
+    -ms-transition: height 1s ease;
+    transition: height 1s ease;
+}
+
+.menu-item:hover ul {
+    height: 123px;
+}
+
+/* ul styles */
+.menu-item li {
+    border-bottom: 1px solid #eee;
+}
+
+.menu-item li:hover {
+    background: #eee;
+}
+
+/* Footer Styles */
+#footer {
+    width: 900px;
+    margin: 0px auto 0px auto;
+    border: 1px solid #000;
+    clear: both;
+}

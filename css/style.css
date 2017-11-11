@@ -1,0 +1,420 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Jun 28, 2017, 9:32:42 PM
+    Author     : chaniqweb
+*/
+
+body {
+    background-color: #f0f0f0;
+    margin: 0px;
+    padding: 0px;
+    font-family: Calibri, Arial, Tahoma;
+}
+
+/* affect Fieldset border outline*/
+* {
+    padding: 0;
+    margin: 0;
+    border: 0;
+}
+
+img.center {
+    display: block;
+    margin: 0 auto;
+}
+
+#loginbody {
+    background-color: #ffffff;
+    width: 900px;
+    height: 100%;
+    align-items: center;
+    margin: 0px auto 0px auto;
+    font-family: Calibri, Arial, Tahoma;
+    /* border: 0px solid #000; */
+}
+
+#loginpass {
+    display: flex;
+    justify-content: center;
+}
+
+#loginbody input[type=text] {
+    border: 1px solid #e1e1e1;
+    height: 18px;
+}
+
+#loginbody input[type=password] {
+    border: 1px solid #e1e1e1;
+    height: 18px;
+}
+
+#header {
+    background-color: #ffffff;
+    width: 900px;
+    height:80px;
+    align-items: center;
+    margin: 0px auto 0px auto;
+    border: 1px solid #000;
+}
+
+#logo {
+    float: left;
+    margin: 20px auto auto 10px;
+    border: 1px solid #000;
+}
+
+#navbar {
+    float: right;
+    margin: 40px 10px auto auto;
+    border: 1px solid #000;
+}
+
+#content {
+    background-color: #ffffff;  
+    width: 900px;
+    height: 88%;
+    margin: 0px auto 0px auto;
+    border: 0px solid #000;
+}
+
+#sidebar {
+    background-color: #ffffff;
+    width: 150px;
+    height: 88%;
+    float: left;
+    border: 1px solid #000;    
+}
+
+#maincontent {
+    background-color: #ffffff;    
+    width: 745px;
+    height: auto;
+    float: left;
+    border: 1px solid #000;
+    }
+
+/* Sidebar Menu Styles */
+.menu-item h4{
+    color: #bfc3c9;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 7px 7px;
+}
+
+.menu-item h4:hover {
+  background: #f2edee; /* Old browsers */
+  background: -moz-linear-gradient(top,  #f2edee 0%, #dbd6d7 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f2edee), color-stop(100%,#dbd6d7)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  #f2edee 0%,#dbd6d7 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  #f2edee 0%,#dbd6d7 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  #f2edee 0%,#dbd6d7 100%); /* IE10+ */
+  background: linear-gradient(top,  #f2edee 0%,#dbd6d7 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2edee', endColorstr='#dbd6d7',GradientType=0 ); /* IE6-9 */
+}
+
+.alpha p {
+    color: black;
+    font-size: 13px;
+    padding: 0px 7px;
+}
+
+.menu-item h4 a {
+    /* color: blue; */
+    color: #888888;
+    display: block;
+    text-decoration: none;
+    width: 180px;
+}
+
+/* menu collapse and annimate */
+.menu-item ul {
+    background: #ffffff;
+    font-size: 13px;
+    line-height: 20px;
+    height: 0px; /* Collapses the menu */
+    list-style-type: none;
+    overflow: hidden;
+    padding: 0px 15px;
+    
+    /* Animation */
+    -webkit-transition: height 1s ease;
+    -moz-transition: height 1s ease;
+    -o-transition: height 1s ease;
+    -ms-transition: height 1s ease;
+    transition: height 1s ease;
+}
+
+.menu-item:hover ul {
+    height: 123px;
+}
+
+/* ul styles */
+.menu-item li {
+    border-bottom: 1px solid #eee;
+}
+
+.menu-item li:hover {
+    background: #eee;
+}
+
+.menu-item li a {
+    text-decoration: none;
+    color: #A3A3A3;
+}
+
+/* Footer Styles */
+#footer {
+    background-color: #ffffff;
+    width: 900px;
+    height: 30px;
+    margin: 0px auto 0px auto;
+    border: 1px solid #000;
+    clear: both;
+}
+
+/* Stylesheet for Virtual server building form */
+h1 {
+    font-weight:200;
+    color: #888888;
+    font-size:16pt;
+    padding-left:15px;
+    margin:5px ;
+}
+
+.clear{
+	width:100%;
+	float:none;
+	clear:both;
+}
+
+form.register{
+    width:730px;
+    margin: 20px auto 0px auto;
+    background-color:#fff;
+    padding:5px;
+}
+
+form p{
+    font-size: 8pt;
+    clear:both;
+    margin: 0;
+    color:gray;
+    padding:4px;
+}
+fieldset.row1{
+    width:98%;
+    background-color: #ffffff;
+    padding:5px;
+    float:left;
+    border:1px solid #F5F5F5;
+    margin-bottom:15px;
+}
+
+fieldset.row2{
+    width: 97%;
+    border:1px solid #F1F1F1;
+    padding:5px;
+    float:left;
+}
+
+fieldset.admin_pass{
+    width:98%;
+    background-color: #ffffff;
+    padding:5px;
+    float:left;
+    border:1px solid #F5F5F5;
+    margin-bottom:15px;
+}
+
+.register .form label{
+    float: left;
+    text-align: left;
+    margin-right: 5px;
+    margin-top:2px;
+    width:auto;
+    font-size: 8pt;
+    font-weight: bold;
+}
+.register .form input{
+    width:120px;
+}
+
+.register .form select {
+    width:120px;
+}
+
+
+.form td{
+    border-right:1px solid #F1F1F1;
+    border-top:1px solid #F1F1F1;
+    border-bottom:1px solid #F1F1F1;
+    border-left:0px solid #F1F1F1;
+    padding:2px;
+    margin:0;
+}
+.register legend{
+    color: #4C99CC;
+    padding:2px;
+    margin-left: 14px;
+    font-weight:bold;
+    font-size: 14px;
+    font-weight:100;
+}
+.register label{
+    color:#444;
+    width:80px;
+    float: left;
+    text-align: right;
+    margin-right: 6px;
+    margin-top:2px;
+}
+.register table{
+    width: 700px;
+}
+form.register label.optional{
+    float: left;
+    text-align: right;
+    margin-right: 6px;
+    margin-top:2px;
+    color: #A3A3A3;
+}
+form.register label.obinfo{
+    float:right;
+    padding:3px;
+    font-style:italic;
+}
+form.register input{
+    width: 120px;
+    height: 20px;
+    color: #505050;
+    float: left;
+    margin-right: 5px;
+}
+form.register input.long{
+    width: 247px;
+    color: #505050;
+}
+form.register input.short{
+    width: 40px;
+    color: #505050;
+}
+form.register input[type=radio]{
+    float:left;
+    width:15px;
+}
+form.register label.gender{
+    margin-top:-1px;
+    margin-bottom:2px;
+    width:34px;
+    float:left;
+    text-align:left;
+    line-height:19px;
+}
+form.register input[type=text]{
+    border: 1px solid #E1E1E1;
+    height: 18px;
+}
+form.register input[type=password]{
+    border: 1px solid #E1E1E1;
+    height: 18px;
+}
+
+form.register input[type=button]{
+    float: right;
+    /* Width for listbox left-right button */
+    width: 50px;
+}
+
+form.register input[type=button]:hover{
+    cursor:pointer;
+    background:#ccc;
+}
+
+form.register input[type=submit]{
+    cursor:pointer;
+    background:#ccc;
+    float: right;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+form.register input[type=submit]:hover{
+    cursor:pointer;
+    background: #A3A3A3;
+}
+
+form.register  .submit{
+    color: #fff;
+    cursor: pointer;
+    float:left;
+    margin:10px;
+	padding:5px;
+	background: #4C99CC;
+	background-image: linear-gradient(bottom,rgba(0, 0, 0, 0.1) 0,rgba(255, 255, 255, 0.1) 100%);
+	background-image: -o-linear-gradient(bottom,rgba(0, 0, 0, 0.1) 0,rgba(255, 255, 255, 0.1) 100%);
+	background-image: -moz-linear-gradient(bottom,rgba(0, 0, 0, 0.1) 0,rgba(255, 255, 255, 0.1) 100%);
+	background-image: -webkit-linear-gradient(bottom,rgba(0, 0, 0, 0.1) 0,rgba(255, 255, 255, 0.1) 100%);
+	background-image: -ms-linear-gradient(bottom,rgba(0, 0, 0, 0.1) 0,rgba(255, 255, 255, 0.1) 100%);
+	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0,rgba(0, 0, 0, 0.1)),color-stop(1,rgba(255, 255, 255, 0.1)));
+
+}
+form.register  .submit:hover{
+    background:#505050;
+
+}
+form.register  .submit:active{
+    background:#ccc;
+    color: #000;
+}
+form.register input[type=text].small{
+    border: 1px solid #E1E1E1;
+    height: 18px;
+    width:30px;
+}
+form.register input[type=checkbox] {
+    width:14px;
+    margin-top:4px;
+}
+form.register select{
+    width: 120px;
+    border: 1px solid #E1E1E1;
+    float:left;
+    margin-bottom:3px;
+    color: #505050;
+    margin-right:5px;
+}
+
+.subject-info-box-1, .subject-info-box-2 {
+    float: left;
+    width: 30%;
+}
+
+select#lstBox1 {
+    height: 100px;
+    width: 190px;
+    padding: 4px 4px 4px 4px;
+}
+
+select#lstBox2 {
+    height: 100px;
+    width: 190px;
+    padding: 4px 4px 4px 4px;
+}
+
+.subject-info-arrows {
+    float: left;
+    width: 5%;
+}
+
+.subject-info-box-1 label, .subject-info-box-2 label {
+    color: #4C99CC;
+    padding:2px;
+    margin-left: 0px;
+    font-weight:bold;
+    font-size: 14px;
+    font-weight:100;
+}

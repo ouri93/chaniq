@@ -1,0 +1,658 @@
+17-09-26 23:45:22: find_ini_section() - No Section found from INI
+17-09-26 23:46:52: find_ini_section() - No Section found from INI
+17-09-26 23:49:05: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-09-27 02:09:01: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-09-27 02:09:01: find_active_ltm() -  
+17-09-27 02:09:56: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-09-27 02:09:56: find_active_ltm() - Array
+17-09-27 02:15:45: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-09-27 02:15:45: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-09-27 02:47:55: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-09-27 02:47:55: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-09-27 10:55:29: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-09-27 10:55:29: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-09-27 10:57:15: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-09-27 10:57:15: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-09-27 11:00:13: find_ini_section() - No Section found from INI
+17-09-27 11:09:02: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-09-27 11:09:02: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-09-27 11:09:37: find_ini_section() - No Section found from INI
+17-09-27 11:10:21: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-09-27 11:10:21: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-09-27 11:11:49: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-09-27 11:11:49: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-09-27 17:54:15: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-09-27 17:54:15: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-09-27 17:56:13: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-09-27 17:56:13: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-09-27 17:57:27: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-09-27 17:57:27: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-09-30 20:08:24: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-09-30 20:08:24: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-09-30 23:13:12: find_ini_section() - No Section found from INI
+17-09-30 23:13:39: find_ini_section() - No Section found from INI
+17-09-30 23:15:14: find_ini_section() - No Section found from INI
+17-09-30 23:17:19: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-09-30 23:17:19: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-01 22:38:00: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-01 22:38:00: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-05 22:55:28: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-05 22:55:28: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-05 23:10:45: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-05 23:10:45: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-05 23:22:21: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-05 23:22:21: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-05 23:24:09: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-05 23:24:09: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-05 23:26:30: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-05 23:26:30: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-12 23:02:12: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-12 23:02:12: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-12 23:06:51: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-12 23:06:51: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-19 17:59:22: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-19 17:59:22: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-19 18:04:00: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-19 18:04:00: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-19 18:07:13: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-19 18:07:13: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-19 18:12:26: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-19 18:12:26: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 15:48:58: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 15:48:58: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 15:52:54: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 15:52:54: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 15:59:56: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 15:59:56: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 16:05:55: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 16:05:55: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 16:07:19: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 16:07:19: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 16:10:07: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 16:10:07: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 16:17:04: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 16:17:04: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 16:21:39: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 16:21:39: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 16:25:40: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 16:25:40: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 16:28:10: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 16:28:10: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 16:30:27: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 16:30:27: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 16:36:05: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 16:36:05: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 16:37:38: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 16:37:38: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 16:39:06: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 16:39:06: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 16:40:49: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 16:40:49: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 16:42:13: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 16:42:13: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 16:45:12: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 16:45:12: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 16:53:09: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 16:53:09: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 16:55:03: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 16:55:03: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 16:58:07: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 16:58:07: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 16:59:24: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 16:59:24: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 20:11:19: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 20:11:19: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 20:13:42: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 20:13:42: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 20:17:22: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 20:17:22: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 20:23:23: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 20:23:23: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 20:25:35: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 20:25:35: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 20:27:34: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 20:27:34: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 20:42:32: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 20:42:32: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 20:46:37: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 20:46:37: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 20:47:35: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 20:47:35: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 20:52:55: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 20:52:55: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 21:01:50: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 21:01:50: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 21:04:01: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 21:04:01: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 21:06:57: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 21:06:57: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 21:11:14: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 21:11:14: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 21:14:15: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 21:14:15: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 21:15:53: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 21:15:53: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 21:16:54: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 21:16:54: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 21:18:54: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 21:18:54: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 21:25:33: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 21:25:33: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 21:27:33: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 21:27:33: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 21:29:29: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 21:29:29: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 21:43:27: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 21:43:27: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 21:57:18: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 21:57:18: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 21:59:46: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 21:59:46: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 22:00:36: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 22:00:36: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 22:29:41: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 22:29:41: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 22:30:59: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 22:30:59: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 22:32:48: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 22:32:48: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 22:46:35: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 22:46:35: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 22:48:47: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 22:48:47: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 22:50:20: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 22:50:20: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 23:01:08: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 23:01:08: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 23:04:08: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 23:04:08: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 23:05:16: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 23:05:16: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 23:08:06: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 23:08:06: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 23:10:03: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 23:10:03: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 23:17:33: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 23:17:33: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 23:19:30: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 23:19:30: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 23:21:06: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 23:21:06: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 23:25:22: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 23:25:22: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 23:26:06: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 23:26:06: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 23:30:36: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 23:30:36: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 23:31:40: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 23:31:40: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 23:32:38: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 23:32:38: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 23:42:44: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 23:42:44: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 23:44:09: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 23:44:09: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 23:54:23: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 23:54:23: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-22 23:59:48: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-22 23:59:48: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-23 00:00:22: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-23 00:00:22: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-23 00:01:02: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-23 00:01:02: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-23 00:02:39: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-23 00:02:39: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-23 00:05:42: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-23 00:05:42: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-23 00:06:36: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-23 00:06:36: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-23 00:07:05: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-23 00:07:05: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-23 17:54:53: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-23 17:54:53: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-23 17:56:57: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-23 17:56:57: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-23 17:57:50: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-23 17:57:50: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-23 17:58:25: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-23 17:58:25: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-23 18:03:17: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-23 18:03:17: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-23 18:06:47: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-23 18:06:47: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-23 18:12:07: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-23 18:12:07: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-23 18:13:13: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-23 18:13:13: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-23 18:14:04: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-23 18:14:04: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-23 18:14:45: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-23 18:14:45: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-23 18:15:32: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-23 18:15:32: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-23 18:17:13: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-23 18:17:13: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-23 18:19:53: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-23 18:19:53: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-23 18:20:51: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-23 18:20:51: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-23 18:22:48: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-23 18:22:48: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-23 18:25:48: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-23 18:25:48: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-23 18:26:43: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-23 18:26:43: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-23 18:30:02: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-23 18:30:02: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-23 18:32:15: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-23 18:32:15: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-23 18:32:55: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-23 18:32:55: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-23 18:36:06: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-23 18:36:06: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-23 18:40:23: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-23 18:40:23: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-23 18:46:04: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-23 18:46:04: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-23 18:46:54: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-23 18:46:54: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-23 18:47:53: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-23 18:47:53: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-23 23:41:23: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-23 23:41:23: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-23 23:43:29: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-23 23:43:29: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-23 23:52:01: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-23 23:52:01: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-24 00:02:12: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-24 00:02:12: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-24 00:04:30: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-24 00:04:30: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-24 00:07:31: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-24 00:07:31: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-24 00:08:44: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-24 00:08:44: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-24 00:10:16: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-24 00:10:16: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-24 00:49:16: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-24 00:49:16: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-25 01:21:54: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-25 01:21:54: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-25 01:24:23: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-25 01:24:23: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-25 01:27:07: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-25 01:27:07: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-25 01:27:46: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-25 01:27:46: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-25 01:29:34: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-25 01:29:34: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-25 01:30:19: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-25 01:30:19: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-25 01:31:54: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-25 01:31:54: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-25 01:35:32: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-25 01:35:32: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-25 01:37:23: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-25 01:37:23: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-25 01:37:48: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-25 01:37:48: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-25 01:38:20: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-25 01:38:20: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-25 01:44:30: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-25 01:44:30: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-25 01:46:22: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-25 01:46:22: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-25 01:47:53: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-25 01:47:53: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-25 01:50:25: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-25 01:50:25: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-25 01:55:09: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-25 01:55:09: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-25 02:04:45: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-25 02:04:45: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-25 02:06:10: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-25 02:06:10: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-25 02:07:13: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-25 02:07:13: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-25 02:17:34: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-25 02:17:34: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-25 02:18:08: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-25 02:18:08: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-25 02:20:20: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-25 02:20:20: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-25 02:21:29: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-25 02:21:29: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-25 23:44:35: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-25 23:44:35: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-26 00:50:52: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-26 00:50:52: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-26 01:00:40: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-26 01:00:40: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-26 01:01:24: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-26 01:01:24: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-26 01:16:34: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-26 01:16:34: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 14:53:53: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 14:53:53: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 14:54:49: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 14:54:49: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 14:57:52: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 14:57:52: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 14:58:47: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 14:58:47: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 14:59:06: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 14:59:06: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 15:03:48: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 15:03:48: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 15:04:03: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 15:04:03: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 15:17:21: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 15:17:21: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 15:21:11: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 15:21:11: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 15:25:31: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 15:25:31: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 15:26:17: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 15:26:17: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 15:28:25: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 15:28:25: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 15:37:25: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 15:37:25: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 15:38:00: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 15:38:00: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 15:45:31: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 15:45:31: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 15:45:44: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 15:45:44: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 16:19:42: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 16:19:42: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 16:55:01: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 16:55:01: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 17:02:45: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 17:02:45: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 17:05:47: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 17:05:47: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 17:11:03: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 17:11:03: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 17:12:00: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 17:12:00: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 17:13:48: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 17:13:48: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 17:16:35: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 17:16:35: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 17:22:18: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 17:22:18: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 17:25:44: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 17:25:44: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 17:26:19: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 17:26:19: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 17:30:49: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 17:30:49: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 17:33:36: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 17:33:36: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 17:34:06: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 17:34:06: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 17:35:14: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 17:35:14: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 17:36:39: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 17:36:39: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 17:37:17: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 17:37:17: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 18:02:39: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 18:02:39: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 18:06:45: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 18:06:45: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 18:08:41: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 18:08:41: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 18:09:13: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 18:09:13: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 18:09:48: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 18:09:48: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 18:10:14: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 18:10:14: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 18:10:48: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 18:10:48: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 18:11:18: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 18:11:18: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 18:11:41: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 18:11:41: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 18:13:32: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 18:13:32: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 18:14:28: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 18:14:28: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 18:14:30: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 18:14:30: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 18:15:01: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 18:15:01: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 18:17:01: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 18:17:01: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 18:18:03: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 18:18:03: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 18:18:35: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 18:18:35: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 18:19:53: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 18:19:53: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 18:31:50: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 18:31:50: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 18:34:57: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 18:34:57: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 18:37:49: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 18:37:49: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-29 23:18:21: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-29 23:18:21: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-31 00:09:28: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-31 00:09:28: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-31 00:10:05: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-31 00:10:05: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-31 00:11:13: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-31 00:11:13: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-31 00:11:54: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-31 00:11:54: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-31 01:02:08: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-31 01:02:08: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-31 01:06:29: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-31 01:06:29: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-31 01:07:13: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-31 01:07:13: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-31 01:09:16: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-31 01:09:16: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-31 01:13:43: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-31 01:13:43: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-31 01:15:39: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-31 01:15:39: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-31 01:16:33: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-31 01:16:33: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-31 01:19:25: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-31 01:19:25: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-31 01:22:11: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-31 01:22:11: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-31 01:24:48: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-31 01:24:48: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-31 01:26:11: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-31 01:26:11: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-31 01:27:19: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-31 01:27:19: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-31 01:28:28: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-31 01:28:28: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-31 01:30:13: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-31 01:30:13: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-31 01:31:27: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-31 01:31:27: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-31 01:33:21: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-31 01:33:21: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-31 01:35:01: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-31 01:35:01: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-31 01:46:00: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-31 01:46:00: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-10-31 23:57:35: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-10-31 23:57:36: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-01 00:01:36: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-01 00:01:36: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-01 00:17:13: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-01 00:17:13: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-01 00:18:38: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-01 00:18:38: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-01 00:20:30: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-01 00:20:30: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-01 00:29:06: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-01 00:29:06: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-01 00:30:51: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-01 00:30:51: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-01 00:33:30: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-01 00:33:30: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-01 00:34:45: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-01 00:34:45: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-01 00:36:46: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-01 00:36:46: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-01 00:38:31: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-01 00:38:31: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-01 00:39:57: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-01 00:39:57: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-01 00:40:43: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-01 00:40:43: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-01 00:42:54: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-01 00:42:54: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-01 00:45:14: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-01 00:45:14: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-01 00:45:42: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-01 00:45:42: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-01 00:47:31: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-01 00:47:31: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-01 01:03:09: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-01 01:03:09: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-01 01:22:33: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-01 01:22:33: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-01 01:28:43: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-01 01:28:43: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-01 01:30:04: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-01 01:30:04: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-01 01:31:57: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-01 01:31:57: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-01 01:39:52: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-01 01:39:52: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-01 01:40:30: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-01 01:40:30: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-01 01:42:20: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-01 01:42:20: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-01 01:44:22: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-01 01:44:22: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-02 01:58:42: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-02 01:58:42: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-02 23:00:40: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-02 23:00:40: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-02 23:09:31: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-02 23:09:31: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-02 23:18:58: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-02 23:18:58: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-02 23:25:46: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-02 23:25:46: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-02 23:28:49: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-02 23:28:49: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-02 23:31:07: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-02 23:31:07: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-02 23:33:21: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-02 23:33:21: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-02 23:38:37: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-02 23:38:37: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-02 23:41:00: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-02 23:41:00: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-03 00:29:20: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-03 00:29:20: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-03 00:45:20: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-03 00:45:20: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-03 00:53:04: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-03 00:53:04: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-03 01:07:28: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-03 01:07:28: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-03 01:09:43: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-03 01:09:43: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-03 01:17:08: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-03 01:17:08: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-03 01:18:26: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-03 01:18:26: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-03 01:21:13: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-03 01:21:13: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-03 01:33:15: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-03 01:33:15: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-04 23:39:40: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-04 23:39:40: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-04 23:53:45: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-04 23:53:45: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-04 23:57:37: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-04 23:57:37: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-05 00:04:04: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-05 00:04:04: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-05 00:10:47: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-05 00:10:47: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-05 00:15:26: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-05 00:15:26: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-05 00:27:37: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-05 00:27:37: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-05 00:30:24: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-05 00:30:24: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-05 00:32:52: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-05 00:32:52: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-05 00:40:55: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-05 00:40:55: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-05 00:48:20: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-05 00:48:20: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-05 00:54:49: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-05 00:54:49: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-05 01:07:18: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-05 01:07:18: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-05 01:12:41: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-05 01:12:41: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-05 01:12:50: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-05 01:12:50: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-05 17:08:30: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-05 17:08:30: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-05 17:17:23: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-05 17:17:23: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-05 19:21:48: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-05 19:21:48: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-05 20:07:02: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-05 20:07:02: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-05 22:23:54: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-05 22:23:54: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-05 22:26:05: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-05 22:26:05: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-05 22:37:10: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-05 22:37:10: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-05 22:39:09: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-05 22:39:09: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-05 22:42:47: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-05 22:42:47: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-05 22:44:07: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-05 22:44:07: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-05 22:46:18: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-05 22:46:18: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-05 22:47:22: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-05 22:47:22: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-05 22:48:38: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-05 22:48:38: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-05 22:52:43: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-05 22:52:43: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-05 22:54:02: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-05 22:54:02: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-05 22:57:12: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-05 22:57:12: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-05 22:59:45: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-05 22:59:45: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-05 23:01:10: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-05 23:01:10: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-05 23:01:56: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-05 23:01:56: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-05 23:03:06: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-05 23:03:06: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-05 23:03:58: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-05 23:03:58: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-05 23:29:19: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-05 23:29:19: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-05 23:38:10: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-05 23:38:10: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-05 23:43:31: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-05 23:43:31: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-05 23:44:50: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-05 23:44:50: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
+17-11-10 00:57:28: find_ini_section() - CIDR-Mathcing found!STANDALONE_DEVICES
+17-11-10 00:57:28: find_active_ltm() - Key: chaniq.home.local Value: 192.168.80.150
