@@ -325,8 +325,6 @@ form.register input[type=password]{
 
 form.register input[type=button]{
     float: right;
-    /* Width for listbox left-right button */
-    width: 50px;
 }
 
 form.register input[type=button]:hover{
@@ -408,6 +406,12 @@ select#lstBox2 {
 .subject-info-arrows {
     float: left;
     width: 5%;
+}
+
+input#btnRight, input#btnLeft{
+	width: 40px;
+    height: 20px;
+    margin-right: 10px;
 }
 
 .subject-info-box-1 label, .subject-info-box-2 label {

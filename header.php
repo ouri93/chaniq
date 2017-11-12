@@ -3,6 +3,8 @@
         <meta charset="UTF-8">
         <link rel="stylesheet" href="./css/style.css" type="text/css" media="screen" />
         <script type="text/javascript" src="js/script.js"></script> 
+        <script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
+        <script type="text/javascript" src="js/jquery.js"></script>
         <title>Chan-IQ - BIG-IP Management System</title>
     </head>
     <body>

@@ -9,19 +9,35 @@
         <h1> Create a new Pool </h1>
         <fieldset class="row1">
             <legend>Select Target LTMs</legend>
+            <?php
+                // Load all BIG-IP devices name and IP
+                $allBigips = load_all_bigips();
+                $allBigipNames = array();
+
+                $i=0;
+                foreach($allBigips as $name => $ip){
+                    $allBigipNames[$i] = $name;
+                    $i += 1;
+                }
+            ?>
             <p>
                 <div class="subject-info-box-1">
+                	<?php 
+                	dynamic_multi_select($allBigipNames, "lstBox1", "Availabe", "", "lstBox1")
+                	?>
+                	<!-- 
                 	<label> Avalable</label>
                 	<select multiple="multiple" id="lstBox1" class="lstBox1">
                 		<option value="toc-f5c1ext1-web.net.umb.com">toc-f5c1ext1-web.net.umb.com</option>
                 		<option value="toc-f5c1ext3-secweb.net.umb.com">toc-f5c1ext1-web.net.umb.com</option>
                 		<option value="toc-f5c1ext5-vweb.net.umb.com">toc-f5c1ext1-web.net.umb.com</option>
                 	</select>
+                	 -->
                 </div>
                 <div class="subject-info-arrows text-center">
                 	<br><br>
                 	<input type="button" id="btnRight" value=">"  /><br /><br/> 
-                	<input type="button" id="btnLight" value="<" />
+                	<input type="button" id="btnLeft" value="<" />
                 </div>
                 <div class="subject-info-box-2">
                 	<label>Selected</label>

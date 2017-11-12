@@ -62,6 +62,28 @@ function parse_ini_sec_vals ($parmsecname){
     return $rtnarray;
 }
 
+/**
+ * Given an ini section name, return all keys of the section (Value is not included)
+ *
+ * @param String $parasecname Name of INI Section name
+ * @return Array One dimension array of all keys of the section
+ *
+ */
+function parse_ini_key_vals ($parmsecname){
+    $iniarray = parse_ini_section_file();
+    $rtnarray = [];
+    $cnt = 0;
+    foreach ($iniarray as $section => $values){
+        $myx = (string)$section; // Conversion Array to string
+        if ($myx == $parmsecname ){
+            foreach ($values as $key=>$value){
+                $rtnarray[$cnt++] = (string)$key;
+            }
+        }
+    }
+    return $rtnarray;
+}
+
 /** 
  * Given an ini section name, return all keys and values of the section
  * 
@@ -335,6 +357,46 @@ function dynamic_select($opt_array, $element_name, $label = '', $init_value = ''
 }
 
 /**
+ * Given a name of array of Select-Option value, Element Name, default Lable and Value name, generate Select HTML code
+ * Ref: https://www.tutdepot.com/dynamic-select-menu-with-php/
+ *
+ * @param Array $opt_arry The array of dynamic option value
+ * @param String $element_name Name used for Label and Select
+ * @param String $label Name for Label Title
+ * @param String $init_value Default Option value
+ * @return String HTML code for Select
+ *
+ */
+function dynamic_multi_select($opt_array, $element_name, $label = '', $init_value = '') {
+    $menu = '';
+    if ($label != '') $menu .= '
+    	<label for="'.$element_name.'">'.$label.'</label>';
+    $menu .= '
+    	<select multiple="multiple" name="'.$element_name.'" id="'.$element_name.'">';
+    if (empty($_REQUEST[$element_name])) {
+        $curr_val = $init_value;
+    } else {
+        $curr_val = $_REQUEST[$element_name];
+    }
+    /*     foreach ($opt_array as $key => $value) {
+     $menu .= '
+     <option value="'.$key.'"';
+     if ($key == $curr_val) $menu .= ' selected="selected"';
+     $menu .= '>'.$value.'</option>';
+     } */
+    foreach ($opt_array as $key => $value) {
+        $menu .= '
+			<option ';
+        if ($value == $curr_val) $menu .= ' selected="selected"';
+        $menu .= '>'.$value.'</option>';
+    }
+    $menu .= '
+    	</select>';
+    echo $menu;
+    return $menu;
+}
+
+/**
  * Given the output of configuration conflict, return the result of the conflict
  *
  * @param String $conflictOutput The result string of the configuraion conflict
@@ -502,6 +564,23 @@ function build_vs_s($allPostData) {
     
     return $outputdata;
     
+}
+
+// Load all BIG-IP names and IP addresses from chaniq.ini file
+function load_all_bigips() {
+    /*
+     * PRD_DEVICE_GROUP, STG_DEVICE_GROUP, QA_DEVICE_GROUP, DEV_DEVICE_GROUP, STANDALONE_DEVICE_GROUP
+     * Retrieve all BIG-IP devices from each device group
+     */
+    $devGroups = array("PRD_DEVICE_GROUP", "STG_DEVICE_GROUP", "QA_DEVICE_GROUP", "DEV_DEVICE_GROUP", "STANDALONE_DEVICE_GROUP");
+    $rtnDevices = array();
+    foreach ($devGroups as $devGroup){
+        $devClstNames = parse_ini_key_vals($devGroup);
+        foreach ($devClstNames as $devClstName) {
+            $rtnDevices += parse_ini_sec_keyvals($devClstName, "VALUE");
+        }
+    }
+    return $rtnDevices;
 }
 
 ?>
