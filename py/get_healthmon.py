@@ -86,7 +86,7 @@ def get_healthmonitors(dev_ip, mon_type):
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
     logging.info('Called get_healthmonitors(): %s %s' % (dev_ip, mon_type))
     
-    mr = ManagementRoot('192.168.80.150', 'admin', 'rlatkdcks')
+    mr = ManagementRoot(dev_ip, 'admin', 'rlatkdcks')
     output = ''
     '''
     Suppported Health Monitor types

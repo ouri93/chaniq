@@ -386,6 +386,18 @@ form.register select{
     margin-right:5px;
 }
 
+.ltmDeviceList {
+	float: left;
+	width: 50%;
+	padding: 0px 0px 0px 15px;
+	
+}
+select#ltmSelBox {
+    width: 250px;
+    padding: 4px 4px 4px 4px;
+}
+
+/* CSS for multi select box
 .subject-info-box-1, .subject-info-box-2 {
     float: left;
     width: 30%;
@@ -422,3 +434,4 @@ input#btnRight, input#btnLeft{
     font-size: 14px;
     font-weight:100;
 }
+*/

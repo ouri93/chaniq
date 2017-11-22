@@ -1,4 +1,8 @@
 <?php
+function echoTest() {
+    return "Echo Test";
+}
+
 /**
  * Determine if the logged-in user has admin role
  * 
@@ -309,9 +313,10 @@ function get_healthmon($active_ltm, $mon_type)
 {
     $cmd = '/usr/bin/python /var/www/chaniq/py/get_healthmon.py '.$active_ltm.' ' .$mon_type;
     //echo "<br>Command:" .$cmd." <br>";
+    error_log(date("y-m-d H:i:s").": get_healthmon() - get_healthmon() called\n", 3, "/var/www/chaniq/log/chaniqphp.log");
     exec($cmd, $output);
     
-    #echo "<br>Output: " .$output[0];
+    //echo "<br>Output: " .$output[0];
     $rtn_out = explode(":", $output['0']);
     return $rtn_out;
 }

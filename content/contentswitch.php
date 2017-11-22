@@ -7,6 +7,8 @@ if(isset($_GET['go'])) {
         case "new_vs_simulate": include('content/new_vs_simulate.php'); break;
         case "new_vs_build": include('content/new_vs_build.php'); break;
         case "new_pool": include('content/new_pool.php');break;
+        case "deploy_pool_simulate": include('content/deploy_pool_simulate.php');break;
+        case "deploy_pool": include('content/deploy_pool.php');break;
         case "new_profile": include('content/new_profile.php');break;
         case "new_cert": include('content/new_cert.php'); break;
         case "new_irule": include('content/new_irule.php');break;

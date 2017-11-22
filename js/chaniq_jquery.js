@@ -15,13 +15,23 @@ function callAjax(phpFileName, bigipName, bigipIP) {
    	});
 }
 
-function processData(response_in)
+function PprocessData(response_in)
 {
    	var response = JSON.parse(response_in);
    	//alert("In ProcessData" + response[0]);
-   	
+
    	$.each(response, function(index){
    		$('#p_mon').append('<option value=' + response[index] + ' text=' + response[index] + '>' + response[index] + '</option>');
+   	});
+}
+
+function PMprocessData(response_in)
+{
+   	var response = JSON.parse(response_in);
+   	//alert("In ProcessData" + response[0]);
+
+   	$.each(response, function(index){
+   		$('#pm_mon').append('<option value=' + response[index] + ' text=' + response[index] + '>' + response[index] + '</option>');
    	});
 }
 
@@ -58,12 +68,26 @@ $(function () {
     	//alert("Select has been changed");
     	var bigipNameAndIP = $('#ltmSelBox').val()
     	var arr = bigipNameAndIP.split(":");
-    	alert("Name: " + arr[0] + " IP: " + arr[1]);
+    	//alert("Name: " + arr[0] + " IP: " + arr[1]);
     	
     	// Call Ajax to get all available Pool monitors from the device
     	
     	ajaxOut = callAjax("get_pool_monitors", arr[0], arr[1]);
-    	ajaxOut.done(processData);
+    	ajaxOut.done(PprocessData);
+
+    });
+    
+    //$('#pm_mon').one('click', function() {
+    $('#dataTable').on('click', 'select', function() {
+    	//alert("Select has been changed");
+    	var bigipNameAndIP = $('#ltmSelBox').val()
+    	var arr = bigipNameAndIP.split(":");
+    	//alert("Name: " + arr[0] + " IP: " + arr[1]);
+    	
+    	// Call Ajax to get all available Pool monitors from the device
+    	
+    	ajaxOut = callAjax("get_pool_monitors", arr[0], arr[1]);
+    	ajaxOut.done(PMprocessData);
 
     });
 
