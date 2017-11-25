@@ -125,14 +125,18 @@ function optEnDis(lbmethod){
 	
 }
 
+
+// This Javascript code has been replaced by jQuery
 function p_pglessthan(opt_sel){
 	
 	val = document.getElementById(opt_sel).value;
 	if (val == "Lessthan"){
 		//alert("Less than selected!");
 		document.getElementById("p_lessthan").disabled = false;
+		document.getElementById("pri_group_val").disabled = false;
 	}
 	else{
 		document.getElementById("p_lessthan").disabled = true;
+		document.getElementById("pri_group_val").disabled = true;
 	}
 }

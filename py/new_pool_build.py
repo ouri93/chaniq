@@ -5,7 +5,7 @@ import json
 import build_std_names
 
 logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-
+logging.info("Head of new_pool_build() called")
 
 def check_poolname_conflict(mr, std_poolname):
     
@@ -25,8 +25,11 @@ def check_poolname_conflict(mr, std_poolname):
     else:
         return False
 
-def new_pool_build(active_ltm, vs_dnsname, vs_port, vs_env, vs_poolmon, pLBMethod, pPriGroup, pPriGroupLessThan, pool_membername, pool_memberip, pool_memberport, pmMon, pmPriGroup):
+#def new_pool_build(active_ltm, vs_dnsname, vs_port, vs_env, vs_poolmon, pLBMethod, pPriGroup, pPriGroupLessThan, pool_membername, pool_memberip, pool_memberport, pmMon, pmPriGroup):
+def new_pool_build(active_ltm, vs_dnsname, vs_port, vs_env, vs_poolmon, pLBMethod):
     
+    logging.info("new_pool_build() called")
+    ''' 
     mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     
     membernames = json.loads(pool_membername)
@@ -85,9 +88,11 @@ def new_pool_build(active_ltm, vs_dnsname, vs_port, vs_env, vs_poolmon, pLBMetho
             logging.info("Member Name: " + membername + " IP: " + memberip + " Port: " + memberport + " Monitor: " + membermon + " Pool Monitor: " + vs_poolmon)
             strReturn[str(idx)] = 'Member(' + membername + ' IP:' + memberip + ':' + memberport + ' Monitor: ' + membermon + ') has been created'
             idx += 1
-
+    
     return json.dumps(strReturn)
-
+    '''
+    return "Test:out"
 
 if __name__ == "__main__":
-    print new_pool_build(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9], sys.argv[10], sys.argv[11], sys.argv[12], sys.argv[13])
+    #print new_pool_build(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9], sys.argv[10], sys.argv[11], sys.argv[12], sys.argv[13])
+    print new_pool_build(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])
