@@ -39,15 +39,31 @@ function buildNewPoolAjax(phpFileName, arr, pVsName, pVsPort, pMon, pEnv, pLBMet
 {
 
 	alert("buildNewPoolAjax()");
-	//alert(arr[1] + ":"+ pVsName + ":"+ pVsPort + ":"+ pMon + ":"+ pEnv + ":" + pLBMethod + ":"+ pPriGroup + ":"+ pPriGroupLessThan + ":" + pmPoolMemberName + ":"+ pmPoolMemberIp +":" + pmPoolMemberPort + ":" + pmPoolMemberMon + ":" + pmPriGroup);
+	alert(arr[1] + ":"+ pVsName + ":"+ pVsPort + ":"+ pMon + ":"+ pEnv + ":" + pLBMethod + ":"+ pPriGroup + ":"+ pPriGroupLessThan + ":" + pmPoolMemberName + ":"+ pmPoolMemberIp +":" + pmPoolMemberPort + ":" + pmPoolMemberMon + ":" + pmPriGroup);
   	return $.ajax({
   		url: 'content/new_pool_build.php',
    		type: 'POST',
    		dataType: 'JSON',
-   		//data: {phpFile: phpFileName, DevIP: arr[1], PVsName: pVsName, PVsPort: pVsPort, PMon: pMon, PEnv: pEnv, PLBMethod: pLBMethod, PPriGroup: pPriGroup, PPriGroupLessThan: pPriGroupLessThan, PmPoolMemberNmae: pmPoolMemberName, PmPoolMemberIp: pmPoolMemberIp, PmPoolMemberPort: pmPoolMemberPort, PmPoolMemberMon: pmPoolMemberMon, PmPrigroup: pmPriGroup }
-   		data: {phpFile: phpFileName, DevIP: arr[1], PVsName: pVsName, PVsPort: pVsPort, PMon: pMon, PEnv: pEnv, PLBMethod: pLBMethod }
+   		data: {phpFile: phpFileName, DevIP: arr[1], PVsName: pVsName, PVsPort: pVsPort, PMon: pMon, PEnv: pEnv, PLBMethod: pLBMethod, PPriGroup: pPriGroup, PPriGroupLessThan: pPriGroupLessThan, PmPoolMemberNmae: pmPoolMemberName, PmPoolMemberIp: pmPoolMemberIp, PmPoolMemberPort: pmPoolMemberPort, PmPoolMemberMon: pmPoolMemberMon, PmPrigroup: pmPriGroup }
+   		//data: {phpFile: phpFileName, DevIP: arr[1], PVsName: pVsName, PVsPort: pVsPort, PMon: pMon, PEnv: pEnv, PLBMethod: pLBMethod }
    	});
 	//return "String line1\n String line2\n";
+}
+
+function poolBuildProcessData(response_in)
+{
+	alert("poolBuildProcessData called!");
+	//var response = JSON.parse(response_in);
+
+	alert("First response data: " + response_in[0]);
+	
+	var strResult = '';
+	$.each(response_in, function(index) {
+		strResult += response_in[index] + "<br>";
+	});
+	
+	$('#newPool_EvalReview').html(strResult);
+	
 }
 
 $(function () {
@@ -150,13 +166,42 @@ $(function () {
     	var pmPoolMemberIp = document.getElementsByClassName('pool_memberip');
     	var pmPoolMemberPort = document.getElementsByClassName('pool_memberport');
     	var pmPoolMemberMon = document.getElementsByClassName('pm_mon');
+    	var pmPriGroup = document.getElementsByClassName('pm_pg_val');
+    	
+    	var arrayLen = pmPoolMemberName.length;
+    	
+    	/*
     	if (pPriGroup != "disabled") {
-    		var pmPriGroup = document.getElementsByClassName('pm_pg_val');
+    		//var pmPriGroup = document.getElementsByClassName('pm_pg_val');
+    		pmPriGroup = document.getElementsByClassName('pm_pg_val');
     	}
+    	else {
+    		for (i=0; i<arrayLen; i++) {
+    			pmPriGroup[i] = "0";
+    		}
+    	}
+		*/
+    	// Build parameter data format for array type - e.g. pool_membername is the string array. Change the array to a single string using ":" as a delimiter.
+    	// Array = [srv1.xyz.com, srv2.xyz.com, srv3.xyz.com] => "srv1.xyz.com:srv2.xyz.com:srv3.xyz.com"
+    	
+    	alert("Array Length: " + arrayLen);
+    	var strPmPoolMemberName = '';
+    	var strPmPoolMemberIp = '';
+    	var strPmPoolMemberPort = '';
+    	var strPmPoolMemberMon = '';
+    	var strPmPriGroup = '';
+    	
+    	for(i=0;i<arrayLen;i++){
+    		strPmPoolMemberName += pmPoolMemberName[i].value + ":";
+    		strPmPoolMemberIp += pmPoolMemberIp[i].value + ":";
+    		strPmPoolMemberPort += pmPoolMemberPort[i].value + ":";
+    		strPmPoolMemberMon += pmPoolMemberMon[i].value + ":";
+    		strPmPriGroup += pmPriGroup[i].value + ":";
+    	}
+    	alert(bigipNameAndIP + ":" + arr[1] + ":"+ pVsName + ":"+ pVsPort + ":"+ pMon + ":"+ pEnv + ":" + pLBMethod + ":"+ pPriGroup + ":"+ pPriGroupLessThan + ":" + strPmPoolMemberName + ":" + strPmPoolMemberIp + ":" + strPmPoolMemberPort + ":" + strPmPoolMemberMon + ":" + strPmPriGroup);
 
-    	//alert(bigipNameAndIP + ":" + arr[1] + ":"+ pVsName + ":"+ pVsPort + ":"+ pMon + ":"+ pEnv + ":" + pLBMethod + ":"+ pPriGroup + ":"+ pPriGroupLessThan + ":" + pmPoolMemberName[0].value + ":"+ pmPoolMemberIp[0].value +":" + pmPoolMemberPort[0].value + ":" + pmPoolMemberMon[0].value + ":" + pmPriGroup[0].value + ":" + pmPoolMemberName[1].value + ":" + pmPoolMemberIp[1].value + ":"+ pmPoolMemberPort[1].value + ":"+ pmPoolMemberMon[1].value + ":" + pmPriGroup[1].value);
-    	ajaxOut = buildNewPoolAjax('new_pool_build', arr, pVsName, pVsPort, pMon, pEnv, pLBMethod, pPriGroup, pPriGroupLessThan, pmPoolMemberName, pmPoolMemberIp, pmPoolMemberPort, pmPoolMemberMon, pmPriGroup);
-    	//$('#newPool_EvalReview').html(ajaxOut);
+    	ajaxOut = buildNewPoolAjax('new_pool_build', arr, pVsName, pVsPort, pMon, pEnv, pLBMethod, pPriGroup, pPriGroupLessThan, strPmPoolMemberName, strPmPoolMemberIp, strPmPoolMemberPort, strPmPoolMemberMon, strPmPriGroup);
+    	ajaxOut.done(poolBuildProcessData);
     	
     	//alert(bigipNameAndIP + " " + arr[1] + " "+ pVsName + " "+ pVsPort + " "+ pMon + " "+ pLBMethod + " "+ pPriGroup + " "+ pmPoolMemberName[0].value + " "+ pmPoolMemberName[1].value + " " + pmPoolMemberIp + " "+ pmPoolMemberPort + " "+ pmPriGroup + " ");
     	

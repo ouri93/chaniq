@@ -1,6 +1,6 @@
 <?php
 
-    error_log(date("y-m-d H:i:s").": get_pool_monitors() - callBack function php has been called\n", 3, "/var/www/chaniq/log/chaniqphp.log");
+    error_log(date("y-m-d H:i:s").": get_pool_monitors() - callBack function php has been called\n", 3, "/var/log/chaniqphp.log");
     
     // Call get_pool_monitors() by echo statement
     echo $_POST['method']();
@@ -23,7 +23,7 @@
     {
         $cmd = '/usr/bin/python /var/www/chaniq/py/get_healthmon.py '.$active_ltm.' ' .$mon_type;
         //echo "<br>Command:" .$cmd." <br>";
-        error_log(date("y-m-d H:i:s").": get_healthmon() - get_healthmon() called\n", 3, "/var/www/chaniq/log/chaniqphp.log");
+        error_log(date("y-m-d H:i:s").": get_healthmon() - get_healthmon() called\n", 3, "/var/log/chaniqphp.log");
         exec($cmd, $output);
         
         //echo "<br>Output: " .$output[0];
@@ -36,16 +36,16 @@
         {
             //$bigipIP = json_decode($_POST['DevIP']);
             $bigipIP = $_POST['DevIP'];
-            //error_log(date("y-m-d H:i:s").": get_pool_monitors() - Device IP sent over POST\n", 3, "/var/www/chaniq/log/chaniqphp.log");
-            file_put_contents("/var/www/chaniq/log/chaniqphp.log", "get_pool_monitor() Device IP: " . $bigipIP, FILE_APPEND);
+            //error_log(date("y-m-d H:i:s").": get_pool_monitors() - Device IP sent over POST\n", 3, "/var/log/chaniqphp.log");
+            file_put_contents("/var/log/chaniqphp.log", "get_pool_monitor() Device IP: " . $bigipIP, FILE_APPEND);
         }
         
         //$echoOut = echoTest();
-        //file_put_contents("/var/www/chaniq/log/chaniqphp.log", "get_pool_monitor() EchoTest: " . $echoOut, FILE_APPEND);
+        //file_put_contents("/var/log/chaniqphp.log", "get_pool_monitor() EchoTest: " . $echoOut, FILE_APPEND);
         $poolMonitors = get_healthmon($bigipIP, "ALL");
 
         foreach ($poolMonitors as $value) {
-            file_put_contents("/var/www/chaniq/log/chaniqphp.log", "Pool monitors: " . $value . "\n", FILE_APPEND);
+            file_put_contents("/var/log/chaniqphp.log", "Pool monitors: " . $value . "\n", FILE_APPEND);
         }
         $json = json_encode($poolMonitors);
         echo $json;

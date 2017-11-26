@@ -1,47 +1,65 @@
 <?php
 
-//if(isset($_POST)==TRUE && empty($_POST)==FALSE):
-    $phpFileName = $_POST['phpFile'];
-    $devIp = $_POST['DevIP'];
-    $pVsName = $_POST['PVsName'];
-    $pVsPort = $_POST['PVsPort'];
-    $pMon = $_POST['PMon'];
-    $pEnv = $_POST['PEnv'];
-    $pLBMethod = $_POST['PLBMethod'];
-    $pPriGroup = $_POST['PPriGroup'];
-    $pPriGroupLessThan = $_POST['PPriGroupLessThan'];
-    $pmPoolMemberName = $_POST['PmPoolMemberNmae'];
-    $pmPoolMemberIp = $_POST['PmPoolMemberIp'];
-    $pmPoolMemberPort = $_POST['PmPoolMemberPort'];
-    $pmPoolMemberMon = $_POST['PmPoolMemberMon'];
-    $pmPriGroup = $_POST['PmPrigroup'];
+    //if(isset($_POST)==TRUE && empty($_POST)==FALSE):
+    // If you put variables to save data from POST, it wont work. I moved the part under new_pool_build()
 
-    error_log(date("y-m-d H:i:s").": new_pool_build.php() - callBack function php has been called\n", 3, "/var/www/chaniq/log/chaniqphp.log");
-
+    error_log(date("y-m-d H:i:s").": new_pool_build.php() - callBack function php has been called\n", 3, "/var/log/chaniqphp.log");
+    //file_put_contents("/var/log/chaniqphp.log", "POST param phpFileName: " . $phpFileName . " devIP: " .$devIp ."VS name: ". $pVsName . "VsPort: " . $pVsPort . "Pool Mon: " . $pMon , FILE_APPEND);
     
     // Call new_pool_build() by echo statement
     echo $_POST['phpFile']();
     
     function new_pool_build() {
-        error_log(date("y-m-d H:i:s").": new_pool_build.php() new_pool_build() function called!\n", 3, "/var/www/chaniq/log/chaniqphp.log");
+        $phpFileName = $_POST['phpFile'];
+        $devIp = $_POST['DevIP'];
+        $pVsName = $_POST['PVsName'];
+        $pVsPort = $_POST['PVsPort'];
+        $pMon = $_POST['PMon'];
+        $pEnv = $_POST['PEnv'];
+        $pLBMethod = $_POST['PLBMethod'];
+        $pPriGroup = $_POST['PPriGroup'];
+        $pPriGroupLessThan = $_POST['PPriGroupLessThan'];
+        $pmPoolMemberName = $_POST['PmPoolMemberNmae'];
+        $pmPoolMemberIp = $_POST['PmPoolMemberIp'];
+        $pmPoolMemberPort = $_POST['PmPoolMemberPort'];
+        $pmPoolMemberMon = $_POST['PmPoolMemberMon'];
+        $pmPriGroup = $_POST['PmPrigroup'];
         
-        if(isset($_POST['devIp']))
+        file_put_contents("/var/log/chaniqphp.log", "new_pool_build() Device IP: " . $devIp, FILE_APPEND);
+        /*
+        if(isset($_POST['DevIp']))
         {
-            //$bigipIP = json_decode($_POST['DevIP']);
             $bigipIP = $_POST['DevIP'];
-            //error_log(date("y-m-d H:i:s").": get_pool_monitors() - Device IP sent over POST\n", 3, "/var/www/chaniq/log/chaniqphp.log");
-            file_put_contents("/var/www/chaniq/log/chaniqphp.log", "new_pool_build() Device IP: " . $bigipIP, FILE_APPEND);
+            file_put_contents("/var/log/chaniqphp.log", "new_pool_build() Device IP: " . $bigipIP, FILE_APPEND);
         }
+        else{
+            file_put_contents("/var/log/chaniqphp.log", "Device IP is not found: " . $bigipIP, FILE_APPEND);
+            return "Error: Device IP address is not determined!";
+        }
+        */
         
-        //.$active_ltm.$vs_dnsname. $vs_port. $vs_env. $vs_poolmon.$pool_membername.$pool_memberip.$pool_memberport.$pool_membermon));
-        
-        //$cmd = '/usr/bin/python /var/www/chaniq/py/new_pool_build.py '.$devIp.' '. $pVsName.' '. $pVsPort.' '. $pEnv.' '. $pMon.' '. $pLBMethod.' '. $pPriGroup.' '. $pPriGroupLessThan.' '. escapeshellarg(json_encode($pmPoolMemberName)).' '. escapeshellarg(json_encode($pmPoolMemberIp)).' '. escapeshellarg(json_encode($pmPoolMemberPort)).' '. escapeshellarg(json_encode($pmPoolMemberMon)).' '. escapeshellarg(json_encode($pmPriGroup));
-        $cmd = '/usr/bin/python /var/www/chaniq/py/new_pool_build.py '.$devIp.' '. $pVsName.' '. $pVsPort.' '. $pEnv.' '. $pMon.' '. $pLBMethod;
+        $cmd = '/usr/bin/python /var/www/chaniq/py/new_pool_build.py '.$devIp.' '. $pVsName.' '. $pVsPort.' '. $pEnv.' '. $pMon.' '. $pLBMethod.' '. $pPriGroup.' '. $pPriGroupLessThan.' '. $pmPoolMemberName .' '. $pmPoolMemberIp .' '. $pmPoolMemberPort .' '. $pmPoolMemberMon .' '. $pmPriGroup;
+        //$cmd = '/usr/bin/python /var/www/chaniq/py/new_pool_build.py '.$devIp.' '. $pVsName.' '. $pVsPort.' '. $pEnv.' '. $pMon.' '. $pLBMethod;
         
         $output = shell_exec($cmd);
-        error_log(date("y-m-d H:i:s").": After python call -new_pool_build.php() new_pool_build() function called!\n", 3, "/var/www/chaniq/log/chaniqphp.log");
-        $outputdata = json_decode($output, true);
+        error_log(date("y-m-d H:i:s").": After python call -new_pool_build.php() new_pool_build() function called!\n", 3, "/var/log/chaniqphp.log");
         
-        echo $outputdata;
+        $outputdata = json_decode($output, true);
+        ksort($outputdata);
+        
+        $rtnOutput = [];
+        
+        foreach ($outputdata as $key => $value){
+            file_put_contents("/var/log/chaniqphp.log", "shell_exec() Return - Key: " . $key . " Value: " . $value , FILE_APPEND);
+            array_push($rtnOutput, (string)$value);
+        }
+        
+        foreach ($rtnOutput as $value){
+            file_put_contents("/var/log/chaniqphp.log", "Strint Return: " . $value , FILE_APPEND);
+        }
+        
+        $json = json_encode($rtnOutput);
+        
+        echo $json;
     }
 ?>
