@@ -38,8 +38,7 @@ function PMprocessData(response_in)
 function buildNewPoolAjax(phpFileName, arr, pVsName, pVsPort, pMon, pEnv, pLBMethod, pPriGroup, pPriGroupLessThan, pmPoolMemberName, pmPoolMemberIp, pmPoolMemberPort, pmPoolMemberMon, pmPriGroup)
 {
 
-	alert("buildNewPoolAjax()");
-	alert(arr[1] + ":"+ pVsName + ":"+ pVsPort + ":"+ pMon + ":"+ pEnv + ":" + pLBMethod + ":"+ pPriGroup + ":"+ pPriGroupLessThan + ":" + pmPoolMemberName + ":"+ pmPoolMemberIp +":" + pmPoolMemberPort + ":" + pmPoolMemberMon + ":" + pmPriGroup);
+	//alert(arr[1] + ":"+ pVsName + ":"+ pVsPort + ":"+ pMon + ":"+ pEnv + ":" + pLBMethod + ":"+ pPriGroup + ":"+ pPriGroupLessThan + ":" + pmPoolMemberName + ":"+ pmPoolMemberIp +":" + pmPoolMemberPort + ":" + pmPoolMemberMon + ":" + pmPriGroup);
   	return $.ajax({
   		url: 'content/new_pool_build.php',
    		type: 'POST',
@@ -47,15 +46,11 @@ function buildNewPoolAjax(phpFileName, arr, pVsName, pVsPort, pMon, pEnv, pLBMet
    		data: {phpFile: phpFileName, DevIP: arr[1], PVsName: pVsName, PVsPort: pVsPort, PMon: pMon, PEnv: pEnv, PLBMethod: pLBMethod, PPriGroup: pPriGroup, PPriGroupLessThan: pPriGroupLessThan, PmPoolMemberNmae: pmPoolMemberName, PmPoolMemberIp: pmPoolMemberIp, PmPoolMemberPort: pmPoolMemberPort, PmPoolMemberMon: pmPoolMemberMon, PmPrigroup: pmPriGroup }
    		//data: {phpFile: phpFileName, DevIP: arr[1], PVsName: pVsName, PVsPort: pVsPort, PMon: pMon, PEnv: pEnv, PLBMethod: pLBMethod }
    	});
-	//return "String line1\n String line2\n";
 }
 
 function poolBuildProcessData(response_in)
 {
-	alert("poolBuildProcessData called!");
-	//var response = JSON.parse(response_in);
-
-	alert("First response data: " + response_in[0]);
+	//alert("poolBuildProcessData called!");
 	
 	var strResult = '';
 	$.each(response_in, function(index) {
@@ -100,11 +95,10 @@ $(function () {
     $('#p_mon').one('click', function() {
     	//alert("Select has been changed");
     	var bigipNameAndIP = $('#ltmSelBox').val()
+    	// arr[0] - BIG-IP Device Name, arr[1] - BIG-IP Device IP address
     	var arr = bigipNameAndIP.split(":");
-    	//alert("Name: " + arr[0] + " IP: " + arr[1]);
     	
     	// Call Ajax to get all available Pool monitors from the device
-    	
     	ajaxOut = getPoolMonAjax("get_pool_monitors", arr[0], arr[1]);
     	ajaxOut.done(PprocessData);
     	$('#pm_mon').trigger('click');
@@ -115,11 +109,10 @@ $(function () {
     //$('#pm_td').on('click', 'select', function() {
     	//alert("Select has been changed");
     	var bigipNameAndIP = $('#ltmSelBox').val();
+    	// arr[0] - BIG-IP Device Name, arr[1] - BIG-IP Device IP address
     	var arr = bigipNameAndIP.split(":");
-    	//alert("Name: " + arr[0] + " IP: " + arr[1]);
     	
     	// Call Ajax to get all available Pool monitors from the device
-    	
     	ajaxOut = getPoolMonAjax("get_pool_monitors", arr[0], arr[1]);
     	ajaxOut.done(PMprocessData);
     	//$('#pm_td').off('click');
@@ -170,21 +163,10 @@ $(function () {
     	
     	var arrayLen = pmPoolMemberName.length;
     	
-    	/*
-    	if (pPriGroup != "disabled") {
-    		//var pmPriGroup = document.getElementsByClassName('pm_pg_val');
-    		pmPriGroup = document.getElementsByClassName('pm_pg_val');
-    	}
-    	else {
-    		for (i=0; i<arrayLen; i++) {
-    			pmPriGroup[i] = "0";
-    		}
-    	}
-		*/
     	// Build parameter data format for array type - e.g. pool_membername is the string array. Change the array to a single string using ":" as a delimiter.
     	// Array = [srv1.xyz.com, srv2.xyz.com, srv3.xyz.com] => "srv1.xyz.com:srv2.xyz.com:srv3.xyz.com"
     	
-    	alert("Array Length: " + arrayLen);
+    	//alert("Array Length: " + arrayLen);
     	var strPmPoolMemberName = '';
     	var strPmPoolMemberIp = '';
     	var strPmPoolMemberPort = '';
@@ -198,12 +180,10 @@ $(function () {
     		strPmPoolMemberMon += pmPoolMemberMon[i].value + ":";
     		strPmPriGroup += pmPriGroup[i].value + ":";
     	}
-    	alert(bigipNameAndIP + ":" + arr[1] + ":"+ pVsName + ":"+ pVsPort + ":"+ pMon + ":"+ pEnv + ":" + pLBMethod + ":"+ pPriGroup + ":"+ pPriGroupLessThan + ":" + strPmPoolMemberName + ":" + strPmPoolMemberIp + ":" + strPmPoolMemberPort + ":" + strPmPoolMemberMon + ":" + strPmPriGroup);
+    	//alert(bigipNameAndIP + ":" + arr[1] + ":"+ pVsName + ":"+ pVsPort + ":"+ pMon + ":"+ pEnv + ":" + pLBMethod + ":"+ pPriGroup + ":"+ pPriGroupLessThan + ":" + strPmPoolMemberName + ":" + strPmPoolMemberIp + ":" + strPmPoolMemberPort + ":" + strPmPoolMemberMon + ":" + strPmPriGroup);
 
     	ajaxOut = buildNewPoolAjax('new_pool_build', arr, pVsName, pVsPort, pMon, pEnv, pLBMethod, pPriGroup, pPriGroupLessThan, strPmPoolMemberName, strPmPoolMemberIp, strPmPoolMemberPort, strPmPoolMemberMon, strPmPriGroup);
     	ajaxOut.done(poolBuildProcessData);
-    	
-    	//alert(bigipNameAndIP + " " + arr[1] + " "+ pVsName + " "+ pVsPort + " "+ pMon + " "+ pLBMethod + " "+ pPriGroup + " "+ pmPoolMemberName[0].value + " "+ pmPoolMemberName[1].value + " " + pmPoolMemberIp + " "+ pmPoolMemberPort + " "+ pmPriGroup + " ");
     	
     });
 });
