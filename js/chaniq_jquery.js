@@ -7,11 +7,11 @@
  * 
  */
 
-function getPoolMonAjax(phpFileName, bigipName, bigipIP) {
+function getPoolMonAjax(phpFileName, bigipName, bigipIP, monType) {
   	return $.ajax({
   		url: 'content/get_pool_monitors.php',
    		type: 'POST',
-   		data: {method: phpFileName, DevName: bigipName, DevIP: bigipIP}
+   		data: {method: phpFileName, DevName: bigipName, DevIP: bigipIP, MonType: monType}
    	});
 }
 
@@ -32,6 +32,18 @@ function PMprocessData(response_in)
 
    	$.each(response, function(index){
    		$('#pm_mon').append('<option value=' + response[index] + ' text=' + response[index] + '>' + response[index] + '</option>');
+   	});
+}
+
+function MonProcessData(response_in)
+{
+   	var response = JSON.parse(response_in);
+   	//alert("In ProcessData" + response[0]);
+
+   	// Empty the existing options from the dropdown, then populate new options
+   	$('#m_type_parent').empty();
+   	$.each(response, function(index){
+   		$('#m_type_parent').append('<option value=' + response[index] + ' text=' + response[index] + '>' + response[index] + '</option>');
    	});
 }
 
@@ -99,7 +111,7 @@ $(function () {
     	var arr = bigipNameAndIP.split(":");
     	
     	// Call Ajax to get all available Pool monitors from the device
-    	ajaxOut = getPoolMonAjax("get_pool_monitors", arr[0], arr[1]);
+    	ajaxOut = getPoolMonAjax("get_pool_monitors", arr[0], arr[1], "ALL");
     	ajaxOut.done(PprocessData);
     	$('#pm_mon').trigger('click');
 
@@ -113,7 +125,7 @@ $(function () {
     	var arr = bigipNameAndIP.split(":");
     	
     	// Call Ajax to get all available Pool monitors from the device
-    	ajaxOut = getPoolMonAjax("get_pool_monitors", arr[0], arr[1]);
+    	ajaxOut = getPoolMonAjax("get_pool_monitors", arr[0], arr[1], "ALL");
     	ajaxOut.done(PMprocessData);
     	//$('#pm_td').off('click');
 
@@ -186,4 +198,17 @@ $(function () {
     	ajaxOut.done(poolBuildProcessData);
     	
     });
+    
+    // Evnet handler for Monitor type change - Once Parent Monitor data is retrived, the data is fed into Paraent Monitor
+    $('#m_type').on('change', function() {
+    	var bigipNameAndIP = $('#ltmSelBox').val();
+    	// arr[0] - BIG-IP Device Name, arr[1] - BIG-IP Device IP address
+    	var arr = bigipNameAndIP.split(":");
+    	var monType = $('#m_type').val();
+    	
+    	// Call Ajax to get all available Pool monitors from the device
+    	ajaxOut = getPoolMonAjax("get_pool_monitors", arr[0], arr[1], monType);
+    	ajaxOut.done(MonProcessData);
+    });
+
 });

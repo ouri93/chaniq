@@ -69,10 +69,18 @@
                         <td>
                             <label>Monitor Type: </label>
                             <select name="m_type" id="m_type" required="required" />
+                            	<option selected="selected">Select...</option>
+                            	<option>HTTP</option>
+                            	<option>HTTPS</option>
+                            	<option>TCP</option>
+                            	<option>TCP Half Open</option>
+                            	<option>ICMP</option>
+                            	<option>External</option>
+                            	<option>UDP</option>
                         </td>
                         <td>
                             <label>Parent Monitor: </label>
-                            <select name="m_type_parent" id="m_type_parent" />
+                            <select name="m_type_parent" id="m_type_parent" required="required" />
                         </td>
 
                     </tr>
@@ -82,6 +90,28 @@
             <p>
             <fieldset class="row2">
                 <legend>Monitor Configuration</legend>
+                <p>
+                	<table id="monConfTable" class="form" border="1">
+                		<tbody>
+                			<tr>
+                				<td>
+                					<label> Interval: </label>
+                				</td>
+                				<td>
+                					<input type="text" id="monConfInterval" value="5" /> Seconds
+                				</td>
+                			</tr>
+                			<tr>
+                				<td>
+                					<label> Timeout: </label>
+                				</td>
+                				<td>
+                					<input type="text" id="monConfTimeout" value="16" /> Seconds
+                				</td>
+                			</tr>
+                		</tbody>
+                	</table>
+                </p>
                 <p>
                     <label>LB Method</label>
                     <select name="p_lbmethod" id="p_lbmethod" onchange="optEnDis('p_lbmethod')" required="required">
