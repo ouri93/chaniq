@@ -73,6 +73,68 @@ function poolBuildProcessData(response_in)
 	
 }
 
+
+function getMonHtml(devIp, monType, parMonType)
+{
+	// Update html code by Monitor type - HTTP, HTTPS, TCP, UDP, TCP Half Open, ICMP, External
+	// Bit 0 - Interval (0000 0001), Bit 1 - Timeout (0000 0010), Bit 2 - Send String (0000 0100), Bit 3 - Receive String (0000 1000)
+	// Bit 4 - Username/Password (0001 0000), Bit 5 - Reverse (0010 0000), Bit 6 - Alias Service Port (0100 0000), Bit 7 - Cipher List (1000 0000) 
+	// Big 8 - External Program and Arguments (0001 0000 0000)
+	// HTTP - 0111 1111(127), HTTPS - 1111 1111(255), TCP and UDP - 0110 1111(111), TCP Half Open - 0100 0011(67), ICMP - 0000 0011(3), External - 0001 0100 0011(323)
+	var strHtml = '';
+	var htmlCode = 0;
+	switch (monType)
+	{
+	case 'HTTP':
+		htmlCode = 127;
+		break;
+	case 'HTTPS':
+		htmlCode = 255;
+		break;
+	case 'TCP':
+	case 'UDP':
+		htmlCode = 111;
+		break;
+	case 'TCP Half Open':
+		htmlCode = 67;
+		break;
+	case 'ICMP':
+		htmlCode = 3;
+		break;
+	case 'External':
+		htmlCode = 323;
+		break;
+	}
+	//alert("Chosen HtmlCode: " + htmlCode);
+	
+	switch(true)
+	{
+	case ((htmlCode >> 0) & 1) == 1:
+		strHtml += "<tr><td><label> Interval: </label></td><td><input type='text' id='monConfInterval' value='5' /> Seconds</td></tr>";
+	case ((htmlCode >> 1) & 1) == 1:
+		strHtml += "<tr><td><label> Timeout: </label></td><td><input type='text' id='monConfTimeout' value='16' /> Seconds</td></tr>";
+	case ((htmlCode >> 2) & 1) == 1:
+		strHtml += "<tr><td><label> Send String: </label></td><td><textarea id='monConfSndString' rows='10' cols='50'> </textarea> </td></tr>";
+	case ((htmlCode >> 3) & 1) == 1:
+		strHtml += "<tr><td><label> Receive String: </label></td><td><textarea id='monConfRcvString' rows='10' cols='50'> </textarea> </td></tr>";
+	case ((htmlCode >> 4) & 1) == 1:
+		strHtml += "<tr><td><label> User Name: </label></td><td><input type='text' id='monConfUN' /></td></tr>";
+		strHtml += "<tr><td><label> Password: </label></td><td><input type='password' id='monConfPW' /> </td></tr>";
+	case ((htmlCode >> 5) & 1) == 1:
+		strHtml += "<tr><td><label> Reverse: </label></td><td><input type='radio' id='monConfRvsYes' name='reverse' >Yes<input type='radio' id='monConfRvsNo' name='reverse' checked >No</td></tr>";
+	case ((htmlCode >> 6) & 1) == 1:
+		strHtml += "<tr><td><label> Alias Service Port: </label></td><td><input type='text' id='monConfAliasPort' value='*'/></td></tr>";
+	case ((htmlCode >> 7) & 1) == 1:
+		strHtml += "<tr><td><label> Cipher List: </label></td><td><input type='text' id='monConfCipher' value='DEFAULT:+SHA:+3DES:+kEDH' /></td></tr>";
+	case ((htmlCode >> 8) & 1) == 1:
+		break;
+	}
+	
+	return strHtml;
+	//return "<tr><td><label>test_label</label></td><td> <input text='text' value='test_value' /></td></tr>";
+}
+
+
 $(function () {
     $('#btnRight').click(function (e) {
         var selectedOpts = $('#lstBox1 option:selected');
@@ -205,10 +267,21 @@ $(function () {
     	// arr[0] - BIG-IP Device Name, arr[1] - BIG-IP Device IP address
     	var arr = bigipNameAndIP.split(":");
     	var monType = $('#m_type').val();
+    	var parMonType = $('#m_type_parent').val();
     	
     	// Call Ajax to get all available Pool monitors from the device
     	ajaxOut = getPoolMonAjax("get_pool_monitors", arr[0], arr[1], monType);
     	ajaxOut.done(MonProcessData);
+    	
+    	// Update html code by Monitor type - HTTP, HTTPS, TCP, UDP, TCP Half Open, ICMP, External    	
+    	var strMonitorHtml = getMonHtml(arr[1], monType, parMonType);
+       	
+    	//$('#monConfTable').empty();
+    	//$('#monConfTable').append(strMonitorHtml);
+    	$('#monConfTable_tbody').empty();
+    	$('#monConfTable_tbody').append(strMonitorHtml);
+    	
+    	
     });
 
 });
