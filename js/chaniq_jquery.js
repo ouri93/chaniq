@@ -105,33 +105,50 @@ function getMonHtml(devIp, monType, parMonType)
 		htmlCode = 323;
 		break;
 	}
-	//alert("Chosen HtmlCode: " + htmlCode);
+	alert("Chosen HtmlCode: " + htmlCode);
 	
 	switch(true)
 	{
-	case ((htmlCode >> 0) & 1) == 1:
-		strHtml += "<tr><td><label> Interval: </label></td><td><input type='text' id='monConfInterval' value='5' /> Seconds</td></tr>";
-	case ((htmlCode >> 1) & 1) == 1:
-		strHtml += "<tr><td><label> Timeout: </label></td><td><input type='text' id='monConfTimeout' value='16' /> Seconds</td></tr>";
-	case ((htmlCode >> 2) & 1) == 1:
-		strHtml += "<tr><td><label> Send String: </label></td><td><textarea id='monConfSndString' rows='10' cols='50'> </textarea> </td></tr>";
-	case ((htmlCode >> 3) & 1) == 1:
-		strHtml += "<tr><td><label> Receive String: </label></td><td><textarea id='monConfRcvString' rows='10' cols='50'> </textarea> </td></tr>";
-	case ((htmlCode >> 4) & 1) == 1:
-		strHtml += "<tr><td><label> User Name: </label></td><td><input type='text' id='monConfUN' /></td></tr>";
-		strHtml += "<tr><td><label> Password: </label></td><td><input type='password' id='monConfPW' /> </td></tr>";
-	case ((htmlCode >> 5) & 1) == 1:
-		strHtml += "<tr><td><label> Reverse: </label></td><td><input type='radio' id='monConfRvsYes' name='reverse' >Yes<input type='radio' id='monConfRvsNo' name='reverse' checked >No</td></tr>";
-	case ((htmlCode >> 6) & 1) == 1:
-		strHtml += "<tr><td><label> Alias Service Port: </label></td><td><input type='text' id='monConfAliasPort' value='*'/></td></tr>";
-	case ((htmlCode >> 7) & 1) == 1:
-		strHtml += "<tr><td><label> Cipher List: </label></td><td><input type='text' id='monConfCipher' value='DEFAULT:+SHA:+3DES:+kEDH' /></td></tr>";
-	case ((htmlCode >> 8) & 1) == 1:
+	case (((htmlCode >> 0) & 1) == 1):
+		if(((htmlCode >> 0) & 1) == 1) {
+			strHtml += "<tr><td><label> Interval: </label></td><td><input type='text' id='monConfInterval' value='5' /> Seconds</td></tr>";
+		}
+	case (((htmlCode >> 1) & 1) == 1):
+		if(((htmlCode >> 1) & 1) == 1) {
+			strHtml += "<tr><td><label> Timeout: </label></td><td><input type='text' id='monConfTimeout' value='16' /> Seconds</td></tr>";
+		}
+	case (((htmlCode >> 2) & 1) == 1):
+		if(((htmlCode >> 2) & 1) == 1) {
+			strHtml += "<tr><td><label> Send String: </label></td><td><textarea id='monConfSndString' rows='10' cols='50'> </textarea> </td></tr>";
+		}
+	case (((htmlCode >> 3) & 1) == 1):
+		if(((htmlCode >> 3) & 1) == 1) {
+			strHtml += "<tr><td><label> Receive String: </label></td><td><textarea id='monConfRcvString' rows='10' cols='50'> </textarea> </td></tr>";
+		}
+	case (((htmlCode >> 4) & 1) == 1):
+		if(((htmlCode >> 4) & 1) == 1) { 	
+			strHtml += "<tr><td><label> User Name: </label></td><td><input type='text' id='monConfUN' /></td></tr>";
+			strHtml += "<tr><td><label> Password: </label></td><td><input type='password' id='monConfPW' /> </td></tr>";
+		}
+	case (((htmlCode >> 5) & 1) == 1):
+		if(((htmlCode >> 5) & 1) == 1) {
+			strHtml += "<tr><td><label> Reverse: </label></td><td><label>Yes</label><input type='radio' id='monConfRvsYes' name='reverse' ><label>No</label><input type='radio' id='monConfRvsNo' name='reverse' checked /></td></tr>";
+		}
+	case (((htmlCode >> 6) & 1) == 1):
+		if(((htmlCode >> 6) & 1) == 1) {
+			strHtml += "<tr><td><label> Alias Service Port: </label></td><td><input type='text' id='monConfAliasPort' value='*'/></td></tr>";
+		}
+	case (((htmlCode >> 7) & 1) == 1):
+		if(((htmlCode >> 7) & 1) == 1) {
+			strHtml += "<tr><td><label> Cipher List: </label></td><td><input type='text' id='monConfCipher' value='DEFAULT:+SHA:+3DES:+kEDH' /></td></tr>";
+		}
+	case (((htmlCode >> 8) & 1) == 1):
+		;
+	default:
 		break;
 	}
 	
 	return strHtml;
-	//return "<tr><td><label>test_label</label></td><td> <input text='text' value='test_value' /></td></tr>";
 }
 
 
@@ -280,8 +297,11 @@ $(function () {
     	//$('#monConfTable').append(strMonitorHtml);
     	$('#monConfTable_tbody').empty();
     	$('#monConfTable_tbody').append(strMonitorHtml);
-    	
-    	
+    });
+    
+    // Fill in the dynamic Monitor form
+    $('#m_type_parent').on('change', function() {
+        
     });
 
 });
