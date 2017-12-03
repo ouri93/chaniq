@@ -14,7 +14,17 @@ def get_tcpmonitors(mr):
     return output
 
 def get_tcpmon_setting(mr, parent_mon):
-    pass
+    tcpmons = mr.tm.ltm.monitor.tcps.get_collection()
+    outputDict = {'interval':'', 'timeout':'', 'send':'', 'recv':'', 'reverse':'', 'aliasPort':''}
+    for amon in tcpmons:
+        if(amon.name == parent_mon):
+            outputDict['interval'] = amon.interval
+            outputDict['timeout'] = amon.timeout
+            outputDict['send'] = amon.send
+            outputDict['recv'] = amon.recv
+            outputDict['reverse'] = amon.reverse
+            outputDict['aliasPort'] = '443'
+
 
 def get_httpmon_setting(mr, parent_mon):
     pass
