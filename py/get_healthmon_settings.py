@@ -2,54 +2,97 @@ from f5.bigip import ManagementRoot
 import sys
 import logging
 
-
-def get_tcpmonitors(mr):
-    tcpmons = mr.tm.ltm.monitor.tcps.get_collection()
-    output = ''
-    for amon in tcpmons:
-        if output != '':
-            output = output + ':'
-        output = output + amon.name
-    #logging.info('output in get_httpprofile: %s' % output)
-    return output
+def get_setting_val(aMon, attName):
+    try:
+        accessVal = 'aMon' + '.' + attName
+        return eval(accessVal)
+    except AttributeError:
+        return ""
 
 def get_tcpmon_setting(mr, parent_mon):
     tcpmons = mr.tm.ltm.monitor.tcps.get_collection()
     outputDict = {'interval':'', 'timeout':'', 'send':'', 'recv':'', 'reverse':'', 'aliasPort':''}
     for amon in tcpmons:
         if(amon.name == parent_mon):
-            outputDict['interval'] = amon.interval
-            outputDict['timeout'] = amon.timeout
-            outputDict['send'] = amon.send
-            outputDict['recv'] = amon.recv
-            outputDict['reverse'] = amon.reverse
-            outputDict['aliasPort'] = '443'
-
+            outputDict['interval'] = get_setting_val(amon, "interval")
+            outputDict['timeout'] = get_setting_val(amon, "timeout")
+            outputDict['send'] = get_setting_val(amon, "send")
+            outputDict['recv'] = get_setting_val(amon, "recv")
+            outputDict['reverse'] = get_setting_val(amon, "reverse")
+            destIP, aliasPort = amon.destination.split(":")
+            outputDict['aliasPort'] = aliasPort
+    return outputDict
 
 def get_httpmon_setting(mr, parent_mon):
-    pass
+    httpmons = mr.tm.ltm.monitor.https.get_collection()
+    outputDict = {'interval':'', 'timeout':'', 'send':'', 'recv':'', 'username':'', 'password': '', 'reverse':'', 'aliasPort':''}
+    for amon in httpmons:
+        if(amon.name == parent_mon):
+            outputDict['interval'] = get_setting_val(amon, "interval")
+            outputDict['timeout'] = get_setting_val(amon, "timeout")
+            outputDict['send'] = get_setting_val(amon, "send")
+            outputDict['recv'] = get_setting_val(amon, "recv")
+            outputDict['username'] = get_setting_val(amon, "username")
+            outputDict['password'] = get_setting_val(amon, "password")
+            outputDict['reverse'] = get_setting_val(amon, "reverse")
+            destIP, aliasPort = amon.destination.split(":")
+            outputDict['aliasPort'] = aliasPort
+    return outputDict
 
 def get_httpsmon_setting(mr, parent_mon):
-    pass
+    httpsmons = mr.tm.ltm.monitor.https_s.get_collection()
+    outputDict = {'interval':'', 'timeout':'', 'send':'', 'recv':'', 'username':'', 'password': '', 'cipherlist':'', 'reverse':'', 'aliasPort':''}
+    for amon in httpsmons:
+        if(amon.name == parent_mon):
+            outputDict['interval'] = get_setting_val(amon, "interval")
+            outputDict['timeout'] = get_setting_val(amon, "timeout")
+            outputDict['send'] = get_setting_val(amon, "send")
+            outputDict['recv'] = get_setting_val(amon, "recv")
+            outputDict['username'] = get_setting_val(amon, "username")
+            outputDict['password'] = get_setting_val(amon, "cipherlist")
+            outputDict['cipherlist'] = get_setting_val(amon, "password")
+            outputDict['reverse'] = get_setting_val(amon, "reverse")
+            destIP, aliasPort = amon.destination.split(":")
+            outputDict['aliasPort'] = aliasPort
+    return outputDict
 
 def get_udpmon_setting(mr, parent_mon):
     pass
 
 def get_tcphalfmon_setting(mr, parent_mon):
-    pass
+    tcphalfmons = mr.tm.ltm.monitor.tcp_half_opens.get_collection()
+    outputDict = {'interval':'', 'timeout':'', 'aliasPort':''}
+    for amon in tcphalfmons:
+        if(amon.name == parent_mon):
+            outputDict['interval'] = get_setting_val(amon, "interval")
+            outputDict['timeout'] = get_setting_val(amon, "timeout")
+            destIP, aliasPort = amon.destination.split(":")
+            outputDict['aliasPort'] = aliasPort
+    return outputDict
 
 def get_gwicmpmon_setting(mr, parent_mon):
     pass
 
 def get_eavmon_setting(mr, parent_mon):
-    pass   
+    evamons = mr.tm.ltm.monitor.externals.get_collection()
+    outputDict = {'interval':'', 'timeout':'', 'args':'', 'run':'', 'aliasPort':''}
+    for amon in evamons:
+        if(amon.name == parent_mon):
+            outputDict['interval'] = get_setting_val(amon, "interval")
+            outputDict['timeout'] = get_setting_val(amon, "timeout")
+            outputDict['args'] = get_setting_val(amon, "args")
+            outputDict['run'] = get_setting_val(amon, "run")
+            destIP, aliasPort = amon.destination.split(":")
+            outputDict['aliasPort'] = aliasPort
+    return outputDict
+   
 
 def get_healthmon_setting(dev_ip, mon_type, parent_mon):
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
     logging.info('Called get_healthmonitors(): %s %s' % (dev_ip, mon_type))
     
     mr = ManagementRoot(dev_ip, 'admin', 'rlatkdcks')
-    output = ''
+
     '''
     Suppported Health Monitor types
     1. TCP
@@ -59,14 +102,12 @@ def get_healthmon_setting(dev_ip, mon_type, parent_mon):
     5. Gateway ICMP
     6. External
     '''
-    if mon_type == "TCP":
+    if mon_type == "TCP" or mon_type == "UDP" :
         output = get_tcpmon_setting(mr, parent_mon)
     elif mon_type == "HTTP":
         output = get_httpmon_setting(mr, parent_mon)
     elif mon_type == "HTTPS":
         output = get_httpsmon_setting(mr, parent_mon)
-    elif mon_type == "UDP":
-        output = get_udpmon_setting(mr, parent_mon)
     elif mon_type == "TCP_HALF":
         output = get_tcphalfmon_setting(mr, parent_mon)
     elif mon_type == "GW_ICMP":
@@ -75,7 +116,7 @@ def get_healthmon_setting(dev_ip, mon_type, parent_mon):
         output = get_eavmon_setting(mr, parent_mon)
         
     #logging.info('output in get_active_profiles: %s' % output)
-    return output
+    return json.dumps(output)
 
 if __name__ == "__main__":
     #logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)

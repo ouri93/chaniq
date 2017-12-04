@@ -43,7 +43,11 @@ function MonProcessData(response_in)
    	// Empty the existing options from the dropdown, then populate new options
    	$('#m_type_parent').empty();
    	$.each(response, function(index){
-   		$('#m_type_parent').append('<option value=' + response[index] + ' text=' + response[index] + '>' + response[index] + '</option>');
+   		if(index==0){
+   			$('#m_type_parent').append('<option value=' + response[index] + ' text=' + response[index] + ' selected="selected" >' + response[index] + '</option>');
+   		}
+   		else
+   			$('#m_type_parent').append('<option value=' + response[index] + ' text=' + response[index] + '>' + response[index] + '</option>');
    	});
 }
 
@@ -73,8 +77,25 @@ function poolBuildProcessData(response_in)
 	
 }
 
+function getMonSettingsAjax(phpFileName, bigipName, bigipIP, monType, parMonType)
+{
+	return $.ajax({ 
+		url: 'content/get_healthmon_settings',
+		type: 'POST',
+		dataType: 'JSON',
+		data: {phpFile: phpFileName, DevIP:bigipIP, MonType: monType, ParMonType, parMonType}
+	});
+}
 
-function getMonHtml(devIp, monType, parMonType)
+function MonSettingsProcessData(response_in)
+{
+	// response_in: jason_decode() applied value
+	alert("I am in MonSettingsProcessData()")
+	alert("Print Return data:  Interval: " + response_in['interval']);
+   	var response = JSON.parse(response_in);
+}
+
+function getMonHtml(devIp, monType)
 {
 	// Update html code by Monitor type - HTTP, HTTPS, TCP, UDP, TCP Half Open, ICMP, External
 	// Bit 0 - Interval (0000 0001), Bit 1 - Timeout (0000 0010), Bit 2 - Send String (0000 0100), Bit 3 - Receive String (0000 1000)
@@ -105,7 +126,7 @@ function getMonHtml(devIp, monType, parMonType)
 		htmlCode = 323;
 		break;
 	}
-	alert("Chosen HtmlCode: " + htmlCode);
+	//alert("Chosen HtmlCode: " + htmlCode);
 	
 	switch(true)
 	{
@@ -284,24 +305,38 @@ $(function () {
     	// arr[0] - BIG-IP Device Name, arr[1] - BIG-IP Device IP address
     	var arr = bigipNameAndIP.split(":");
     	var monType = $('#m_type').val();
-    	var parMonType = $('#m_type_parent').val();
-    	
+    	    	
     	// Call Ajax to get all available Pool monitors from the device
     	ajaxOut = getPoolMonAjax("get_pool_monitors", arr[0], arr[1], monType);
     	ajaxOut.done(MonProcessData);
     	
     	// Update html code by Monitor type - HTTP, HTTPS, TCP, UDP, TCP Half Open, ICMP, External    	
-    	var strMonitorHtml = getMonHtml(arr[1], monType, parMonType);
+    	var strMonitorHtml = getMonHtml(arr[1], monType);
        	
-    	//$('#monConfTable').empty();
-    	//$('#monConfTable').append(strMonitorHtml);
     	$('#monConfTable_tbody').empty();
     	$('#monConfTable_tbody').append(strMonitorHtml);
+
+    	//For the initial Health monitor config loading
+    	$('#m_type_parent').trigger('change');
     });
     
     // Fill in the dynamic Monitor form
     $('#m_type_parent').on('change', function() {
-        
+    	var bigipNameAndIP = $('#ltmSelBox').val();
+    	// arr[0] - BIG-IP Device Name, arr[1] - BIG-IP Device IP address
+    	var arr = bigipNameAndIP.split(":");
+    	var monType = $('#m_type').val();
+    	//var parMonType = $('#m_type_parent').val();
+    	var objParType = document.getElementById('m_type_parent');
+    	var parMonType = objParType.options[objParType.selectedIndex].text;
+    	alert ("Parent Monitor: " + parMonType);
+    	
+    	// Call Ajax to get all available Pool monitors from the device
+    	alert("Calling get_healthmon_settings Ajax - Dev Name: " + arr[0] + " Dev IP: " + arr[1] + " Monitor Type: " + monType + "Parent Monitor: " + parMonType);
+    	ajaxOut = getMonSettingsAjax("get_healthmon_settings", arr[0], arr[1], monType, parMonType);
+    	ajaxOut.done(MonSettingsProcessData);
+    	
     });
+
 
 });
