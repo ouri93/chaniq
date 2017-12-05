@@ -107,11 +107,11 @@ def get_healthmonitors(dev_ip, mon_type):
         output = get_httpsmonitors(mr)
     elif mon_type == "UDP":
         output = get_udpmonitors(mr)
-    elif mon_type == "TCP_HALF":
+    elif mon_type == "TCP Half Open":
         output = get_tcphalfmonitors(mr)
     elif mon_type == "GW_ICMP":
         output = get_gwicmpmonitors(mr)
-    elif mon_type == "EAV":
+    elif mon_type == "External":
         output = get_eavmonitors(mr)
         
     #logging.info('output in get_active_profiles: %s' % output)

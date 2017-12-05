@@ -21,7 +21,7 @@
      */
     function get_healthmon($active_ltm, $mon_type)
     {
-        $cmd = '/usr/bin/python /var/www/chaniq/py/get_healthmon.py '.$active_ltm.' ' .$mon_type;
+        $cmd = '/usr/bin/python /var/www/chaniq/py/get_healthmon.py '.$active_ltm.' ' . escapeshellarg($mon_type);
         //echo "<br>Command:" .$cmd." <br>";
         error_log(date("y-m-d H:i:s").": get_healthmon() - get_healthmon() called\n", 3, "/var/log/chaniqphp.log");
         exec($cmd, $output);

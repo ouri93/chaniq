@@ -97,9 +97,6 @@
                 		</tbody>
                 	</table>
                 </p>
-                <p></p>
-                <input type="button" value="Remove Member" onClick="deleteRow('dataTable')"  /> 
-                <input type="button" value="Add Member" onClick="addRow('dataTable')" /> 
             </fieldset>
             </p>
         </fieldset>

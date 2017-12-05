@@ -42,12 +42,9 @@ function MonProcessData(response_in)
 
    	// Empty the existing options from the dropdown, then populate new options
    	$('#m_type_parent').empty();
+   	$('#m_type_parent').append('<option selected="selected" value="Select..." > Select... </option>');
    	$.each(response, function(index){
-   		if(index==0){
-   			$('#m_type_parent').append('<option value=' + response[index] + ' text=' + response[index] + ' selected="selected" >' + response[index] + '</option>');
-   		}
-   		else
-   			$('#m_type_parent').append('<option value=' + response[index] + ' text=' + response[index] + '>' + response[index] + '</option>');
+		$('#m_type_parent').append('<option value=' + response[index] + ' text=' + response[index] + '>' + response[index] + '</option>');
    	});
 }
 
@@ -77,16 +74,6 @@ function poolBuildProcessData(response_in)
 	
 }
 
-function getMonSettingsAjax(phpFileName, bigipName, bigipIP, monType, parMonType)
-{
-	return $.ajax({ 
-		url: 'content/get_healthmon_settings',
-		type: 'POST',
-		dataType: 'JSON',
-		data: {phpFile: phpFileName, DevIP:bigipIP, MonType: monType, ParMonType, parMonType}
-	});
-}
-
 function MonSettingsProcessData(response_in)
 {
 	// response_in: jason_decode() applied value
@@ -94,6 +81,18 @@ function MonSettingsProcessData(response_in)
 	alert("Print Return data:  Interval: " + response_in['interval']);
    	var response = JSON.parse(response_in);
 }
+
+function getMonSettingsAjax(phpFileName, bigipName, bigipIP, monType, parMonType)
+{
+	alert("getMonSettingsAjax - phpFileName: " + phpFileName + " Dev name: " + bigipName + " Dev IP: " + bigipIP + " Mon Type: " + monType + " Parent Monitor: " + parMonType);
+	return $.ajax({ 
+		url: 'content/get_healthmon_settings.php',
+		type: 'POST',
+		dataType: 'JSON',
+		data: {phpFile: phpFileName, DevIP:bigipIP, MonType: monType, ParMonType:parMonType}
+	});
+}
+
 
 function getMonHtml(devIp, monType)
 {
@@ -106,21 +105,21 @@ function getMonHtml(devIp, monType)
 	var htmlCode = 0;
 	switch (monType)
 	{
-	case 'HTTP':
-		htmlCode = 127;
+	case 'ICMP':
+		htmlCode = 3;
 		break;
-	case 'HTTPS':
-		htmlCode = 255;
+	case 'TCP Half Open':
+		htmlCode = 67;
 		break;
 	case 'TCP':
 	case 'UDP':
 		htmlCode = 111;
 		break;
-	case 'TCP Half Open':
-		htmlCode = 67;
+	case 'HTTP':
+		htmlCode = 127;
 		break;
-	case 'ICMP':
-		htmlCode = 3;
+	case 'HTTPS':
+		htmlCode = 255;
 		break;
 	case 'External':
 		htmlCode = 323;
@@ -316,8 +315,6 @@ $(function () {
     	$('#monConfTable_tbody').empty();
     	$('#monConfTable_tbody').append(strMonitorHtml);
 
-    	//For the initial Health monitor config loading
-    	$('#m_type_parent').trigger('change');
     });
     
     // Fill in the dynamic Monitor form
@@ -326,13 +323,12 @@ $(function () {
     	// arr[0] - BIG-IP Device Name, arr[1] - BIG-IP Device IP address
     	var arr = bigipNameAndIP.split(":");
     	var monType = $('#m_type').val();
-    	//var parMonType = $('#m_type_parent').val();
-    	var objParType = document.getElementById('m_type_parent');
-    	var parMonType = objParType.options[objParType.selectedIndex].text;
-    	alert ("Parent Monitor: " + parMonType);
+    	var parMonType = $('#m_type_parent').val();
+    	
+    	//alert ("Parent Monitor: " + parMonType);
     	
     	// Call Ajax to get all available Pool monitors from the device
-    	alert("Calling get_healthmon_settings Ajax - Dev Name: " + arr[0] + " Dev IP: " + arr[1] + " Monitor Type: " + monType + "Parent Monitor: " + parMonType);
+    	//alert("Calling get_healthmon_settings Ajax - Dev Name: " + arr[0] + " Dev IP: " + arr[1] + " Monitor Type: " + monType + "Parent Monitor: " + parMonType);
     	ajaxOut = getMonSettingsAjax("get_healthmon_settings", arr[0], arr[1], monType, parMonType);
     	ajaxOut.done(MonSettingsProcessData);
     	
