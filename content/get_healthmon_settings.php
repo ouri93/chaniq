@@ -21,10 +21,9 @@
         error_log(date("y-m-d H:i:s").": get_healthmon_settings() - get_healthmon_settings() called\n", 3, "/var/log/chaniqphp.log");
         exec($cmd, $output);
 
-        //$json = json_decode($output, true);
-        
-        file_put_contents("/var/log/chaniqphp.log", "Returned Exec() Output: " . $output[0] ."\n", FILE_APPEND);
-        
-        echo $output;
+        file_put_contents("/var/log/chaniqphp.log", "Output: " . $output[0] ."\n", FILE_APPEND);
+  
+        //return '[{"Name":"BIG-IP", "Version":"12.1.2" }]';
+        return $output[0];
     }
 ?>

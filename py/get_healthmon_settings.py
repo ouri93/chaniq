@@ -50,8 +50,8 @@ def get_httpsmon_setting(mr, parent_mon):
             outputDict['send'] = get_setting_val(amon, "send")
             outputDict['recv'] = get_setting_val(amon, "recv")
             outputDict['username'] = get_setting_val(amon, "username")
-            outputDict['password'] = get_setting_val(amon, "cipherlist")
-            outputDict['cipherlist'] = get_setting_val(amon, "password")
+            outputDict['password'] = get_setting_val(amon, "password")
+            outputDict['cipherlist'] = get_setting_val(amon, "cipherlist")
             outputDict['reverse'] = get_setting_val(amon, "reverse")
             destIP, aliasPort = amon.destination.split(":")
             outputDict['aliasPort'] = aliasPort

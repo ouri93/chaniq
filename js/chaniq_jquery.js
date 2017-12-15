@@ -76,20 +76,29 @@ function poolBuildProcessData(response_in)
 
 function MonSettingsProcessData(response_in)
 {
-	// response_in: jason_decode() applied value
-	alert("I am in MonSettingsProcessData()")
-	alert("Print Return data:  Interval: " + response_in['interval']);
-   	var response = JSON.parse(response_in);
+	//alert("Print Return data:  Interval: " + response_in['interval']);
+	//alert("Print Return data:  send: " + response_in['send']);
+	var monType = $('#m_type').val();
+	setMonHtml(monType, response_in);
 }
 
 function getMonSettingsAjax(phpFileName, bigipName, bigipIP, monType, parMonType)
 {
-	alert("getMonSettingsAjax - phpFileName: " + phpFileName + " Dev name: " + bigipName + " Dev IP: " + bigipIP + " Mon Type: " + monType + " Parent Monitor: " + parMonType);
+	//alert("getMonSettingsAjax - phpFileName: " + phpFileName + " Dev name: " + bigipName + " Dev IP: " + bigipIP + " Mon Type: " + monType + " Parent Monitor: " + parMonType);
 	return $.ajax({ 
 		url: 'content/get_healthmon_settings.php',
 		type: 'POST',
 		dataType: 'JSON',
-		data: {phpFile: phpFileName, DevIP:bigipIP, MonType: monType, ParMonType:parMonType}
+		data: {phpFile: phpFileName, DevIP:bigipIP, MonType: monType, ParMonType:parMonType},
+		error: function(jqXHR, textStatus, errorThrown){
+			alert("Ajax call failed!");
+            console.log('jqXHR:');
+            console.log(jqXHR);
+            console.log('textStatus:');
+            console.log(textStatus);
+            console.log('errorThrown:');
+            console.log(errorThrown);
+		}
 	});
 }
 
@@ -171,6 +180,89 @@ function getMonHtml(devIp, monType)
 	return strHtml;
 }
 
+function setMonHtml(monType, response_in)
+{
+	// Update html code by Monitor type - HTTP, HTTPS, TCP, UDP, TCP Half Open, ICMP, External
+	// Bit 0 - Interval (0000 0001), Bit 1 - Timeout (0000 0010), Bit 2 - Send String (0000 0100), Bit 3 - Receive String (0000 1000)
+	// Bit 4 - Username/Password (0001 0000), Bit 5 - Reverse (0010 0000), Bit 6 - Alias Service Port (0100 0000), Bit 7 - Cipher List (1000 0000) 
+	// Big 8 - External Program and Arguments (0001 0000 0000)
+	// HTTP - 0111 1111(127), HTTPS - 1111 1111(255), TCP and UDP - 0110 1111(111), TCP Half Open - 0100 0011(67), ICMP - 0000 0011(3), External - 0001 0100 0011(323)
+	var strHtml = '';
+	var htmlCode = 0;
+	switch (monType)
+	{
+	case 'ICMP':
+		htmlCode = 3;
+		break;
+	case 'TCP Half Open':
+		htmlCode = 67;
+		break;
+	case 'TCP':
+	case 'UDP':
+		htmlCode = 111;
+		break;
+	case 'HTTP':
+		htmlCode = 127;
+		break;
+	case 'HTTPS':
+		htmlCode = 255;
+		break;
+	case 'External':
+		htmlCode = 323;
+		break;
+	}
+	//alert("Chosen HtmlCode: " + htmlCode);
+	
+	switch(true)
+	{
+	case (((htmlCode >> 0) & 1) == 1):
+		if(((htmlCode >> 0) & 1) == 1) {
+			$('#monConfInterval').val(response_in['interval']);
+		}
+	case (((htmlCode >> 1) & 1) == 1):
+		if(((htmlCode >> 1) & 1) == 1) {
+			$('#monConfTimeout').val(response_in['timeout']);
+		}
+	case (((htmlCode >> 2) & 1) == 1):
+		if(((htmlCode >> 2) & 1) == 1) {
+			$('#monConfSndString').val(response_in['send']);
+		}
+	case (((htmlCode >> 3) & 1) == 1):
+		if(((htmlCode >> 3) & 1) == 1) {
+			$('#monConfRcvString').val(response_in['recv']);
+		}
+	case (((htmlCode >> 4) & 1) == 1):
+		if(((htmlCode >> 4) & 1) == 1) { 	
+			$('#monConfUN').val(response_in['username']);
+			$('#monConfPW').val(response_in['password']);
+		}
+	case (((htmlCode >> 5) & 1) == 1):
+		if(((htmlCode >> 5) & 1) == 1) {
+			if(response_in['reverse'] == "enabled"){
+				//alert("Reverse enabled!");
+				$('#monConfRvsYes').prop("checked", true);
+			}
+			else{
+				//alert("Reverse disabled!");
+				$('#monConfRvsNo').prop("checked", true);	
+			}
+		}
+	case (((htmlCode >> 6) & 1) == 1):
+		if(((htmlCode >> 6) & 1) == 1) {
+			$('#monConfAliasPort').val(response_in['aliasPort']);
+		}
+	case (((htmlCode >> 7) & 1) == 1):
+		if(((htmlCode >> 7) & 1) == 1) {
+			$('#monConfCipher').val(response_in['cipherlist']);
+		}
+	case (((htmlCode >> 8) & 1) == 1):
+		;
+	default:
+		break;
+	}
+	
+	return strHtml;
+}
 
 $(function () {
     $('#btnRight').click(function (e) {
@@ -331,8 +423,11 @@ $(function () {
     	//alert("Calling get_healthmon_settings Ajax - Dev Name: " + arr[0] + " Dev IP: " + arr[1] + " Monitor Type: " + monType + "Parent Monitor: " + parMonType);
     	ajaxOut = getMonSettingsAjax("get_healthmon_settings", arr[0], arr[1], monType, parMonType);
     	ajaxOut.done(MonSettingsProcessData);
-    	
     });
 
+    //Submit "Deploy Monitor"
+    $('#btn_newMonBuild').on('click', function(){
+    	
+    });
 
 });
