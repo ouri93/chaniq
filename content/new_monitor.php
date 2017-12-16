@@ -37,11 +37,11 @@
                     <tr>
                         <td>
                             <label>VS DNS Name: </label>
-                            <input type="text" name="m_vs_name" id="m_vs_name" required="required" />
+                            <input type="text" name="m_vs_name" id="m_vs_name" onfocusout="dnsValidation('m_vs_name')" required="required" />
                         </td>
                         <td>
                             <label>VS Port Number: </label>
-                            <input type="text" name="m_vs_port" id="m_vs_port" />
+                            <input type="text" name="m_vs_port" id="m_vs_port" onfocusout="portValidation('m_vs_port')" onkeypress='return event.charCode >= 48 && event.charCode <= 57' />
                         </td>
                         <td>
                             <label>Monitor Description: </label>

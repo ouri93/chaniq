@@ -102,6 +102,28 @@ function getMonSettingsAjax(phpFileName, bigipName, bigipIP, monType, parMonType
 	});
 }
 
+function buildMonAjax(phpFileName, monData){
+	alert(monData['interval'] + ":" + monData['send']);
+	return $.ajax({
+		url: 'content/new_monitor_build.php',
+		type: 'POST',
+		dataType: 'JSON',
+		data: JSON.stringify(monData),
+		error: function(jqXHR, textStatus, errorThrown){
+			alert("Ajax call failed!");
+            console.log('jqXHR:');
+            console.log(jqXHR);
+            console.log('textStatus:');
+            console.log(textStatus);
+            console.log('errorThrown:');
+            console.log(errorThrown);
+		}
+	});
+}
+
+function buildMonProcessData(response_in) {
+	
+}
 
 function getMonHtml(devIp, monType)
 {
@@ -426,8 +448,104 @@ $(function () {
     });
 
     //Submit "Deploy Monitor"
-    $('#btn_newMonBuild').on('click', function(){
+    $('#btn_newMonBuild').click( function() {
+    	//Dictionary Data fed from the form
+    	var monData = {'phpFileName':'', 'DevIP':'', 'MVsName':'', 'MVsPort':'', 'MDesc':'', 'MEnv':'', 'MMonType':'', 'MParMonType':'', 'interval':'', 'timeout':'', 'send':'', 'recv':'', 'username':'', 'password':'', 'reverse':'', 'aliasPort':'', 'cipherlist':''};
+    	var bigipNameAndIP = $('#ltmSelBox').val()
+    	var arr = bigipNameAndIP.split(":");
     	
+    	monData['phpFileName'] = 'new_monitor_build';
+    	monData['DevIP'] = arr[1];
+    	monData['MVsName'] = $('#m_vs_name').val();
+    	monData['MVsPort'] = $('#m_vs_port').val();
+    	monData['MDesc'] = $('#m_desc').val();
+    	monData['MEnv'] = $('#p_env').val();
+    	monData['MMonType'] = $('#m_type').val();
+    	monData['MParMonType'] = $('#m_type_parent').val();
+    	
+    	// Update html code by Monitor type - HTTP, HTTPS, TCP, UDP, TCP Half Open, ICMP, External
+    	// Bit 0 - Interval (0000 0001), Bit 1 - Timeout (0000 0010), Bit 2 - Send String (0000 0100), Bit 3 - Receive String (0000 1000)
+    	// Bit 4 - Username/Password (0001 0000), Bit 5 - Reverse (0010 0000), Bit 6 - Alias Service Port (0100 0000), Bit 7 - Cipher List (1000 0000) 
+    	// Big 8 - External Program and Arguments (0001 0000 0000)
+    	// HTTP - 0111 1111(127), HTTPS - 1111 1111(255), TCP and UDP - 0110 1111(111), TCP Half Open - 0100 0011(67), ICMP - 0000 0011(3), External - 0001 0100 0011(323)
+    	var strHtml = '';
+    	var htmlCode = 0;
+    	switch ($('#m_type').val())
+    	{
+    	case 'ICMP':
+    		htmlCode = 3;
+    		break;
+    	case 'TCP Half Open':
+    		htmlCode = 67;
+    		break;
+    	case 'TCP':
+    	case 'UDP':
+    		htmlCode = 111;
+    		break;
+    	case 'HTTP':
+    		htmlCode = 127;
+    		break;
+    	case 'HTTPS':
+    		htmlCode = 255;
+    		break;
+    	case 'External':
+    		htmlCode = 323;
+    		break;
+    	}
+    	//alert("Chosen HtmlCode: " + htmlCode);
+    	
+    	switch(true)
+    	{
+    	case (((htmlCode >> 0) & 1) == 1):
+    		if(((htmlCode >> 0) & 1) == 1) {
+    			monData['interval'] = $('#monConfInterval').val();
+    		}
+    	case (((htmlCode >> 1) & 1) == 1):
+    		if(((htmlCode >> 1) & 1) == 1) {
+    			monData['timeout']= $('#monConfTimeout').val();
+    		}
+    	case (((htmlCode >> 2) & 1) == 1):
+    		if(((htmlCode >> 2) & 1) == 1) {
+    			monData['send']= $('#monConfSndString').val();
+    		}
+    	case (((htmlCode >> 3) & 1) == 1):
+    		if(((htmlCode >> 3) & 1) == 1) {
+    			monData['recv']= $('#monConfRcvString').val();
+    		}
+    	case (((htmlCode >> 4) & 1) == 1):
+    		if(((htmlCode >> 4) & 1) == 1) { 	
+    			monData['username']= $('#monConfUN').val();
+    			monData['password']= $('#monConfPW').val();
+    		}
+    	case (((htmlCode >> 5) & 1) == 1):
+    		if(((htmlCode >> 5) & 1) == 1) {
+    			if ($('#monConfRvsYes').prop("checked") )
+    				monData['reverse'] = 'enabled';
+    			else
+    				monData['reverse'] = 'disabled';
+    		}
+    	case (((htmlCode >> 6) & 1) == 1):
+    		if(((htmlCode >> 6) & 1) == 1) {
+    			monData['aliasPort'] = $('#monConfAliasPort').val();
+    		}
+    	case (((htmlCode >> 7) & 1) == 1):
+    		if(((htmlCode >> 7) & 1) == 1) {
+    			monData['cipherlist'] = $('#monConfCipher').val();
+    		}
+    	case (((htmlCode >> 8) & 1) == 1):
+    		;
+    	default:
+    		break;
+    	}
+    	
+    	var output;
+    	$.each(monData, function(index) {	
+    	    output = output + monData[index] + "\n";
+    	});
+    	alert("Data: " + output);
+    	
+    	ajaxOut = buildMonAjax("new_monitor_build", monData);
+    	ajaxOut.done(buildMonProcessData);
     });
 
 });
