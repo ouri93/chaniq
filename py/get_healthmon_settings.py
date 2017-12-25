@@ -58,7 +58,18 @@ def get_httpsmon_setting(mr, parent_mon):
     return outputDict
 
 def get_udpmon_setting(mr, parent_mon):
-    pass
+    udpmons = mr.tm.ltm.monitor.udps.get_collection()
+    outputDict = {'interval':'', 'timeout':'', 'send':'', 'recv':'', 'reverse':'', 'aliasPort':''}
+    for amon in udpmons:
+        if(amon.name == parent_mon):
+            outputDict['interval'] = get_setting_val(amon, "interval")
+            outputDict['timeout'] = get_setting_val(amon, "timeout")
+            outputDict['send'] = get_setting_val(amon, "send")
+            outputDict['recv'] = get_setting_val(amon, "recv")
+            outputDict['reverse'] = get_setting_val(amon, "reverse")
+            destIP, aliasPort = amon.destination.split(":")
+            outputDict['aliasPort'] = aliasPort
+    return outputDict
 
 def get_tcphalfmon_setting(mr, parent_mon):
     tcphalfmons = mr.tm.ltm.monitor.tcp_half_opens.get_collection()
@@ -104,8 +115,10 @@ def get_healthmon_setting(dev_ip, mon_type, parent_mon):
     5. Gateway ICMP
     6. External
     '''
-    if mon_type == "TCP" or mon_type == "UDP" :
+    if mon_type == "TCP" :
         output = get_tcpmon_setting(mr, parent_mon)
+    elif mon_type == "UDP" :
+        output = get_udpmon_setting(mr, parent_mon)
     elif mon_type == "HTTP":
         output = get_httpmon_setting(mr, parent_mon)
     elif mon_type == "HTTPS":

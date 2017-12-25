@@ -7,31 +7,47 @@
     //file_put_contents("/var/log/chaniqphp.log", "POST param phpFileName: " . $phpFileName . " devIP: " .$devIp ."VS name: ". $pVsName . "VsPort: " . $pVsPort . "Pool Mon: " . $pMon , FILE_APPEND);
     
     // Call new_monitor_build() by echo statement
-    file_put_contents("/var/log/chaniqphp.log", "new_monitor_build() phpFile: " . $_POST['phpFile'], FILE_APPEND);
-    //echo $_POST['phpFile']();
+    if (isset($_POST['jsonMonData'])){
+        $monData = json_decode($_POST['jsonMonData']);
+        file_put_contents("/var/log/chaniqphp.log", "new_monitor_build() phpFile: " . $monData->phpFileName ."\n", FILE_APPEND);
+        
+        // Call the fuction new_monitor_build()
+        echo ($monData->phpFileName)($monData);
+    }
+    else{
+
+        echo "AJAX call failed";
+    }
     
     
-    function new_monitor_build() {
-        /*
-        $phpFileName = $_POST['phpFile'];
-        $devIp = $_POST['DevIP'];
-        $pVsName = $_POST['PVsName'];
-        $pVsPort = $_POST['PVsPort'];
-        $pMon = $_POST['PMon'];
-        $pEnv = $_POST['PEnv'];
-        $pLBMethod = $_POST['PLBMethod'];
-        $pPriGroup = $_POST['PPriGroup'];
-        $pPriGroupLessThan = $_POST['PPriGroupLessThan'];
-        $pmPoolMemberName = $_POST['PmPoolMemberNmae'];
-        $pmPoolMemberIp = $_POST['PmPoolMemberIp'];
-        $pmPoolMemberPort = $_POST['PmPoolMemberPort'];
-        $pmPoolMemberMon = $_POST['PmPoolMemberMon'];
-        $pmPriGroup = $_POST['PmPrigroup'];
+    function new_monitor_build($monData) {
+        file_put_contents("/var/log/chaniqphp.log", "new_monitor_build() called\n", FILE_APPEND);
+
+        $phpFileName = $monData->phpFileName;
+        $mDevIp = $monData->DevIP;
+        $mVsName = $monData->MVsName;
+        $mVsPort = $monData->MVsPort;
+        $mDesc = $monData->MDesc;
+        $mEnv = $monData->MEnv;
+        $mMonType = $monData->MMonType;
+        $mMonCode = $monData->MMonCode;
+        $mParMonType = $monData->MParMonType;
+        $mInterval =  $monData->interval;
+        $mTimeout =  $monData->timeout;
+        $mSend =  $monData->send;
+        $mRecv =  $monData->recv;
+        $mUsername =  $monData->username;
+        $mPassword =  $monData->password;
+        $mReverse =  $monData->reverse;
+        $mAliasPort =  $monData->aliasPort;
+        $mCipherlist =  $monData->cipherlist;
+
         
-        file_put_contents("/var/log/chaniqphp.log", "new_monitor_build() Device IP: " . $devIp, FILE_APPEND);
         
-        $cmd = '/usr/bin/python /var/www/chaniq/py/new_monitor_build.py '.$devIp.' '. $pVsName.' '. $pVsPort.' '. $pEnv.' '. $pMon.' '. $pLBMethod.' '. $pPriGroup.' '. $pPriGroupLessThan.' '. $pmPoolMemberName .' '. $pmPoolMemberIp .' '. $pmPoolMemberPort .' '. $pmPoolMemberMon .' '. $pmPriGroup;
-        //$cmd = '/usr/bin/python /var/www/chaniq/py/new_monitor_build.py '.$devIp.' '. $pVsName.' '. $pVsPort.' '. $pEnv.' '. $pMon.' '. $pLBMethod;
+        
+        file_put_contents("/var/log/chaniqphp.log", "new_monitor_build() Device IP: " . $mDevIp . " Desc: " .$mDesc. " Reverse: " .$mReverse." Alias Port: " .$mAliasPort." Cipherlist: " .$mCipherlist."\n", FILE_APPEND);
+        
+        $cmd = '/usr/bin/python /var/www/chaniq/py/new_monitor_build.py '. escapeshellarg($mDevIp) .' '. escapeshellarg($mVsName) .' '. escapeshellarg($mVsPort) .' '. escapeshellarg($mDesc) .' '. $mEnv .' '. escapeshellarg($mMonType) .' '. $mMonCode .' '. escapeshellarg($mParMonType) .' '. escapeshellarg($mInterval) .' '. escapeshellarg($mTimeout) .' '. escapeshellarg($mSend) .' '. escapeshellarg($mRecv) .' '. escapeshellarg($mUsername) .' '. escapeshellarg($mPassword) .' '. escapeshellarg($mReverse) .' '. escapeshellarg($mAliasPort) .' '. escapeshellarg($mCipherlist);
         
         $output = shell_exec($cmd);
         error_log(date("y-m-d H:i:s").": After python call -new_monitor_build.php() new_monitor_build() function called!\n", 3, "/var/log/chaniqphp.log");
@@ -47,12 +63,11 @@
         }
         
         foreach ($rtnOutput as $value){
-            file_put_contents("/var/log/chaniqphp.log", "Strint Return: " . $value , FILE_APPEND);
+            file_put_contents("/var/log/chaniqphp.log", "String Returned: " . $value , FILE_APPEND);
         }
         
         $json = json_encode($rtnOutput);
         
         echo $json;
-        */
     }
 ?>

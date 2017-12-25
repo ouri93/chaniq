@@ -103,12 +103,12 @@ function getMonSettingsAjax(phpFileName, bigipName, bigipIP, monType, parMonType
 }
 
 function buildMonAjax(phpFileName, monData){
-	alert(monData['interval'] + ":" + monData['send']);
+	//alert(monData['interval'] + ":" + monData['send']);
 	return $.ajax({
 		url: 'content/new_monitor_build.php',
 		type: 'POST',
 		dataType: 'JSON',
-		data: JSON.stringify(monData),
+		data: {'jsonMonData': JSON.stringify(monData)},
 		error: function(jqXHR, textStatus, errorThrown){
 			alert("Ajax call failed!");
             console.log('jqXHR:');
@@ -122,7 +122,16 @@ function buildMonAjax(phpFileName, monData){
 }
 
 function buildMonProcessData(response_in) {
+	var strResult = '';
+	$.each(response_in, function(index) {
+		if(index == 0) 
+			strResult = "<b>" + response_in[index] + "</b><br>";
+		else
+			strResult += response_in[index] + "<br>";
+	});
 	
+	//alert("Return output: " + strResult);
+	$('#newMon_EvalReview').html(strResult);
 }
 
 function getMonHtml(devIp, monType)
@@ -170,11 +179,11 @@ function getMonHtml(devIp, monType)
 		}
 	case (((htmlCode >> 2) & 1) == 1):
 		if(((htmlCode >> 2) & 1) == 1) {
-			strHtml += "<tr><td><label> Send String: </label></td><td><textarea id='monConfSndString' rows='10' cols='50'> </textarea> </td></tr>";
+			strHtml += "<tr><td><label> Send String: </label></td><td><textarea id='monConfSndString' rows='5' cols='50'> </textarea> </td></tr>";
 		}
 	case (((htmlCode >> 3) & 1) == 1):
 		if(((htmlCode >> 3) & 1) == 1) {
-			strHtml += "<tr><td><label> Receive String: </label></td><td><textarea id='monConfRcvString' rows='10' cols='50'> </textarea> </td></tr>";
+			strHtml += "<tr><td><label> Receive String: </label></td><td><textarea id='monConfRcvString' rows='5' cols='50'> </textarea> </td></tr>";
 		}
 	case (((htmlCode >> 4) & 1) == 1):
 		if(((htmlCode >> 4) & 1) == 1) { 	
@@ -450,7 +459,7 @@ $(function () {
     //Submit "Deploy Monitor"
     $('#btn_newMonBuild').click( function() {
     	//Dictionary Data fed from the form
-    	var monData = {'phpFileName':'', 'DevIP':'', 'MVsName':'', 'MVsPort':'', 'MDesc':'', 'MEnv':'', 'MMonType':'', 'MParMonType':'', 'interval':'', 'timeout':'', 'send':'', 'recv':'', 'username':'', 'password':'', 'reverse':'', 'aliasPort':'', 'cipherlist':''};
+    	var monData = {'phpFileName':'', 'DevIP':'', 'MVsName':'', 'MVsPort':'', 'MDesc':'', 'MEnv':'', 'MMonType':'', 'MMonCode':'', 'MParMonType':'', 'interval':'', 'timeout':'', 'send':'', 'recv':'', 'username':'', 'password':'', 'reverse':'', 'aliasPort':'', 'cipherlist':''};
     	var bigipNameAndIP = $('#ltmSelBox').val()
     	var arr = bigipNameAndIP.split(":");
     	
@@ -492,6 +501,7 @@ $(function () {
     		htmlCode = 323;
     		break;
     	}
+    	monData['MMonCode'] = htmlCode.toString();
     	//alert("Chosen HtmlCode: " + htmlCode);
     	
     	switch(true)
@@ -538,11 +548,13 @@ $(function () {
     		break;
     	}
     	
+    	/*
     	var output;
     	$.each(monData, function(index) {	
     	    output = output + monData[index] + "\n";
     	});
     	alert("Data: " + output);
+    	*/
     	
     	ajaxOut = buildMonAjax("new_monitor_build", monData);
     	ajaxOut.done(buildMonProcessData);

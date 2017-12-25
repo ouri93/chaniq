@@ -75,7 +75,7 @@
                             	<option>TCP</option>
                             	<option>TCP Half Open</option>
                             	<!-- <option>ICMP</option>  -->
-                            	<option>External</option>
+                            	<!-- <option>External</option> -->
                             	<option>UDP</option>
                         </td>
                         <td>

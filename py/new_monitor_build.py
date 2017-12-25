@@ -7,105 +7,180 @@ import build_std_names
 logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
 logging.info("Head of new_monitor_build() called")
 
-def check_poolname_conflict(mr, std_poolname):
+def check_http_mon_conflict(mr, std_monname):
+    httpmons = mr.tm.ltm.monitor.https.get_collection()
+    logging.info("check_http_mon_conflict() STD Name: " + std_monname + "\n")
     
-    logging.info("new_monitor_build() - check_poolname_conflict() Pool name: " + std_poolname)
-    
-    pools = mr.tm.ltm.pools.get_collection()
-
     bitout = 0
-        
-    for pool in pools:
-        if pool.exists(name=std_poolname):
+    
+    for amon in httpmons:
+        if amon.exists(name=std_monname):
             bitout = bitout | (1 << 0)
     
+
+    #logging.info("bitout value: " + str(bitout) + "\n")    
+
     # If Poolname conflicts, return True. Otherwise return False
     if (bitout >> 0) & 1:
         return True
     else:
-        return False
+        return False    
+    
+def check_https_mon_conflict(mr, std_monname):
+    httpsmons = mr.tm.ltm.monitor.https_s.get_collection()
+    logging.info("check_https_mon_conflict() STD Name: " + std_monname + "\n")
+    
+    bitout = 0
+    
+    for amon in httpsmons:
+        if amon.exists(name=std_monname):
+            bitout = bitout | (1 << 0)
+    
+
+    #logging.info("bitout value: " + str(bitout) + "\n")    
+
+    # If Poolname conflicts, return True. Otherwise return False
+    if (bitout >> 0) & 1:
+        return True
+    else:
+        return False  
+
+def check_tcp_mon_conflict(mr, std_monname):
+    tcpmons = mr.tm.ltm.monitor.tcps.get_collection()
+    logging.info("check_tcp_mon_conflict() STD Name: " + std_monname + "\n")
+    
+    bitout = 0
+    
+    for amon in tcpmons:
+        if amon.exists(name=std_monname):
+            bitout = bitout | (1 << 0)
+    
+
+    #logging.info("bitout value: " + str(bitout) + "\n")    
+
+    # If Poolname conflicts, return True. Otherwise return False
+    if (bitout >> 0) & 1:
+        return True
+    else:
+        return False  
+
+def check_udp_mon_conflict(mr, std_monname):
+    udpmons = mr.tm.ltm.monitor.udps.get_collection()
+    logging.info("check_udp_mon_conflict() STD Name: " + std_monname + "\n")
+    
+    bitout = 0
+    
+    for amon in udpmons:
+        if amon.exists(name=std_monname):
+            bitout = bitout | (1 << 0)
+    
+
+    #logging.info("bitout value: " + str(bitout) + "\n")    
+
+    # If Poolname conflicts, return True. Otherwise return False
+    if (bitout >> 0) & 1:
+        return True
+    else:
+        return False  
+
+def check_tcp_halfopen_mon_conflict(mr, std_monname):
+    tcphalfmons = mr.tm.ltm.monitor.tcp_half_opens.get_collection()
+    logging.info("check_http_mon_conflict() STD Name: " + std_monname + "\n")
+    
+    bitout = 0
+    
+    for amon in tcphalfmons:
+        if amon.exists(name=std_monname):
+            bitout = bitout | (1 << 0)
+    
+
+    #logging.info("bitout value: " + str(bitout) + "\n")    
+
+    # If Poolname conflicts, return True. Otherwise return False
+    if (bitout >> 0) & 1:
+        return True
+    else:
+        return False  
+
+def check_external_mon_conflict(mr, std_monname):
+    extmons = mr.tm.ltm.monitor.externals.get_collection()
+    logging.info("check_http_mon_conflict() STD Name: " + std_monname + "\n")
+    
+    bitout = 0
+    
+    for amon in extmons:
+        if amon.exists(name=std_monname):
+            bitout = bitout | (1 << 0)
+    
+
+    #logging.info("bitout value: " + str(bitout) + "\n")    
+
+    # If Poolname conflicts, return True. Otherwise return False
+    if (bitout >> 0) & 1:
+        return True
+    else:
+        return False  
+
+def check_monname_conflict(mr, std_monname, mMonType):
+    
+    logging.info("new_monitor_build() - check_monname_conflict() Monitor name: " + std_monname + " Monitor Type: " + mMonType)
+    
+    byMonType = {
+        "HTTP": check_http_mon_conflict,
+        "HTTPS": check_https_mon_conflict,
+        "TCP": check_tcp_mon_conflict,
+        "UDP": check_udp_mon_conflict,
+        "TCP Half Open": check_tcp_halfopen_mon_conflict,
+        "External": check_external_mon_conflict        
+    }
+    
+    return byMonType[mMonType](mr, std_monname)
 
 #def new_monitor_build(active_ltm, vs_dnsname, vs_port, vs_env, vs_poolmon, pLBMethod):
-def new_monitor_build(active_ltm, vs_dnsname, vs_port, vs_env, vs_poolmon, pLBMethod, pPriGroup, pPriGroupLessThan, pool_membername, pool_memberip, pool_memberport, pmMon, pmPriGroup):
+def new_monitor_build(mDevIp, mVsName, mVsPort, mDesc, mEnv, mMonType, mMonCode, mParMonType, mInterval, mTimeout, mSend, mRecv, mUsername, mPassword, mReverse, mAliasPort, mCipherlist ):
     
-    logging.info("new_monitor_build.py parms DevIP: " + active_ltm + " VS Name: " + vs_dnsname + " VS Port: " + vs_port + " Env: " + vs_env + " Pool Mon: " + vs_poolmon + " LB Method: " + pLBMethod + " Pri Group: " + pPriGroup + " Lessthan: " + pPriGroupLessThan + " PM Names: " + pool_membername + " PM IPs: " + pool_memberip + " PM Ports: " + pool_memberport + " PM Mons:" + pmMon + " PM Pri:" + pmPriGroup) 
-     
-    mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
-    
-    # Passed Parameter format change from string to array = "srv1.xyz.com:srv2.xyz.com:" ==> [srv1.xyz.com, srv2.xyz.com]
-    membernames = pool_membername.split(":")
-    memberips = pool_memberip.split(":")
-    memberports = pool_memberport.split(":")
-    membermons = pmMon.split(":")
-    memberPriGroups = pmPriGroup.split(":")
-    
-    logging.info(" Pool Member1: " + membernames[0] + " Pool Member2: " + membernames[1]) 
-    
+    logging.info("new_monitor_build.py parms DevIP: " + mDevIp + " VS Name: " + mVsName + " VS Port: " + mVsPort + " Env: " + mEnv + " Mon Code: " + mMonCode + " Interval: " + mInterval + " Send: " + mSend + " Reverse: " + mReverse + " Alias Port: " + mAliasPort + " CipherList: " + mCipherlist) 
+
+    mr = ManagementRoot(str(mDevIp), 'admin', 'rlatkdcks')
     
     idx = 1
-    strReturn = {str(idx) : 'Pool Creation Report'}
+    strReturn = {str(idx) : 'Monitor Creation Report'}
     
     idx += 1
  
-    std_poolname = build_std_names.build_std_pool_name(str(vs_env), str(vs_dnsname), str(vs_port))
-    logging.info("Pool Creation process has been initiated. Pool Name: " + std_poolname) 
+    std_monname = build_std_names.build_std_mon_name(str(mEnv), str(mVsName), str(mVsPort))
+    logging.info("Monitor Creation process has been initiated. Pool Name: " + std_monname) 
     
-    if check_poolname_conflict(mr, std_poolname):
-        strReturn.update({str(idx) : 'Pool Name conflict'})
+    if check_monname_conflict(mr, std_monname, mMonType):
+        strReturn.update({str(idx) : 'Monitor Name conflict'})
+        logging.info("Monitor name conflict.")
         idx += 1
         return json.dumps(strReturn)
-    logging.info("No Pool name conflict. Now creating a pool")
-    #Create a pool
-    if pPriGroup != 'Lessthan':
-        mypool = mr.tm.ltm.pools.pool.create(name=std_poolname, partition='Common', loadBalancingMode=pLBMethod, monitor='/Common/'+vs_poolmon)
-    else:
-        mypool = mr.tm.ltm.pools.pool.create(name=std_poolname, partition='Common', loadBalancingMode=pLBMethod, monitor='/Common/'+vs_poolmon, minActiveMembers=pPriGroupLessThan)
-        
-    mypool_1 = mr.tm.ltm.pools.pool.load(name=std_poolname, partition='Common')
+    logging.info("No Monitor name conflict. Now creating a monitor")
     
-    #for membername, memberip, memberport, membermon in map(None, membernames, memberips, memberports, membermons):
-    count = 1
-    if pPriGroup != 'Lessthan':
-        for membername, memberip, memberport, membermon in zip(membernames, memberips, memberports, membermons):
-            if (membername == ''):
-                break
-            logging.info("Count: " + str(count) + " Member Name: " + membername + " IP: " + memberip + " port: " + memberport + " mon: " + membermon)
-            # Pool member creation issue - Calling Pool creation method too fast??
-            if (str(membermon) == 'Inherit'):
-                poolm = mypool_1.members_s.members.create(name=membername+':'+memberport, partition='Common', address=memberip, monitor=vs_poolmon )
-                logging.info("Inherit")
-            else:
-                poolm = mypool_1.members_s.members.create(name=membername+':'+memberport, partition='Common', address=memberip, monitor=membermon )
-                logging.info("Custom Pool monitor")
-                
-            logging.info("Count: " + str(count) + " Member Name: " + membername + " IP: " + memberip + " Port: " + memberport + " Monitor: " + membermon + " Pool Monitor: " + vs_poolmon)
-            strReturn[str(idx)] = 'Member(' + membername + ' IP:' + memberip + ':' + memberport + ' Monitor: ' + membermon + ') has been created'
-            idx += 1
-            count = count + 1
-    else:
-        for membername, memberip, memberport, membermon, memberPriGroup in zip(membernames, memberips, memberports, membermons, memberPriGroups):
-            if (membername == ''):
-                break            
-            logging.info("Count: " + str(count) + " Member Name: " + membername + " IP: " + memberip + " port: " + memberport + " mon: " + membermon + " PoolMember Priority: " + memberPriGroup)
-            # Pool member creation issue - Calling Pool creation method too fast??
-            if (str(membermon) == 'Inherit'):
-                poolm = mypool_1.members_s.members.create(name=membername+':'+memberport, partition='Common', address=memberip, monitor=vs_poolmon, priorityGroup=memberPriGroup )
-                logging.info("Inherit")
-            else:
-                poolm = mypool_1.members_s.members.create(name=membername+':'+memberport, partition='Common', address=memberip, monitor=membermon, priorityGroup=memberPriGroup )
-                logging.info("Custom Pool Monitor")
-    
-            logging.info("Count: " + str(count) + " Member Name: " + membername + " IP: " + memberip + " Port: " + memberport + " Monitor: " + membermon + " Pool Monitor: " + vs_poolmon)
-            strReturn[str(idx)] = 'Member(' + membername + ' IP:' + memberip + ':' + memberport + ' Monitor: ' + membermon + ') has been created'
-            idx += 1
-            count = count + 1            
-    logging.info("Final strReturn:  Started")            
+    #Create a monitor
+    if mMonType == "HTTP":
+        mymon = mr.tm.ltm.monitor.https.http.create(name=std_monname, partition='Common', description=mDesc, interval=int(mInterval), timeout=int(mTimeout), reverse=mReverse, send=mSend, recv=mRecv, username=mUsername, password=mPassword, destination="*:"+ mAliasPort)
+    elif mMonType == "HTTPS":
+        mymon = mr.tm.ltm.monitor.https_s.https.create(name=std_monname, partition='Common', description=mDesc, interval=int(mInterval), timeout=int(mTimeout), reverse=mReverse, send=mSend, recv=mRecv, username=mUsername, password=mPassword, destination="*:"+ mAliasPort, cipherlist=mCipherlist)
+    elif mMonType == "TCP":
+        mymon = mr.tm.ltm.monitor.tcps.tcp.create(name=std_monname, partition='Common', description=mDesc, interval=int(mInterval), timeout=int(mTimeout), reverse=mReverse, send=mSend, recv=mRecv, destination="*:"+ mAliasPort)
+    elif mMonType == "UDP":
+        mymon = mr.tm.ltm.monitor.udps.udp.create(name=std_monname, partition='Common', description=mDesc, interval=int(mInterval), timeout=int(mTimeout), reverse=mReverse, send=mSend, recv=mRecv, destination="*:"+ mAliasPort)
+    elif mMonType == "TCP Half Open":
+        mymon = mr.tm.ltm.monitor.tcp_half_opens.tcp_half_open.create(name=std_monname, partition='Common', description=mDesc, interval=int(mInterval), timeout=int(mTimeout),destination="*:"+ mAliasPort)
+    elif mMonType == "External":    
+        pass
+
+    strReturn[str(idx)] = mMonType + " Monitor (" + std_monname + ") has been created"
+    idx += 1
+    logging.info("Monitor created")
+                    
     
     for keys, values in strReturn.items():
         logging.info("Key: " + keys + " Value: " + values)
-    
+
     return json.dumps(strReturn)
-    
-    
+
 if __name__ == "__main__":
-    print new_monitor_build(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9], sys.argv[10], sys.argv[11], sys.argv[12], sys.argv[13])
+    print new_monitor_build(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9], sys.argv[10], sys.argv[11], sys.argv[12], sys.argv[13], sys.argv[14], sys.argv[15], sys.argv[16], sys.argv[17])
