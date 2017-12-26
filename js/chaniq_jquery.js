@@ -103,7 +103,6 @@ function getMonSettingsAjax(phpFileName, bigipName, bigipIP, monType, parMonType
 }
 
 function buildMonAjax(phpFileName, monData){
-	//alert(monData['interval'] + ":" + monData['send']);
 	return $.ajax({
 		url: 'content/new_monitor_build.php',
 		type: 'POST',
@@ -293,6 +292,38 @@ function setMonHtml(monType, response_in)
 	}
 	
 	return strHtml;
+}
+
+function buildIrAjax(phpFileName, irData) {
+	//alert(monData['interval'] + ":" + monData['send']);
+	return $.ajax({
+		url: 'content/new_irule_build.php',
+		type: 'POST',
+		dataType: 'JSON',
+		data: {'jsonIrData': JSON.stringify(irData)},
+		error: function(jqXHR, textStatus, errorThrown){
+			alert("Ajax call failed!");
+            console.log('jqXHR:');
+            console.log(jqXHR);
+            console.log('textStatus:');
+            console.log(textStatus);
+            console.log('errorThrown:');
+            console.log(errorThrown);
+		}
+	});	
+}
+
+function buildIrProcessData(response_in) {
+	var strResult = '';
+	$.each(response_in, function(index) {
+		if(index == 0) 
+			strResult = "<b>" + response_in[index] + "</b><br>";
+		else
+			strResult += response_in[index] + "<br>";
+	});
+	
+	//alert("Return output: " + strResult);
+	$('#newIr_EvalReview').html(strResult);
 }
 
 $(function () {
@@ -559,5 +590,86 @@ $(function () {
     	ajaxOut = buildMonAjax("new_monitor_build", monData);
     	ajaxOut.done(buildMonProcessData);
     });
-
+    
+    // Generate proper configuration form
+    // For iRule, generate iRule code form. For Data Group, generate Data Group type and corresponding configuration form.
+    $('#ir_type').on('change', function() {
+    	var ir_type = $('#ir_type').val();
+    	if (ir_type == "iRule") {
+    		$('#ir_td_dg_type').empty();
+    		$('#ir_confTable_thead').empty();
+    		$('#ir_confTable_thead').append("<th style='font-weight:normal' >iRule Code</th>");
+        	$('#irConfTable_tbody').empty();
+    		$('#irConfTable_tbody').append("<tr><td><textarea id='irConfCode' rows='10' cols='90'> </textarea> </td></tr>");
+    	}
+    	else if (ir_type == "Data Group"){
+    		$('#ir_td_dg_type').empty();
+    		$('#ir_confTable_thead').empty();
+    		$('#ir_confTable_thead').append("<th style='font-weight:normal'>Data Group Configuration</th>");
+    		$('#irConfTable_tbody').empty();
+    		$('#ir_td_dg_type').append("<label> DG Type: </label><select name='ir_dg_type_select' id='ir_dg_type_select' required='required' ><option selected='selected'>Select...</option><option>Address</option><option>String</option><option>Integer</option></select>");
+    	}
+    });
+    
+    // Event delegation to ir_td_dg_type
+    $('#ir_td_dg_type').on('change', function() {
+    	var ir_dg_type = $('#ir_dg_type_select').val();
+		$('#irConfTable_tbody').empty();
+    	if (ir_dg_type == "Address"){
+    		$('#irConfTable_tbody').append("<tr> <td> <label>Address:</label> <input type='text' id='ir_dg_address' />(*required) </td> </tr><tr> <td> <label>Value&nbsp;&nbsp;&nbsp;&nbsp;:</label> <input type='text' id='ir_dg_value' /> </td> </tr><tr><td><input type='button' id='ir_add_btn' value='Add' />&nbsp;&nbsp;&nbsp;&nbsp;</td></tr> <tr> <td> <select size='8' width='680px' style='width:680px' ></select> </td> </tr> <tr> <td><input type='button' id='ir_dg_del' value='Delete' />&nbsp;&nbsp;<input type='button' id='ir_dg_edit' value='Edit' />&nbsp;&nbsp;&nbsp;&nbsp;</td> </tr>");
+    	}
+    	else if (ir_dg_type == "String"){
+    		$('#irConfTable_tbody').append("<tr> <td> <label>String:</label> <input type='text' id='ir_dg_string' />(*required) </td> </tr><tr> <td> <label>Value:</label> <input type='text' id='ir_dg_value' /> </td> </tr><tr><td><input type='button' id='ir_add_btn' value='Add' />&nbsp;&nbsp;&nbsp;&nbsp;</td></tr> <tr> <td> <select size='8' width='680px' style='width:680px' ></select> </td> </tr> <tr> <td><input type='button' id='ir_dg_del' value='Delete' />&nbsp;&nbsp;<input type='button' id='ir_dg_edit' value='Edit' />&nbsp;&nbsp;&nbsp;&nbsp;</td> </tr>");
+    	}
+    	else if (ir_dg_type == "Integer"){
+    		$('#irConfTable_tbody').append("<tr> <td> <label>Integer:</label> <input type='text' id='ir_dg_integer' />(*required) </td> </tr><tr> <td> <label>Value&nbsp;&nbsp;&nbsp;:</label> <input type='text' id='ir_dg_value' /> </td> </tr><tr><td><input type='button' id='ir_add_btn' value='Add' />&nbsp;&nbsp;&nbsp;&nbsp;</td></tr> <tr> <td> <select size='8' width='680px' style='width:680px' ></select> </td> </tr> <tr> <td><input type='button' id='ir_dg_del' value='Delete' />&nbsp;&nbsp;<input type='button' id='ir_dg_edit' value='Edit' />&nbsp;&nbsp;&nbsp;&nbsp;</td> </tr>");
+    	}
+    });
+    
+    // Event delegation to irConfTable_tbody 
+    $('#irConfTable_tbody').on('click', '#ir_add_btn', function() {
+    	alert("Add button clicked! - " + this.id );
+    });
+    $('#irConfTable_tbody').on('click', '#ir_dg_edit', function() {
+    	alert("Edit button clicked! - " + this.id );
+    });
+    $('#irConfTable_tbody').on('click', '#ir_dg_del', function() {
+    	alert("Delete button clicked! - " + this.id );
+    });
+    
+    $('#ir_btn_build').on('click', function() {
+    	//Dictionary Data fed from the form
+    	var irData = {'phpFileName':'', 'DevIP':'', 'IrVsName':'', 'IrVsPort':'', 'IrEnv':'', 'IrType':'', 'IrCode':'', 'IrDgType':'', 'IrDgData':''};
+    	var bigipNameAndIP = $('#ltmSelBox').val()
+    	var arr = bigipNameAndIP.split(":");
+    	
+    	var irType = $('#ir_type').val();
+    	
+    	// Data feed to irData
+    	irData['phpFileName'] = 'new_irule_build';
+    	irData['DevIP'] = arr[1];
+    	irData['IrVsName'] = $('#ir_vs_name').val();
+    	irData['IrVsPort'] = $('#ir_vs_port').val();
+    	irData['IrEnv'] = $('#ir_env').val();
+    	irData['IrType'] = irType;
+    	if (irType == 'iRule'){
+    		irData['IrCode'] = $('#irConfCode').val();
+    	}
+    	if (irType == 'Data Group'){
+    		irData['IrDgType'] = $('#ir_dg_type_select').val();
+    		irData['IrDgData'] = $()
+    	}
+    	
+    	
+    	var output;
+    	$.each(irData, function(index) {	
+    	    output = output + irData[index] + "\n";
+    	});
+    	alert("Data: " + output);
+    	
+    	
+    	ajaxOut = buildIrAjax("new_irule_build", irData);
+    	ajaxOut.done(buildIrProcessData);
+    });
+    
 });
