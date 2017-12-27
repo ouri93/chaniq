@@ -616,25 +616,65 @@ $(function () {
     	var ir_dg_type = $('#ir_dg_type_select').val();
 		$('#irConfTable_tbody').empty();
     	if (ir_dg_type == "Address"){
-    		$('#irConfTable_tbody').append("<tr> <td> <label>Address:</label> <input type='text' id='ir_dg_address' />(*required) </td> </tr><tr> <td> <label>Value&nbsp;&nbsp;&nbsp;&nbsp;:</label> <input type='text' id='ir_dg_value' /> </td> </tr><tr><td><input type='button' id='ir_add_btn' value='Add' />&nbsp;&nbsp;&nbsp;&nbsp;</td></tr> <tr> <td> <select size='8' width='680px' style='width:680px' ></select> </td> </tr> <tr> <td><input type='button' id='ir_dg_del' value='Delete' />&nbsp;&nbsp;<input type='button' id='ir_dg_edit' value='Edit' />&nbsp;&nbsp;&nbsp;&nbsp;</td> </tr>");
+    		$('#irConfTable_tbody').append("<tr> <td> <label>Address:</label> <input type='text' id='ir_dg_name' />(*required) </td> </tr><tr> <td> <label>Value&nbsp;&nbsp;&nbsp;&nbsp;:</label> <input type='text' id='ir_dg_value' /> </td> </tr><tr><td><input type='button' id='ir_add_btn' value='Add' />&nbsp;&nbsp;&nbsp;&nbsp;</td></tr> <tr> <td> <select size='8' width='680px' style='width:680px' id='dg_select_records' ></select> </td> </tr> <tr> <td><input type='button' id='ir_dg_del' value='Delete' />&nbsp;&nbsp;<input type='button' id='ir_dg_edit' value='Edit' />&nbsp;&nbsp;&nbsp;&nbsp;</td> </tr>");
     	}
     	else if (ir_dg_type == "String"){
-    		$('#irConfTable_tbody').append("<tr> <td> <label>String:</label> <input type='text' id='ir_dg_string' />(*required) </td> </tr><tr> <td> <label>Value:</label> <input type='text' id='ir_dg_value' /> </td> </tr><tr><td><input type='button' id='ir_add_btn' value='Add' />&nbsp;&nbsp;&nbsp;&nbsp;</td></tr> <tr> <td> <select size='8' width='680px' style='width:680px' ></select> </td> </tr> <tr> <td><input type='button' id='ir_dg_del' value='Delete' />&nbsp;&nbsp;<input type='button' id='ir_dg_edit' value='Edit' />&nbsp;&nbsp;&nbsp;&nbsp;</td> </tr>");
+    		$('#irConfTable_tbody').append("<tr> <td> <label>String:</label> <input type='text' id='ir_dg_name' />(*required) </td> </tr><tr> <td> <label>Value:</label> <input type='text' id='ir_dg_value' /> </td> </tr><tr><td><input type='button' id='ir_add_btn' value='Add' />&nbsp;&nbsp;&nbsp;&nbsp;</td></tr> <tr> <td> <select size='8' width='680px' style='width:680px' id='dg_select_records' ></select> </td> </tr> <tr> <td><input type='button' id='ir_dg_del' value='Delete' />&nbsp;&nbsp;<input type='button' id='ir_dg_edit' value='Edit' />&nbsp;&nbsp;&nbsp;&nbsp;</td> </tr>");
     	}
     	else if (ir_dg_type == "Integer"){
-    		$('#irConfTable_tbody').append("<tr> <td> <label>Integer:</label> <input type='text' id='ir_dg_integer' />(*required) </td> </tr><tr> <td> <label>Value&nbsp;&nbsp;&nbsp;:</label> <input type='text' id='ir_dg_value' /> </td> </tr><tr><td><input type='button' id='ir_add_btn' value='Add' />&nbsp;&nbsp;&nbsp;&nbsp;</td></tr> <tr> <td> <select size='8' width='680px' style='width:680px' ></select> </td> </tr> <tr> <td><input type='button' id='ir_dg_del' value='Delete' />&nbsp;&nbsp;<input type='button' id='ir_dg_edit' value='Edit' />&nbsp;&nbsp;&nbsp;&nbsp;</td> </tr>");
+    		$('#irConfTable_tbody').append("<tr> <td> <label>Integer:</label> <input type='text' id='ir_dg_name' />(*required) </td> </tr><tr> <td> <label>Value&nbsp;&nbsp;&nbsp;:</label> <input type='text' id='ir_dg_value' /> </td> </tr><tr><td><input type='button' id='ir_add_btn' value='Add' />&nbsp;&nbsp;&nbsp;&nbsp;</td></tr> <tr> <td> <select size='8' width='680px' style='width:680px' id='dg_select_records' ></select> </td> </tr> <tr> <td><input type='button' id='ir_dg_del' value='Delete' />&nbsp;&nbsp;<input type='button' id='ir_dg_edit' value='Edit' />&nbsp;&nbsp;&nbsp;&nbsp;</td> </tr>");
     	}
     });
     
     // Event delegation to irConfTable_tbody 
     $('#irConfTable_tbody').on('click', '#ir_add_btn', function() {
-    	alert("Add button clicked! - " + this.id );
+    	
+    	//alert("Add button clicked!");
+    	var dg_name = $('#ir_dg_name').val();
+    	var dg_val = $('#ir_dg_value').val();
+    	if (dg_name != ''){
+    		$('#dg_select_records').append('<option value="'+ dg_name + ':' + dg_val +'">' + dg_name + ':' + dg_val + '</option>');
+    		$('#ir_dg_name').val('');
+    		$('#ir_dg_value').val('');
+    		$('#ir_dg_name').focus();
+    	}
+    	else
+    		$('#ir_dg_name').focus();
     });
     $('#irConfTable_tbody').on('click', '#ir_dg_edit', function() {
-    	alert("Edit button clicked! - " + this.id );
+    	//alert("Edit button clicked! - ");
+    	var dg_record = $('#dg_select_records option:selected').text();
+    	//alert("selected Value: " + dg_record);
+    	var arr = dg_record.split(":");
+    	var dg_name = arr[0];
+    	var dg_value = arr[1];
+        //alert("Name: " + arr[0] + " Value: " + arr[1]);
+    	$('#ir_dg_name').val(dg_name);
+    	$('#ir_dg_value').val(dg_value);
+    	
+    	$('#dg_select_records option').each(function() {
+    		//alert("Option Value: " + $(this).val());
+    		if ($(this).val() == dg_record){
+    			$(this).remove();
+    			//alert("Removed!");
+    		}
+    	});
     });
+    
     $('#irConfTable_tbody').on('click', '#ir_dg_del', function() {
-    	alert("Delete button clicked! - " + this.id );
+    	//alert("Delete button clicked! - " + this.id );
+    	var dg_record = $('#dg_select_records option:selected').text();
+    	
+    	$('#dg_select_records option').each(function() {
+    		//alert("Option Value: " + $(this).val());
+    		if ($(this).val() == dg_record){
+    			$(this).remove();
+    			//alert("Removed!");
+    		}
+    	});
+    	
+    	//$("#dg_select_records option[value='"+dg_record+"']").remove();
+    	
     });
     
     $('#ir_btn_build').on('click', function() {
@@ -656,17 +696,26 @@ $(function () {
     		irData['IrCode'] = $('#irConfCode').val();
     	}
     	if (irType == 'Data Group'){
+    		var irRecords = '';
     		irData['IrDgType'] = $('#ir_dg_type_select').val();
-    		irData['IrDgData'] = $()
+    		var len = $('#dg_select_records option').length;
+        	$('#dg_select_records option').each(function(index) {
+        		irRecords += $(this).val();
+        		//alert("Option Length: " + len + " index: " + index);
+        		if(index != (len-1))
+        			irRecords += ',';
+        		//alert("Record: " + irRecords);
+        	});
+        	irData['IrDgData'] = irRecords;
     	}
     	
-    	
+    	/*
     	var output;
     	$.each(irData, function(index) {	
     	    output = output + irData[index] + "\n";
     	});
     	alert("Data: " + output);
-    	
+    	*/
     	
     	ajaxOut = buildIrAjax("new_irule_build", irData);
     	ajaxOut.done(buildIrProcessData);

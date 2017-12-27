@@ -84,7 +84,19 @@ def new_irule_build(irDevIp, irVsName, irVsPort, irEnv, irType, irCode, irDgType
         if irType == "iRule":
             myir = mr.tm.ltm.rules.rule.create(name=std_irname, partition='Common', apiAnonymous=irCode)
         elif irType == "Data Group":
-            mydg = mr.tm.ltm.data_group.internals.internal.create(name=std_irname, partition='Common', records=irDgData)
+            new_records = []
+            arrRecords = irDgData.split(',');
+            for arrRecord in arrRecords:
+                aRecord = arrRecord.split(':')
+                logging.info("name: " + aRecord[0] + " Value: " + aRecord[1])
+                nr = [{'name':str(aRecord[0]), 'data':str(aRecord[1])}]
+                new_records.extend(nr)
+            if irDgType == "Address":
+                mydg = mr.tm.ltm.data_group.internals.internal.create(name=std_irname, partition='Common', type='ip', records=new_records)
+            elif irDgType == "String":
+                mydg = mr.tm.ltm.data_group.internals.internal.create(name=std_irname, partition='Common', type='string', records=new_records)
+            elif irDgType == "Integer":
+                mydg = mr.tm.ltm.data_group.internals.internal.create(name=std_irname, partition='Common', type='integer', records=new_records)
     except Exception as e:
         logging.info("iRule/Data Group Exception printing")
         strReturn[str(idx)] = "Exception fired! (" + std_irname + "): " + str(e)
