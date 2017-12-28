@@ -198,6 +198,13 @@ form.register{
     padding:5px;
 }
 
+form.inner-form{
+    width:700px;
+    margin: 20px auto 0px auto;
+    background-color:#fff;
+    padding:5px;
+}
+
 form p{
     font-size: 8pt;
     clear:both;
@@ -256,7 +263,7 @@ fieldset.admin_pass{
     padding:2px;
     margin:0;
 }
-.register legend{
+.register, .inner-form legend{
     color: #4C99CC;
     padding:2px;
     margin-left: 14px;
@@ -384,6 +391,142 @@ form.register select{
     margin-bottom:3px;
     color: #505050;
     margin-right:5px;
+}
+
+
+/* Beginneing of CSS for form.inner-form */
+form.inner-form label.optional{
+    float: left;
+    text-align: right;
+    margin-right: 6px;
+    margin-top:2px;
+    color: #A3A3A3;
+}
+form.inner-form label.obinfo{
+    float:right;
+    padding:3px;
+    font-style:italic;
+}
+form.inner-form input{
+    width: 120px;
+    height: 20px;
+    color: #505050;
+    float: left;
+    margin-right: 5px;
+}
+form.inner-form input.long{
+    width: 247px;
+    color: #505050;
+}
+form.inner-form input.short{
+    width: 40px;
+    color: #505050;
+}
+form.inner-form input[type=radio]{
+    float:left;
+    width:15px;
+}
+form.inner-form label.gender{
+    margin-top:-1px;
+    margin-bottom:2px;
+    width:34px;
+    float:left;
+    text-align:left;
+    line-height:19px;
+}
+form.inner-form input[type=text]{
+    border: 1px solid #E1E1E1;
+    height: 18px;
+}
+form.inner-form input[type=password]{
+    border: 1px solid #E1E1E1;
+    height: 18px;
+}
+
+form.inner-form input[type=button]{
+    float: right;
+}
+
+form.inner-form input[type=button]:hover{
+    cursor:pointer;
+    background:#ccc;
+}
+
+form.inner-form input[type=submit]{
+    cursor:pointer;
+    background:#ccc;
+    float: right;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+form.inner-form input[type=submit]:hover{
+    cursor:pointer;
+    background: #A3A3A3;
+}
+
+form.inner-form  .submit{
+    color: #fff;
+    cursor: pointer;
+    float:left;
+    margin:10px;
+	padding:5px;
+	background: #4C99CC;
+	background-image: linear-gradient(bottom,rgba(0, 0, 0, 0.1) 0,rgba(255, 255, 255, 0.1) 100%);
+	background-image: -o-linear-gradient(bottom,rgba(0, 0, 0, 0.1) 0,rgba(255, 255, 255, 0.1) 100%);
+	background-image: -moz-linear-gradient(bottom,rgba(0, 0, 0, 0.1) 0,rgba(255, 255, 255, 0.1) 100%);
+	background-image: -webkit-linear-gradient(bottom,rgba(0, 0, 0, 0.1) 0,rgba(255, 255, 255, 0.1) 100%);
+	background-image: -ms-linear-gradient(bottom,rgba(0, 0, 0, 0.1) 0,rgba(255, 255, 255, 0.1) 100%);
+	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0,rgba(0, 0, 0, 0.1)),color-stop(1,rgba(255, 255, 255, 0.1)));
+
+}
+form.inner-form  .submit:hover{
+    background:#505050;
+
+}
+form.inner-form  .submit:active{
+    background:#ccc;
+    color: #000;
+}
+form.inner-form input[type=text].small{
+    border: 1px solid #E1E1E1;
+    height: 18px;
+    width:30px;
+}
+form.inner-form input[type=checkbox] {
+    width:14px;
+    margin-top:4px;
+}
+form.inner-form select{
+    width: 120px;
+    border: 1px solid #E1E1E1;
+    float:left;
+    margin-bottom:3px;
+    color: #505050;
+    margin-right:5px;
+}
+
+/* End of CSS for form.inner-form */
+
+.inner-form table{
+    width: 690px;
+}
+
+.inner-form .form label{
+    float: left;
+    text-align: left;
+    margin-right: 5px;
+    margin-top:2px;
+    width:auto;
+    font-size: 8pt;
+    font-weight: bold;
+}
+.inner-form .form input{
+    width:120px;
+}
+
+.inner-form .form select {
+    width:120px;
 }
 
 .ltmDeviceList {
