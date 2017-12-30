@@ -722,15 +722,14 @@ $(function () {
     });
     
     $('#cert_import_btn').on('click', function() {
-    	alert("Cert Import button clicked!");
+    	//alert("Cert Import button clicked!");
     	$('#cert_iframe_fieldset').empty();
     	$('#cert_iframe_fieldset').append('<legend>Import Cert/Key Configuration</legend>');
     	$('#cert_iframe_fieldset').append('<iframe src="/content/if_ssl_import.php" width="725px" height="600" frameborder="0"></iframe>');
-    	
     });
 
     $('#cert_create_btn').on('click', function() {
-    	alert("Cert Create button clicked!");
+    	//alert("Cert Create button clicked!");
     	$('#cert_iframe_fieldset').empty();
     	$('#cert_iframe_fieldset').append('<legend>Create Cert/Key Configuration</legend>');
     	$('#cert_iframe_fieldset').append('<iframe src="/content/if_ssl_create.php" width="725px" height="600" frameborder="0"></iframe>');    	

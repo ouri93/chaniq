@@ -22,15 +22,15 @@
                 	<table id="crtConfTable" class="form" border="1">
     	            	<tbody id="crtConfTable_tbody">
     	            	<tr id='import_cert_type' >
-    	            		<td>Import Type:</td><td><select id='imp_type_select' required='required' ><option value='select' selected='selected' >Select...</option><option value='Key' >Key</option><option value='Certificate' >Certificate</option><option value='PKCS 12 (IIS)' >PKCS 12 (IIS)</option></input></td>
+    	            		<td width='132px' ><label>*Import Type:</label></td><td><select id='imp_type_select' required='required' ><option value='select' selected='selected' >Select...</option><option value='Key' >Key</option><option value='Certificate' >Certificate</option><option value='PKCS 12 (IIS)' >PKCS 12 (IIS)</option></input></td>
     	            	</tr>
     			        <!--  Conditional HTML code here  --> 
             	        </tbody>
                     </table>
                 </p>
-                <p></p>
+                <p>*: Required field</p>
                 <p align="right">
-    	            <input id="crt_btn_build" type="button" style="width:130px" name="crt_btn_build" value="Deploy Cert/Key" />
+    	            <input id="crt_btn_build" type="button" style="width:130px" name="crt_btn_build" value="Import Cert/Key" />
                 </p>
                 <p></p>
             </fieldset>
