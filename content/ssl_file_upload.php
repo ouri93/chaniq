@@ -3,10 +3,14 @@
     $target_dir = "/var/www/chaniq/log/tmp/";
     $target_file = $target_dir . basename($_FILES["file"]["name"]);
     $uploadOk = 1;
-    $allowedFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+    $fileExtention = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
 
+    $sslImpType = $_POST['sslImpType'];
+    $sslImpName = $_POST['sslImpName'];
+    
     // Check if file already exists
-    if (file_exists($target_file)) {
+    $newTargetFile = $target_dir . $sslImpName;
+    if ( file_exists($target_file.'.key') || file_exists($target_file.'.crt') ) {
         echo "Error: File already exists.<br>";
         $uploadOk = 0;
     }
@@ -20,8 +24,8 @@
         $uploadOk = 0;
     }
     
-    // Allow certain file formats
-    if($allowedFileType != "txt" && $allowedFileType != "crt" && $allowedFileType != "cer" && $allowedFileType != "key" && $allowedFileType != "p12" && $allowedFileType != "pfx" ) {
+    // Allow certain file formats - txt, crt, cer, key, p12, pfx, pem, csr, der, crl
+    if($fileExtention != "txt" && $fileExtention != "crt" && $fileExtention != "cer" && $fileExtention != "key" && $fileExtention != "p12" && $fileExtention != "pfx" && $fileExtention != "csr" && $fileExtention != "pem" && $fileExtention != "der" && $fileExtention != "crl") {
         echo "Error: Allowed File formats: txt, crt, cer, key, p12 & pfx.<br>";
         $uploadOk = 0;
     }
@@ -30,7 +34,17 @@
         echo 'File Upload failed: ' . $_FILES['file']['error'] . '<br>';
     }
     else {
-        move_uploaded_file($_FILES['file']['tmp_name'], '/var/www/chaniq/log/tmp/' . $_FILES['file']['name']);
+        if ($sslImpType == 'Key'){
+            //move_uploaded_file($_FILES['file']['tmp_name'], '/var/www/chaniq/log/tmp/' . $_FILES['file']['name']);
+            move_uploaded_file($_FILES['file']['tmp_name'], '/var/www/chaniq/log/tmp/' . $sslImpName . '.key');
+        }
+        else if ($sslImpType == 'Certificate'){
+            move_uploaded_file($_FILES['file']['tmp_name'], '/var/www/chaniq/log/tmp/' . $sslImpName . '.crt');
+        }
+        else if ($sslImpType == 'PKCS 12 (IIS)'){
+            move_uploaded_file($_FILES['file']['tmp_name'], '/var/www/chaniq/log/tmp/' . $sslImpName . '.p12');
+            //move_uploaded_file($_FILES['file']['tmp_name'], '/var/www/chaniq/log/tmp/' . $sslImpName . '.key');
+        }
         echo 'Success';
     }
 ?>

@@ -3,12 +3,14 @@ import sys
 import logging
 import json
 import build_std_names
+import os
+import requests
 
 logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
 logging.info("Head of new_certkey_build() called")
 
 def check_keyname_conflict(mr, certkeyImpName):
-    keynames = mr.tm.sys.files.ssl_keys.get_collection()
+    keynames = mr.tm.sys.file.ssl_keys.get_collection()
     logging.info("check_keyname_conflict() Key Name: " + certkeyImpName + "\n")
     
     bitout = 0
@@ -28,7 +30,7 @@ def check_keyname_conflict(mr, certkeyImpName):
 
 # Only support Internal Data Group
 def check_certname_conflict(mr, certkeyImpName):
-    certnames = mr.tm.sys.files.ssl_certs.get_collection()
+    certnames = mr.tm.sys.file.ssl_certs.get_collection()
     logging.info("check_certname_conflict() Cert Name: " + certkeyImpName + "\n")
     
     bitout = 0
@@ -55,7 +57,7 @@ def check_pkcsname_conflict(mr, certkeyImpName):
 
 def check_certkeyname_conflict(mr, certkeyImpType, certkeyImpName):
     
-    logging.info("new_certkey_build() - check_certkeyname_conflict() iRule/Data Group name: " + std_certkeyname + " Monitor Type: " + certkeyKeySourceData + " DG Type: " + certkeySecTypeData)
+    logging.info("new_certkey_build() - check_certkeyname_conflict() Import Type: " + certkeyImpType + " Cert/Key Name: " + certkeyImpName)
     
     byImpKeyType = {
         "Key": check_keyname_conflict,
@@ -67,6 +69,7 @@ def check_certkeyname_conflict(mr, certkeyImpType, certkeyImpName):
 
 def _upload(host, creds, fp):
  
+    logging.info("_upload called!")
     chunk_size = 512 * 1024
     headers = {
         'Content-Type': 'application/octet-stream'
@@ -78,6 +81,7 @@ def _upload(host, creds, fp):
     else:
         uri = 'https://%s/mgmt/shared/file-transfer/uploads/%s' % (host, filename)
  
+    logging.info("_upload URI: " + uri)
     requests.packages.urllib3.disable_warnings()
     size = os.path.getsize(fp)
  
@@ -96,12 +100,14 @@ def _upload(host, creds, fp):
  
         content_range = "%s-%s/%s" % (start, end - 1, size)
         headers['Content-Range'] = content_range
-        requests.post(uri,
-                      auth=creds,
-                      data=file_slice,
-                      headers=headers,
-                      verify=False)
- 
+        try:
+            requests.post(uri,
+                          auth=creds,
+                          data=file_slice,
+                          headers=headers,
+                          verify=False)
+        except Exception as e:
+            logging.info("Exception while requests.post processing - Error: " + str(e)) 
         start += current_bytes
 
 def new_certkey_build(certkeyDevIp, certkeyImpType, certkeyImpName, certkeyKeySource, certkeyKeySourceData, certkeySecType, certkeySecTypeData, certkeyPKCSPw):
@@ -122,34 +128,48 @@ def new_certkey_build(certkeyDevIp, certkeyImpType, certkeyImpName, certkeyKeySo
         return json.dumps(strReturn)
     logging.info("No Cert/Key name conflict. Now creating a Cert/Key")
     
-    #Create a iRule/Data Group
+    # Upload Cert/Key file to F5 BIG-IP
+    filepath = '/var/www/chaniq/log/tmp/'
+    localpath = '/var/config/rest/downloads/'
+    filename = ''
     try:
-        if certkeyKeySourceData == "iRule":
-            mycertkey = mr.tm.ltm.rules.rule.create(name=std_certkeyname, partition='Common', apiAnonymous=certkeySecType)
-        elif certkeyKeySourceData == "Data Group":
-            new_records = []
-            arrRecords = certkeyPKCSPw.split(',');
-            for arrRecord in arrRecords:
-                aRecord = arrRecord.split(':')
-                logging.info("name: " + aRecord[0] + " Value: " + aRecord[1])
-                nr = [{'name':str(aRecord[0]), 'data':str(aRecord[1])}]
-                new_records.extend(nr)
-            if certkeySecTypeData == "Address":
-                mydg = mr.tm.ltm.data_group.internals.internal.create(name=std_certkeyname, partition='Common', type='ip', records=new_records)
-            elif certkeySecTypeData == "String":
-                mydg = mr.tm.ltm.data_group.internals.internal.create(name=std_certkeyname, partition='Common', type='string', records=new_records)
-            elif certkeySecTypeData == "Integer":
-                mydg = mr.tm.ltm.data_group.internals.internal.create(name=std_certkeyname, partition='Common', type='integer', records=new_records)
+        if certkeyImpType == 'Key':
+            filename = certkeyImpName + '.key'
+            _upload(str(certkeyDevIp), ('admin', 'rlatkdcks'), filepath + filename)
+            logging.info("Key file upload completed! - Source File Full path and name: " + filepath + filename)
+            param_set = {'from-local-file':localpath+filename, 'name':certkeyImpName}
+            mr.tm.sys.crypto.keys.exec_cmd('install', **param_set)
+            logging.info("Key file upload and install completed")
+        elif certkeyImpType == 'Certificate':
+            filename = certkeyImpName + '.crt'
+            _upload(str(certkeyDevIp), ('admin', 'rlatkdcks'), filepath + filename)
+            logging.info("Cert file upload completed! Source File Full path and name: " + filepath + filename)
+            param_set = {'from-local-file':localpath+filename, 'name':certkeyImpName}
+            mr.tm.sys.crypto.certs.exec_cmd('install', **param_set)
+            logging.info("Cert file upload and install completed")            
+        elif certkeyImpType == 'PKCS 12 (IIS)':
+            filename = certkeyImpName
+            _upload(str(certkeyDevIp), ('admin', 'rlatkdcks'), filepath + filename + '.p12')
+            #_upload(str(certkeyDevIp), ('admin', 'rlatkdcks'), filepath + filename + '.crt')
+            logging.info("PKCS Key and Cert file upload completed! - Source File Full path and name: " + filepath + filename)
+            certparam_set = {'from-local-file':localpath+filename+'.p12', 'name':certkeyImpName}
+            keyparam_set = {'from-local-file':localpath+filename+'.p12', 'name':certkeyImpName}
+            
+            #param_set2 = {'from-local-file':localpath+filename+'.p12', 'name':certkeyImpName}
+            mr.tm.sys.crypto.keys.exec_cmd('install', **keyparam_set)
+            mr.tm.sys.crypto.certs.exec_cmd('install', **certparam_set)
+            logging.info("PKCS Cert and Key file upload and install have been completed") 
+            
     except Exception as e:
-        logging.info("iRule/Data Group Exception printing")
-        strReturn[str(idx)] = "Exception fcertkeyed! (" + std_certkeyname + "): " + str(e)
+        logging.info("File Upload Exception fired: " + str(e))
+        strReturn[str(idx)] = "Exception fired during cert/key upload or install! (" + certkeyImpName + "): " + str(e)
         idx += 1
-        logging.info("iRule/Data Group creation exception fcertkeyed: " + str(e))
+        logging.info("Cert/Key upload or install exception: " + str(e))
         return json.dumps(strReturn)
     
-    strReturn[str(idx)] = certkeyKeySourceData + " iRule/Data Group (" + std_certkeyname + ") has been created"
+    strReturn[str(idx)] = certkeyImpType + " (" + certkeyImpName + ") has been successfully created"
     idx += 1
-    logging.info("iRule/Data Group has been created")
+    logging.info("Cert/Key has been created")
                     
     
     for keys, values in strReturn.items():

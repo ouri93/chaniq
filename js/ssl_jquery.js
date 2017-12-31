@@ -31,7 +31,7 @@ function getCertImportHtml(impType){
 	{
 	case (((importCode >> 0) & 1) == 1):
 		if(((importCode >> 0) & 1) == 1) {
-			strHtml += "<tr id='r1'><td width='132px' ><label>*" + tmpLabel + " Name</label></td><td><input type='text' id='crtConfName' required='required' /></td></tr>";
+			strHtml += "<tr id='r1'><td width='132px' ><label>*" + tmpLabel + " Name</label></td><td><input type='text' id='crtConfName' required='required' /> <p>** DO NOT include extenstion! **</p></td></tr>";
 		}
 	case (((importCode >> 1) & 1) == 1):
 		if(((importCode >> 1) & 1) == 1) {
@@ -63,7 +63,7 @@ function getCertImportHtml(impType){
 function buildCertKeyAjax(phpFileName, certkeyData){
 	
 	return $.ajax({
-		url: 'content/new_certkey_build.php',
+		url: '/content/new_certkey_build.php',
 		type: 'POST',
 		dataType: 'JSON',
 		data: {'jsonCertkeyData': JSON.stringify(certkeyData)},
@@ -158,7 +158,7 @@ $(function () {
     	var secType = $('#crtSecType').val();
     	var uploadStatus = '';
     	
-    	sslImpData['phpFileName'] = 'if_ssl_import_build';
+    	sslImpData['phpFileName'] = 'new_certkey_build';
     	sslImpData['sslImpType'] = impType;
     	sslImpData['sslImpName'] = $('#crtConfName').val();
     	
@@ -189,6 +189,8 @@ $(function () {
     		var file_data = $('#crtConfSource').prop('files')[0];
     		var form_data = new FormData();
     		form_data.append('file', file_data);
+    		form_data.append('sslImpType', sslImpData['sslImpType']);
+    		form_data.append('sslImpName', sslImpData['sslImpName']);
     		
     		// Note. async is set to "False" so that we can process further steps in order
     		$.ajax({
