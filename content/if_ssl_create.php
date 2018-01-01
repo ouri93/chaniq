@@ -22,14 +22,15 @@
                 	<table id="crtConfTable" class="form" border="1">
     	            	<tbody id="crtConfTable_tbody">
     	            	<tr id='create_cert_type' >
-    	            		<td>Issuer Type:</td><td><select id='create_type_select' required='required' ><option value='select' selected='selected' >Select...</option><option value='self' >Self</option><option value='ca' >Certificate Authority</option></input></td>
+    	            		<td width='132px' ><label>*Issuer:</label></td><td><select id='create_type_select' required='required' ><option value='select' selected='selected' >Select...</option><option value='Self' >Self</option><option value='Certificate Authority' >Certificate Authority</option></input></td>
     	            	</tr>
     			        <!--  Conditional HTML code here  --> 
             	        </tbody>
                     </table>
                 </p>
+                <p>*: Required field</p>
             	<p align="right">
-	            	<input id="crt_btn_build" type="button" name="crt_btn_build" value="Deploy Cert/Key" />
+	            	<input id="crt_create_btn_build" type="button" style="width:130px" name="crt_create_btn_build" value="Deploy Cert/Key" />
             	</p>
             	<p></p>
             </fieldset>

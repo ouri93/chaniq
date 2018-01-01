@@ -1,7 +1,6 @@
 /* 
  * Javascript and JQuery for SSL Cert and Key management
  */
-
 function getCertImportHtml(impType){
 	// Update html code by SSL Cert/Key type - Key, Certificate, PKCS12
 	// Bit 0 - Cert/Key Name (0000 0001), Bit 1 - Source (Paste, File Upload) (0000 0010), Bit 2 - Source (File Upload) (0000 0100) 
@@ -60,6 +59,29 @@ function getCertImportHtml(impType){
 	
 }
 
+function getCertCreateHtml(creType){
+	var strHtml = '';
+	strHtml += "<tr id='r1'><td width='132px' ><label>*Certificate Name</label></td><td><input type='text' id='crtCreConfName' required='required' /></td></tr>";
+	strHtml += "<tr id='r2'><td width='132px' ><label>*Common Nmae</label></td><td><input type='text' id='crtCreConfCN' required='required' /></td></tr>";
+	strHtml += "<tr id='r3'><td width='132px' ><label>Division</label></td><td><input type='text' id='crtCreConfDVZ' /></td></tr>";
+	strHtml += "<tr id='r4'><td width='132px' ><label>Organization</label></td><td><input type='text' id='crtCreConfOG' /></td></tr>";
+	strHtml += "<tr id='r5'><td width='132px' ><label>Locality</label></td><td><input type='text' id='crtCreConfLOC' /></td></tr>";
+	strHtml += "<tr id='r6'><td width='132px' ><label>State Or Province</label></td><td><input type='text' id='crtCreConfState' /></td></tr>";
+	strHtml += "<tr id='r7'><td width='132px' ><label>Country</label></td><td><select id='crtCreConfCountry' ><option value='United States:US' selected='selected'>United States:US</option><option value='Republic of South Korea:KR' >Republic of South Korea:KR</option></select></td></tr>";
+	strHtml += "<tr id='r8'><td width='132px' ><label>E-mail Address</label></td><td><input type='email' id='crtCreConfEmail' placeholder='john@xyz.com' /></td></tr>";
+	strHtml += "<tr id='r9'><td width='132px' ><label>Subject Alternative Name</label></td><td><input type='text' id='crtCreConfSAN' /></td></tr>";
+	if (creType == 'Self'){
+		strHtml += "<tr id='r10'><td width='132px' ><label>*Lifetime</label></td><td><input type='text' id='crtCreConfLifetime' value='365' /></td></tr>";
+	}
+	if (creType == 'Certificate Authority'){
+		strHtml += "<tr id='r11'><td width='132px' ><label>Challenge Password</label></td><td><input type='password' id='crtCreConfChPW' /></td></tr>";
+		strHtml += "<tr id='r12'><td width='132px' ><label>Confirm Password</label></td><td><input type='password' id='crtCreConfChPW2' /></td></tr>";
+	}
+	strHtml += "<tr id='r13'><td width='132px' ><label>*Key Type</label></td><td><select id='crtCreConfKeyType' ><option value='RSA' selected='selected'>RSA</option><option value='DSA'>DSA</option><option value='ECDSA' >ECDSA</option></select></td></tr>";
+	strHtml += "<tr id='r14'><td width='132px' ><label>*Size</label></td><td><select id='crtCreConfKeySize' ><option value='512'>512</option><option value='1024'>1024</option><option value='2048' selected='selected' >2048</option><option value='4096' >4096</option></select></td></tr>";
+	return strHtml;
+}
+
 function buildCertKeyAjax(phpFileName, certkeyData){
 	
 	return $.ajax({
@@ -93,7 +115,8 @@ function buildCertKeyProcessData(response_in) {
 }
 
 $(function () {
-    $('#import_cert_type').on('change','#imp_type_select', function (e) {
+	// SSL Key/Cert import
+	$('#import_cert_type').on('change','#imp_type_select', function (e) {
     	var impType = $('#imp_type_select').val();
     	//alert("Selected Import type: " + impType);
     	var strCertImpHtml = getCertImportHtml(impType);
@@ -106,10 +129,18 @@ $(function () {
     	$('#crtConfTable_tbody').append(strCertImpHtml);
     });
     
+    // SSL Key/Cert creation
     $('#create_cert_type').on('change','#create_type_select', function (e) {
     	var creType = $('#create_type_select').val();
     	alert("Selected Creation type: " + creType);
+    	var strCertCreHtml = getCertCreateHtml(creType);
+    	//alert("Created HTML code: " + strCertImpHtml);
     	
+    	$('#crtConfTable_tbody tr').each(function(index) {
+    		if (index != 0) $(this).remove();
+    	});
+		
+    	$('#crtConfTable_tbody').append(strCertCreHtml);
     });
     
     // If File Upload radio buttion is chosen
@@ -165,6 +196,7 @@ $(function () {
     	if ( (impType == "Key" || impType == "Certificate") && $('#crtConfPasteText').prop('checked') ){
     		sslImpData['sslKeySource'] = 'PASTE';
     		sslImpData['sslKeySourceData'] = $('#crtPasteTextarea').val();
+    		uploadStatus = 'Success';
     	}
     	else{
     		sslImpData['sslKeySource'] = 'UPLOAD';
@@ -192,6 +224,12 @@ $(function () {
     		form_data.append('sslImpType', sslImpData['sslImpType']);
     		form_data.append('sslImpName', sslImpData['sslImpName']);
     		
+    		/* Print all File FormData() Key and Value paires
+    		for (var pair of form_data.entries()) {
+    			console.log(pair[0] + ', ' + pair[1]);
+    		}
+    		*/
+    		
     		// Note. async is set to "False" so that we can process further steps in order
     		$.ajax({
     			url: '/content/ssl_file_upload.php',
@@ -209,19 +247,20 @@ $(function () {
     		});
     		sslImpData['sslKeySourceData'] = $('#crtConfSource').val().split('\\').pop();
     	}
-    	
+
     	// If file upload is successful, build cert and key on the F5
     	if ( uploadStatus != 'Success'){
     		$('#newcrt_EvalReview').html(uploadStatus);
     	}
     	else {
         	
+    		/*
         	var output;
         	$.each(sslImpData, function(index) {	
         	    output = output + sslImpData[index] + "\n";
         	});
         	alert("Data: " + output);
-        	
+        	*/
         	
         	ajaxOut = buildCertKeyAjax("new_certkey_build", sslImpData);
         	ajaxOut.done(buildCertKeyProcessData);
@@ -229,4 +268,23 @@ $(function () {
     	}
     	
     });
+
+    $('#crtConfTable_tbody').on('change', '#crtCreConfKeyType', function(){
+    	var keyType = $('#crtCreConfKeyType').val();
+    	if (keyType == 'ECDSA'){
+    	   	$('#r14').remove();
+    	   	$('#crtConfTable_tbody').append("<tr id='r14'><td width='132px' ><label>*Curve Name</label></td><td><select id='crtCreConfKeySize' ><option value='prime256v1' selected='selected' >prime256v1</option><option value='secp384r1'>secp384r1</option><option value='secp521r1' >secp521r1</option></td></tr>");
+    	}
+    	else if (keyType == 'RSA' || keyType == 'DSA') {
+    		$('#r14').remove();
+    		$('#crtConfTable_tbody').append("<tr id='r14'><td width='132px' ><label>*Size</label></td><td><select id='crtCreConfKeySize' ><option value='512'>512</option><option value='1024'>1024</option><option value='2048' selected='selected' >2048</option><option value='4096' >4096</option></select></td></tr>");
+    	}
+    	    	
+    });
+
+    $('#crt_create_btn_build').on('click', function() {
+    	
+    });
+    
+    
 });

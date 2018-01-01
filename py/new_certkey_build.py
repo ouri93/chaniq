@@ -121,6 +121,29 @@ def new_certkey_build(certkeyDevIp, certkeyImpType, certkeyImpName, certkeyKeySo
     
     idx += 1
  
+    '''
+    If the key source type is "PASTE", save Key or Certficate content into a file under /var/config/rest/downloads/ location
+    This will make all Key and Certificate source type as a file.
+    Note. 'from-editor' is not the command where it takes the key or cert content directly. For this reason, I convert key/cert content into a file 
+    '''
+    if certkeyKeySource == 'PASTE':
+        try:
+            if certkeyImpType == 'Key':
+                keyfilename = '/var/www/chaniq/log/tmp/' + certkeyImpName + '.key'
+                f= open(keyfilename, "w+")
+                f.write(certkeyKeySourceData)
+                f.close()
+            elif certkeyImpType == 'Certificate':
+                certfilename = '/var/www/chaniq/log/tmp/' + certkeyImpName + '.crt'
+                f= open(certfilename, "w+")
+                f.write(certkeyKeySourceData)
+                f.close()
+        except Exception as e:
+            logging.info("File Creation Exception fired: " + str(e))
+            strReturn[str(idx)] = "Exception fired during cert/key file creation!: " + str(e)
+            idx += 1
+            return json.dumps(strReturn)
+    
     if check_certkeyname_conflict(mr, certkeyImpType, certkeyImpName):
         strReturn.update({str(idx) : 'Cert/Key Name conflict'})
         logging.info("Cert/Key Name conflict.")
@@ -146,7 +169,7 @@ def new_certkey_build(certkeyDevIp, certkeyImpType, certkeyImpName, certkeyKeySo
             logging.info("Cert file upload completed! Source File Full path and name: " + filepath + filename)
             param_set = {'from-local-file':localpath+filename, 'name':certkeyImpName}
             mr.tm.sys.crypto.certs.exec_cmd('install', **param_set)
-            logging.info("Cert file upload and install completed")            
+            logging.info("Cert file upload and install completed")
         elif certkeyImpType == 'PKCS 12 (IIS)':
             filename = certkeyImpName
             _upload(str(certkeyDevIp), ('admin', 'rlatkdcks'), filepath + filename + '.p12')
