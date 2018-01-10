@@ -734,4 +734,53 @@ $(function () {
     	$('#cert_iframe_fieldset').append('<legend>Create Cert/Key Configuration</legend>');
     	$('#cert_iframe_fieldset').append('<iframe src="/content/if_ssl_create.php" width="725px" height="600" frameborder="0"></iframe>');    	
     });
+    
+    // Profile Submenu event handlers
+    $('#ul_prf_selected li').on('click', function() {
+    	svcPrfSelected = $(this).text();
+    	$('#prf_iframe_fieldset').empty();
+    	alert($(this).text());
+    	
+    	if (svcPrfSelected == 'HTTP'){
+        //	alert($(this).text());
+    		$('#prf_iframe_fieldset').append('<legend>HTTP Profile Configuration</legend>');
+    		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_svc_http.php" width="725px" height="600" frameborder="0"></iframe>');
+    	}
+    	else if (svcPrfSelected == 'DNS'){
+    		$('#prf_iframe_fieldset').append('<legend>DNS Profile Configuration</legend>');
+    		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_svc_dns.php" width="725px" height="600" frameborder="0"></iframe>');
+    	}
+    	else if (svcPrfSelected == 'Fast L4'){
+    		$('#prf_iframe_fieldset').append('<legend>FastL4 Profile Configuration</legend>');
+    		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_prot_fastl4.php" width="725px" height="600" frameborder="0"></iframe>');
+    	}
+    	else if (svcPrfSelected == 'TCP'){
+    		$('#prf_iframe_fieldset').append('<legend>TCP Profile Configuration</legend>');
+    		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_prot_tcp.php" width="725px" height="600" frameborder="0"></iframe>');
+    	}
+    	else if (svcPrfSelected == 'UDP'){
+    		$('#prf_iframe_fieldset').append('<legend>UDP Profile Configuration</legend>');
+    		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_prot_udp.php" width="725px" height="600" frameborder="0"></iframe>');
+    	}
+    	else if (svcPrfSelected == 'Client'){
+    		$('#prf_iframe_fieldset').append('<legend>Client SSL Profile Configuration</legend>');
+    		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_ssl_client.php" width="725px" height="600" frameborder="0"></iframe>');
+    	}
+    	else if (svcPrfSelected == 'Server'){
+    		$('#prf_iframe_fieldset').append('<legend>Server SSL Profile Configuration</legend>');
+    		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_ssl_server.php" width="725px" height="600" frameborder="0"></iframe>');
+    	}
+    	else if (svcPrfSelected == 'OneConnect'){
+    		$('#prf_iframe_fieldset').append('<legend>OneConnect Profile Configuration</legend>');
+    		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_other_oneconnect.php" width="725px" height="600" frameborder="0"></iframe>');
+    	}
+    });
+    
+    $('#li_prf_persist').on('click', function() {
+    	alert($(this).text());
+    	$('#prf_iframe_fieldset').empty();
+    	$('#prf_iframe_fieldset').append('<legend>Persistence Profile Configuration</legend>');
+    	
+    	$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_persist.php" width="725px" height="600" frameborder="0"></iframe>');
+    });
 });

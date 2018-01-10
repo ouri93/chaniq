@@ -153,34 +153,59 @@ def new_certkey_build(certkeyDevIp, certkeyImpType, certkeyImpName, certkeyKeySo
     
     # Upload Cert/Key file to F5 BIG-IP
     filepath = '/var/www/chaniq/log/tmp/'
-    localpath = '/var/config/rest/downloads/'
+    localpath = 'file:/var/config/rest/downloads/'
     filename = ''
     try:
         if certkeyImpType == 'Key':
             filename = certkeyImpName + '.key'
             _upload(str(certkeyDevIp), ('admin', 'rlatkdcks'), filepath + filename)
             logging.info("Key file upload completed! - Source File Full path and name: " + filepath + filename)
+            '''
+            Deprecated method. 
+            Use bigip.tm.sys.file.ssl_keys.ssl_key.create(name='name', sourcePath='file:sourcepath')
+            Use bigip.tm.sys.file.ssl_certs.ssl_cert.create(name='name', sourcePath='file:sourcepath')
             param_set = {'from-local-file':localpath+filename, 'name':certkeyImpName}
             mr.tm.sys.crypto.keys.exec_cmd('install', **param_set)
+            '''
+            if certkeySecType == 'password':
+                key = mr.tm.sys.file.ssl_keys.ssl_key.create(name=certkeyImpName, partition='Common', sourcePath=localpath+filename, securityType='password', passphrase=certkeySecTypeData)
+            elif certkeySecType == 'normal':
+                key = mr.tm.sys.file.ssl_keys.ssl_key.create(name=certkeyImpName, partition='Common', sourcePath=localpath+filename)
             logging.info("Key file upload and install completed")
         elif certkeyImpType == 'Certificate':
             filename = certkeyImpName + '.crt'
             _upload(str(certkeyDevIp), ('admin', 'rlatkdcks'), filepath + filename)
             logging.info("Cert file upload completed! Source File Full path and name: " + filepath + filename)
+            '''
             param_set = {'from-local-file':localpath+filename, 'name':certkeyImpName}
             mr.tm.sys.crypto.certs.exec_cmd('install', **param_set)
+            '''
+            cert = mr.tm.sys.file.ssl_certs.ssl_cert.create(name=certkeyImpName, partition='Common', sourcePath=localpath+filename)
             logging.info("Cert file upload and install completed")
         elif certkeyImpType == 'PKCS 12 (IIS)':
             filename = certkeyImpName
             _upload(str(certkeyDevIp), ('admin', 'rlatkdcks'), filepath + filename + '.p12')
             #_upload(str(certkeyDevIp), ('admin', 'rlatkdcks'), filepath + filename + '.crt')
             logging.info("PKCS Key and Cert file upload completed! - Source File Full path and name: " + filepath + filename)
+            '''
+            Deprecated method.
             certparam_set = {'from-local-file':localpath+filename+'.p12', 'name':certkeyImpName}
             keyparam_set = {'from-local-file':localpath+filename+'.p12', 'name':certkeyImpName}
             
             #param_set2 = {'from-local-file':localpath+filename+'.p12', 'name':certkeyImpName}
             mr.tm.sys.crypto.keys.exec_cmd('install', **keyparam_set)
             mr.tm.sys.crypto.certs.exec_cmd('install', **certparam_set)
+            '''
+            '''
+            Need to extract key and cert from pkcs12, then import them.
+            '''
+            if certkeySecType == 'password':
+                key = mr.tm.sys.file.ssl_keys.ssl_key.create(name=certkeyImpName, partition='Common', sourcePath=localpath+filename+'.p12', password=certkeyPKCSPw, passphrase=certkeySecTypeData)
+            elif certkeySecType == 'normal':
+                key = mr.tm.sys.file.ssl_keys.ssl_key.create(name=certkeyImpName, partition='Common', sourcePath=localpath+filename+'.p12', password=certkeyPKCSPw)
+                
+            cert = mr.tm.sys.file.ssl_certs.ssl_cert.create(name=certkeyImpName, partition='Common', sourcePath=localpath+filename + '.p12')
+            
             logging.info("PKCS Cert and Key file upload and install have been completed") 
             
     except Exception as e:

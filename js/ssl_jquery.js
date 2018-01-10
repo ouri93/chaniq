@@ -71,14 +71,14 @@ function getCertCreateHtml(creType){
 	strHtml += "<tr id='r8'><td width='132px' ><label>E-mail Address</label></td><td><input type='email' id='crtCreConfEmail' placeholder='john@xyz.com' /></td></tr>";
 	strHtml += "<tr id='r9'><td width='132px' ><label>Subject Alternative Name</label></td><td><input type='text' id='crtCreConfSAN' /></td></tr>";
 	if (creType == 'Self'){
-		strHtml += "<tr id='r10'><td width='132px' ><label>*Lifetime</label></td><td><input type='text' id='crtCreConfLifetime' value='365' /></td></tr>";
+		strHtml += "<tr id='r10'><td width='132px' ><label>*Lifetime</label></td><td><input type='text' id='crtCreConfLifetime' value='365' />&nbsp;days</td></tr>";
 	}
 	if (creType == 'Certificate Authority'){
 		strHtml += "<tr id='r11'><td width='132px' ><label>Challenge Password</label></td><td><input type='password' id='crtCreConfChPW' /></td></tr>";
 		strHtml += "<tr id='r12'><td width='132px' ><label>Confirm Password</label></td><td><input type='password' id='crtCreConfChPW2' /></td></tr>";
 	}
 	strHtml += "<tr id='r13'><td width='132px' ><label>*Key Type</label></td><td><select id='crtCreConfKeyType' ><option value='RSA' selected='selected'>RSA</option><option value='DSA'>DSA</option><option value='ECDSA' >ECDSA</option></select></td></tr>";
-	strHtml += "<tr id='r14'><td width='132px' ><label>*Size</label></td><td><select id='crtCreConfKeySize' ><option value='512'>512</option><option value='1024'>1024</option><option value='2048' selected='selected' >2048</option><option value='4096' >4096</option></select></td></tr>";
+	strHtml += "<tr id='r14'><td width='132px' ><label>*Size</label></td><td><select id='crtCreConfKeySize' ><option value='512'>512</option><option value='1024'>1024</option><option value='2048' selected='selected' >2048</option><option value='4096' >4096</option></select>&nbsp;bits</td></tr>";
 	return strHtml;
 }
 
@@ -286,5 +286,5 @@ $(function () {
     	
     });
     
-    
+   
 });
