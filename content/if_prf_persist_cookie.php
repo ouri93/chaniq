@@ -12,7 +12,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.js" </script>
         <script> window.jQuery || document.write("<script src='/js/jquery-3.2.1.js'><\/script>"); </script>  
                  
-        <script type="text/javascript" src="/js/ssl_jquery.js"></script>
+        <script type="text/javascript" src="/js/prf_jquery.js"></script>
         <title>Create Service Profile</title>
     </head>
     <body style="background-color: #ffffff;">
