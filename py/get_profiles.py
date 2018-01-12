@@ -16,12 +16,48 @@ def get_tcpprofiles(mr):
 		#logging.info('TCP Profile: %s' % atcppf.name)
 		output = output + atcppf.name
 	return output
+
+def get_udpprofiles(mr):
+	udppf =mr.tm.ltm.profile.udps.get_collection()
+	#logging.info("after get-tcpprofiles()")
+	output = ''
+
+	for audppf in udppf:
+		if output != '':
+			output = output + ':'
+		#logging.info('TCP Profile: %s' % atcppf.name)
+		output = output + audppf.name
+	return output
+
+def get_fastl4profiles(mr):
+	fastl4pf =mr.tm.ltm.profile.fastl4s.get_collection()
+	#logging.info("after get-tcpprofiles()")
+	output = ''
+
+	for apf in fastl4pf:
+		if output != '':
+			output = output + ':'
+		#logging.info('TCP Profile: %s' % atcppf.name)
+		output = output + apf.name
+	return output
 	
 def get_httpprofiles(mr):
 	httppf = mr.tm.ltm.profile.https.get_collection()
 	output = 'none'
 	
 	for pf in httppf:
+		if output != '':
+			output = output + ':'
+		#logging.info('HTTP profile: %s' % pf.name)
+		output = output + pf.name
+	#logging.info('output in get_httpprofile: %s' % output)
+	return output
+
+def get_dnsprofiles(mr):
+	dnspf = mr.tm.ltm.profile.dns_s.get_collection()
+	output = 'none'
+	
+	for pf in dnspf:
 		if output != '':
 			output = output + ':'
 		#logging.info('HTTP profile: %s' % pf.name)
@@ -122,6 +158,16 @@ def get_univprofiles(mr):
 		output = output + pf.name
 	return output
 
+def get_ocprofiles(mr):
+	ocpf = mr.tm.ltm.profile.one_connects.get_collection()
+	output = ''
+	for pf in ocpf:
+		if output != '':
+			output = output + ':'
+		#logging.info('Universal profile: %s' % pf.name)
+		output = output + pf.name
+	return output
+
 def get_irules(mr):
 	unipf = mr.tm.ltm.rules.get_collection()
 	output = 'none'
@@ -161,25 +207,45 @@ def get_active_profiles(dev_ip, pf_type):
 	
 	'''
 	Suppported Profile types
-	1. TCP
-	2. PERSIST
-	3. HTTP
-	4. CLIENTSSL
-	5. SERVERSSL
+	1. TCP, UDP, Fast L4
+	2. PERSIST (Cookie, Source and Destination Affinity, Hash, SSL, Universal)
+	3. HTTP, DNS
+	4. CLIENTSSL, SERVERSSL
+	5. OneConnect
 	6. IRULE
 	7. SNATPOOL
 	8. POLICY
 	'''
 	if pf_type == "TCP":
 		output = get_tcpprofiles(mr)
+	elif pf_type == "UDP":
+		output = get_udpprofiles(mr)
+	elif pf_type == "Fast L4":
+		output = get_fastl4profiles(mr)
 	elif pf_type == "PERSIST":
 		output = get_persistprofiles(mr)
+	elif pf_type == "Cookie":
+		output = get_cookieprofiles(mr)
+	elif pf_type == "Destination Address Affinity":
+		output = get_dstprofiles(mr)
+	elif pf_type == "Source Address Affinity":
+		output = get_srcprofiles(mr)
+	elif pf_type == "Hash":
+		output = get_hashprofiles(mr)
+	elif pf_type == "SSL":
+		output = get_sslprofiles(mr)
+	elif pf_type == "Universal":
+		output = get_univprofiles(mr)
 	elif pf_type == "HTTP":
 		output = get_httpprofiles(mr)
+	elif pf_type == "DNS":
+		output = get_dnsprofiles(mr)
 	elif pf_type == "CLIENTSSL":
 		output = get_clisslprofiles(mr)
 	elif pf_type == "SERVERSSL":
 		output = get_srvsslprofiles(mr)
+	elif pf_type == "OneConnect":
+		output = get_ocprofiles(mr)
 	elif pf_type == "IRULE":
 		output = get_irules(mr)
 	elif pf_type == "SNATPOOL":
