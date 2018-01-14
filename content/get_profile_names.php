@@ -36,14 +36,14 @@
         {
             //$bigipIP = json_decode($_POST['DevIP']);
             $bigipIP = $_POST['DevIP'];
-            $monType = $_POST['MonType'];
+            $prfType = $_POST['PrfType'];
             //error_log(date("y-m-d H:i:s").": get_profile_names() - Device IP sent over POST\n", 3, "/var/log/chaniqphp.log");
             file_put_contents("/var/log/chaniqphp.log", "get_profile_names() Device IP: " . $bigipIP, FILE_APPEND);
         }
         
         //$echoOut = echoTest();
         //file_put_contents("/var/log/chaniqphp.log", "get_profile_monitor() EchoTest: " . $echoOut, FILE_APPEND);
-        $prfNames = get_names($bigipIP, $monType);
+        $prfNames = get_names($bigipIP, $prfType);
 
         foreach ($prfNames as $value) {
             file_put_contents("/var/log/chaniqphp.log", "Profile name: " . $value . "\n", FILE_APPEND);

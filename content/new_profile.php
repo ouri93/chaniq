@@ -9,40 +9,40 @@
     
         echo "<li id='li_prf_svc'><a href='#'>Services</a>";
             echo "<ul id='ul_prf_selected'>";
-                echo "<li><a href='#'>HTTP</a></li>";
-                echo "<li><a href='#'>DNS</a></li>";
+                echo "<li value='HTTP'><a href='#'>HTTP</a></li>";
+                echo "<li value='DNS'><a href='#'>DNS</a></li>";
             echo "</ul>";
         echo "</li>";
         
         echo "<li id='li_prf_persist'><a href='#'>Persistence</a>";
             echo "<ul id='ul_prf_selected'>";
-                echo "<li><a href='#'>Cookie</a></li>";
-                echo "<li><a href='#'>Destination Address Affinity</a></li>";
-                echo "<li><a href='#'>Source Address Affinity</a></li>";
-                echo "<li><a href='#'>Hash</a></li>";
-                echo "<li><a href='#'>SSL</a></li>";
-                echo "<li><a href='#'>Universal</a></li>";
+                echo "<li value='Cookie'><a href='#'>Cookie</a></li>";
+                echo "<li value='DestAddrAffinity'><a href='#'>Destination Address Affinity</a></li>";
+                echo "<li value='SrcAddrAffinity'><a href='#'>Source Address Affinity</a></li>";
+                echo "<li value='Hash'><a href='#'>Hash</a></li>";
+                echo "<li value='SSL'><a href='#'>SSL</a></li>";
+                echo "<li value='Universal'><a href='#'>Universal</a></li>";
             echo "</ul>";
         echo "</li>";
         
         echo "<li id='li_prf_prto'><a href='#'>Protocol</a>";
             echo "<ul id='ul_prf_selected'>";
-                echo "<li><a href='#'>Fast L4</a></li>";
-                echo "<li><a href='#'>TCP</a></li>";
-                echo "<li><a href='#'>UDP</a></li>";
+                echo "<li value='FastL4'><a href='#'>Fast L4</a></li>";
+                echo "<li value='TCP'><a href='#'>TCP</a></li>";
+                echo "<li value='UDP'><a href='#'>UDP</a></li>";
             echo "</ul>";
         echo "</li>";
         
         echo "<li id='li_prf_ssl'><a href='#'>SSL</a>";
             echo "<ul id='ul_prf_selected'>";
-                echo "<li><a href='#'>Client</a></li>";
-                echo "<li><a href='#'>Server</a></li>";
+                echo "<li value='CLIENTSSL'><a href='#'>Client</a></li>";
+                echo "<li value='SERVERSSL'><a href='#'>Server</a></li>";
             echo "</ul>";
         echo "</li>";
 
         echo "<li id='li_prf_other'><a href='#'>Other</a>";
             echo "<ul id='ul_prf_selected'>";
-            echo "<li><a href='#'>OneConnect</a></li>";
+            echo "<li value='OneConnect'><a href='#'>OneConnect</a></li>";
         echo "</li>";        
 
     echo "</ul>";
@@ -66,7 +66,7 @@
                 asort($allBigipNames);
             ?>
             <p>
-                <div class="ltmDeviceList">
+                <div id="ltmDeviceList" class="ltmDeviceList">
                 	<?php 
                 	dynamic_select($allBigipNames, "ltmSelBox", "", "");
                 	?>
@@ -75,6 +75,7 @@
         </fieldset>
 	
         <fieldset  id='prf_iframe_fieldset' class="row1">
+        <input type='hidden' id='selectedPrfType' value='HTTP' />
 		<!-- IFrame content here -->
 		<!-- Default Page content - HTTP Profile -->
 		<legend>HTTP Profile Configuration</legend>

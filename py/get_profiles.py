@@ -123,7 +123,7 @@ def get_dstprofiles(mr):
 	for pf in dstpf:
 		if output != '':
 			output = output + ':'
-		#logging.info('Destination profile: %s' % pf.name)
+		logging.info('Destination persistence profile: %s' % pf.name)
 		output = output + pf.name
 	return output
 	
@@ -216,19 +216,20 @@ def get_active_profiles(dev_ip, pf_type):
 	7. SNATPOOL
 	8. POLICY
 	'''
+	logging.info('Profile Types: %s' % pf_type)
 	if pf_type == "TCP":
 		output = get_tcpprofiles(mr)
 	elif pf_type == "UDP":
 		output = get_udpprofiles(mr)
-	elif pf_type == "Fast L4":
+	elif pf_type == "FastL4":
 		output = get_fastl4profiles(mr)
 	elif pf_type == "PERSIST":
 		output = get_persistprofiles(mr)
 	elif pf_type == "Cookie":
 		output = get_cookieprofiles(mr)
-	elif pf_type == "Destination Address Affinity":
+	elif pf_type == "DestAddrAffinity":
 		output = get_dstprofiles(mr)
-	elif pf_type == "Source Address Affinity":
+	elif pf_type == "SrcAddrAffinity":
 		output = get_srcprofiles(mr)
 	elif pf_type == "Hash":
 		output = get_hashprofiles(mr)

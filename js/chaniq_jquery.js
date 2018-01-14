@@ -737,9 +737,11 @@ $(function () {
     
     // Profile Submenu event handlers
     $('#ul_prf_selected li').on('click', function() {
-    	prfSelected = $(this).text();
+    	// Save the li value of the selected
+    	prfSelected = $(this).attr('value');
     	$('#prf_iframe_fieldset').empty();
-    	alert($(this).text());
+    	$('#prf_iframe_fieldset').append("<input type='hidden' id='selectedPrfType' value=" + prfSelected + " />");
+    	//alert("Profile Type: " + prfSelected + " again: " + $(this).text());
     	
     	if (prfSelected == 'HTTP'){
     		$('#prf_iframe_fieldset').append('<legend>HTTP Profile Configuration</legend>');
@@ -753,11 +755,11 @@ $(function () {
     		$('#prf_iframe_fieldset').append('<legend>Cookie Persistence Profile Configuration</legend>');
     		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_persist_cookie.php" width="725px" height="600" frameborder="0"></iframe>');
     	}
-    	else if (prfSelected == 'Destination Address Affinity'){
+    	else if (prfSelected == 'DestAddrAffinity'){
     		$('#prf_iframe_fieldset').append('<legend>Destination Address Affinity Persistence Profile Configuration</legend>');
     		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_persist_dest.php" width="725px" height="600" frameborder="0"></iframe>');
     	}
-    	else if (prfSelected == 'Source Address Affinity'){
+    	else if (prfSelected == 'SrcAddrAffinity'){
     		$('#prf_iframe_fieldset').append('<legend>Source Address Affinity Persistence Profile Configuration</legend>');
     		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_persist_src.php" width="725px" height="600" frameborder="0"></iframe>');
     	}
@@ -773,7 +775,7 @@ $(function () {
     		$('#prf_iframe_fieldset').append('<legend>Universal Persistence Profile Configuration</legend>');
     		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_persist_univ.php" width="725px" height="600" frameborder="0"></iframe>');
     	}      	
-    	else if (prfSelected == 'Fast L4'){
+    	else if (prfSelected == 'FastL4'){
     		$('#prf_iframe_fieldset').append('<legend>FastL4 Profile Configuration</legend>');
     		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_prot_fastl4.php" width="725px" height="600" frameborder="0"></iframe>');
     	}
@@ -785,11 +787,11 @@ $(function () {
     		$('#prf_iframe_fieldset').append('<legend>UDP Profile Configuration</legend>');
     		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_prot_udp.php" width="725px" height="600" frameborder="0"></iframe>');
     	}
-    	else if (prfSelected == 'Client'){
+    	else if (prfSelected == 'CLIENTSSL'){
     		$('#prf_iframe_fieldset').append('<legend>Client SSL Profile Configuration</legend>');
     		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_ssl_client.php" width="725px" height="600" frameborder="0"></iframe>');
     	}
-    	else if (prfSelected == 'Server'){
+    	else if (prfSelected == 'SERVERSSL'){
     		$('#prf_iframe_fieldset').append('<legend>Server SSL Profile Configuration</legend>');
     		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_ssl_server.php" width="725px" height="600" frameborder="0"></iframe>');
     	}

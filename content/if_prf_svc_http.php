@@ -23,7 +23,7 @@
     	            	<tbody id="prfConfTable_tbody">
     	            	<tr> <td width='132px'><label>*Name:</label> </td><td><input type='text' id='prf_name' required='required' /></td></tr>
     	            	<tr id='tr_svc_prf_type' >
-    	            		<td width='132px' ><label>*Parent Profile:</label></td><td><select id='svc_prf_type_select' required='required' ><option value='select' selected='selected' >Select...</option></select></td>
+    	            		<td width='132px' ><label>*Parent Profile:</label></td><td><select id='svc_prf_type_select' required='required' ><option id='noDelete' value='select' selected='selected' >Select...</option></select></td>
     	            	</tr>
     			        <!--  Conditional HTML code here  --> 
             	        </tbody>
