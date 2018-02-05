@@ -19,9 +19,9 @@
      * @return Array
      *
      */
-    function get_names($active_ltm, $prf_type)
+    function get_names($active_ltm, $prfType)
     {
-        $cmd = '/usr/bin/python /var/www/chaniq/py/get_profiles.py '.$active_ltm.' ' . escapeshellarg($prf_type);
+        $cmd = '/usr/bin/python /var/www/chaniq/py/get_profiles.py '.$active_ltm.' ' . escapeshellarg($prfType);
         //echo "<br>Command:" .$cmd." <br>";
         error_log(date("y-m-d H:i:s").": get_profiles() - get_healthmon() called\n", 3, "/var/log/chaniqphp.log");
         exec($cmd, $output);
@@ -38,7 +38,7 @@
             $bigipIP = $_POST['DevIP'];
             $prfType = $_POST['PrfType'];
             //error_log(date("y-m-d H:i:s").": get_profile_names() - Device IP sent over POST\n", 3, "/var/log/chaniqphp.log");
-            file_put_contents("/var/log/chaniqphp.log", "get_profile_names() Device IP: " . $bigipIP, FILE_APPEND);
+            //file_put_contents("/var/log/chaniqphp.log", "get_profile_names() Device IP: " . $bigipIP, FILE_APPEND);
         }
         
         //$echoOut = echoTest();

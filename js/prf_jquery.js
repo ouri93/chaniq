@@ -1,3 +1,154 @@
+function iterAssArray(assArray){
+	var allKeyVal = '< Associate Array Key-Value List >\n\n';
+	$.each(assArray, function(key, value) {
+		allKeyVal += key + ":" + value + "\n";
+	});
+	return allKeyVal;
+}
+
+function iterArray(aArray){
+	var allVals = '< Array Value List >\n\n';
+	$.each(aArray, function(index) {
+		allVals += aArray[index] + "\n";
+	});
+	return allVals;
+}
+
+function validateInput(prfOptData) {
+	$('#prf_name').css('border-color', '#E1E1E1');
+	//alert("DNS REsolver: " + prfOptData['dnsResolver']);
+	if(prfOptData['name'] == '') {
+		$('#prf_name').css('border-color', 'red');
+		return false;
+	}
+	if (prfOptData['dnsResolver'] == 'select'){
+		$('#newprf_EvalReview').html("** DNS Resolver is required!<br>");
+		return false;
+	}
+	return true;
+}
+
+// Initialize Profile Key and default value based on the profile type
+// This function determins the supported profile options
+function initPrfOptData(prfOptData, prfType) {
+	
+	var prfOptKeys =[]; 
+	
+	if (prfType == "DNS"){
+		/*
+		 * enableDnsExpress-DNS Express , enableDnsFirewall-DNS Security, enableGtm-GSLB, enableHardwareQueryValidation-Protocol Validation, enableHardwareResponseCache-Response Cache
+		 * processRd-Process Recursion Desired, processXfr-Zone Transfer, unhandledQueryAction-Unhandled Query Actions, useLocalBind-Use BIND Server on BIG-IP
+		 */
+		var dnsPrfOptKeys = ['defaultsFrom', 'enableHardwareQueryValidation', 'enableHardwareResponseCache', 'enableDnsExpress', 'enableGtm', 'unhandledQueryAction', 'useLocalBind', 'processXfr','enableDnsFirewall', 'processRd']; 
+		prfOptKeys = prfOptKeys.concat(dnsPrfOptKeys);
+	}
+	else if (prfType == "DNS"){
+		
+	}
+	else if (prfType == "Cookie"){
+		
+	}
+	else if (prfType == "DestAddrAffinity"){
+		
+	}
+	else if (prfType == "SrcAddrAffinity"){
+		
+	}
+	else if (prfType == "Hash"){
+		
+	}
+	else if (prfType == "SSL"){
+		
+	}
+	else if (prfType == "Universal"){
+		
+	}
+	else if (prfType == "FastL4"){
+		
+	}
+	else if (prfType == "TCP"){
+		
+	}
+	else if (prfType == "UDP"){
+		
+	}
+	else if (prfType == "CLIENTSSL"){
+		
+	}
+	else if (prfType == "SERVERSSL"){
+		
+	}
+	else if (prfType == "OneConnect"){
+		
+	}
+	else if (prfType == "Stream"){
+		
+	}
+	
+	for(var i=0; i<prfOptKeys.length;i++){
+		prfOptData[prfOptKeys[i]] = '';
+	}
+}
+
+function initHttpPrfOptData(prfOptData, prfType, pxyMode ) {
+	
+	var prfOptKeys =[]; 
+	
+	if (pxyMode == "reverse"){
+		var httpPrfOptKeys = ['proxyType', 'defaultsFrom', 'basicAuthRealm', 'fallbackHost', 'fallbackStatusCodes', 'headerErase', 'headerInsert', 'requestChunking', 'responseChunking', 'insertXforwardedFor', 'serverAgentName']; 
+		prfOptKeys = prfOptKeys.concat(httpPrfOptKeys);
+	}
+	else if (pxyMode == "explicit") {
+		var httpPrfOptKeys = ['proxyType', 'defaultsFrom', 'basicAuthRealm', 'fallbackHost', 'fallbackStatusCodes', 'headerErase', 'headerInsert', 'requestChunking', 'responseChunking', 'insertXforwardedFor', 'serverAgentName', 'dnsResolver']; 
+		prfOptKeys = prfOptKeys.concat(httpPrfOptKeys);
+	}
+	else if (pxyMode == "transparent") {
+		var httpPrfOptKeys = ['proxyType', 'defaultsFrom', 'basicAuthRealm', 'fallbackHost', 'fallbackStatusCodes', 'headerErase', 'headerInsert', 'requestChunking', 'responseChunking', 'insertXforwardedFor', 'serverAgentName']; 
+		prfOptKeys = prfOptKeys.concat(httpPrfOptKeys);
+	}
+	for(var i=0; i<prfOptKeys.length;i++){
+		prfOptData[prfOptKeys[i]] = '';
+	}
+}
+
+function setHttpPrfOptData(prfOptData, prfType, pxyMode, parPrfName ) {
+	
+	prfOptData['proxyType'] = $('#svc_prf_proxymode_select').val();
+	prfOptData['defaultsFrom'] = '/Common/' + parPrfName;
+	prfOptData['basicAuthRealm'] = $('#httpBasicAuth').val();
+	prfOptData['fallbackHost'] = $('#httpFallbackHost').val();
+	prfOptData['fallbackStatusCodes'] = $('#httpFallbackErrorCodes').val();
+	prfOptData['headerErase'] = $('#httpReqHdrErase').val();
+	prfOptData['headerInsert'] = $('#httpReqHdrInsert').val();
+	prfOptData['requestChunking'] = $('#httpReqChunk option:selected').val();
+	prfOptData['responseChunking'] = $('#httpRespChunk option:selected').val();
+	prfOptData['insertXforwardedFor'] = $('#httpXFF').val();
+	prfOptData['serverAgentName'] = $('#httpAgentName').val();
+	if (pxyMode == 'explicit'){
+		prfOptData['dnsResolver'] = $('#httpDnsResolver').val();
+	}
+	
+}
+
+function setPrfOptData(prfOptData, prfType, parPrfName) {
+
+	if(prfType == 'DNS'){
+		//'defaultsFrom', 'enableHardwareQueryValidation', 'enableHardwareResponseCache', 'enableDnsExpress', 'enableGtm', 'unhandledQueryAction'
+		//'useLocalBind', 'processXfr','enableDnsFirewall', 'processRd'
+		prfOptData['PrfType'] = prfType;
+		prfOptData['defaultsFrom'] = '/Common/' + parPrfName;
+		prfOptData['enableHardwareQueryValidation'] = $('#dnsHwPrtoValid').val();
+		prfOptData['enableHardwareResponseCache'] = $('#dnsHwRespCache').val();
+		prfOptData['enableDnsExpress'] = $('#dnsExp').val();
+		prfOptData['enableGtm'] = $('#dnsGtm').val();
+		prfOptData['unhandledQueryAction'] = $('#dnsUnhandledQueryAct').val();
+		prfOptData['useLocalBind'] = $('#dnsUseBind option:selected').val();
+		prfOptData['processXfr'] = $('#dnsZoneXfr option:selected').val();
+		prfOptData['enableDnsFirewall'] = $('#dnsSecurity').val();
+		prfOptData['processRd'] = $('#dnsRd').val();
+	}
+}
+
 function prfNameProcessData(response_in) {
 	var strResult = '';
 	//Remove existing profile types and then add new ones
@@ -6,18 +157,170 @@ function prfNameProcessData(response_in) {
 	});
 	
 	$.each(response_in, function(index) {
-		if (response_in[index] != "none")
+		if (response_in[index] != "none"){
 			strResult += "<option value='" + response_in[index] + "'>" + response_in[index] + "</option>";
+		}
 	});
 	
 	//alert("Return output: " + strResult);
 	$('#svc_prf_type_select').append(strResult);
 }
 
+function getHttpSettingsProcessData(response_in){
+	//alert("Data: " + response_in);
+	var responseArray = response_in.split('|');
+
+	/* Debugging */
+	/*
+	var strResult = '';
+	$.each(responseArray, function(index) {
+		strResult += responseArray[index] + "<br>";
+	});
+	
+	$('#newprf_EvalReview').html(strResult);
+	*/
+	
+	$('#httpBasicAuth').val(responseArray[2]);
+	$('#httpFallbackHost').val(responseArray[3]);
+	$('#httpFallbackErrorCodes').val(responseArray[4]);
+	$('#httpReqHdrErase').val(responseArray[5]);
+	$('#httpReqHdrInsert').val(responseArray[6]);
+	$('#httpReqChunk option[value="' + responseArray[7] + '"]').attr('selected', 'selected');
+	$('#httpRespChunk option[value="' + responseArray[8] + '"]').attr('selected', 'selected');
+	$('#httpXFF option:selected').val(responseArray[9]);
+	$('#httpAgentName').val(responseArray[10]);
+	if(responseArray[11] != ''){
+		$('#httpDnsResolver option[value="' + responseArray[11] + '"]').attr('selected', 'selected');
+	}
+}
+
+function getPrfSettingsProcessData(response_in){
+	var responseArray = response_in.split('|');
+
+	/* Debugging */
+	/*
+	var strResult = '';
+	$.each(responseArray, function(index) {
+		strResult += responseArray[index] + "<br>";
+	});
+	
+	$('#newprf_EvalReview').html(strResult);
+	*/
+	
+	$('#dnsHwPrtoValid option[value="' + responseArray[1] + '"]').attr('selected', 'selected');
+	$('#dnsHwRespCache option[value="' + responseArray[2] + '"]').attr('selected', 'selected');
+	$('#dnsExp option[value="' + responseArray[3] + '"]').attr('selected', 'selected');
+	$('#dnsGtm option[value="' + responseArray[4] + '"]').attr('selected', 'selected');
+	$('#dnsUnhandledQueryAct option[value="' + responseArray[5] + '"]').attr('selected', 'selected');
+	$('#dnsUseBind option[value="' + responseArray[6] + '"]').attr('selected', 'selected');
+	$('#dnsZoneXfr option[value="' + responseArray[7] + '"]').attr('selected', 'selected');
+	$('#dnsSecurity option[value="' + responseArray[8] + '"]').attr('selected', 'selected');
+	$('#dnsRd option[value="' + responseArray[9] + '"]').attr('selected', 'selected');
+	
+}
+
+function newProfileBuildProcessData(response_in) {
+	var strResult = '';
+	$.each(response_in, function(index) {
+		if(index == 0) 
+			strResult = "<b>" + response_in[index] + "</b><br>";
+		else
+			strResult += response_in[index] + "<br>";
+	});
+	
+	//alert("Return output: " + strResult);
+	$('#newprf_EvalReview').html(strResult);	
+}
+
+function getPrfHtml(prfType, parPrfName){
+	var strHtml = '';
+	if(prfType == 'DNS'){
+		//'defaultsFrom', 'enableHardwareQueryValidation', 'enableHardwareResponseCache', 'enableDnsExpress', 'enableGtm', 'unhandledQueryAction', 'useLocalBind', 'processXfr','enableDnsFirewall', 'processRd'
+		strHtml += "<tr id='r1'><td width='132px' ><label>Hardware Acceleration(Protocol Validation)</label></td><td><select id='dnsHwPrtoValid' ><option value='yes' >Enabled</option><option value='no' selected>Disabled</option></select></td></tr>";
+		strHtml += "<tr id='r2'><td width='132px' ><label>Hardware Acceleration(Response Cache)</label></td><td><select id='dnsHwRespCache' ><option value='yes' >Enabled</option><option value='no' selected>Disabled</option></select></td></tr>";
+		strHtml += "<tr id='r3'><td width='132px' ><label>DNS Express</label></td><td><select id='dnsExp' ><option value='yes' selected >Enabled</option><option value='no'>Disabled</option></select></td></tr>";
+		strHtml += "<tr id='r4'><td width='132px' ><label>GSLB</label></td><td><select id='dnsGtm' ><option value='yes' selected >Enabled</option><option value='no'>Disabled</option></select></td></tr>";
+		strHtml += "<tr id='r5'><td width='132px' ><label>Unhandled Query Actions</label></td><td><select id='dnsUnhandledQueryAct' ><option value='allow' selected >Allow</option><option value='drop'>Drop</option><option value='reject'>Reject</option><option value='hint'>Hint</option><option value='noerror'>No Error</option></select></td></tr>";
+		strHtml += "<tr id='r6'><td width='132px' ><label>Use BIND Server on BIG-IP</label></td><td><select id='dnsUseBind' ><option value='yes' selected >Enabled</option><option value='no'>Disabled</option></select></td></tr>";
+		strHtml += "<tr id='r7'><td width='132px' ><label>Zone Transfer</label></td><td><select id='dnsZoneXfr' ><option value='yes' >Enabled</option><option value='no' selected>Disabled</option></select></td></tr>";
+		strHtml += "<tr id='r8'><td width='132px' ><label>DNS Security</label></td><td><select id='dnsSecurity' ><option value='yes' >Enabled</option><option value='no' selected>Disabled</option></select></td></tr>";
+		strHtml += "<tr id='r9'><td width='132px' ><label>Process Recursion Desired</label></td><td><select id='dnsRd' ><option value='yes' selected>Enabled</option><option value='no'>Disabled</option></select></td></tr>";
+	}
+	return strHtml;
+}
+
+function setPrfHtml(prfType, response_in){
+	var strHtml = '';
+	return strHtml;
+}
+
+function getStrHttpHtml(pxyMode){
+	// Default Page Load action - Load parent profile names
+	var nameAndIp = window.parent.document.getElementById('ltmSelBox').value;
+	var prfType = window.parent.document.getElementById('selectedPrfType').value;
+	if (prfType == 'HTTP')
+		prfType = prfType + ":dnsresolver";
+
+	var arr = nameAndIp.split(":");
+	var dnsRzvs = [];
+	// Get the list of DNS Resolver if HTTP proxy mode is 'explicit'. Wait for ajax transaction completed - async: false
+	ajxOut = $.ajax({
+		url: '/content/get_profile_names.php',
+		type: 'POST',
+		async: false,
+		dataType: 'JSON',
+		data: {method:'get_profile_names', DevIP:arr[1], PrfType:prfType},
+		error: function(jqXHR, textStatus, errorThrown){
+			alert("Ajax call failed!");
+            console.log('jqXHR:');
+            console.log(jqXHR);
+            console.log('textStatus:');
+            console.log(textStatus);
+            console.log('errorThrown:');
+            console.log(errorThrown);
+		}
+	});
+	ajxOut.done(function(response_in){
+		var idx = 0;
+		$.each(response_in, function(index) {
+			if (response_in[index] != "none"){
+				dnsRzvs[idx] = response_in[index];
+				//alert("DNS Resolver Profile name: " + dnsRzvs[idx]);
+				idx += 1;
+			}
+		});
+	});
+	
+	//alert(iterArray(dnsRzvs));
+	//'proxyType', 'defaultsFrom', 'basicAuthRealm', 'fallbackHost', 'fallbackStatusCodes', 'headerErase', 'headerInsert', 'insertXforwardedFor', 'serverAgentName'
+	var strHtml = '';
+	strHtml += "<tr id='r1'><td width='132px' ><label>Basic Auth Realm</label></td><td><input type='text' id='httpBasicAuth' /></td></tr>";
+	strHtml += "<tr id='r2'><td width='132px' ><label>Fallback Host</label></td><td><input type='text' id='httpFallbackHost' /></td></tr>";
+	strHtml += "<tr id='r3'><td width='132px' ><label>Fallback on Error Codes</label></td><td><input type='text' id='httpFallbackErrorCodes' /></td></tr>";
+	strHtml += "<tr id='r4'><td width='132px' ><label>Request Header Erase</label></td><td><input type='text' id='httpReqHdrErase' /></td></tr>";
+	strHtml += "<tr id='r5'><td width='132px' ><label>Request Header Insert</label></td><td><input type='text' id='httpReqHdrInsert' /></td></tr>";
+	strHtml += "<tr id='r6'><td width='132px' ><label>Request Chunking</label></td><td><select id='httpReqChunk' ><option value='preserve' selected >Preserve</option><option value='selective' >Selective</option><option value='rechunk' >Rechunk</option></select></td></tr>";
+	strHtml += "<tr id='r7'><td width='132px' ><label>Response Chunking</label></td><td><select id='httpRespChunk' ><option value='preserve' >Preserve</option><option value='selective' selected >Selective</option><option value='unchunk' >Unchunk</option><option value='rechunk' >Rechunk</option></select></td></tr>";
+	strHtml += "<tr id='r8'><td width='132px' ><label>Insert X-Forwarded-For</label></td><td><select id='httpXFF' ><option value='disabled' selected >Disabled</option><option value='enabled'>Enabled</option></select></td></tr>";
+	strHtml += "<tr id='r9'><td width='132px' ><label>Server Agent Name</label></td><td><input type='text' id='httpAgentName' /></td></tr>";
+	if (pxyMode == "explicit"){
+		strHtml += "<tr id='r10'><td width='132px' ><label>*DNS Resolver</label></td><td><select id='httpDnsResolver'><option value='select' selected>Select...</option>";
+		$.each(dnsRzvs , function(index) {
+			//alert("HTML Building - DNS Resolver Profile name: " + dnsRzvs[index]);
+			strHtml += "<option value='" + dnsRzvs[index] +"'>" + dnsRzvs[index] + "</option>"; 
+		});
+		strHtml += "</select></td></tr>";
+	}
+	return strHtml;
+}
+
 $(function () {
 	// Default Page Load action - Load parent profile names
 	var nameAndIp = window.parent.document.getElementById('ltmSelBox').value;
 	var prfType = window.parent.document.getElementById('selectedPrfType').value;
+	if (prfType == 'HTTP')
+		prfType = prfType + ":" + window.parent.document.getElementById('selectedPrfProxyType').value;
+
 	var arr = nameAndIp.split(":");
 	//alert("Device IP: " + arr[1] + " Profile Type: " + prfType);
 	
@@ -39,13 +342,151 @@ $(function () {
 	});
 	ajxOut.done(prfNameProcessData);
 	
-	//Dynamically add profile names
-	$('#svc_prf_type_select').on('change', function() {
-		alert("Chosen Parent Name: " + $('#svc_prf_type_select').val());
+	$('#svc_prf_proxymode_select').on('change', function() {
+		var nameAndIp = window.parent.document.getElementById('ltmSelBox').value;
+		var arr = nameAndIp.split(":");
+		var pxyMode = $('#svc_prf_proxymode_select').val();
+		var prfType = 'HTTP:'
+		//alert("Proxy Mode: " + pxyMode);
+		if (pxyMode == 'reverse')
+			prfType += 'reverse';
+		else if (pxyMode == 'explicit')
+			prfType += 'explicit';
+		else if (pxyMode == 'transparent')
+			prfType += 'transparent';
+		
+		// Call Ajax to retrieve parent profile names
+		ajxOut = $.ajax({
+			url: '/content/get_profile_names.php',
+			type: 'POST',
+			dataType: 'JSON',
+			data: {method:'get_profile_names', DevIP:arr[1], PrfType:prfType},
+			error: function(jqXHR, textStatus, errorThrown){
+				alert("Ajax call failed!");
+	            console.log('jqXHR:');
+	            console.log(jqXHR);
+	            console.log('textStatus:');
+	            console.log(textStatus);
+	            console.log('errorThrown:');
+	            console.log(errorThrown);
+			}
+		});
+		ajxOut.done(prfNameProcessData);
+		//Clean up profile options tr except first three fixed tr
+    	$('#prfConfTable_tbody tr').each(function(index) {
+    		if (index > 2) $(this).remove();
+    	});
 	});
 	
-	//Load the chosen profile configuration
-	$('#tr_svc_prf_type').on('change','#svc_prf_type_select', function() {
+	//Dynamically add Parent profile names
+	$('#svc_prf_type_select').on('change', function() {
+		//alert("Chosen Parent Name: " + $('#svc_prf_type_select').val());
+		var nameAndIp = window.parent.document.getElementById('ltmSelBox').value;
+		var arr = nameAndIp.split(":");
+		var pxyMode = $('#svc_prf_proxymode_select').val();
+		var prfType = window.parent.document.getElementById('selectedPrfType').value;
+		var parPrfName = $('#svc_prf_type_select').val();
+		//alert("Proxy Mode: " + pxyMode + " Profile Type: " + prfType + " Parent Profile name: " + parPrfName);
+		var prfOptData = {'phpFileName':'', 'DevIP':'', 'name':''};
+
+		// 1. Build configuration data structure according to the chosen profile name		
+		if (prfType == "HTTP") initHttpPrfOptData(prfOptData, prfType, pxyMode);
+		else initPrfOptData(prfOptData, prfType);
+		
+		
+		// Profile Names: HTTP, DNS, Cookie, DestAddrAffinity, SrcAddrAffinity, Hash, SSL, Universal, FastL4, TCP, UDP, CLIENTSSL, SERVERSSL, OneConnect, Stream
+		if (prfType == "HTTP"){
+			//alert(iterAssArray(prfOptData));
+			// 2. Build Dynamic configuration page according to the chosen profile name
+			var strHtml = getStrHttpHtml(pxyMode);
+	    	$('#prfConfTable_tbody tr').each(function(index) {
+	    		if (index != 0 && index != 1 && index != 2) $(this).remove();
+	    	});
+
+			$('#prfConfTable_tbody').append(strHtml);
+			// 3. Load the chosen profile configuration
+			ajaxOut = $.ajax({
+	    		url:'/content/getHttpSettings.php',
+	    		type: 'POST',
+	    		data: {method:'getHttpSettings', DevIP:arr[1], ProxyType:pxyMode, PrfType:prfType, PrfName:parPrfName },
+	    		error: function(jqXHR, textStatus, errorThrown){
+					alert("Ajax call failed!");
+		            console.log('jqXHR:');
+		            console.log(jqXHR);
+		            console.log('textStatus:');
+		            console.log(textStatus);
+		            console.log('errorThrown:');
+		            console.log(errorThrown);
+				}
+	    	}); 
+	    	ajaxOut.done(getHttpSettingsProcessData);
+			
+		}
+		else if (prfType == "DNS"){
+			//alert(iterAssArray(prfOptData));
+			// 2. Build Dynamic configuration page according to the chosen profile name
+			var strHtml = getPrfHtml(prfType, parPrfName);
+	    	$('#prfConfTable_tbody tr').each(function(index) {
+	    		if (index != 0 && index != 1 && index != 2) $(this).remove();
+	    	});
+			$('#prfConfTable_tbody').append(strHtml);
+			// 3. Load the chosen profile configuration
+			ajaxOut = $.ajax({
+	    		url:'/content/getPrfSettings.php',
+	    		type: 'POST',
+	    		data: {method:'getPrfSettings', DevIP:arr[1], PrfType:prfType, ParPrfName:parPrfName },
+	    		error: function(jqXHR, textStatus, errorThrown){
+					alert("Ajax call failed!");
+		            console.log('jqXHR:');
+		            console.log(jqXHR);
+		            console.log('textStatus:');
+		            console.log(textStatus);
+		            console.log('errorThrown:');
+		            console.log(errorThrown);
+				}
+	    	}); 
+	    	ajaxOut.done(getPrfSettingsProcessData);
+			
+		}
+		else if (prfType == "Cookie"){
+			
+		}
+		else if (prfType == "DestAddrAffinity"){
+			
+		}
+		else if (prfType == "SrcAddrAffinity"){
+			
+		}
+		else if (prfType == "Hash"){
+			
+		}
+		else if (prfType == "SSL"){
+			
+		}
+		else if (prfType == "Universal"){
+			
+		}
+		else if (prfType == "FastL4"){
+			
+		}
+		else if (prfType == "TCP"){
+			
+		}
+		else if (prfType == "UDP"){
+			
+		}
+		else if (prfType == "CLIENTSSL"){
+			
+		}
+		else if (prfType == "SERVERSSL"){
+			
+		}
+		else if (prfType == "OneConnect"){
+			
+		}
+		else if (prfType == "Stream"){
+			
+		}
 		
 	});
 	
@@ -53,6 +494,78 @@ $(function () {
 		//Retrieve the element data of the parent window
 		var nameAndIp = window.parent.document.getElementById('ltmSelBox').value;
 		var arr = nameAndIp.split(":");
+		// prfName - User provided profile name
+		var prfName = $('#prf_name').val();
+		// pxyMode - HTTP profile only. HTTP proxy mode - reverse, explicit, transparent
+		var pxyMode = $('#svc_prf_proxymode_select').val();
+		// parPrfName - Parent Profile Name
+		var parPrfName = $('#svc_prf_type_select').val();
+		var prfType = window.parent.document.getElementById('selectedPrfType').value;
+		//alert("Proxy Mode: " + pxyMode + " Profile Type: " + prfType + " Parent Profile name: " + parPrfName);
+		var prfOptData = {'phpFileName':'', 'DevIP':'', 'name':''};
+		if (prfType == 'HTTP')
+			prfOptData['phpFileName'] = 'new_httpProfile_build';
+		else
+			prfOptData['phpFileName'] = 'new_Profile_build';
+		
+		prfOptData['DevIP'] = arr[1];
+		prfOptData['name'] = prfName;
+		
+		// 1. Build configuration data structure according to the chosen profile name		
+		if (prfType == "HTTP") initHttpPrfOptData(prfOptData, prfType, pxyMode);
+		else initPrfOptData(prfOptData, prfType);
+		
+		if (prfType == "HTTP"){
+			// 2. Retrieve configuration data and save them according to the chosen profile name
+			setHttpPrfOptData(prfOptData, prfType, pxyMode, parPrfName);
+			//alert(iterAssArray(prfOptData));
+			if( !validateInput(prfOptData)) return;
+
+			// 3. Load the chosen profile configuration
+			ajaxOut = $.ajax({
+	    		url:'/content/new_httpProfile_build.php',
+	    		type: 'POST',
+	    		dataType: 'JSON',
+	    		data: {'newProfileBuild': JSON.stringify(prfOptData)},
+	    		error: function(jqXHR, textStatus, errorThrown){
+					alert("Ajax call failed!");
+		            console.log('jqXHR:');
+		            console.log(jqXHR);
+		            console.log('textStatus:');
+		            console.log(textStatus);
+		            console.log('errorThrown:');
+		            console.log(errorThrown);
+				}
+	    	}); 
+	    	ajaxOut.done(newProfileBuildProcessData);
+
+		}
+		else if (prfType == "DNS"){
+			// 2. Retrieve configuration data and save them according to the chosen profile name
+			setPrfOptData(prfOptData, prfType, parPrfName);
+			//alert(iterAssArray(prfOptData));
+			if( !validateInput(prfOptData)) return;
+
+			// 3. Load the chosen profile configuration
+			ajaxOut = $.ajax({
+	    		url:'/content/new_Profile_build.php',
+	    		type: 'POST',
+	    		dataType: 'JSON',
+	    		data: {'newProfileBuild': JSON.stringify(prfOptData)},
+	    		error: function(jqXHR, textStatus, errorThrown){
+					alert("Ajax call failed!");
+		            console.log('jqXHR:');
+		            console.log(jqXHR);
+		            console.log('textStatus:');
+		            console.log(textStatus);
+		            console.log('errorThrown:');
+		            console.log(errorThrown);
+				}
+	    	}); 
+	    	ajaxOut.done(newProfileBuildProcessData);
+
+		}			
+				
 	});
 	
 });

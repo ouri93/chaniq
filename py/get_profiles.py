@@ -53,6 +53,57 @@ def get_httpprofiles(mr):
 	#logging.info('output in get_httpprofile: %s' % output)
 	return output
 
+def get_pxyhttpprofiles(mr):
+	httppf = mr.tm.ltm.profile.https.get_collection()
+	output = ''
+	
+	for pf in httppf:
+		if output != '' and pf.proxyType == 'reverse':
+			output = output + ':'
+		#logging.info('HTTP profile: %s' % pf.name)
+		if pf.proxyType == 'reverse':
+			output = output + pf.name
+	#logging.info('output in get_pxyhttpprofile: %s' % output)
+	return output
+
+def get_exphttpprofiles(mr):
+	httppf = mr.tm.ltm.profile.https.get_collection()
+	output = 'none'
+	
+	for pf in httppf:
+		if output != '' and pf.proxyType == 'explicit':
+			output = output + ':'
+		#logging.info('HTTP profile: %s' % pf.name)
+		if pf.proxyType == 'explicit':
+			output = output + pf.name
+	#logging.info('output in get_httpprofile: %s' % output)
+	return output
+
+def get_transhttpprofiles(mr):
+	httppf = mr.tm.ltm.profile.https.get_collection()
+	output = 'none'
+	
+	for pf in httppf:
+		if output != '' and pf.proxyType == 'transparent':
+			output = output + ':'
+		#logging.info('HTTP profile: %s' % pf.name)
+		if pf.proxyType == 'transparent':
+			output = output + pf.name		
+
+	#logging.info('output in get_httpprofile: %s' % output)
+	return output
+def get_dnsresolverprofiles(mr):
+	dnsRzvs = mr.tm.net.dns_resolvers.get_collection()
+	output = 'none'
+	
+	for pf in dnsRzvs:
+		if output != '':
+			output = output + ':'
+		#logging.info('HTTP profile: %s' % pf.name)
+		output = output + pf.name
+	#logging.info('output in get_httpprofile: %s' % output)
+	return output	
+
 def get_dnsprofiles(mr):
 	dnspf = mr.tm.ltm.profile.dns_s.get_collection()
 	output = 'none'
@@ -168,6 +219,16 @@ def get_ocprofiles(mr):
 		output = output + pf.name
 	return output
 
+def get_strmprofiles(mr):
+	strmpf = mr.tm.ltm.profile.streams.get_collection()
+	output = ''
+	for pf in strmpf:
+		if output != '':
+			output = output + ':'
+		#logging.info('Universal profile: %s' % pf.name)
+		output = output + pf.name
+	return output
+
 def get_irules(mr):
 	unipf = mr.tm.ltm.rules.get_collection()
 	output = 'none'
@@ -237,6 +298,14 @@ def get_active_profiles(dev_ip, pf_type):
 		output = get_sslprofiles(mr)
 	elif pf_type == "Universal":
 		output = get_univprofiles(mr)
+	elif pf_type == "HTTP:reverse":
+		output = get_pxyhttpprofiles(mr)
+	elif pf_type == "HTTP:explicit":
+		output = get_exphttpprofiles(mr)
+	elif pf_type == "HTTP:transparent":
+		output = get_transhttpprofiles(mr)
+	elif pf_type == "HTTP:dnsresolver":
+		output = get_dnsresolverprofiles(mr)
 	elif pf_type == "HTTP":
 		output = get_httpprofiles(mr)
 	elif pf_type == "DNS":
@@ -247,6 +316,8 @@ def get_active_profiles(dev_ip, pf_type):
 		output = get_srvsslprofiles(mr)
 	elif pf_type == "OneConnect":
 		output = get_ocprofiles(mr)
+	elif pf_type == "Stream":
+		output = get_strmprofiles(mr)
 	elif pf_type == "IRULE":
 		output = get_irules(mr)
 	elif pf_type == "SNATPOOL":

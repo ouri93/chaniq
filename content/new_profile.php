@@ -43,6 +43,7 @@
         echo "<li id='li_prf_other'><a href='#'>Other</a>";
             echo "<ul id='ul_prf_selected'>";
             echo "<li value='OneConnect'><a href='#'>OneConnect</a></li>";
+            echo "<li value='Stream'><a href='#'>Stream</a></li>";
         echo "</li>";        
 
     echo "</ul>";
@@ -75,6 +76,7 @@
         </fieldset>
 	
         <fieldset  id='prf_iframe_fieldset' class="row1">
+        <input type='hidden' id='selectedPrfProxyType' value='reverse' />
         <input type='hidden' id='selectedPrfType' value='HTTP' />
 		<!-- IFrame content here -->
 		<!-- Default Page content - HTTP Profile -->

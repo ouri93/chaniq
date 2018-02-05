@@ -740,9 +740,12 @@ $(function () {
     	// Save the li value of the selected
     	prfSelected = $(this).attr('value');
     	$('#prf_iframe_fieldset').empty();
+    	if(prfSelected == 'HTTP')
+    		$('#prf_iframe_fieldset').append("<input type='hidden' id='selectedPrfProxyType' value='reverse' />");
     	$('#prf_iframe_fieldset').append("<input type='hidden' id='selectedPrfType' value=" + prfSelected + " />");
     	//alert("Profile Type: " + prfSelected + " again: " + $(this).text());
     	
+    	// Profile Names: HTTP, DNS, Cookie, DestAddrAffinity, SrcAddrAffinity, Hash, SSL, Universal, FastL4, TCP, UDP, CLIENTSSL, SERVERSSL, OneConnect, Stream
     	if (prfSelected == 'HTTP'){
     		$('#prf_iframe_fieldset').append('<legend>HTTP Profile Configuration</legend>');
     		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_svc_http.php" width="725px" height="600" frameborder="0"></iframe>');
@@ -798,6 +801,10 @@ $(function () {
     	else if (prfSelected == 'OneConnect'){
     		$('#prf_iframe_fieldset').append('<legend>OneConnect Profile Configuration</legend>');
     		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_other_oneconnect.php" width="725px" height="600" frameborder="0"></iframe>');
+    	}
+    	else if (prfSelected == 'Stream'){
+    		$('#prf_iframe_fieldset').append('<legend>Stream Profile Configuration</legend>');
+    		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_other_stream.php" width="725px" height="600" frameborder="0"></iframe>');
     	}
     });
     
