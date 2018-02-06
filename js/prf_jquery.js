@@ -40,13 +40,12 @@ function initPrfOptData(prfOptData, prfType) {
 		 * processRd-Process Recursion Desired, processXfr-Zone Transfer, unhandledQueryAction-Unhandled Query Actions, useLocalBind-Use BIND Server on BIG-IP
 		 */
 		var dnsPrfOptKeys = ['defaultsFrom', 'enableHardwareQueryValidation', 'enableHardwareResponseCache', 'enableDnsExpress', 'enableGtm', 'unhandledQueryAction', 'useLocalBind', 'processXfr','enableDnsFirewall', 'processRd']; 
-		prfOptKeys = prfOptKeys.concat(dnsPrfOptKeys);
-	}
-	else if (prfType == "DNS"){
-		
 	}
 	else if (prfType == "Cookie"){
-		
+		/*
+		 * 'defaultsFrom', 'method'- Cookie method(hash, insert, passive, rewrite), 'cookieName', 'httponly', 'secure', 'alwaysSend', 'expiration', 'overrideConnectionLimit'
+		 */
+		var dnsPrfOptKeys = ['defaultsFrom', 'method', 'cookieName', 'httponly', 'secure', 'alwaysSend', 'expiration', 'overrideConnectionLimit'];
 	}
 	else if (prfType == "DestAddrAffinity"){
 		
@@ -84,6 +83,8 @@ function initPrfOptData(prfOptData, prfType) {
 	else if (prfType == "Stream"){
 		
 	}
+
+	prfOptKeys = prfOptKeys.concat(dnsPrfOptKeys);
 	
 	for(var i=0; i<prfOptKeys.length;i++){
 		prfOptData[prfOptKeys[i]] = '';
@@ -146,6 +147,20 @@ function setPrfOptData(prfOptData, prfType, parPrfName) {
 		prfOptData['processXfr'] = $('#dnsZoneXfr option:selected').val();
 		prfOptData['enableDnsFirewall'] = $('#dnsSecurity').val();
 		prfOptData['processRd'] = $('#dnsRd').val();
+	}
+	else if(prfType == "Cookie") {
+		//'defaultsFrom', 'method'- Cookie method(hash, insert, passive, rewrite), 'cookieName', 'httponly', 'secure', 'alwaysSend', 'expiration', 'overrideConnectionLimit'
+		prfOptData['PrfType'] = prfType;
+		prfOptData['defaultsFrom'] = '/Common/' + parPrfName;
+		prfOptData['method'] = $('#ckMethod option:selected').val();
+		prfOptData['cookieName'] = $('#ckName').val();
+		prfOptData['httponly'] = $('#ckHttpOnly option:selected').val();
+		prfOptData['secure'] = $('#ckSecure option:selected').val();
+		if ($('#ckAlzSend').prop('checked') == true) prfOptData['alwaysSend'] = 'enabled';
+		else prfOptData['alwaysSend'] = 'disabled';
+		prfOptData['expiration'] = $('#ckExp').val();
+		prfOptData['overrideConnectionLimit'] = $('#ckConnLimit option:selected').val();
+		
 	}
 }
 
@@ -219,7 +234,56 @@ function getPrfSettingsProcessData(response_in){
 	
 }
 
+function processGetProfileData(response_in, prfType){
+	var responseArray = response_in.split('|');
+	alert('First Data: ' + responseArray[0] + 'Profile Type: ' + prfType);
+	/* Debugging */
+	/*
+	var strResult = '';
+	$.each(responseArray, function(index) {
+		strResult += responseArray[index] + "<br>";
+	});
+	
+	$('#newprf_EvalReview').html(strResult);
+	*/
+	if(prfType == 'DNS'){
+		$('#dnsHwPrtoValid option[value="' + responseArray[1] + '"]').attr('selected', 'selected');
+		$('#dnsHwRespCache option[value="' + responseArray[2] + '"]').attr('selected', 'selected');
+		$('#dnsExp option[value="' + responseArray[3] + '"]').attr('selected', 'selected');
+		$('#dnsGtm option[value="' + responseArray[4] + '"]').attr('selected', 'selected');
+		$('#dnsUnhandledQueryAct option[value="' + responseArray[5] + '"]').attr('selected', 'selected');
+		$('#dnsUseBind option[value="' + responseArray[6] + '"]').attr('selected', 'selected');
+		$('#dnsZoneXfr option[value="' + responseArray[7] + '"]').attr('selected', 'selected');
+		$('#dnsSecurity option[value="' + responseArray[8] + '"]').attr('selected', 'selected');
+		$('#dnsRd option[value="' + responseArray[9] + '"]').attr('selected', 'selected');
+	}
+	else if(prfType == 'Cookie'){
+		$('#ckMethod option[value="' + responseArray[1] + '"]').attr('selected', 'selected');
+		$('#ckName').val(responseArray[2]);
+		$('#ckHttpOnly option[value="' + responseArray[3] + '"]').attr('selected', 'selected');
+		$('#ckSecure option[value="' + responseArray[4] + '"]').attr('selected', 'selected');
+		if (responseArray[5] == 'enabled') $('#ckAlzSend').prop('checked', true);	
+		else  $('#ckAlzSend').prop('checked', false);
+		$('#ckExp').val(responseArray[6]);
+		$('#ckConnLimit option[value="' + responseArray[7] + '"]').attr('selected', 'selected');
+	}
+}
+
+
 function newProfileBuildProcessData(response_in) {
+	var strResult = '';
+	$.each(response_in, function(index) {
+		if(index == 0) 
+			strResult = "<b>" + response_in[index] + "</b><br>";
+		else
+			strResult += response_in[index] + "<br>";
+	});
+	
+	//alert("Return output: " + strResult);
+	$('#newprf_EvalReview').html(strResult);	
+}
+
+function processBuildProfileData(response_in, prfType) {
 	var strResult = '';
 	$.each(response_in, function(index) {
 		if(index == 0) 
@@ -245,6 +309,17 @@ function getPrfHtml(prfType, parPrfName){
 		strHtml += "<tr id='r7'><td width='132px' ><label>Zone Transfer</label></td><td><select id='dnsZoneXfr' ><option value='yes' >Enabled</option><option value='no' selected>Disabled</option></select></td></tr>";
 		strHtml += "<tr id='r8'><td width='132px' ><label>DNS Security</label></td><td><select id='dnsSecurity' ><option value='yes' >Enabled</option><option value='no' selected>Disabled</option></select></td></tr>";
 		strHtml += "<tr id='r9'><td width='132px' ><label>Process Recursion Desired</label></td><td><select id='dnsRd' ><option value='yes' selected>Enabled</option><option value='no'>Disabled</option></select></td></tr>";
+	}
+	else if(prfType == 'Cookie') {
+		//'defaultsFrom', 'method'- Cookie method(hash, insert, passive, rewrite), 'cookieName', 'httponly', 'secure', 'alwaysSend', 'expiration', 'overrideConnectionLimit'
+		strHtml += "<tr id='r1'><td width='132px' ><label>Cookie Method</label></td><td><select id='ckMethod' ><option value='hash'>Cookie Hash</option><option value='insert' selected>HTTP Cookie Insert</option><option value='passive'>HTTP Cookie Passive</option><option value='rewrite'>HTTP Cookie Rewrite</option></select></td></tr>";
+		strHtml += "<tr id='r2'><td width='132px' ><label>Cookie Name</label></td><td><input type='text' id='ckName' /><br><p>** Cookie name is requred if the method is Cookie Hash or Cookie Passive</p><td></tr>";
+		strHtml += "<tr id='r3'><td width='132px' ><label>HTTPOnly Attribute</label></td><td><select id='ckHttpOnly' ><option value='enabled'>Enabled</option><option value='disabled' selected>Disabled</option></select></td></tr>";
+		strHtml += "<tr id='r4'><td width='132px' ><label>Secure Attribute</label></td><td><select id='ckSecure' ><option value='enabled'>Enabled</option><option value='disabled' selected>Disabled</option></select></td></tr>";
+		strHtml += "<tr id='r5'><td width='132px' ><label>Always Send Cookie</label></td><td><input type='checkbox' id='ckAlzSend' value='enabled'/></td></tr>";
+		strHtml += "<tr id='r6'><td width='132px' ><label>Expiration</label></td><td><input type='text' id='ckExp' value='0'><br><p> Note: 0 - Session Cookie. To specify specific expiration period, use D:H:M:S format.</p></td></tr>";
+		strHtml += "<tr id='r7'><td width='132px' ><label>Override Connection Limit</label></td><td><select id='ckConnLimit' ><option value='enabled' selected>Enabled</option><option value='disabled'>Disabled</option></select></td></tr>";
+		
 	}
 	return strHtml;
 }
@@ -422,12 +497,38 @@ $(function () {
 	    	ajaxOut.done(getHttpSettingsProcessData);
 			
 		}
+		else {
+			var strHtml = getPrfHtml(prfType, parPrfName);
+	    	$('#prfConfTable_tbody tr').each(function(index) {
+	    		if (index != 0 && index != 1) $(this).remove();
+	    	});
+			$('#prfConfTable_tbody').append(strHtml);
+			// 3. Load the chosen profile configuration
+			ajaxOut = $.ajax({
+	    		url:'/content/getPrfSettings.php',
+	    		type: 'POST',
+	    		data: {method:'getPrfSettings', DevIP:arr[1], PrfType:prfType, ParPrfName:parPrfName },
+	    		error: function(jqXHR, textStatus, errorThrown){
+					alert("Ajax call failed!");
+		            console.log('jqXHR:');
+		            console.log(jqXHR);
+		            console.log('textStatus:');
+		            console.log(textStatus);
+		            console.log('errorThrown:');
+		            console.log(errorThrown);
+				},
+	    	});
+			ajaxOut.done(function(response_in){
+				processGetProfileData(response_in, prfType);
+			});			
+		} 
+		/*
 		else if (prfType == "DNS"){
 			//alert(iterAssArray(prfOptData));
 			// 2. Build Dynamic configuration page according to the chosen profile name
 			var strHtml = getPrfHtml(prfType, parPrfName);
 	    	$('#prfConfTable_tbody tr').each(function(index) {
-	    		if (index != 0 && index != 1 && index != 2) $(this).remove();
+	    		if (index != 0 && index != 1) $(this).remove();
 	    	});
 			$('#prfConfTable_tbody').append(strHtml);
 			// 3. Load the chosen profile configuration
@@ -445,11 +546,36 @@ $(function () {
 		            console.log(errorThrown);
 				}
 	    	}); 
-	    	ajaxOut.done(getPrfSettingsProcessData);
+			ajaxOut.done(function(response_in){
+				processGetProfileData(response_in, prfType);
+			});
 			
 		}
 		else if (prfType == "Cookie"){
-			
+			var strHtml = getPrfHtml(prfType, parPrfName);
+	    	$('#prfConfTable_tbody tr').each(function(index) {
+	    		if (index != 0 && index != 1) $(this).remove();
+	    	});
+			$('#prfConfTable_tbody').append(strHtml);
+			// 3. Load the chosen profile configuration
+			ajaxOut = $.ajax({
+	    		url:'/content/getPrfSettings.php',
+	    		type: 'POST',
+	    		data: {method:'getPrfSettings', DevIP:arr[1], PrfType:prfType, ParPrfName:parPrfName },
+	    		error: function(jqXHR, textStatus, errorThrown){
+					alert("Ajax call failed!");
+		            console.log('jqXHR:');
+		            console.log(jqXHR);
+		            console.log('textStatus:');
+		            console.log(textStatus);
+		            console.log('errorThrown:');
+		            console.log(errorThrown);
+				},
+	    	});
+			ajaxOut.done(function(response_in){
+				processGetProfileData(response_in, prfType);
+			});
+
 		}
 		else if (prfType == "DestAddrAffinity"){
 			
@@ -487,7 +613,7 @@ $(function () {
 		else if (prfType == "Stream"){
 			
 		}
-		
+		*/
 	});
 	
 	$('#prf_btn_build').on('click', function(){
@@ -540,6 +666,33 @@ $(function () {
 	    	ajaxOut.done(newProfileBuildProcessData);
 
 		}
+		else {
+			// 2. Retrieve configuration data and save them according to the chosen profile name
+			setPrfOptData(prfOptData, prfType, parPrfName);
+			//alert(iterAssArray(prfOptData));
+			if( !validateInput(prfOptData)) return;
+
+			// 3. Load the chosen profile configuration
+			ajaxOut = $.ajax({
+	    		url:'/content/new_Profile_build.php',
+	    		type: 'POST',
+	    		dataType: 'JSON',
+	    		data: {'newProfileBuild': JSON.stringify(prfOptData)},
+	    		error: function(jqXHR, textStatus, errorThrown){
+					alert("Ajax call failed!");
+		            console.log('jqXHR:');
+		            console.log(jqXHR);
+		            console.log('textStatus:');
+		            console.log(textStatus);
+		            console.log('errorThrown:');
+		            console.log(errorThrown);
+				}
+	    	}); 
+			ajaxOut.done(function(response_in){
+				processBuildProfileData(response_in, prfType);
+			});			
+		}
+		/*
 		else if (prfType == "DNS"){
 			// 2. Retrieve configuration data and save them according to the chosen profile name
 			setPrfOptData(prfOptData, prfType, parPrfName);
@@ -564,8 +717,35 @@ $(function () {
 	    	}); 
 	    	ajaxOut.done(newProfileBuildProcessData);
 
-		}			
-				
+		}
+		else if (prfType == "Cookie"){
+			// 2. Retrieve configuration data and save them according to the chosen profile name
+			setPrfOptData(prfOptData, prfType, parPrfName);
+			//alert(iterAssArray(prfOptData));
+			if( !validateInput(prfOptData)) return;
+
+			// 3. Load the chosen profile configuration
+			ajaxOut = $.ajax({
+	    		url:'/content/new_Profile_build.php',
+	    		type: 'POST',
+	    		dataType: 'JSON',
+	    		data: {'newProfileBuild': JSON.stringify(prfOptData)},
+	    		error: function(jqXHR, textStatus, errorThrown){
+					alert("Ajax call failed!");
+		            console.log('jqXHR:');
+		            console.log(jqXHR);
+		            console.log('textStatus:');
+		            console.log(textStatus);
+		            console.log('errorThrown:');
+		            console.log(errorThrown);
+				}
+	    	}); 
+			ajaxOut.done(function(response_in){
+				processBuildProfileData(response_in, prfType);
+			});
+
+		}	
+		*/		
 	});
 	
 });

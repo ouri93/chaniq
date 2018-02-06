@@ -44,7 +44,19 @@
             file_put_contents("/var/log/chaniqphp.log", "new_DnsProfile_build() Device IP: " . $prfDevIp . " Profile Name: " .$prfName. " Defaults-From: " .$prfDftFrom." HW Query Validation: " .$prfHwValid." HW Response Cache: " .$prfHwRespCache." DNS Express: " .$prfDnsExp. " GSLB: " .$prfGtm. " Unhandled Query Action: " .$prfUnhandledAct." Use BIND: " .$prfUseBind." Zone Transfer: " .$prfZoneXfr."\n", FILE_APPEND);
             $cmd = '/usr/bin/python /var/www/chaniq/py/new_DnsProfile_build.py '. escapeshellarg($prfDevIp) .' '. escapeshellarg($prfName) .' '. escapeshellarg($prfDftFrom) .' '. escapeshellarg($prfHwValid) .' '. escapeshellarg($prfHwRespCache) .' '. escapeshellarg($prfDnsExp) .' '. escapeshellarg($prfGtm) .' '. escapeshellarg($prfUnhandledAct) .' '. escapeshellarg($prfUseBind) .' '. escapeshellarg($prfZoneXfr).' '. escapeshellarg($prfDnsSecurity) .' '. escapeshellarg($prfRecursion);
         }
-
+        else if ($prfType == 'Cookie'){
+            $prfPara1 = $profileData->defaultsFrom;
+            $prfPara2 = $profileData->method;
+            $prfPara3 = $profileData->cookieName;
+            $prfPara4 = $profileData->httponly;
+            $prfPara5 = $profileData->secure;
+            $prfPara6 = $profileData->alwaysSend;
+            $prfPara7 = $profileData->expiration;
+            $prfPara8 = $profileData->overrideConnectionLimit;
+            
+            file_put_contents("/var/log/chaniqphp.log", "new_cookieProfile_build() Device IP: " . $prfDevIp . " Profile Name: " .$prfName. " Defaults-From: " .$prfPara1." Cookie Method: " .$prfPara2." Cookie Name: " .$prfPara3." Http Only: " .$prfPara4. " Secure Attribute: " .$prfPara5. " Always Send Cookie: " .$prfPara6." Expiration: " .$prfPara7." Override Connection Limit: " .$prfPara8."\n", FILE_APPEND);
+            $cmd = '/usr/bin/python /var/www/chaniq/py/new_cookieProfile_build.py '. escapeshellarg($prfDevIp) .' '. escapeshellarg($prfName) .' '. escapeshellarg($prfPara1) .' '. escapeshellarg($prfPara2) .' '. escapeshellarg($prfPara3) .' '. escapeshellarg($prfPara4) .' '. escapeshellarg($prfPara5) .' '. escapeshellarg($prfPara6) .' '. escapeshellarg($prfPara7).' '. escapeshellarg($prfPara8);
+        }
         $output = shell_exec($cmd);
         error_log(date("y-m-d H:i:s").": After python call - new_Profile_build.php() new_Profile_build() function called!\n", 3, "/var/log/chaniqphp.log");
 

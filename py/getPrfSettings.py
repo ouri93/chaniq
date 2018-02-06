@@ -47,6 +47,27 @@ def getDnsPrfSettings(mr, parPrfName):
         logging.info("Exception during retrieving DNS profile setting: " + str(e))
     logging.info('getDnsPrfSettings(): ' + output)
     return output
+
+def getCookiePrfSettings(mr, parPrfName):
+    cookiePrfs = mr.tm.ltm.persistence.cookies.get_collection()
+    output = ''
+    
+    #outputDict = {'defaultsFrom', 'method'- Cookie method(hash, insert, passive, rewrite), 'cookieName', 'httponly', 'secure', 'alwaysSend', 'expiration', 'overrideConnectionLimit']
+    try:
+        for aprf in cookiePrfs:
+            if(aprf.name == parPrfName):
+                output += '/Common/'+ parPrfName + '|'
+                output += get_setting_val(aprf, 'method') + '|'
+                output += get_setting_val(aprf, 'cookieName') + '|'
+                output += get_setting_val(aprf, 'httponly') + '|'
+                output += get_setting_val(aprf, 'secure') + '|'
+                output += get_setting_val(aprf, 'alwaysSend') + '|'
+                output += get_setting_val(aprf, 'expiration') + '|'                
+                output += get_setting_val(aprf, 'overrideConnectionLimit')
+    except Exception as e:
+        logging.info("Exception during retrieving Cookie Persistence profile setting: " + str(e))
+    logging.info('getCookiePrfSettings(): ' + output)
+    return output
     
 
 def getPrfSettings(dev_ip, prfType, parPrfName):
@@ -61,7 +82,7 @@ def getPrfSettings(dev_ip, prfType, parPrfName):
         logging.info('getPrfSettings() DNS')
         output = getDnsPrfSettings(mr, parPrfName)
     elif prfType == "Cookie":
-        output = getHttpExpSettings(mr, parPrfName)            
+        output = getCookiePrfSettings(mr, parPrfName)            
     elif prfType == "DestAddrAffinity":
         output = getHttpExpSettings(mr, parPrfName)
     elif prfType == "SrcAddrAffinity":
