@@ -57,6 +57,34 @@
             file_put_contents("/var/log/chaniqphp.log", "new_cookieProfile_build() Device IP: " . $prfDevIp . " Profile Name: " .$prfName. " Defaults-From: " .$prfPara1." Cookie Method: " .$prfPara2." Cookie Name: " .$prfPara3." Http Only: " .$prfPara4. " Secure Attribute: " .$prfPara5. " Always Send Cookie: " .$prfPara6." Expiration: " .$prfPara7." Override Connection Limit: " .$prfPara8."\n", FILE_APPEND);
             $cmd = '/usr/bin/python /var/www/chaniq/py/new_cookieProfile_build.py '. escapeshellarg($prfDevIp) .' '. escapeshellarg($prfName) .' '. escapeshellarg($prfPara1) .' '. escapeshellarg($prfPara2) .' '. escapeshellarg($prfPara3) .' '. escapeshellarg($prfPara4) .' '. escapeshellarg($prfPara5) .' '. escapeshellarg($prfPara6) .' '. escapeshellarg($prfPara7).' '. escapeshellarg($prfPara8);
         }
+        else if ($prfType == 'DestAddrAffinity'){
+            $prfPara1 = $profileData->defaultsFrom;
+            $prfPara2 = $profileData->matchAcrossServices;
+            $prfPara3 = $profileData->matchAcrossVirtuals;
+            $prfPara4 = $profileData->matchAcrossPools;
+            $prfPara5 = $profileData->hashAlgorithm;
+            $prfPara6 = $profileData->timeout;
+            $prfPara7 = $profileData->mask;
+            $prfPara8 = $profileData->overrideConnectionLimit;
+            
+            file_put_contents("/var/log/chaniqphp.log", "new_dstAffProfile_build() Device IP: " . $prfDevIp . " Profile Name: " .$prfName. " Defaults-From: " .$prfPara1." Match Across Services: " .$prfPara2." Match Across VSs: " .$prfPara3." Match Across Pools: " .$prfPara4. " Hash Algo.: " .$prfPara5. " Timeout: " .$prfPara6." Prefix Length: " .$prfPara7." Override Connection Limit: " .$prfPara8."\n", FILE_APPEND);
+            $cmd = '/usr/bin/python /var/www/chaniq/py/new_dstAffProfile_build.py '. escapeshellarg($prfDevIp) .' '. escapeshellarg($prfName) .' '. escapeshellarg($prfPara1) .' '. escapeshellarg($prfPara2) .' '. escapeshellarg($prfPara3) .' '. escapeshellarg($prfPara4) .' '. escapeshellarg($prfPara5) .' '. escapeshellarg($prfPara6) .' '. escapeshellarg($prfPara7).' '. escapeshellarg($prfPara8);
+        }
+        else if ($prfType == 'SrcAddrAffinity'){
+            $prfPara1 = $profileData->defaultsFrom;
+            $prfPara2 = $profileData->matchAcrossServices;
+            $prfPara3 = $profileData->matchAcrossVirtuals;
+            $prfPara4 = $profileData->matchAcrossPools;
+            $prfPara5 = $profileData->hashAlgorithm;
+            $prfPara6 = $profileData->timeout;
+            $prfPara7 = $profileData->mask;
+            $prfPara8 = $profileData->mapProxies;
+            $prfPara9 = $profileData->overrideConnectionLimit;
+            
+            file_put_contents("/var/log/chaniqphp.log", "new_srcAffProfile_build() Device IP: " . $prfDevIp . " Profile Name: " .$prfName. " Defaults-From: " .$prfPara1." Match Across Services: " .$prfPara2." Match Across VSs: " .$prfPara3." Match Across Pools: " .$prfPara4. " Hash Algo.: " .$prfPara5. " Timeout: " .$prfPara6." Prefix Length: " .$prfPara7. " Map Proxies:" .$prfPara8." Override Connection Limit: " .$prfPara9."\n", FILE_APPEND);
+            $cmd = '/usr/bin/python /var/www/chaniq/py/new_srcAffProfile_build.py '. escapeshellarg($prfDevIp) .' '. escapeshellarg($prfName) .' '. escapeshellarg($prfPara1) .' '. escapeshellarg($prfPara2) .' '. escapeshellarg($prfPara3) .' '. escapeshellarg($prfPara4) .' '. escapeshellarg($prfPara5) .' '. escapeshellarg($prfPara6) .' '. escapeshellarg($prfPara7).' '. escapeshellarg($prfPara8).' '. escapeshellarg($prfPara9);
+        }
+        
         $output = shell_exec($cmd);
         error_log(date("y-m-d H:i:s").": After python call - new_Profile_build.php() new_Profile_build() function called!\n", 3, "/var/log/chaniqphp.log");
 

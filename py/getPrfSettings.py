@@ -68,7 +68,50 @@ def getCookiePrfSettings(mr, parPrfName):
         logging.info("Exception during retrieving Cookie Persistence profile setting: " + str(e))
     logging.info('getCookiePrfSettings(): ' + output)
     return output
+
+def getDstAffSettings(mr, parPrfName):
+    dstAffPrfs = mr.tm.ltm.persistence.dest_addrs.get_collection()
+    output = ''
     
+    #outputDict = {'defaultsFrom', 'matchAcrossServices', 'matchAcrossVirtuals', 'matchAcrossPools','hashAlgorithm', 'timeout', 'mask', 'overrideConnectionLimit']
+    try:
+        for aprf in dstAffPrfs:
+            if(aprf.name == parPrfName):
+                output += '/Common/'+ parPrfName + '|'
+                output += get_setting_val(aprf, 'matchAcrossServices') + '|'
+                output += get_setting_val(aprf, 'matchAcrossVirtuals') + '|'
+                output += get_setting_val(aprf, 'matchAcrossPools') + '|'
+                output += get_setting_val(aprf, 'hashAlgorithm') + '|'
+                output += get_setting_val(aprf, 'timeout') + '|'
+                output += get_setting_val(aprf, 'mask') + '|'                
+                output += get_setting_val(aprf, 'overrideConnectionLimit')
+    except Exception as e:
+        logging.info("Exception during retrieving Destination Address Persistence profile setting: " + str(e))
+    logging.info('getDstAffSettings(): ' + output)
+    return output
+
+def getSrcAffSettings(mr, parPrfName):
+    srcAffPrfs = mr.tm.ltm.persistence.source_addrs.get_collection()
+    output = ''
+    
+    #outputDict = {'defaultsFrom', 'matchAcrossServices', 'matchAcrossVirtuals', 'matchAcrossPools','hashAlgorithm', 'timeout', 'mask', 'mapProxies', 'overrideConnectionLimit']
+    try:
+        for aprf in srcAffPrfs:
+            if(aprf.name == parPrfName):
+                output += '/Common/'+ parPrfName + '|'
+                output += get_setting_val(aprf, 'matchAcrossServices') + '|'
+                output += get_setting_val(aprf, 'matchAcrossVirtuals') + '|'
+                output += get_setting_val(aprf, 'matchAcrossPools') + '|'
+                output += get_setting_val(aprf, 'hashAlgorithm') + '|'
+                output += get_setting_val(aprf, 'timeout') + '|'
+                output += get_setting_val(aprf, 'mask') + '|'
+                output += get_setting_val(aprf, 'mapProxies') + '|'
+                output += get_setting_val(aprf, 'overrideConnectionLimit')
+    except Exception as e:
+        logging.info("Exception during retrieving Source Address Persistence profile setting: " + str(e))
+    logging.info('getSrcAffSettings(): ' + output)
+    return output
+
 
 def getPrfSettings(dev_ip, prfType, parPrfName):
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
@@ -84,9 +127,9 @@ def getPrfSettings(dev_ip, prfType, parPrfName):
     elif prfType == "Cookie":
         output = getCookiePrfSettings(mr, parPrfName)            
     elif prfType == "DestAddrAffinity":
-        output = getHttpExpSettings(mr, parPrfName)
+        output = getDstAffSettings(mr, parPrfName)
     elif prfType == "SrcAddrAffinity":
-        output = getHttpExpSettings(mr, parPrfName)
+        output = getSrcAffSettings(mr, parPrfName)
     elif prfType == "Hash":
         output = getHttpExpSettings(mr, parPrfName)
     elif prfType == "SSL":

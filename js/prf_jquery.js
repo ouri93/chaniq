@@ -28,6 +28,27 @@ function validateInput(prfOptData) {
 	return true;
 }
 
+function getMaskByCIDR(strPfxLength) {
+	var pfxLength = parseInt(strPfxLength);
+	var mask=[];
+	for(i=0;i<4;i++) {
+	    var n = Math.min(pfxLength, 8);
+	    mask.push(256 - Math.pow(2, 8-n));
+	    pfxLength -= n;
+	}
+	return mask.join('.');
+}
+
+function getCIDRByMask(strCIDR) {
+	var maskNodes = strCIDR.match(/(\d+)/g);
+	var cidr = 0;
+	for(var i in maskNodes)
+	{
+	  cidr += (((maskNodes[i] >>> 0).toString(2)).match(/1/g) || []).length;
+	}
+	return cidr;
+}
+
 // Initialize Profile Key and default value based on the profile type
 // This function determins the supported profile options
 function initPrfOptData(prfOptData, prfType) {
@@ -48,10 +69,18 @@ function initPrfOptData(prfOptData, prfType) {
 		var dnsPrfOptKeys = ['defaultsFrom', 'method', 'cookieName', 'httponly', 'secure', 'alwaysSend', 'expiration', 'overrideConnectionLimit'];
 	}
 	else if (prfType == "DestAddrAffinity"){
-		
+		/* 
+		 * Path: /mgmt/tm/ltm/persistence/dest-addr
+		 * 'defaultsFrom', 'matchAcrossServices', 'matchAcrossVirtuals', 'matchAcrossPools','hashAlgorithm', 'timeout', 'mask', 'overrideConnectionLimit'
+		 */
+		var dnsPrfOptKeys = ['defaultsFrom', 'matchAcrossServices', 'matchAcrossVirtuals', 'matchAcrossPools','hashAlgorithm', 'timeout', 'mask', 'overrideConnectionLimit'];		
 	}
 	else if (prfType == "SrcAddrAffinity"){
-		
+		/* 
+		 * Path: /mgmt/tm/ltm/persistence/source-addr
+		 * 'defaultsFrom', 'matchAcrossServices', 'matchAcrossVirtuals', 'matchAcrossPools','hashAlgorithm', 'timeout', 'mask', 'mapProxies', 'overrideConnectionLimit'
+		 */
+		var dnsPrfOptKeys = ['defaultsFrom', 'matchAcrossServices', 'matchAcrossVirtuals', 'matchAcrossPools','hashAlgorithm', 'timeout', 'mask', 'mapProxies', 'overrideConnectionLimit'];	
 	}
 	else if (prfType == "Hash"){
 		
@@ -133,10 +162,11 @@ function setHttpPrfOptData(prfOptData, prfType, pxyMode, parPrfName ) {
 
 function setPrfOptData(prfOptData, prfType, parPrfName) {
 
+	prfOptData['PrfType'] = prfType;
+	
 	if(prfType == 'DNS'){
 		//'defaultsFrom', 'enableHardwareQueryValidation', 'enableHardwareResponseCache', 'enableDnsExpress', 'enableGtm', 'unhandledQueryAction'
 		//'useLocalBind', 'processXfr','enableDnsFirewall', 'processRd'
-		prfOptData['PrfType'] = prfType;
 		prfOptData['defaultsFrom'] = '/Common/' + parPrfName;
 		prfOptData['enableHardwareQueryValidation'] = $('#dnsHwPrtoValid').val();
 		prfOptData['enableHardwareResponseCache'] = $('#dnsHwRespCache').val();
@@ -150,7 +180,6 @@ function setPrfOptData(prfOptData, prfType, parPrfName) {
 	}
 	else if(prfType == "Cookie") {
 		//'defaultsFrom', 'method'- Cookie method(hash, insert, passive, rewrite), 'cookieName', 'httponly', 'secure', 'alwaysSend', 'expiration', 'overrideConnectionLimit'
-		prfOptData['PrfType'] = prfType;
 		prfOptData['defaultsFrom'] = '/Common/' + parPrfName;
 		prfOptData['method'] = $('#ckMethod option:selected').val();
 		prfOptData['cookieName'] = $('#ckName').val();
@@ -161,6 +190,33 @@ function setPrfOptData(prfOptData, prfType, parPrfName) {
 		prfOptData['expiration'] = $('#ckExp').val();
 		prfOptData['overrideConnectionLimit'] = $('#ckConnLimit option:selected').val();
 		
+	}
+	else if(prfType == 'DestAddrAffinity'){
+		// 'defaultsFrom', 'matchAcrossServices', 'matchAcrossVirtuals', 'matchAcrossPools','hashAlgorithm', 'timeout', 'mask', 'overrideConnectionLimit'
+		prfOptData['defaultsFrom'] = '/Common/' + parPrfName;
+		prfOptData['matchAcrossServices'] = $('#dstXSvc option:selected').val();
+		prfOptData['matchAcrossVirtuals'] = $('#dstXVs option:selected').val();
+		prfOptData['matchAcrossPools'] = $('#dstXP option:selected').val();
+		prfOptData['hashAlgorithm'] = $('#dstHash option:selected').val();
+		if ($('#dstTimeoue').val() == '0') prfOptData['timeout'] = 'indefinite';
+		else prfOptData['timeout'] = $('#dstTimeout').val(); 
+		if ($('#dstMask').val() == '0')	prfOptData['mask'] = 'none';
+		else prfOptData['mask'] = getMaskByCIDR($('#dstMask').val());
+		prfOptData['overrideConnectionLimit'] = $('#dstConnLimit option:selected').val();
+	}
+	else if(prfType == 'SrcAddrAffinity'){
+		// 'defaultsFrom', 'matchAcrossServices', 'matchAcrossVirtuals', 'matchAcrossPools','hashAlgorithm', 'timeout', 'mask', 'mapProxies', 'overrideConnectionLimit'
+		prfOptData['defaultsFrom'] = '/Common/' + parPrfName;
+		prfOptData['matchAcrossServices'] = $('#srcXSvc option:selected').val();
+		prfOptData['matchAcrossVirtuals'] = $('#srcXVs option:selected').val();
+		prfOptData['matchAcrossPools'] = $('#srcXP option:selected').val();
+		prfOptData['hashAlgorithm'] = $('#srcHash option:selected').val();
+		if ($('#srcTimeoue').val() == '0') prfOptData['timeout'] = 'indefinite';
+		else prfOptData['timeout'] = $('#srcTimeout').val(); 
+		if ($('#srcMask').val() == '0')	prfOptData['mask'] = 'none';
+		else prfOptData['mask'] = getMaskByCIDR($('#srcMask').val());
+		prfOptData['mapProxies'] = $('#srcMapPrxy option:selected').val();
+		prfOptData['overrideConnectionLimit'] = $('#srcConnLimit option:selected').val();
 	}
 }
 
@@ -267,6 +323,30 @@ function processGetProfileData(response_in, prfType){
 		$('#ckExp').val(responseArray[6]);
 		$('#ckConnLimit option[value="' + responseArray[7] + '"]').attr('selected', 'selected');
 	}
+	else if(prfType == 'DestAddrAffinity'){
+		$('#dstXSvc option[value="' + responseArray[1] + '"]').attr('selected', 'selected');
+		$('#dstXVs option[value="' + responseArray[2] + '"]').attr('selected', 'selected');
+		$('#dstXP option[value="' + responseArray[3] + '"]').attr('selected', 'selected');
+		$('#dstHash option[value="' + responseArray[4] + '"]').attr('selected', 'selected');
+		if(responseArray[5] == 'indefinite') $('#dstTimeout').val('0');
+		else  $('#dstTimeout').val(responseArray[5]);
+		if(responseArray[6] == 'none') $('#dstMask').val('0'); 
+		else $('#dstMask').val(getCIDRByMask(responseArray[6]));
+		$('#dstConnLimit option[value="' + responseArray[7] + '"]').attr('selected', 'selected');
+	}
+	else if(prfType == 'SrcAddrAffinity'){
+		$('#srcXSvc option[value="' + responseArray[1] + '"]').attr('selected', 'selected');
+		$('#srcXVs option[value="' + responseArray[2] + '"]').attr('selected', 'selected');
+		$('#srcXP option[value="' + responseArray[3] + '"]').attr('selected', 'selected');
+		$('#srcHash option[value="' + responseArray[4] + '"]').attr('selected', 'selected');
+		if(responseArray[5] == 'indefinite') $('#srcTimeout').val('0');
+		else  $('#srcTimeout').val(responseArray[5]);
+		if(responseArray[6] == 'none') $('#srcMask').val('0'); 
+		else $('#srcMask').val(getCIDRByMask(responseArray[6]));
+		$('#srcMapPrxy option[value="' + responseArray[7] + '"]').attr('selected', 'selected');
+		$('#srcConnLimit option[value="' + responseArray[8] + '"]').attr('selected', 'selected');
+				
+	}
 }
 
 
@@ -321,6 +401,27 @@ function getPrfHtml(prfType, parPrfName){
 		strHtml += "<tr id='r7'><td width='132px' ><label>Override Connection Limit</label></td><td><select id='ckConnLimit' ><option value='enabled' selected>Enabled</option><option value='disabled'>Disabled</option></select></td></tr>";
 		
 	}
+	else if(prfType == 'DestAddrAffinity') {
+		//'defaultsFrom', 'matchAcrossServices', 'matchAcrossVirtuals', 'matchAcrossPools','hashAlgorithm', 'timeout', 'mask', 'overrideConnectionLimit'
+		strHtml += "<tr id='r1'><td width='132px' ><label>Match Across Services</label></td><td><select id='dstXSvc' ><option value='enabled'>Enabled</option><option value='disabled' selected>Disabled</option></select></td></tr>";
+		strHtml += "<tr id='r2'><td width='132px' ><label>Match Across Virtual Servers</label></td><td><select id='dstXVs' ><option value='enabled'>Enabled</option><option value='disabled' selected>Disabled</option></select></td></tr>";
+		strHtml += "<tr id='r3'><td width='132px' ><label>Match Across Pools</label></td><td><select id='dstXP' ><option value='enabled'>Enabled</option><option value='disabled' selected>Disabled</option></select></td></tr>";
+		strHtml += "<tr id='r4'><td width='132px' ><label>Hash Algorithm</label></td><td><select id='dstHash' ><option value='default' selected>Default</option><option value='carp'>CARP</option></select></td></tr>";
+		strHtml += "<tr id='r5'><td width='132px' ><label>Timeout</label></td><td><input type='text' id='dstTimeout' value='180'/>seconds<br><p>* Use 0 for indefinite.</p></td></tr>";
+		strHtml += "<tr id='r6'><td width='132px' ><label>Prefix Length</label></td><td><input type='text' id='dstMask' value='0'/><br><p>* CIDR number without '/'</p></td></tr>";
+		strHtml += "<tr id='r7'><td width='132px' ><label>Override Connection Limit</label></td><td><select id='dstConnLimit' ><option value='disabled' selected>Disabled</option><option value='enabled'>Enabled</option></select></td></tr>";
+	}
+	else if(prfType == 'SrcAddrAffinity') {
+		//'defaultsFrom', 'matchAcrossServices', 'matchAcrossVirtuals', 'matchAcrossPools','hashAlgorithm', 'timeout', 'mask', 'mapProxies', 'overrideConnectionLimit'
+		strHtml += "<tr id='r1'><td width='132px' ><label>Match Across Services</label></td><td><select id='srcXSvc' ><option value='enabled'>Enabled</option><option value='disabled' selected>Disabled</option></select></td></tr>";
+		strHtml += "<tr id='r2'><td width='132px' ><label>Match Across Virtual Servers</label></td><td><select id='srcXVs' ><option value='enabled'>Enabled</option><option value='disabled' selected>Disabled</option></select></td></tr>";
+		strHtml += "<tr id='r3'><td width='132px' ><label>Match Across Pools</label></td><td><select id='srcXP' ><option value='enabled'>Enabled</option><option value='disabled' selected>Disabled</option></select></td></tr>";
+		strHtml += "<tr id='r4'><td width='132px' ><label>Hash Algorithm</label></td><td><select id='srcHash' ><option value='default' selected>Default</option><option value='carp'>CARP</option></select></td></tr>";
+		strHtml += "<tr id='r5'><td width='132px' ><label>Timeout</label></td><td><input type='text' id='srcTimeout' value='180'/>seconds<br><p>* Use 0 for indefinite.</p></td></tr>";
+		strHtml += "<tr id='r6'><td width='132px' ><label>Prefix Length</label></td><td><input type='text' id='srcMask' value='0'/><br><p>* CIDR number without '/'</p></td></tr>";
+		strHtml += "<tr id='r7'><td width='132px' ><label>Map Proxies</label></td><td><select id='srcMapPrxy' ><option value='enabled' selected>Enabled</option><option value='disabled'>Disabled</option></select></td></tr>";
+		strHtml += "<tr id='r8'><td width='132px' ><label>Override Connection Limit</label></td><td><select id='srcConnLimit' ><option value='disabled' selected>Disabled</option><option value='enabled'>Enabled</option></select></td></tr>";
+	}	
 	return strHtml;
 }
 
