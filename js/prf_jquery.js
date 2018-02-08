@@ -83,13 +83,22 @@ function initPrfOptData(prfOptData, prfType) {
 		var dnsPrfOptKeys = ['defaultsFrom', 'matchAcrossServices', 'matchAcrossVirtuals', 'matchAcrossPools','hashAlgorithm', 'timeout', 'mask', 'mapProxies', 'overrideConnectionLimit'];	
 	}
 	else if (prfType == "Hash"){
-		
+		/*
+		 * matchAcrossServices, matchAcrossVirtuals, matchAcrossPools, hashAlgorithm, hashOffset, hashLength, hashStartPattern, hashEndPattern, hashBufferLimit, timeout, rule, overrideConnectionLimit
+		 */
+		var dnsPrfOptKeys = ['defaultsFrom', 'matchAcrossServices', 'matchAcrossVirtuals', 'matchAcrossPools','hashAlgorithm', 'hashOffset', 'hashLength', 'hashStartPattern', 'hashEndPattern', 'hashBufferLimit', 'timeout', 'rule', 'mapProxies', 'overrideConnectionLimit'];
 	}
 	else if (prfType == "SSL"){
-		
+		/*
+		 * matchAcrossServices, matchAcrossVirtuals, matchAcrossPools, timeout, overrideConnectionLimit
+		 */
+		var dnsPrfOptKeys = ['defaultsFrom', 'matchAcrossServices', 'matchAcrossVirtuals', 'matchAcrossPools', 'timeout', 'overrideConnectionLimit'];
 	}
 	else if (prfType == "Universal"){
-		
+		/*
+		 * matchAcrossServices, matchAcrossVirtuals, matchAcrossPools, timeout, rule, overrideConnectionLimit
+		 */
+		var dnsPrfOptKeys = ['defaultsFrom', 'matchAcrossServices', 'matchAcrossVirtuals', 'matchAcrossPools','timeout', 'rule', 'overrideConnectionLimit'];
 	}
 	else if (prfType == "FastL4"){
 		
@@ -163,11 +172,11 @@ function setHttpPrfOptData(prfOptData, prfType, pxyMode, parPrfName ) {
 function setPrfOptData(prfOptData, prfType, parPrfName) {
 
 	prfOptData['PrfType'] = prfType;
+	prfOptData['defaultsFrom'] = '/Common/' + parPrfName;
 	
 	if(prfType == 'DNS'){
 		//'defaultsFrom', 'enableHardwareQueryValidation', 'enableHardwareResponseCache', 'enableDnsExpress', 'enableGtm', 'unhandledQueryAction'
 		//'useLocalBind', 'processXfr','enableDnsFirewall', 'processRd'
-		prfOptData['defaultsFrom'] = '/Common/' + parPrfName;
 		prfOptData['enableHardwareQueryValidation'] = $('#dnsHwPrtoValid').val();
 		prfOptData['enableHardwareResponseCache'] = $('#dnsHwRespCache').val();
 		prfOptData['enableDnsExpress'] = $('#dnsExp').val();
@@ -180,7 +189,6 @@ function setPrfOptData(prfOptData, prfType, parPrfName) {
 	}
 	else if(prfType == "Cookie") {
 		//'defaultsFrom', 'method'- Cookie method(hash, insert, passive, rewrite), 'cookieName', 'httponly', 'secure', 'alwaysSend', 'expiration', 'overrideConnectionLimit'
-		prfOptData['defaultsFrom'] = '/Common/' + parPrfName;
 		prfOptData['method'] = $('#ckMethod option:selected').val();
 		prfOptData['cookieName'] = $('#ckName').val();
 		prfOptData['httponly'] = $('#ckHttpOnly option:selected').val();
@@ -193,12 +201,11 @@ function setPrfOptData(prfOptData, prfType, parPrfName) {
 	}
 	else if(prfType == 'DestAddrAffinity'){
 		// 'defaultsFrom', 'matchAcrossServices', 'matchAcrossVirtuals', 'matchAcrossPools','hashAlgorithm', 'timeout', 'mask', 'overrideConnectionLimit'
-		prfOptData['defaultsFrom'] = '/Common/' + parPrfName;
 		prfOptData['matchAcrossServices'] = $('#dstXSvc option:selected').val();
 		prfOptData['matchAcrossVirtuals'] = $('#dstXVs option:selected').val();
 		prfOptData['matchAcrossPools'] = $('#dstXP option:selected').val();
 		prfOptData['hashAlgorithm'] = $('#dstHash option:selected').val();
-		if ($('#dstTimeoue').val() == '0') prfOptData['timeout'] = 'indefinite';
+		if ($('#dstTimeout').val() == '0') prfOptData['timeout'] = 'indefinite';
 		else prfOptData['timeout'] = $('#dstTimeout').val(); 
 		if ($('#dstMask').val() == '0')	prfOptData['mask'] = 'none';
 		else prfOptData['mask'] = getMaskByCIDR($('#dstMask').val());
@@ -206,17 +213,51 @@ function setPrfOptData(prfOptData, prfType, parPrfName) {
 	}
 	else if(prfType == 'SrcAddrAffinity'){
 		// 'defaultsFrom', 'matchAcrossServices', 'matchAcrossVirtuals', 'matchAcrossPools','hashAlgorithm', 'timeout', 'mask', 'mapProxies', 'overrideConnectionLimit'
-		prfOptData['defaultsFrom'] = '/Common/' + parPrfName;
 		prfOptData['matchAcrossServices'] = $('#srcXSvc option:selected').val();
 		prfOptData['matchAcrossVirtuals'] = $('#srcXVs option:selected').val();
 		prfOptData['matchAcrossPools'] = $('#srcXP option:selected').val();
 		prfOptData['hashAlgorithm'] = $('#srcHash option:selected').val();
-		if ($('#srcTimeoue').val() == '0') prfOptData['timeout'] = 'indefinite';
+		if ($('#srcTimeout').val() == '0') prfOptData['timeout'] = 'indefinite';
 		else prfOptData['timeout'] = $('#srcTimeout').val(); 
 		if ($('#srcMask').val() == '0')	prfOptData['mask'] = 'none';
 		else prfOptData['mask'] = getMaskByCIDR($('#srcMask').val());
 		prfOptData['mapProxies'] = $('#srcMapPrxy option:selected').val();
 		prfOptData['overrideConnectionLimit'] = $('#srcConnLimit option:selected').val();
+	}
+	else if(prfType == 'Hash'){
+		// 'defaultsFrom', 'matchAcrossServices', 'matchAcrossVirtuals', 'matchAcrossPools', 'hashAlgorithm', 'hashOffset', 'hashLength', 'hashStartPattern', 'hashEndPattern', 'hashBufferLimit', 'timeout', 'rule', 'overrideConnectionLimit'
+		prfOptData['matchAcrossServices'] = $('#hsXSvc option:selected').val();
+		prfOptData['matchAcrossVirtuals'] = $('#hsXVs option:selected').val();
+		prfOptData['matchAcrossPools'] = $('#hsXP option:selected').val();
+		prfOptData['hashAlgorithm'] = $('#hsHash option:selected').val();
+		prfOptData['hashOffset'] = $('#hsOffset').val();
+		prfOptData['hashLength'] = $('#hsLen').val();
+		prfOptData['hashStartPattern'] = $('#hsSPtn').val();
+		prfOptData['hashEndPattern'] = $('#hsEPtn').val();
+		prfOptData['hashBufferLimit'] = $('#hsBfLimit').val();
+		if ($('#hsTimeout').val() == '0') prfOptData['timeout'] = 'indefinite';
+		else prfOptData['timeout'] = $('#hsTimeout').val();
+		prfOptData['rule'] = $('#persistIRule option:selected').val();
+		prfOptData['overrideConnectionLimit'] = $('#hsConnLimit option:selected').val();
+	}
+	else if(prfType == 'SSL'){
+		// 'defaultsFrom', 'matchAcrossServices', 'matchAcrossVirtuals', 'matchAcrossPools', 'timeout', 'overrideConnectionLimit'
+		prfOptData['matchAcrossServices'] = $('#sslXSvc option:selected').val();
+		prfOptData['matchAcrossVirtuals'] = $('#sslXVs option:selected').val();
+		prfOptData['matchAcrossPools'] = $('#sslXP option:selected').val();
+		if ($('#sslTimeout').val() == '0') prfOptData['timeout'] = 'indefinite';
+		else prfOptData['timeout'] = $('#sslTimeout').val();
+		prfOptData['overrideConnectionLimit'] = $('#sslConnLimit option:selected').val();
+	}
+	else if(prfType == 'Universal'){
+		// 'defaultsFrom', 'matchAcrossServices', 'matchAcrossVirtuals', 'matchAcrossPools', 'timeout', 'rule', 'overrideConnectionLimit'
+		prfOptData['matchAcrossServices'] = $('#uniXSvc option:selected').val();
+		prfOptData['matchAcrossVirtuals'] = $('#uniXVs option:selected').val();
+		prfOptData['matchAcrossPools'] = $('#uniXP option:selected').val();
+		if ($('#uniTimeout').val() == '0') prfOptData['timeout'] = 'indefinite';
+		else prfOptData['timeout'] = $('#uniTimeout').val();
+		prfOptData['rule'] = $('#persistIRule option:selected').val();
+		prfOptData['overrideConnectionLimit'] = $('#uniConnLimit option:selected').val();
 	}
 }
 
@@ -235,6 +276,23 @@ function prfNameProcessData(response_in) {
 	
 	//alert("Return output: " + strResult);
 	$('#svc_prf_type_select').append(strResult);
+}
+
+function iruleNameProcessData(response_in) {
+	var strResult = '';
+	//Remove existing profile types and then add new ones
+	$('#persistIRule option').each(function(index) {
+		if (index != 0) $(this).remove();
+	});
+	
+	$.each(response_in, function(index) {
+		if (response_in[index] != "none"){
+			strResult += "<option value='" + response_in[index] + "'>" + response_in[index] + "</option>";
+		}
+	});
+	
+	//alert("Return output: " + strResult);
+	$('#persistIRule').append(strResult);
 }
 
 function getHttpSettingsProcessData(response_in){
@@ -345,7 +403,39 @@ function processGetProfileData(response_in, prfType){
 		else $('#srcMask').val(getCIDRByMask(responseArray[6]));
 		$('#srcMapPrxy option[value="' + responseArray[7] + '"]').attr('selected', 'selected');
 		$('#srcConnLimit option[value="' + responseArray[8] + '"]').attr('selected', 'selected');
-				
+	}
+	else if(prfType == 'Hash'){
+		$('#hsXSvc option[value="' + responseArray[1] + '"]').attr('selected', 'selected');
+		$('#hsXVs option[value="' + responseArray[2] + '"]').attr('selected', 'selected');
+		$('#hsXP option[value="' + responseArray[3] + '"]').attr('selected', 'selected');
+		$('#hsHash option[value="' + responseArray[4] + '"]').attr('selected', 'selected');
+		$('#hsOffset').val(responseArray[5]);
+		$('#hsLen').val(responseArray[6]);
+		$('#hsSPtn').val(responseArray[7]);
+		$('#hsEPtn').val(responseArray[8]);
+		$('#hsBfLimit').val(responseArray[9]);
+		if(responseArray[10] == 'indefinite') $('#hsTimeout').val('0');
+		else  $('#hsTimeout').val(responseArray[10]);
+		$('#persistIRule option[value="' + responseArray[11] + '"]').attr('selected', 'selected');
+		$('#hsConnLimit option[value="' + responseArray[12] + '"]').attr('selected', 'selected');
+	}
+	else if(prfType == 'SSL'){
+		$('#sslXSvc option[value="' + responseArray[1] + '"]').attr('selected', 'selected');
+		$('#sslXVs option[value="' + responseArray[2] + '"]').attr('selected', 'selected');
+		$('#sslXP option[value="' + responseArray[3] + '"]').attr('selected', 'selected');
+		if(responseArray[4] == 'indefinite') $('#sslTimeout').val('0');
+		else  $('#sslTimeout').val(responseArray[4]);
+		$('#sslConnLimit option[value="' + responseArray[5] + '"]').attr('selected', 'selected');
+	}
+	else if(prfType == 'Universal'){
+		$('#uniXSvc option[value="' + responseArray[1] + '"]').attr('selected', 'selected');
+		$('#uniXVs option[value="' + responseArray[2] + '"]').attr('selected', 'selected');
+		$('#uniXP option[value="' + responseArray[3] + '"]').attr('selected', 'selected');
+		if(responseArray[4] == 'indefinite') $('#uniTimeout').val('0');
+		else  $('#uniTimeout').val(responseArray[4]);
+		$('#persistIRule option[value="' + responseArray[5] + '"]').attr('selected', 'selected');
+		$('#uniConnLimit option[value="' + responseArray[6] + '"]').attr('selected', 'selected');
+
 	}
 }
 
@@ -421,7 +511,41 @@ function getPrfHtml(prfType, parPrfName){
 		strHtml += "<tr id='r6'><td width='132px' ><label>Prefix Length</label></td><td><input type='text' id='srcMask' value='0'/><br><p>* CIDR number without '/'</p></td></tr>";
 		strHtml += "<tr id='r7'><td width='132px' ><label>Map Proxies</label></td><td><select id='srcMapPrxy' ><option value='enabled' selected>Enabled</option><option value='disabled'>Disabled</option></select></td></tr>";
 		strHtml += "<tr id='r8'><td width='132px' ><label>Override Connection Limit</label></td><td><select id='srcConnLimit' ><option value='disabled' selected>Disabled</option><option value='enabled'>Enabled</option></select></td></tr>";
-	}	
+	}
+	else if(prfType == 'Hash') {
+		//defaultsFrom, matchAcrossServices, matchAcrossVirtuals, matchAcrossPools, hashAlgorithm, hashOffset, hashLength, hashStartPattern, hashEndPattern, hashBufferLimit, timeout, rule, overrideConnectionLimit
+		strHtml += "<tr id='r1'><td width='132px' ><label>Match Across Services</label></td><td><select id='hsXSvc' ><option value='enabled'>Enabled</option><option value='disabled' selected>Disabled</option></select></td></tr>";
+		strHtml += "<tr id='r2'><td width='132px' ><label>Match Across Virtual Servers</label></td><td><select id='hsXVs' ><option value='enabled'>Enabled</option><option value='disabled' selected>Disabled</option></select></td></tr>";
+		strHtml += "<tr id='r3'><td width='132px' ><label>Match Across Pools</label></td><td><select id='hsXP' ><option value='enabled'>Enabled</option><option value='disabled' selected>Disabled</option></select></td></tr>";
+		strHtml += "<tr id='r4'><td width='132px' ><label>Hash Algorithm</label></td><td><select id='hsHash' ><option value='default' selected>Default</option><option value='carp'>CARP</option></select></td></tr>";
+		strHtml += "<tr id='r5'><td width='132px' ><label>Hash Offset</label></td><td><input type='text' id='hsOffset' value='0'/></td></tr>";
+		strHtml += "<tr id='r5'><td width='132px' ><label>Hash Length</label></td><td><input type='text' id='hsLen' value='0'/></td></tr>";
+		strHtml += "<tr id='r5'><td width='132px' ><label>Hash Start Pattern</label></td><td><input type='text' id='hsSPtn' value=''/></td></tr>";
+		strHtml += "<tr id='r5'><td width='132px' ><label>Hash End Pattern</label></td><td><input type='text' id='hsEPtn' value=''/></td></tr>";
+		strHtml += "<tr id='r5'><td width='132px' ><label>Hash Buffer Limit</label></td><td><input type='text' id='hsBfLimit' value='0'/></td></tr>";
+		strHtml += "<tr id='r5'><td width='132px' ><label>Timeout</label></td><td><input type='text' id='hsTimeout' value='180'/></td></tr>";
+		strHtml += "<tr id='r7'><td width='132px' ><label>Rule</label></td><td><select id='persistIRule' ><option value='none' selected>Select...</option></select></td></tr>";
+		strHtml += "<tr id='r8'><td width='132px' ><label>Override Connection Limit</label></td><td><select id='hsConnLimit' ><option value='disabled' selected>Disabled</option><option value='enabled'>Enabled</option></select></td></tr>";
+	}
+	else if(prfType == 'SSL') {
+		//defaultsFrom, matchAcrossServices, matchAcrossVirtuals, matchAcrossPools, timeout, overrideConnectionLimit
+		strHtml += "<tr id='r1'><td width='132px' ><label>Match Across Services</label></td><td><select id='sslXSvc' ><option value='enabled'>Enabled</option><option value='disabled' selected>Disabled</option></select></td></tr>";
+		strHtml += "<tr id='r2'><td width='132px' ><label>Match Across Virtual Servers</label></td><td><select id='sslXVs' ><option value='enabled'>Enabled</option><option value='disabled' selected>Disabled</option></select></td></tr>";
+		strHtml += "<tr id='r3'><td width='132px' ><label>Match Across Pools</label></td><td><select id='sslXP' ><option value='enabled'>Enabled</option><option value='disabled' selected>Disabled</option></select></td></tr>";
+		strHtml += "<tr id='r4'><td width='132px' ><label>Timeout</label></td><td><input type='text' id='sslTimeout' value='300'/></td></tr>";
+		strHtml += "<tr id='r5'><td width='132px' ><label>Override Connection Limit</label></td><td><select id='sslConnLimit' ><option value='disabled' selected>Disabled</option><option value='enabled'>Enabled</option></select></td></tr>";
+		
+	}
+	else if(prfType == 'Universal') {
+		//defaultsFrom, matchAcrossServices, matchAcrossVirtuals, matchAcrossPools, timeout, rule, overrideConnectionLimit
+		strHtml += "<tr id='r1'><td width='132px' ><label>Match Across Services</label></td><td><select id='uniXSvc' ><option value='enabled'>Enabled</option><option value='disabled' selected>Disabled</option></select></td></tr>";
+		strHtml += "<tr id='r2'><td width='132px' ><label>Match Across Virtual Servers</label></td><td><select id='uniXVs' ><option value='enabled'>Enabled</option><option value='disabled' selected>Disabled</option></select></td></tr>";
+		strHtml += "<tr id='r3'><td width='132px' ><label>Match Across Pools</label></td><td><select id='uniXP' ><option value='enabled'>Enabled</option><option value='disabled' selected>Disabled</option></select></td></tr>";
+		strHtml += "<tr id='r4'><td width='132px' ><label>Timeout</label></td><td><input type='text' id='uniTimeout' value='180'/></td></tr>";
+		strHtml += "<tr id='r5'><td width='132px' ><label>Rule</label></td><td><select id='persistIRule' ><option value='none' selected>Select...</option></select></td></tr>";
+		strHtml += "<tr id='r6'><td width='132px' ><label>Override Connection Limit</label></td><td><select id='uniConnLimit' ><option value='disabled' selected>Disabled</option><option value='enabled'>Enabled</option></select></td></tr>";
+		
+	}
 	return strHtml;
 }
 
@@ -604,6 +728,27 @@ $(function () {
 	    		if (index != 0 && index != 1) $(this).remove();
 	    	});
 			$('#prfConfTable_tbody').append(strHtml);
+			
+			if (prfType == 'Hash' || prfType == 'Universal'){
+				// Get iRule list
+				ajxOut = $.ajax({
+					url: '/content/get_profile_names.php',
+					type: 'POST',
+					dataType: 'JSON',
+					data: {method:'get_profile_names', DevIP:arr[1], PrfType:'IRULE'},
+					error: function(jqXHR, textStatus, errorThrown){
+						alert("Ajax call failed!");
+			            console.log('jqXHR:');
+			            console.log(jqXHR);
+			            console.log('textStatus:');
+			            console.log(textStatus);
+			            console.log('errorThrown:');
+			            console.log(errorThrown);
+					}
+				});
+				ajxOut.done(iruleNameProcessData);
+			}
+			
 			// 3. Load the chosen profile configuration
 			ajaxOut = $.ajax({
 	    		url:'/content/getPrfSettings.php',

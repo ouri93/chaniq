@@ -112,6 +112,70 @@ def getSrcAffSettings(mr, parPrfName):
     logging.info('getSrcAffSettings(): ' + output)
     return output
 
+def getHashSettings(mr, parPrfName):
+    hashPrfs = mr.tm.ltm.persistence.hashs.get_collection()
+    output = ''
+    
+    #outputDict = {defaultsFrom, matchAcrossServices, matchAcrossVirtuals, matchAcrossPools, hashAlgorithm, hashOffset, hashLength, hashStartPattern, hashEndPattern, hashBufferLimit, timeout, rule, overrideConnectionLimit]
+    try:
+        for aprf in hashPrfs:
+            if(aprf.name == parPrfName):
+                output += '/Common/'+ parPrfName + '|'
+                output += get_setting_val(aprf, 'matchAcrossServices') + '|'
+                output += get_setting_val(aprf, 'matchAcrossVirtuals') + '|'
+                output += get_setting_val(aprf, 'matchAcrossPools') + '|'
+                output += get_setting_val(aprf, 'hashAlgorithm') + '|'
+                output += str(get_setting_val(aprf, 'hashOffset')) + '|'
+                output += str(get_setting_val(aprf, 'hashLength')) + '|'
+                output += get_setting_val(aprf, 'hashStartPattern') + '|'
+                output += get_setting_val(aprf, 'hashEndPattern') + '|'
+                output += str(get_setting_val(aprf, 'hashBufferLimit')) + '|'
+                output += get_setting_val(aprf, 'timeout') + '|'
+                output += get_setting_val(aprf, 'rule') + '|'
+                output += get_setting_val(aprf, 'overrideConnectionLimit')
+    except Exception as e:
+        logging.info("Exception during retrieving Hash Persistence profile setting: " + str(e))
+    logging.info('getHashSettings(): ' + output)
+    return output
+
+def getSSLSettings(mr, parPrfName):
+    sslPrfs = mr.tm.ltm.persistence.ssls.get_collection()
+    output = ''
+    
+    #outputDict = {defaultsFrom, matchAcrossServices, matchAcrossVirtuals, matchAcrossPools, timeout, overrideConnectionLimit]
+    try:
+        for aprf in sslPrfs:
+            if(aprf.name == parPrfName):
+                output += '/Common/'+ parPrfName + '|'
+                output += get_setting_val(aprf, 'matchAcrossServices') + '|'
+                output += get_setting_val(aprf, 'matchAcrossVirtuals') + '|'
+                output += get_setting_val(aprf, 'matchAcrossPools') + '|'
+                output += get_setting_val(aprf, 'timeout') + '|'
+                output += get_setting_val(aprf, 'overrideConnectionLimit')
+    except Exception as e:
+        logging.info("Exception during retrieving SSL Persistence profile setting: " + str(e))
+    logging.info('getSSLSettings(): ' + output)
+    return output
+
+def getUniSettings(mr, parPrfName):
+    uniPrfs = mr.tm.ltm.persistence.universals.get_collection()
+    output = ''
+    
+    #outputDict = {defaultsFrom, matchAcrossServices, matchAcrossVirtuals, matchAcrossPools, timeout, rule, overrideConnectionLimit]
+    try:
+        for aprf in uniPrfs:
+            if(aprf.name == parPrfName):
+                output += '/Common/'+ parPrfName + '|'
+                output += get_setting_val(aprf, 'matchAcrossServices') + '|'
+                output += get_setting_val(aprf, 'matchAcrossVirtuals') + '|'
+                output += get_setting_val(aprf, 'matchAcrossPools') + '|'
+                output += get_setting_val(aprf, 'timeout') + '|'
+                output += get_setting_val(aprf, 'rule') + '|'
+                output += get_setting_val(aprf, 'overrideConnectionLimit')
+    except Exception as e:
+        logging.info("Exception during retrieving Universal Persistence profile setting: " + str(e))
+    logging.info('getUniSettings(): ' + output)
+    return output
 
 def getPrfSettings(dev_ip, prfType, parPrfName):
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
@@ -131,11 +195,11 @@ def getPrfSettings(dev_ip, prfType, parPrfName):
     elif prfType == "SrcAddrAffinity":
         output = getSrcAffSettings(mr, parPrfName)
     elif prfType == "Hash":
-        output = getHttpExpSettings(mr, parPrfName)
+        output = getHashSettings(mr, parPrfName)
     elif prfType == "SSL":
-        output = getHttpExpSettings(mr, parPrfName)
+        output = getSSLSettings(mr, parPrfName)
     elif prfType == "Universal":
-        output = getHttpExpSettings(mr, parPrfName)
+        output = getUniSettings(mr, parPrfName)
     elif prfType == "FastL4":
         output = getHttpExpSettings(mr, parPrfName)
     elif prfType == "TCP":
