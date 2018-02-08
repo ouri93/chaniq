@@ -116,10 +116,16 @@ function initPrfOptData(prfOptData, prfType) {
 		
 	}
 	else if (prfType == "OneConnect"){
-		
+		/*
+		 * 'sourceMask', 'maxSize', 'maxAge', 'maxReuse', 'idleTimeoutOverride', 'limitType'
+		 */
+		var dnsPrfOptKeys = ['defaultsFrom', 'sourceMask', 'maxSize', 'maxAge', 'maxReuse', 'idleTimeoutOverride', 'limitType'];
 	}
 	else if (prfType == "Stream"){
-		
+		/*
+		 * 'source', 'tmTarget'
+		 */
+		var dnsPrfOptKeys = ['defaultsFrom', 'source', 'tmTarget'];
 	}
 
 	prfOptKeys = prfOptKeys.concat(dnsPrfOptKeys);
@@ -258,6 +264,22 @@ function setPrfOptData(prfOptData, prfType, parPrfName) {
 		else prfOptData['timeout'] = $('#uniTimeout').val();
 		prfOptData['rule'] = $('#persistIRule option:selected').val();
 		prfOptData['overrideConnectionLimit'] = $('#uniConnLimit option:selected').val();
+	}
+	else if(prfType == 'OneConnect'){
+		// 'defaultsFrom', 'sourceMask', 'maxSize', 'maxAge', 'maxReuse', 'idleTimeoutOverride, 'limitType'
+		if ($('#ocMask').val() == '0') prfOptData['sourceMask'] = 'none';
+		else prfOptData['sourceMask'] = getMaskByCIDR($('#ocMask').val());
+		prfOptData['maxSize'] = $('#ocMaxSize').val();
+		prfOptData['maxAge'] = $('#ocMaxAge').val();
+		prfOptData['maxReuse'] = $('#ocMaxReuse').val();
+		if ($('#ocIdleTimeout option:selected').val() == 'specify') prfOptData['idleTimeoutOverride'] = $('#ocIdleTimeoutSpecify').val();
+		else prfOptData['idleTimeoutOverride'] = $('#ocIdleTimeout option:selected').val();
+		prfOptData['limitType'] = $('#ocLimitType option:selected').val();
+	}
+	else if(prfType == 'Stream'){
+		// 'defaultsFrom', 'source', 'tmTarget'
+		prfOptData['source'] = $('#strmSrc').val();
+		prfOptData['tmTarget'] = $('#strmTgt').val();
 	}
 }
 
@@ -435,7 +457,24 @@ function processGetProfileData(response_in, prfType){
 		else  $('#uniTimeout').val(responseArray[4]);
 		$('#persistIRule option[value="' + responseArray[5] + '"]').attr('selected', 'selected');
 		$('#uniConnLimit option[value="' + responseArray[6] + '"]').attr('selected', 'selected');
-
+	}
+	else if(prfType == 'OneConnect'){
+		if(responseArray[1] == 'none') $('#ocMask').val('0'); 
+		else $('#ocMask').val(getCIDRByMask(responseArray[1]));
+		$('#ocMaxSize').val(responseArray[2]);
+		$('#ocMaxAge').val(responseArray[3]);
+		$('#ocMaxReuse').val(responseArray[4]);
+		if(responseArray[5] == 'disabled' || responseArray[5] == 'indefinite') $('#ocIdleTimeout option[value="' + responseArray[5] + '"]').attr('selected', 'selected');
+		else{
+			$('#ocIdleTimeout option[value="specify"]').attr('selected', 'selected');
+			$('#ocIdleTimeoutSpecify').prop('disabled', false);
+			$('#ocIdleTimeoutSpecify').val(responseArray[5]);
+		}
+		$('#ocLimitType option[value="' + responseArray[6] + '"]').attr('selected', 'selected');
+	}
+	else if(prfType == 'Stream'){
+		$('#strmSrc').val(responseArray[1]);
+		$('#strmTgt').val(responseArray[2]);		
 	}
 }
 
@@ -545,6 +584,22 @@ function getPrfHtml(prfType, parPrfName){
 		strHtml += "<tr id='r5'><td width='132px' ><label>Rule</label></td><td><select id='persistIRule' ><option value='none' selected>Select...</option></select></td></tr>";
 		strHtml += "<tr id='r6'><td width='132px' ><label>Override Connection Limit</label></td><td><select id='uniConnLimit' ><option value='disabled' selected>Disabled</option><option value='enabled'>Enabled</option></select></td></tr>";
 		
+	}
+	else if(prfType == 'OneConnect') {
+		//defaultsFrom, 'sourceMask', 'maxSize', 'maxAge', 'maxReuse', 'idleTimeoutOverride, 'limitType'
+		strHtml += "<tr id='r1'><td width='132px' ><label>Source Prefix Length</label></td><td><input type='text' id='ocMask' value='0'/><br><p>* CIDR number without '/'</p></td></tr>";
+		strHtml += "<tr id='r2'><td width='132px' ><label>Maximum Size</label></td><td><input type='text' id='ocMaxSize' value='10000' /></td></tr>";
+		strHtml += "<tr id='r3'><td width='132px' ><label>Maximum Age</label></td><td><input type='text' id='ocMaxAge' value='86400' /></td></tr>";
+		strHtml += "<tr id='r4'><td width='132px' ><label>Maximum Reuse</label></td><td><input type='text' id='ocMaxReuse' value='1000'/></td></tr>";
+		//strHtml += "<tr id='r5'><td width='132px' ><label>Idle Timeout Override</label></td><td id='tdOcIdleTimeout'><select id='ocIdleTimeout' ><option value='specify'>Specify</option><option value='disabled' selected>Disabled</option><option value='indefinite'>Indefinite</option></select></td></tr>";
+		strHtml += "<tr id='r5'><td width='132px' ><label>Idle Timeout Override</label></td><td id='tdOcIdleTimeout'><select id='ocIdleTimeout' ><option value='specify'>Specify</option><option value='disabled' selected>Disabled</option><option value='indefinite'>Indefinite</option></select><input type='text' id='ocIdleTimeoutSpecify' disabled='disabled' /> <label id='lblOcIdleTimeoutSpecify'>Seconds</label></td></tr>";
+		strHtml += "<tr id='r6'><td width='132px' ><label>Limit Type</label></td><td><select id='ocLimitType' ><option value='none' selected>None</option><option value='idle'>Idle</option><option value='strict'>Strict</option></select></td></tr>";
+	}
+	else if(prfType == 'Stream') {
+		//defaultsFrom, source, tmTarget
+		strHtml += "<tr id='r1'><td width='132px' ><label>Source</label></td><td><input type='text' id='strmSrc' /></td></tr>";
+		strHtml += "<tr id='r2'><td width='132px' ><label>Target</label></td><td><input type='text' id='strmTgt' /></td></tr>";
+
 	}
 	return strHtml;
 }
@@ -728,7 +783,7 @@ $(function () {
 	    		if (index != 0 && index != 1) $(this).remove();
 	    	});
 			$('#prfConfTable_tbody').append(strHtml);
-			
+
 			if (prfType == 'Hash' || prfType == 'Universal'){
 				// Get iRule list
 				ajxOut = $.ajax({
@@ -860,6 +915,15 @@ $(function () {
 			
 		}
 		*/
+	});
+	
+
+	$('#prfConfTable_tbody').on('change','#ocIdleTimeout' ,function() {
+		if ($('#ocIdleTimeout option:selected').val() == 'specify'){
+			$('#ocIdleTimeoutSpecify').prop('disabled', false);
+		}
+		else $('#ocIdleTimeoutSpecify').prop('disabled', true);
+			
 	});
 	
 	$('#prf_btn_build').on('click', function(){

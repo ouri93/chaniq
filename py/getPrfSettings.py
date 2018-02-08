@@ -177,6 +177,41 @@ def getUniSettings(mr, parPrfName):
     logging.info('getUniSettings(): ' + output)
     return output
 
+def getOCSettings(mr, parPrfName):
+    ocPrfs = mr.tm.ltm.profile.one_connects.get_collection()
+    output = ''
+    
+    try:
+        for aprf in ocPrfs:
+            if(aprf.name == parPrfName):
+                output += '/Common/'+ parPrfName + '|'
+                output += get_setting_val(aprf, 'sourceMask') + '|'
+                output += str(get_setting_val(aprf, 'maxSize')) + '|'
+                output += str(get_setting_val(aprf, 'maxAge')) + '|'
+                output += str(get_setting_val(aprf, 'maxReuse')) + '|'
+                output += get_setting_val(aprf, 'idleTimeoutOverride') + '|'
+                output += get_setting_val(aprf, 'limitType')
+    except Exception as e:
+        logging.info("Exception during retrieving OneConnect Persistence profile setting: " + str(e))
+    logging.info('getOCSettings(): ' + output)
+    return output
+
+
+def getStreamSettings(mr, parPrfName):
+    strmPrfs = mr.tm.ltm.profile.streams.get_collection()
+    output = ''
+    
+    try:
+        for aprf in strmPrfs:
+            if(aprf.name == parPrfName):
+                output += '/Common/'+ parPrfName + '|'
+                output += get_setting_val(aprf, 'source') + '|'
+                output += get_setting_val(aprf, 'tmTarget')
+    except Exception as e:
+        logging.info("Exception during retrieving Stream Persistence profile setting: " + str(e))
+    logging.info('getStreamSettings(): ' + output)
+    return output
+
 def getPrfSettings(dev_ip, prfType, parPrfName):
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
     logging.info('Called getPrfSettings(): %s %s %s' % (dev_ip, prfType, parPrfName))
@@ -211,9 +246,9 @@ def getPrfSettings(dev_ip, prfType, parPrfName):
     elif prfType == "SERVERSSL":
         output = getHttpExpSettings(mr, parPrfName)
     elif prfType == "OneConnect":
-        output = getHttpExpSettings(mr, parPrfName)
+        output = getOCSettings(mr, parPrfName)
     elif prfType == "Stream":
-        output = getHttpExpSettings(mr, parPrfName)
+        output = getStreamSettings(mr, parPrfName)
 
     return output
     #print json.dumps(output)
