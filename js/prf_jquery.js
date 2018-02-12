@@ -60,75 +60,93 @@ function initPrfOptData(prfOptData, prfType) {
 		 * enableDnsExpress-DNS Express , enableDnsFirewall-DNS Security, enableGtm-GSLB, enableHardwareQueryValidation-Protocol Validation, enableHardwareResponseCache-Response Cache
 		 * processRd-Process Recursion Desired, processXfr-Zone Transfer, unhandledQueryAction-Unhandled Query Actions, useLocalBind-Use BIND Server on BIG-IP
 		 */
-		var dnsPrfOptKeys = ['defaultsFrom', 'enableHardwareQueryValidation', 'enableHardwareResponseCache', 'enableDnsExpress', 'enableGtm', 'unhandledQueryAction', 'useLocalBind', 'processXfr','enableDnsFirewall', 'processRd']; 
+		var tmpPrfOptKeys = ['defaultsFrom', 'enableHardwareQueryValidation', 'enableHardwareResponseCache', 'enableDnsExpress', 'enableGtm', 'unhandledQueryAction', 'useLocalBind', 'processXfr','enableDnsFirewall', 'processRd']; 
 	}
 	else if (prfType == "Cookie"){
 		/*
 		 * 'defaultsFrom', 'method'- Cookie method(hash, insert, passive, rewrite), 'cookieName', 'httponly', 'secure', 'alwaysSend', 'expiration', 'overrideConnectionLimit'
 		 */
-		var dnsPrfOptKeys = ['defaultsFrom', 'method', 'cookieName', 'httponly', 'secure', 'alwaysSend', 'expiration', 'overrideConnectionLimit'];
+		var tmpPrfOptKeys = ['defaultsFrom', 'method', 'cookieName', 'httponly', 'secure', 'alwaysSend', 'expiration', 'overrideConnectionLimit'];
 	}
 	else if (prfType == "DestAddrAffinity"){
 		/* 
 		 * Path: /mgmt/tm/ltm/persistence/dest-addr
 		 * 'defaultsFrom', 'matchAcrossServices', 'matchAcrossVirtuals', 'matchAcrossPools','hashAlgorithm', 'timeout', 'mask', 'overrideConnectionLimit'
 		 */
-		var dnsPrfOptKeys = ['defaultsFrom', 'matchAcrossServices', 'matchAcrossVirtuals', 'matchAcrossPools','hashAlgorithm', 'timeout', 'mask', 'overrideConnectionLimit'];		
+		var tmpPrfOptKeys = ['defaultsFrom', 'matchAcrossServices', 'matchAcrossVirtuals', 'matchAcrossPools','hashAlgorithm', 'timeout', 'mask', 'overrideConnectionLimit'];		
 	}
 	else if (prfType == "SrcAddrAffinity"){
 		/* 
 		 * Path: /mgmt/tm/ltm/persistence/source-addr
 		 * 'defaultsFrom', 'matchAcrossServices', 'matchAcrossVirtuals', 'matchAcrossPools','hashAlgorithm', 'timeout', 'mask', 'mapProxies', 'overrideConnectionLimit'
 		 */
-		var dnsPrfOptKeys = ['defaultsFrom', 'matchAcrossServices', 'matchAcrossVirtuals', 'matchAcrossPools','hashAlgorithm', 'timeout', 'mask', 'mapProxies', 'overrideConnectionLimit'];	
+		var tmpPrfOptKeys = ['defaultsFrom', 'matchAcrossServices', 'matchAcrossVirtuals', 'matchAcrossPools','hashAlgorithm', 'timeout', 'mask', 'mapProxies', 'overrideConnectionLimit'];	
 	}
 	else if (prfType == "Hash"){
 		/*
 		 * matchAcrossServices, matchAcrossVirtuals, matchAcrossPools, hashAlgorithm, hashOffset, hashLength, hashStartPattern, hashEndPattern, hashBufferLimit, timeout, rule, overrideConnectionLimit
 		 */
-		var dnsPrfOptKeys = ['defaultsFrom', 'matchAcrossServices', 'matchAcrossVirtuals', 'matchAcrossPools','hashAlgorithm', 'hashOffset', 'hashLength', 'hashStartPattern', 'hashEndPattern', 'hashBufferLimit', 'timeout', 'rule', 'mapProxies', 'overrideConnectionLimit'];
+		var tmpPrfOptKeys = ['defaultsFrom', 'matchAcrossServices', 'matchAcrossVirtuals', 'matchAcrossPools','hashAlgorithm', 'hashOffset', 'hashLength', 'hashStartPattern', 'hashEndPattern', 'hashBufferLimit', 'timeout', 'rule', 'mapProxies', 'overrideConnectionLimit'];
 	}
 	else if (prfType == "SSL"){
 		/*
 		 * matchAcrossServices, matchAcrossVirtuals, matchAcrossPools, timeout, overrideConnectionLimit
 		 */
-		var dnsPrfOptKeys = ['defaultsFrom', 'matchAcrossServices', 'matchAcrossVirtuals', 'matchAcrossPools', 'timeout', 'overrideConnectionLimit'];
+		var tmpPrfOptKeys = ['defaultsFrom', 'matchAcrossServices', 'matchAcrossVirtuals', 'matchAcrossPools', 'timeout', 'overrideConnectionLimit'];
 	}
 	else if (prfType == "Universal"){
 		/*
 		 * matchAcrossServices, matchAcrossVirtuals, matchAcrossPools, timeout, rule, overrideConnectionLimit
 		 */
-		var dnsPrfOptKeys = ['defaultsFrom', 'matchAcrossServices', 'matchAcrossVirtuals', 'matchAcrossPools','timeout', 'rule', 'overrideConnectionLimit'];
+		var tmpPrfOptKeys = ['defaultsFrom', 'matchAcrossServices', 'matchAcrossVirtuals', 'matchAcrossPools','timeout', 'rule', 'overrideConnectionLimit'];
 	}
 	else if (prfType == "FastL4"){
-		
+		/*
+		 * resetOnTimeout, reassembleFragments, idleTimeout, tcpHandshakeTimeout, tcpTimestampMode, tcpWscaleMode, looseInitialization, looseClose, tcpCloseTimeout, keepAliveInterval
+		 */
+		var tmpPrfOptKeys = ['defaultsFrom', 'resetOnTimeout', 'reassembleFragments', 'idleTimeout', 'tcpHandshakeTimeout', 'tcpTimestampMode', 'tcpWscaleMode', 'looseInitialization', 'looseClose', 'tcpCloseTimeout', 'keepAliveInterval'];
 	}
 	else if (prfType == "TCP"){
+		/*
+		 * 'resetOnTimeout', 'resetOnTimeout', 'proxyBufferHigh', 'proxyBufferLow', 'receiveWindowSize', 'sendBufferSize', 'ackOnPush', 'nagle', 'initCwnd', 'slowStart', 'selectiveAcks'
+		 */
+		var tmpPrfOptKeys = ['defaultsFrom', 'resetOnTimeout', 'proxyBufferHigh', 'proxyBufferLow', 'receiveWindowSize', 'sendBufferSize', 'ackOnPush', 'nagle', 'initCwnd', 'slowStart', 'selectiveAcks'];
 		
 	}
 	else if (prfType == "UDP"){
+		/*
+		 * 'proxyMss', 'idleTimeout', 'ipTosToClient', 'linkQosToClient', 'datagramLoadBalancing', 'allowNoPayload', 'ipDfMode', 'ipTtlV4', 'ipTtlV6', 'ipDfMode'
+		 */
+		var tmpPrfOptKeys = ['defaultsFrom', 'proxyMss', 'idleTimeout', 'ipTosToClient', 'linkQosToClient', 'datagramLoadBalancing', 'allowNoPayload', 'ipDfMode', 'ipTtlV4', 'ipTtlV6', 'ipDfMode'];
 		
 	}
 	else if (prfType == "CLIENTSSL"){
-		
+		/*
+		 * 'certKeyChain', 'ciphers', 'proxySsl', 'proxySslPassthrough', 'renegotiation', 'renegotiatePeriod', 'renegotiateSize', 'renegotiateMaxRecordDelay', 'secureRenegotiation', 'maxRenegotiationsPerMinute', 'serverName', 'sniDefault', 'sniRequire'
+		 */
+		var tmpPrfOptKeys = ['defaultsFrom', 'certKeyChain', 'ciphers', 'proxySsl', 'proxySslPassthrough', 'renegotiation', 'renegotiatePeriod', 'renegotiateSize', 'renegotiateMaxRecordDelay', 'secureRenegotiation', 'maxRenegotiationsPerMinute', 'serverName', 'sniDefault', 'sniRequire'];
+
 	}
 	else if (prfType == "SERVERSSL"){
-		
+		/*
+		 * 'cert', 'key', 'chain', 'ciphers', 'proxySsl', 'proxySslPassthrough', 'renegotiation', 'renegotiatePeriod', 'renegotiateSize', 'secureRenegotiation', 'serverName', 'sniDefault', 'sniRequire'
+		 */
+		var tmpPrfOptKeys = ['defaultsFrom','cert', 'key', 'chain', 'ciphers', 'proxySsl', 'proxySslPassthrough', 'renegotiation', 'renegotiatePeriod', 'renegotiateSize', 'secureRenegotiation', 'serverName', 'sniDefault', 'sniRequire'];
 	}
 	else if (prfType == "OneConnect"){
 		/*
 		 * 'sourceMask', 'maxSize', 'maxAge', 'maxReuse', 'idleTimeoutOverride', 'limitType'
 		 */
-		var dnsPrfOptKeys = ['defaultsFrom', 'sourceMask', 'maxSize', 'maxAge', 'maxReuse', 'idleTimeoutOverride', 'limitType'];
+		var tmpPrfOptKeys = ['defaultsFrom', 'sourceMask', 'maxSize', 'maxAge', 'maxReuse', 'idleTimeoutOverride', 'limitType'];
 	}
 	else if (prfType == "Stream"){
 		/*
 		 * 'source', 'tmTarget'
 		 */
-		var dnsPrfOptKeys = ['defaultsFrom', 'source', 'tmTarget'];
+		var tmpPrfOptKeys = ['defaultsFrom', 'source', 'tmTarget'];
 	}
 
-	prfOptKeys = prfOptKeys.concat(dnsPrfOptKeys);
+	prfOptKeys = prfOptKeys.concat(tmpPrfOptKeys);
 	
 	for(var i=0; i<prfOptKeys.length;i++){
 		prfOptData[prfOptKeys[i]] = '';
@@ -265,15 +283,107 @@ function setPrfOptData(prfOptData, prfType, parPrfName) {
 		prfOptData['rule'] = $('#persistIRule option:selected').val();
 		prfOptData['overrideConnectionLimit'] = $('#uniConnLimit option:selected').val();
 	}
+	else if (prfType == "FastL4"){
+		// defaultsFrom, resetOnTimeout, reassembleFragments, idleTimeout, tcpHandshakeTimeout, tcpTimestampMode, tcpWscaleMode, looseInitialization, looseClose, tcpCloseTimeout, keepAliveInterval
+		//               f4ResetTO, f4RzmbFrgmt, prfIdleTimeout, f4TcpHSTO, f4TcpTSMode, f4TcpWsMode, f4LsInit, f4LsCls, f4TcpClsTO, f4KeepIntvl	
+		prfOptData['resetOnTimeout'] = $('#f4ResetTO option:selected').val();
+		prfOptData['reassembleFragments'] = $('#f4RzmbFrgmt option:selected').val();
+		if ($('#prfIdleTimeout option:selected').val() == 'specify') prfOptData['idleTimeout'] = $('#prfIdleTimeoutSpecify').val();
+		else prfOptData['idleTimeout'] = $('#prfIdleTimeout option:selected').val();
+		if ($('#f4TcpHSTO option:selected').val() == 'specify') prfOptData['tcpHandshakeTimeout'] = $('#f4TcpHSTOSpecify').val();
+		else prfOptData['tcpHandshakeTimeout'] = $('#f4TcpHSTO option:selected').val();
+		prfOptData['tcpTimestampMode'] = $('#f4TcpTSMode option:selected').val();
+		prfOptData['tcpWscaleMode'] = $('#f4TcpWsMode option:selected').val();
+		prfOptData['looseInitialization'] = $('#f4LsInit option:selected').val();
+		prfOptData['looseClose'] = $('#f4LsCls option:selected').val();
+		if ($('#f4TcpClsTO option:selected').val() == 'specify') prfOptData['tcpCloseTimeout'] = $('#f4TcpClsTOSpecify').val();
+		else prfOptData['tcpCloseTimeout'] = $('#f4TcpClsTO option:selected').val();
+		if ($('#f4KeepIntvl option:selected').val() == 'specify') prfOptData['keepAliveInterval'] = $('#f4KeepIntvlSpecify').val();
+		else prfOptData['keepAliveInterval'] = $('#f4KeepIntvl option:selected').val();
+	}
+	else if (prfType == "TCP"){
+		// defaultsFrom, 'resetOnTimeout', 'proxyBufferHigh', 'proxyBufferLow', 'receiveWindowSize', 'sendBufferSize', 'ackOnPush', 'nagle', 'initCwnd', 'slowStart', 'selectiveAcks'
+		//                tcpRstOnTO, tcpPxyBfHigh, tcpPxyBfLow, tcpRcvWin, tcpSndBfSz, tcpAckOnPush, tcpNagle, tcpInitCwnd, tcpSlowStart, tcpSltvAcks
+		prfOptData['resetOnTimeout'] = $('#tcpRstOnTO option:selected').val();
+		prfOptData['proxyBufferHigh'] = $('#tcpPxyBfHigh').val();
+		prfOptData['proxyBufferLow'] = $('#tcpPxyBfLow').val();
+		prfOptData['receiveWindowSize'] = $('#tcpRcvWin').val();
+		prfOptData['sendBufferSize'] = $('#tcpSndBfSz').val();
+		prfOptData['ackOnPush'] = $('#tcpAckOnPush option:selected').val();
+		prfOptData['nagle'] = $('#tcpNagle option:selected').val();
+		prfOptData['initCwnd'] = $('#tcpInitCwnd').val();
+		prfOptData['slowStart'] = $('#tcpSlowStart option:selected').val();
+		prfOptData['selectiveAcks'] = $('#tcpSltvAcks option:selected').val();
+	}
+	else if (prfType == "UDP"){
+		// defaultsFrom, 'proxyMss', 'idleTimeout', 'ipTosToClient', 'linkQosToClient', 'datagramLoadBalancing', 'allowNoPayload', 'ipTtlMode', 'ipTtlV4', 'ipTtlV6', 'ipDfMode'
+		//                udpPxyMss, prfIdleTimeout, udpIpToS, udpLkQoS, udpDGLB, udpNoPayload, udpTtlMode, udpTtlV4, udpTtlV6, udpDfMode
+		prfOptData['proxyMss'] = $('#udpPxyMss option:selected').val();
+		if ($('#prfIdleTimeout option:selected').val() == 'specify') prfOptData['idleTimeout'] = $('#prfIdleTimeoutSpecify').val();
+		else prfOptData['idleTimeout'] = $('#prfIdleTimeout option:selected').val();
+		if ($('#udpIpToS option:selected').val() == 'specify') prfOptData['ipTosToClient'] = $('#udpIpToSSpecify').val();
+		else prfOptData['ipTosToClient'] = $('#udpIpToS option:selected').val();
+		if ($('#udpLkQoS option:selected').val() == 'specify') prfOptData['linkQosToClient'] = $('#udpLkQoSSpecify').val();
+		else prfOptData['linkQosToClient'] = $('#udpLkQoS option:selected').val();
+		prfOptData['datagramLoadBalancing'] = $('#udpDGLB option:selected').val();
+		prfOptData['allowNoPayload'] = $('#udpNoPayload option:selected').val();
+		prfOptData['ipTtlMode'] = $('#udpTtlMode option:selected').val();
+		prfOptData['ipTtlV4'] = $('#udpTtlV4').val();
+		prfOptData['ipTtlV6'] = $('#udpTtlV6').val();
+		prfOptData['ipDfMode'] = $('#udpDfMode option:selected').val();
+	}
+	else if (prfType == "CLIENTSSL"){
+		// defaultsFrom, 'certificate', 'key', 'certKeyChain', 'ciphers', 'proxySsl', 'proxySslPassthrough', 'renegotiation', 'renegotiatePeriod', 'renegotiateSize', 'renegotiateMaxRecordDelay', 'secureRenegotiation', 'maxRenegotiationsPerMinute', 'serverName', 'sniDefault', 'sniRequire'
+		//                clisslCert, clisslKey, clisslKeyChain, clisslCiphers, clisslPxySsl, clisslPxySslPassTh, clisslRego, prfRegoPeriod, prfRegoSize, clisslRegoMaxRcdDly, clisslSecRego, clisslMxRegoPerMin, clisslSrvName, clisslSniDft, clisslSNIRqr
+		prfOptData['cert'] = $('#clisslCert option:selected').val();
+		prfOptData['key'] = $('#clisslKey option:selected').val();
+		// Dictionary value
+		prfOptData['certKeyChain'] = $('#clisslKeyChain option:selected').val();
+		prfOptData['ciphers'] = $('#clisslCiphers').val();
+		prfOptData['proxySsl'] = $('#clisslPxySsl option:selected').val();
+		prfOptData['proxySslPassthrough'] = $('#clisslPxySslPassTh option:selected').val();
+		prfOptData['renegotiation'] = $('#clisslRego option:selected').val();
+		if ($('#prfRegoPeriod option:selected').val() == 'specify') prfOptData['renegotiatePeriod'] = $('#prfRegoPeriodSpecify').val();
+		else prfOptData['renegotiatePeriod'] = $('#prfRegoPeriod option:selected').val();
+		if ($('#prfRegoSize option:selected').val() == 'specify') prfOptData['renegotiateSize'] = $('#prfRegoSizeSpecify').val();
+		else prfOptData['renegotiateSize'] = $('#prfRegoSize option:selected').val();
+		if ($('#clisslRegoMaxRcdDly option:selected').val() == 'specify') prfOptData['renegotiateMaxRecordDelay'] = $('#clisslRegoMaxRcdDlySpecify').val();
+		else prfOptData['renegotiateMaxRecordDelay'] = $('#clisslRegoMaxRcdDly option:selected').val();
+		prfOptData['secureRenegotiation'] = $('#clisslSecRego option:selected').val();
+		prfOptData['maxRenegotiationsPerMinute'] = $('#clisslMxRegoPerMin').val();
+		prfOptData['serverName'] = $('#clisslSrvName').val();
+		prfOptData['sniDefault'] = $('#clisslSniDft option:selected').val();
+		prfOptData['sniRequire'] = $('#clisslSNIRqr option:selected').val();
+	}
+	else if (prfType == "SERVERSSL"){
+		// defaultsFrom, 'cert', 'key', 'chain', 'ciphers', 'proxySsl', 'proxySslPassthrough', 'renegotiation', 'renegotiatePeriod', 'renegotiateSize', 'secureRenegotiation', 'serverName', 'sniDefault', 'sniRequire'
+		//                srvsslCert, srvsslKey, srvsslChain, srvsslCiphers, srvsslPxySsl, srvsslPxySslPassTh, srvsslRego, prfRegoPeriod, prfRegoSize, srvsslSecRego, srvsslSrvName, srvsslSniDft, srvsslSNIRqr
+		prfOptData['cert'] = $('#srvsslCert option:selected').val();
+		prfOptData['key'] = $('#srvsslKey option:selected').val();
+		prfOptData['chain'] = $('#srvsslChain option:selected').val();
+		prfOptData['ciphers'] = $('#srvsslCiphers').val();
+		prfOptData['proxySsl'] = $('#srvsslPxySsl option:selected').val();
+		prfOptData['proxySslPassthrough'] = $('#srvsslPxySslPassTh option:selected').val();
+		prfOptData['renegotiation'] = $('#srvsslRego option:selected').val();
+		if ($('#prfRegoPeriod option:selected').val() == 'specify') prfOptData['renegotiatePeriod'] = $('#prfRegoPeriodSpecify').val();
+		else prfOptData['renegotiatePeriod'] = $('#prfRegoPeriod option:selected').val();
+		if ($('#prfRegoSize option:selected').val() == 'specify') prfOptData['renegotiateSize'] = $('#prfRegoSizeSpecify').val();
+		else prfOptData['renegotiateSize'] = $('#prfRegoSize option:selected').val();
+		prfOptData['secureRenegotiation'] = $('#srvsslSecRego option:selected').val();
+		prfOptData['serverName'] = $('#srvsslSrvName').val();
+		prfOptData['sniDefault'] = $('#srvsslSniDft option:selected').val();
+		prfOptData['sniRequire'] = $('#srvsslSNIRqr option:selected').val();
+		
+	}
 	else if(prfType == 'OneConnect'){
 		// 'defaultsFrom', 'sourceMask', 'maxSize', 'maxAge', 'maxReuse', 'idleTimeoutOverride, 'limitType'
-		if ($('#ocMask').val() == '0') prfOptData['sourceMask'] = 'none';
+		if ($('#ocMask').val() == '0') prfOptData['sourceMask'] = 'any';
 		else prfOptData['sourceMask'] = getMaskByCIDR($('#ocMask').val());
 		prfOptData['maxSize'] = $('#ocMaxSize').val();
 		prfOptData['maxAge'] = $('#ocMaxAge').val();
 		prfOptData['maxReuse'] = $('#ocMaxReuse').val();
-		if ($('#ocIdleTimeout option:selected').val() == 'specify') prfOptData['idleTimeoutOverride'] = $('#ocIdleTimeoutSpecify').val();
-		else prfOptData['idleTimeoutOverride'] = $('#ocIdleTimeout option:selected').val();
+		if ($('#prfIdleTimeout option:selected').val() == 'specify') prfOptData['idleTimeoutOverride'] = $('#prfIdleTimeoutSpecify').val();
+		else prfOptData['idleTimeoutOverride'] = $('#prfIdleTimeout option:selected').val();
 		prfOptData['limitType'] = $('#ocLimitType option:selected').val();
 	}
 	else if(prfType == 'Stream'){
@@ -458,17 +568,65 @@ function processGetProfileData(response_in, prfType){
 		$('#persistIRule option[value="' + responseArray[5] + '"]').attr('selected', 'selected');
 		$('#uniConnLimit option[value="' + responseArray[6] + '"]').attr('selected', 'selected');
 	}
+	else if (prfType == "FastL4"){
+		$('#f4ResetTO option[value="' + responseArray[1] + '"]').attr('selected', 'selected');
+		$('#f4RzmbFrgmt option[value="' + responseArray[2] + '"]').attr('selected', 'selected');
+		if(responseArray[3] == 'immediate' || responseArray[3] == 'indefinite') $('#prfIdleTimeout option[value="' + responseArray[3] + '"]').attr('selected', 'selected');
+		else{
+			$('#prfIdleTimeout option[value="specify"]').attr('selected', 'selected');
+			$('#prfIdleTimeoutSpecify').prop('disabled', false);
+			$('#prfIdleTimeoutSpecify').val(responseArray[3]);
+		}
+
+		if(responseArray[4] == 'disabled' || responseArray[4] == 'indefinite') $('#f4TcpHSTO option[value="' + responseArray[4] + '"]').attr('selected', 'selected');
+		else{
+			$('#f4TcpHSTO option[value="specify"]').attr('selected', 'selected');
+			$('#f4TcpHSTOSpecify').prop('disabled', false);
+			$('#f4TcpHSTOSpecify').val(responseArray[4]);
+		}
+
+		$('#f4TcpTSMode option[value="' + responseArray[5] + '"]').attr('selected', 'selected');
+		$('#f4TcpWsMode option[value="' + responseArray[6] + '"]').attr('selected', 'selected');
+		$('#f4LsInit option[value="' + responseArray[7] + '"]').attr('selected', 'selected');
+		$('#f4LsCls option[value="' + responseArray[8] + '"]').attr('selected', 'selected');
+
+		if(responseArray[9] == 'immediate' || responseArray[9] == 'indefinite') $('#f4TcpClsTO option[value="' + responseArray[9] + '"]').attr('selected', 'selected');
+		else{
+			$('#f4TcpClsTO option[value="specify"]').attr('selected', 'selected');
+			$('#f4TcpClsTOSpecify').prop('disabled', false);
+			$('#f4TcpClsTOSpecify').val(responseArray[9]);
+		}
+
+		if(responseArray[10] == 'disabled') $('#f4KeepIntvl option[value="' + responseArray[10] + '"]').attr('selected', 'selected');
+		else{
+			$('#f4KeepIntvl option[value="specify"]').attr('selected', 'selected');
+			$('#f4KeepIntvlSpecify').prop('disabled', false);
+			$('#f4KeepIntvlSpecify').val(responseArray[10]);
+		}		
+	}
+	else if (prfType == "TCP"){
+		
+	}
+	else if (prfType == "UDP"){
+		
+	}
+	else if (prfType == "CLIENTSSL"){
+		
+	}
+	else if (prfType == "SERVERSSL"){
+		
+	}
 	else if(prfType == 'OneConnect'){
-		if(responseArray[1] == 'none') $('#ocMask').val('0'); 
+		if(responseArray[1] == 'any') $('#ocMask').val('0'); 
 		else $('#ocMask').val(getCIDRByMask(responseArray[1]));
 		$('#ocMaxSize').val(responseArray[2]);
 		$('#ocMaxAge').val(responseArray[3]);
 		$('#ocMaxReuse').val(responseArray[4]);
-		if(responseArray[5] == 'disabled' || responseArray[5] == 'indefinite') $('#ocIdleTimeout option[value="' + responseArray[5] + '"]').attr('selected', 'selected');
+		if(responseArray[5] == 'disabled' || responseArray[5] == 'indefinite') $('#prfIdleTimeout option[value="' + responseArray[5] + '"]').attr('selected', 'selected');
 		else{
-			$('#ocIdleTimeout option[value="specify"]').attr('selected', 'selected');
-			$('#ocIdleTimeoutSpecify').prop('disabled', false);
-			$('#ocIdleTimeoutSpecify').val(responseArray[5]);
+			$('#prfIdleTimeout option[value="specify"]').attr('selected', 'selected');
+			$('#prfIdleTimeoutSpecify').prop('disabled', false);
+			$('#prfIdleTimeoutSpecify').val(responseArray[5]);
 		}
 		$('#ocLimitType option[value="' + responseArray[6] + '"]').attr('selected', 'selected');
 	}
@@ -558,13 +716,13 @@ function getPrfHtml(prfType, parPrfName){
 		strHtml += "<tr id='r3'><td width='132px' ><label>Match Across Pools</label></td><td><select id='hsXP' ><option value='enabled'>Enabled</option><option value='disabled' selected>Disabled</option></select></td></tr>";
 		strHtml += "<tr id='r4'><td width='132px' ><label>Hash Algorithm</label></td><td><select id='hsHash' ><option value='default' selected>Default</option><option value='carp'>CARP</option></select></td></tr>";
 		strHtml += "<tr id='r5'><td width='132px' ><label>Hash Offset</label></td><td><input type='text' id='hsOffset' value='0'/></td></tr>";
-		strHtml += "<tr id='r5'><td width='132px' ><label>Hash Length</label></td><td><input type='text' id='hsLen' value='0'/></td></tr>";
-		strHtml += "<tr id='r5'><td width='132px' ><label>Hash Start Pattern</label></td><td><input type='text' id='hsSPtn' value=''/></td></tr>";
-		strHtml += "<tr id='r5'><td width='132px' ><label>Hash End Pattern</label></td><td><input type='text' id='hsEPtn' value=''/></td></tr>";
-		strHtml += "<tr id='r5'><td width='132px' ><label>Hash Buffer Limit</label></td><td><input type='text' id='hsBfLimit' value='0'/></td></tr>";
-		strHtml += "<tr id='r5'><td width='132px' ><label>Timeout</label></td><td><input type='text' id='hsTimeout' value='180'/></td></tr>";
-		strHtml += "<tr id='r7'><td width='132px' ><label>Rule</label></td><td><select id='persistIRule' ><option value='none' selected>Select...</option></select></td></tr>";
-		strHtml += "<tr id='r8'><td width='132px' ><label>Override Connection Limit</label></td><td><select id='hsConnLimit' ><option value='disabled' selected>Disabled</option><option value='enabled'>Enabled</option></select></td></tr>";
+		strHtml += "<tr id='r6'><td width='132px' ><label>Hash Length</label></td><td><input type='text' id='hsLen' value='0'/></td></tr>";
+		strHtml += "<tr id='r7'><td width='132px' ><label>Hash Start Pattern</label></td><td><input type='text' id='hsSPtn' value=''/></td></tr>";
+		strHtml += "<tr id='r8'><td width='132px' ><label>Hash End Pattern</label></td><td><input type='text' id='hsEPtn' value=''/></td></tr>";
+		strHtml += "<tr id='r9'><td width='132px' ><label>Hash Buffer Limit</label></td><td><input type='text' id='hsBfLimit' value='0'/></td></tr>";
+		strHtml += "<tr id='r10'><td width='132px' ><label>Timeout</label></td><td><input type='text' id='hsTimeout' value='180'/></td></tr>";
+		strHtml += "<tr id='r11'><td width='132px' ><label>Rule</label></td><td><select id='persistIRule' ><option value='none' selected>Select...</option></select></td></tr>";
+		strHtml += "<tr id='r12'><td width='132px' ><label>Override Connection Limit</label></td><td><select id='hsConnLimit' ><option value='disabled' selected>Disabled</option><option value='enabled'>Enabled</option></select></td></tr>";
 	}
 	else if(prfType == 'SSL') {
 		//defaultsFrom, matchAcrossServices, matchAcrossVirtuals, matchAcrossPools, timeout, overrideConnectionLimit
@@ -585,14 +743,88 @@ function getPrfHtml(prfType, parPrfName){
 		strHtml += "<tr id='r6'><td width='132px' ><label>Override Connection Limit</label></td><td><select id='uniConnLimit' ><option value='disabled' selected>Disabled</option><option value='enabled'>Enabled</option></select></td></tr>";
 		
 	}
+	else if (prfType == "FastL4"){
+		//defaultsFrom, resetOnTimeout, reassembleFragments, idleTimeout, tcpHandshakeTimeout, tcpTimestampMode, tcpWscaleMode, looseInitialization, looseClose, tcpCloseTimeout, keepAliveInterval
+		strHtml += "<tr id='r1'><td width='132px' ><label>Reset on Timeout</label></td><td><select id='f4ResetTO' ><option value='enabled' selected>Enabled</option><option value='disabled'>Disabled</option></select></td></tr>";
+		strHtml += "<tr id='r2'><td width='132px' ><label>Reassemble IP Fragment</label></td><td><select id='f4RzmbFrgmt' ><option value='enabled'>Enabled</option><option value='disabled' selected>Disabled</option></select></td></tr>";
+		strHtml += "<tr id='r3'><td width='132px' ><label>Idle Timeout</label></td><td><select id='prfIdleTimeout' ><option value='specify' selected>Specify</option><option value='immediate'>Immediate</option><option value='indefinite'>Indefinite</option></select><input type='text' id='prfIdleTimeoutSpecify' value='300'/> <label id='lblF4IdleTimeout'>Seconds</label></td></tr>";
+		strHtml += "<tr id='r4'><td width='132px' ><label>TCP Handshake Timeout</label></td><td><select id='f4TcpHSTO' ><option value='specify' selected>Specify</option><option value='disabled'>Disabled</option><option value='indefinite'>Indefinite</option></select><input type='text' id='f4TcpHSTOSpecify' value='5' /> <label id='lblF4TcpHSTimeout'>Seconds</label></td></tr>";
+		strHtml += "<tr id='r5'><td width='132px' ><label>TCP Timestamp Mode</label></td><td><select id='f4TcpTSMode' ><option value='preserve' selected>Preserve</option><option value='rewrite' selected>Rewrite</option><option value='strip'>Strip</option></select></td></tr>";
+		strHtml += "<tr id='r6'><td width='132px' ><label>TCP Window Scale Mode</label></td><td><select id='f4TcpWsMode' ><option value='preserve' selected>Preserve</option><option value='strip'>Strip</option></select></td></tr>";
+		strHtml += "<tr id='r7'><td width='132px' ><label>Loose Initiation</label></td><td><select id='f4LsInit' ><option value='disabled' selected>Disabled</option><option value='enabled'>Enabled</option></select></td></tr>";
+		strHtml += "<tr id='r8'><td width='132px' ><label>Loose Close</label></td><td><select id='f4LsCls' ><option value='disabled' selected>Disabled</option><option value='enabled'>Enabled</option></select></td></tr>";
+		strHtml += "<tr id='r9'><td width='132px' ><label>TCP Close Timeout</label></td><td><select id='f4TcpClsTO' ><option value='specify' selected>Specify</option><option value='immediate'>Immediate</option><option value='indefinite'>Indefinite</option></select><input type='text' id='f4TcpClsTOSpecify' value='5' /> <label id='lblF4TcpClsTimeout'>Seconds</label></td></tr>";
+		strHtml += "<tr id='r10'><td width='132px' ><label>TCP Keep Alive Interval</label></td><td><select id='f4KeepIntvl' ><option value='disabled' selected>Disabled</option><option value='specify'>Specify</option></select><input type='text' id='f4KeepIntvlSpecify' disabled='disabled' /> <label id='lblF4KeepInterval'>Seconds</label></td></tr>";
+	}
+	else if (prfType == "TCP"){
+		//defaultsFrom, 'resetOnTimeout', 'proxyBufferHigh', 'proxyBufferLow', 'receiveWindowSize', 'sendBufferSize', 'ackOnPush', 'nagle', 'initCwnd', 'slowStart', 'selectiveAcks'
+		strHtml += "<tr id='r1'><td width='132px' ><label>Reset on Timeout</label></td><td><select id='tpcRstOnTO'><option value='disabled'>Disabled</option><option value='enabled' selected>Enabled</option></select></td></tr>";
+		strHtml += "<tr id='r2'><td width='132px' ><label>Proxy Buffer High</label></td><td><input type='text' id='tcpPxyBfHigh' value='49152'/></td></tr>";
+		strHtml += "<tr id='r3'><td width='132px' ><label>Proxy Buffer Low</label></td><td><input type='text' id='tcpPxyBfLow' value='32768'/></td></tr>";
+		strHtml += "<tr id='r4'><td width='132px' ><label>Receive Window</label></td><td><input type='text' id='tcpRcvWin' value='65535'/></td></tr>";
+		strHtml += "<tr id='r5'><td width='132px' ><label>Send Buffer</label></td><td><input type='text' id='tcpSndBfSz' value='65535'/></td></tr>";
+		strHtml += "<tr id='r6'><td width='132px' ><label>Acknowledge on Push</label></td><td><select id='tcpAckOnPush'><option value='disabled'>Disabled</option><option value='enabled' selected>Enabled</option></select></td></tr>";
+		strHtml += "<tr id='r7'><td width='132px' ><label>Nagle's Algorithm</label></td><td><select id='tcpNagle'><option value='disabled' selected>Disabled</option><option value='enabled'>Enabled</option></select></td></tr>";
+		strHtml += "<tr id='r8'><td width='132px' ><label>Initial Congestion Window Size</label></td><td><input type='text' id='tcpInitCwnd' value='0'/></td></tr>";
+		strHtml += "<tr id='r9'><td width='132px' ><label>Slow Start</label></td><td><select id='tcpSlowStart'><option value='disabled'>Disabled</option><option value='enabled' selected>Enabled</option></select></td></tr>";
+		strHtml += "<tr id='r10'><td width='132px' ><label>Selective ACKs</label></td><td><select id='tcpSltvAcks'><option value='disabled'>Disabled</option><option value='enabled' selected>Enabled</option></select></td></tr>";
+	}
+	else if (prfType == "UDP"){
+		//defaultsFrom, 'proxyMss', 'idleTimeout', 'ipTosToClient', 'linkQosToClient', 'datagramLoadBalancing', 'allowNoPayload', 'ipDfMode', 'ipTtlV4', 'ipTtlV6', 'ipDfMode'
+		strHtml += "<tr id='r1'><td width='132px' ><label>Proxy Maximum Segment</label></td><td><select id='udpPxyMss'><option value='disabled' selected>Disabled</option><option value='enabled'>Enabled</option></select></td></tr>";
+		strHtml += "<tr id='r2'><td width='132px' ><label>Idle Timeout</label></td><td><select id='prfIdleTimeout'><option value='immediate'>Immediate</option><option value='indefinite'>Indefinite</option><option value='specify' selected>Specify</option></select><input type='text' id='prfIdleTimeoutSpecify' value='60'/><label>Seconds</label></td></tr>";
+		strHtml += "<tr id='r3'><td width='132px' ><label>IP ToS</label></td><td><select id='udpIpToS'><option value='pass-through'>Pass Through</option><option value='mimic'>Mimic</option><option value='specify' selected>Specify</option></select><input type='text' id='udpIpToSSpecify' value='0'/></td></tr>";
+		strHtml += "<tr id='r4'><td width='132px' ><label>Link QoS</label></td><td><select id='udpLkQoS'><option value='pass-through'>Pass Through</option><option value='specify' selected>Specify</option></select><input type='text' id='udpLkQoSSpecify' value='0'/></td></tr>";
+		strHtml += "<tr id='r5'><td width='132px' ><label>Datagram LB</label></td><td><select id='udpDGLB'><option value='enabled'>Enabled</option><option value='disabled' selected>Disabled</option></select></td></tr>";
+		strHtml += "<tr id='r6'><td width='132px' ><label>Allow No Payload</label></td><td><select id='udpNoPayload'><option value='enabled'>Enabled</option><option value='disabled' selected>Disabled</option></td></tr>";
+		strHtml += "<tr id='r7'><td width='132px' ><label>TTL Mode</label></td><td><select id='udpTtlMode'><option value='proxy' selected>Proxy</option><option value='preserve'>Preserve</option><option value='decrement'>Decrement</option><option value='set'>Set</option></td></tr>";
+		strHtml += "<tr id='r8'><td width='132px' ><label>TTL IPv4</label></td><td><input type='text' id='udpTtlV4' value='255'/></td></tr>";
+		strHtml += "<tr id='r9'><td width='132px' ><label>TTL IPv6</label></td><td><input type='text' id='udpTtlV6' value='64'/></td></tr>";
+		strHtml += "<tr id='r10'><td width='132px' ><label>Don't Fragment Mode</label></td><td><select id='udpDfMode'><option value='pmtu' selected>PMTU</option><option value='preserve'>Preserve</option><option value='enabled'>Enabled</option><option value='disabled'>Disabled</option></td></tr>";
+		
+	}
+	else if (prfType == "CLIENTSSL"){
+		//defaultsFrom, 'certKeyChain', 'ciphers', 'proxySsl', 'proxySslPassthrough', 'renegotiation', 'renegotiatePeriod', 'renegotiateSize', 'renegotiateMaxRecordDelay', 'secureRenegotiation', 'maxRenegotiationsPerMinute', 'serverName', 'sniDefault', 'sniRequire'
+		strHtml += "<tr id='r1'><td width='132px' ><label>Certificate</label></td><td><select id='clisslCert'><option value='none' selected>Node</option></select></td></tr>";
+		strHtml += "<tr id='r2'><td width='132px' ><label>Key</label></td><td><select id='clisslKey'><option value='none' selected>Node</option></select></td></tr>";
+		strHtml += "<tr id='r3'><td width='132px' ><label>Certificate Key Chain</label></td><td><select id='clisslKeyChain'><option value='none' selected>Node</option></select></td></tr>";
+		strHtml += "<tr id='r4'><td width='132px' ><label>Ciphers</label></td><td><input type='text' id='clisslCiphers' value='DEFAULT'/></td></tr>";
+		strHtml += "<tr id='r5'><td width='132px' ><label>Proxy SSL</label></td><td><select id='clisslPxySsl'><option value='disabled' selected>Disabled</option><option value='enabled'>Enabled</option></select></td></tr>";
+		strHtml += "<tr id='r6'><td width='132px' ><label>Proxy SSL Passthrough</label></td><td><select id='clisslPxySslPassTh'><option value='disabled' selected>Disabled</option><option value='enabled'>Enabled</option></select></td></tr>";
+		strHtml += "<tr id='r7'><td width='132px' ><label>Renegotiation</label></td><td><select id='clisslRego'><option value='disabled'>Disabled</option><option value='enabled' selected>Enabled</option></select></td></tr>";
+		strHtml += "<tr id='r8'><td width='132px' ><label>Renegotiate Period</label></td><td><select id='prfRegoPeriod'><option value='indefinite' selected>Indefinite</option><option value='specify'>Specify</option></select><input type='text' id='prfRegoPeriodSpecify' disabled='disabled'/><label>Seconds</label></td></tr>";
+		strHtml += "<tr id='r9'><td width='132px' ><label>Renegotiate Size</label></td><td><select id='prfRegoSize'><option value='indefinite' selected>Indefinite</option><option value='specify'>Specify</option></select><input type='text' id='prfRegoSizeSpecify' disabled='disabled'/><label>Seconds</label></td></tr>";
+		strHtml += "<tr id='r10'><td width='132px' ><label>Renegotiate Max Record Delay</label></td><td><select id='clisslRegoMaxRcdDly'><option value='indefinite' selected>Indefinite</option><option value='specify'>Specify</option></select><input type='text' id='clisslRegoMaxRcdDlySpecify' disabled='disabled'/><label>Records</label></td></tr>";
+		strHtml += "<tr id='r11'><td width='132px' ><label>Secure Renegotiation</label></td><td><select id='clisslSecRego'><option value='require' selected>Require</option><option value='request'>Request</option><option value='require-strict'>Require Strict</option></td></tr>";
+		strHtml += "<tr id='r12'><td width='132px' ><label>Max Renegotiations</label></td><td><input type='text' id='clisslMxRegoPerMin' value='5' /><label>per minute</label></td></tr>";
+		strHtml += "<tr id='r13'><td width='132px' ><label>Server Name</label></td><td><input type='text' id='clisslSrvName' /></td></tr>";
+		strHtml += "<tr id='r14'><td width='132px' ><label>Default SSL Profile for SNI</label></td><td><select id='clisslSniDft'><option value='true'>Enabled</option><option value='false' selected>Disabled</option></select></td></tr>";
+		strHtml += "<tr id='r15'><td width='132px' ><label>Require Peer SNI support</label></td><td><select id='clisslSNIRqr'><option value='true'>Enabled</option><option value='false' selected>Disabled</option></select></td></tr>";
+	}
+	else if (prfType == "SERVERSSL"){
+		//defaultsFrom, 'cert', 'key', 'chain', 'ciphers', 'proxySsl', 'proxySslPassthrough', 'renegotiation', 'renegotiatePeriod', 'renegotiateSize', 'secureRenegotiation', 'serverName', 'sniDefault', 'sniRequire
+		strHtml += "<tr id='r1'><td width='132px' ><label>Certificate</label></td><td><select id='srvsslCert'><option value='none' selected>Node</option></select></td></tr>";
+		strHtml += "<tr id='r2'><td width='132px' ><label>Key</label></td><td><select id='srvsslKey'><option value='none' selected>Node</option></select></td></tr>";
+		strHtml += "<tr id='r3'><td width='132px' ><label>Certificate Key Chain</label></td><td><select id='srvsslChain'><option value='none' selected>Node</option></select></td></tr>";
+		strHtml += "<tr id='r4'><td width='132px' ><label>Ciphers</label></td><td><input type='text' id='srvsslCiphers' value='DEFAULT'/></td></tr>";
+		strHtml += "<tr id='r5'><td width='132px' ><label>Proxy SSL</label></td><td><select id='srvsslPxySsl'><option value='disabled' selected>Disabled</option><option value='enabled'>Enabled</option></select></td></tr>";
+		strHtml += "<tr id='r6'><td width='132px' ><label>Proxy SSL Passthrough</label></td><td><select id='srvsslPxySslPassTh'><option value='disabled' selected>Disabled</option><option value='enabled'>Enabled</option></select></td></tr>";
+		strHtml += "<tr id='r7'><td width='132px' ><label>Renegotiation</label></td><td><select id='srvsslRego'><option value='disabled'>Disabled</option><option value='enabled' selected>Enabled</option></select></td></tr>";
+		strHtml += "<tr id='r8'><td width='132px' ><label>Renegotiate Period</label></td><td><select id='prfRegoPeriod'><option value='indefinite' selected>Indefinite</option><option value='specify'>Specify</option></select><input type='text' id='prfRegoPeriodSpecify' disabled='disabled'/><label>Seconds</label></td></tr>";
+		strHtml += "<tr id='r9'><td width='132px' ><label>Renegotiate Size</label></td><td><select id='prfRegoSize'><option value='indefinite' selected>Indefinite</option><option value='specify'>Specify</option></select><input type='text' id='prfRegoSizeSpecify' disabled='disabled'/><label>Seconds</label></td></tr>";
+		strHtml += "<tr id='r10'><td width='132px' ><label>Secure Renegotiation</label></td><td><select id='srvsslSecRego'><option value='require' selected>Require</option><option value='request'>Request</option><option value='require-strict'>Require Strict</option></td></tr>";
+		strHtml += "<tr id='r11'><td width='132px' ><label>Server Name</label></td><td><input type='text' id='srvsslSrvName' /></td></tr>";
+		strHtml += "<tr id='r12'><td width='132px' ><label>Default SSL Profile for SNI</label></td><td><select id='srvsslSniDft'><option value='true'>Enabled</option><option value='false' selected>Disabled</option></select></td></tr>";
+		strHtml += "<tr id='r13'><td width='132px' ><label>Require Peer SNI support</label></td><td><select id='srvsslSNIRqr'><option value='true'>Enabled</option><option value='false' selected>Disabled</option></select></td></tr>";
+	}
 	else if(prfType == 'OneConnect') {
 		//defaultsFrom, 'sourceMask', 'maxSize', 'maxAge', 'maxReuse', 'idleTimeoutOverride, 'limitType'
 		strHtml += "<tr id='r1'><td width='132px' ><label>Source Prefix Length</label></td><td><input type='text' id='ocMask' value='0'/><br><p>* CIDR number without '/'</p></td></tr>";
 		strHtml += "<tr id='r2'><td width='132px' ><label>Maximum Size</label></td><td><input type='text' id='ocMaxSize' value='10000' /></td></tr>";
 		strHtml += "<tr id='r3'><td width='132px' ><label>Maximum Age</label></td><td><input type='text' id='ocMaxAge' value='86400' /></td></tr>";
 		strHtml += "<tr id='r4'><td width='132px' ><label>Maximum Reuse</label></td><td><input type='text' id='ocMaxReuse' value='1000'/></td></tr>";
-		//strHtml += "<tr id='r5'><td width='132px' ><label>Idle Timeout Override</label></td><td id='tdOcIdleTimeout'><select id='ocIdleTimeout' ><option value='specify'>Specify</option><option value='disabled' selected>Disabled</option><option value='indefinite'>Indefinite</option></select></td></tr>";
-		strHtml += "<tr id='r5'><td width='132px' ><label>Idle Timeout Override</label></td><td id='tdOcIdleTimeout'><select id='ocIdleTimeout' ><option value='specify'>Specify</option><option value='disabled' selected>Disabled</option><option value='indefinite'>Indefinite</option></select><input type='text' id='ocIdleTimeoutSpecify' disabled='disabled' /> <label id='lblOcIdleTimeoutSpecify'>Seconds</label></td></tr>";
+		//strHtml += "<tr id='r5'><td width='132px' ><label>Idle Timeout Override</label></td><td id='tdOcIdleTimeout'><select id='prfIdleTimeout' ><option value='specify'>Specify</option><option value='disabled' selected>Disabled</option><option value='indefinite'>Indefinite</option></select></td></tr>";
+		strHtml += "<tr id='r5'><td width='132px' ><label>Idle Timeout Override</label></td><td id='tdOcIdleTimeout'><select id='prfIdleTimeout' ><option value='specify'>Specify</option><option value='disabled' selected>Disabled</option><option value='indefinite'>Indefinite</option></select><input type='text' id='prfIdleTimeoutSpecify' disabled='disabled' /> <label id='lblOcIdleTimeoutSpecify'>Seconds</label></td></tr>";
 		strHtml += "<tr id='r6'><td width='132px' ><label>Limit Type</label></td><td><select id='ocLimitType' ><option value='none' selected>None</option><option value='idle'>Idle</option><option value='strict'>Strict</option></select></td></tr>";
 	}
 	else if(prfType == 'Stream') {
@@ -918,12 +1150,27 @@ $(function () {
 	});
 	
 
-	$('#prfConfTable_tbody').on('change','#ocIdleTimeout' ,function() {
-		if ($('#ocIdleTimeout option:selected').val() == 'specify'){
-			$('#ocIdleTimeoutSpecify').prop('disabled', false);
-		}
-		else $('#ocIdleTimeoutSpecify').prop('disabled', true);
+	// Event handler for handling the both of <select - option> and text value
+	$('#prfConfTable_tbody').on('change' ,function(event) {
+		//var selectedId = $('#prfConfTable_tbody').find('#prfIdleTimeout').attr('id');
+		//alert("Caller ID Name: " + event.target.id);
+		/*
+		 * event.target.id: Retrieve the ID of the event caller. 'event' parameter must be passed through function parameter
+		 */
+		var callerID = event.target.id;
+		if (callerID == 'prfIdleTimeout' || callerID == 'f4TcpHSTO' || callerID == 'f4TcpClsTO' || callerID == 'f4KeepIntvl' || callerID == 'udpIpToS' || callerID == 'udpLkQoS' || callerID == 'prfRegoPeriod' || callerID == 'prfRegoSize' || callerID == 'clisslRegoMaxRcdDly') {
+			var selectedId = callerID;
+			var selectedIdSpecify = selectedId + "Specify";
+			if($('#' + selectedId + ' option:selected').val() == 'specify'){
+				//alert("ID Name: " + selectedId);
+				$('#' + selectedIdSpecify).prop('disabled', false);
+			}
+			else{
+				//alert("ID Name value is not specify");
+				$('#' + selectedIdSpecify).prop('disabled', true);
+			}
 			
+		}
 	});
 	
 	$('#prf_btn_build').on('click', function(){

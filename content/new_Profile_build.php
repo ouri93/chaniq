@@ -127,6 +127,28 @@
             $cmd = '/usr/bin/python /var/www/chaniq/py/new_uniProfile_build.py '. escapeshellarg($prfDevIp) .' '. escapeshellarg($prfName) .' '. escapeshellarg($prfPara1) .' '. escapeshellarg($prfPara2) .' '. escapeshellarg($prfPara3) .' '. escapeshellarg($prfPara4) .' '. escapeshellarg($prfPara5) .' '. escapeshellarg($prfPara6) .' '. escapeshellarg($prfPara7);
             
         }
+        else if ($prfType == 'OneConnect'){
+            $prfPara1 = $profileData->defaultsFrom;
+            $prfPara2 = $profileData->sourceMask;
+            $prfPara3 = $profileData->maxSize;
+            $prfPara4 = $profileData->maxAge;
+            $prfPara5 = $profileData->maxReuse;
+            $prfPara6 = $profileData->idleTimeoutOverride;
+            $prfPara7 = $profileData->limitType;
+            
+            file_put_contents("/var/log/chaniqphp.log", "new_ocProfile_build() Device IP: " . $prfDevIp . " Profile Name: " .$prfName. " Defaults-From: " .$prfPara1." Source Prefix Length: " .$prfPara2." Maximum Size: " .$prfPara3." Maximum Age: " .$prfPara4. " Maximum Reuse: " .$prfPara5. " Idle Timeout Override: " .$prfPara6. " Limit Type: " .$prfPara7."\n", FILE_APPEND);
+            $cmd = '/usr/bin/python /var/www/chaniq/py/new_ocProfile_build.py '. escapeshellarg($prfDevIp) .' '. escapeshellarg($prfName) .' '. escapeshellarg($prfPara1) .' '. escapeshellarg($prfPara2) .' '. escapeshellarg($prfPara3) .' '. escapeshellarg($prfPara4) .' '. escapeshellarg($prfPara5) .' '. escapeshellarg($prfPara6) .' '. escapeshellarg($prfPara7);
+            
+        }
+        else if ($prfType == 'Stream'){
+            $prfPara1 = $profileData->defaultsFrom;
+            $prfPara2 = $profileData->source;
+            $prfPara3 = $profileData->tmTarget;
+            
+            file_put_contents("/var/log/chaniqphp.log", "new_streamProfile_build() Device IP: " . $prfDevIp . " Profile Name: " .$prfName. " Defaults-From: " .$prfPara1." Source: " .$prfPara2." Target: " .$prfPara3."\n", FILE_APPEND);
+            $cmd = '/usr/bin/python /var/www/chaniq/py/new_streamProfile_build.py '. escapeshellarg($prfDevIp) .' '. escapeshellarg($prfName) .' '. escapeshellarg($prfPara1) .' '. escapeshellarg($prfPara2) .' '. escapeshellarg($prfPara3);
+            
+        }
         
         $output = shell_exec($cmd);
         error_log(date("y-m-d H:i:s").": After python call - new_Profile_build.php() new_Profile_build() function called!\n", 3, "/var/log/chaniqphp.log");
