@@ -605,15 +605,103 @@ function processGetProfileData(response_in, prfType){
 		}		
 	}
 	else if (prfType == "TCP"){
-		
+		$('#tcpRstOnTO option[value="' + responseArray[1] + '"]').attr('selected', 'selected');
+		$('#tcpPxyBfHigh').val(responseArray[2]);
+		$('#tcpPxyBfLow').val(responseArray[3]);
+		$('#tcpRcvWin').val(responseArray[4]);
+		$('#tcpSndBfSz').val(responseArray[5]);
+		$('#tcpAckOnPush option[value="' + responseArray[6] + '"]').attr('selected', 'selected');
+		$('#tcpNagle option[value="' + responseArray[7] + '"]').attr('selected', 'selected');
+		$('#tcpInitCwnd').val(responseArray[8]);
+		$('#tcpSlowStart option[value="' + responseArray[9] + '"]').attr('selected', 'selected');
+		$('#tcpSltvAcks option[value="' + responseArray[10] + '"]').attr('selected', 'selected');
 	}
 	else if (prfType == "UDP"){
+		$('#udpPxyMss option[value="' + responseArray[1] + '"]').attr('selected', 'selected');
+		if(responseArray[2] == 'immediate' || responseArray[2] == 'indefinite') $('#prfIdleTimeout option[value="' + responseArray[2] + '"]').attr('selected', 'selected');
+		else{
+			$('#prfIdleTimeout option[value="specify"]').attr('selected', 'selected');
+			$('#prfIdleTimeoutSpecify').prop('disabled', false);
+			$('#prfIdleTimeoutSpecify').val(responseArray[2]);
+		}
+		if(responseArray[3] == 'pass-through' || responseArray[3] == 'mimic') $('#udpIpToS option[value="' + responseArray[3] + '"]').attr('selected', 'selected');
+		else{
+			$('#udpIpToS option[value="specify"]').attr('selected', 'selected');
+			$('#udpIpToSSpecify').prop('disabled', false);
+			$('#udpIpToSSpecify').val(responseArray[3]);
+		}
+		if(responseArray[4] == 'pass-through') $('#udpLkQoS option[value="' + responseArray[4] + '"]').attr('selected', 'selected');
+		else{
+			$('#udpLkQoS option[value="specify"]').attr('selected', 'selected');
+			$('#udpLkQoSSpecify').prop('disabled', false);
+			$('#udpLkQoSSpecify').val(responseArray[4]);
+		}		
+		$('#udpDGLB option[value="' + responseArray[5] + '"]').attr('selected', 'selected');
+		$('#udpNoPayload option[value="' + responseArray[6] + '"]').attr('selected', 'selected');
+		$('#udpTtlMode option[value="' + responseArray[7] + '"]').attr('selected', 'selected');
+		$('#udpTtlV4').val(responseArray[8]);
+		$('#udpTtlV6').val(responseArray[9]);
+		$('#udpDfMode option[value="' + responseArray[10] + '"]').attr('selected', 'selected');
 		
 	}
 	else if (prfType == "CLIENTSSL"){
+		$('#clisslCert option[value="' + responseArray[1] + '"]').attr('selected', 'selected');
+		$('#clisslKey option[value="' + responseArray[2] + '"]').attr('selected', 'selected');
+		$('#clisslKeyChain option[value="' + responseArray[3] + '"]').attr('selected', 'selected');
+		$('#clisslCiphers').val(responseArray[4]);
+		$('#clisslPxySsl option[value="' + responseArray[5] + '"]').attr('selected', 'selected');
+		$('#clisslPxySslPassTh option[value="' + responseArray[6] + '"]').attr('selected', 'selected');
+		$('#clisslRego option[value="' + responseArray[7] + '"]').attr('selected', 'selected');
+		if(responseArray[8] == 'indefinite') $('#prfRegoPeriod option[value="' + responseArray[8] + '"]').attr('selected', 'selected');
+		else{
+			$('#prfRegoPeriod option[value="specify"]').attr('selected', 'selected');
+			$('#prfRegoPeriodSpecify').prop('disabled', false);
+			$('#prfRegoPeriodSpecify').val(responseArray[8]);
+		}
+		if(responseArray[9] == 'indefinite') $('#prfRegoSize option[value="' + responseArray[9] + '"]').attr('selected', 'selected');
+		else{
+			$('#prfRegoSize option[value="specify"]').attr('selected', 'selected');
+			$('#prfRegoSizeSpecify').prop('disabled', false);
+			$('#prfRegoSizeSpecify').val(responseArray[9]);
+		}
+		if(responseArray[10] == 'indefinite') $('#clisslRegoMaxRcdDly option[value="' + responseArray[10] + '"]').attr('selected', 'selected');
+		else{
+			$('#clisslRegoMaxRcdDly option[value="specify"]').attr('selected', 'selected');
+			$('#clisslRegoMaxRcdDlySpecify').prop('disabled', false);
+			$('#clisslRegoMaxRcdDlySpecify').val(responseArray[10]);
+		}
 		
+		$('#clisslSecRego option[value="' + responseArray[11] + '"]').attr('selected', 'selected');
+		$('#clisslMxRegoPerMin').val(responseArray[12]);
+		$('#clisslSrvName').val(responseArray[13]);
+		$('#clisslSniDft option[value="' + responseArray[14] + '"]').attr('selected', 'selected');
+		$('#clisslSNIRqr option[value="' + responseArray[15] + '"]').attr('selected', 'selected');
 	}
 	else if (prfType == "SERVERSSL"){
+		$('#srvsslCert option[value="' + responseArray[1] + '"]').attr('selected', 'selected');
+		$('#srvsslKey option[value="' + responseArray[2] + '"]').attr('selected', 'selected');
+		$('#srvsslChain option[value="' + responseArray[3] + '"]').attr('selected', 'selected');
+		$('#srvsslCiphers').val(responseArray[4]);
+		$('#srvsslPxySsl option[value="' + responseArray[5] + '"]').attr('selected', 'selected');
+		$('#srvsslPxySslPassTh option[value="' + responseArray[6] + '"]').attr('selected', 'selected');
+		$('#srvsslRego option[value="' + responseArray[7] + '"]').attr('selected', 'selected');
+		if(responseArray[8] == 'indefinite') $('#prfRegoPeriod option[value="' + responseArray[8] + '"]').attr('selected', 'selected');
+		else{
+			$('#prfRegoPeriod option[value="specify"]').attr('selected', 'selected');
+			$('#prfRegoPeriodSpecify').prop('disabled', false);
+			$('#prfRegoPeriodSpecify').val(responseArray[8]);
+		}
+		if(responseArray[9] == 'indefinite') $('#prfRegoSize option[value="' + responseArray[9] + '"]').attr('selected', 'selected');
+		else{
+			$('#prfRegoSize option[value="specify"]').attr('selected', 'selected');
+			$('#prfRegoSizeSpecify').prop('disabled', false);
+			$('#prfRegoSizeSpecify').val(responseArray[9]);
+		}
+		
+		$('#srvsslSecRego option[value="' + responseArray[10] + '"]').attr('selected', 'selected');
+		$('#srvsslSrvName').val(responseArray[11]);
+		$('#srvsslSniDft option[value="' + responseArray[12] + '"]').attr('selected', 'selected');
+		$('#srvsslSNIRqr option[value="' + responseArray[13] + '"]').attr('selected', 'selected');
 		
 	}
 	else if(prfType == 'OneConnect'){
