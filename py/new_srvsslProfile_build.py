@@ -34,11 +34,11 @@ def new_srvsslProfile_build(prfDevIp, prfName, prfPara1, prfPara2, prfPara3, prf
     mr = ManagementRoot(str(prfDevIp), 'admin', 'rlatkdcks')
 	
     idx = 1
-    strReturn = {str(idx) : 'ServerSSL Persistence Profile Creation Report'}
+    strReturn = {str(idx) : 'ServerSSL Profile Creation Report'}
 
     idx += 1
 
-    logging.info("Profile Creation process has been initiated. ServerSSL Persistence Profile Name: " + prfName)
+    logging.info("Profile Creation process has been initiated. ServerSSL Profile Name: " + prfName)
 
     if check_profileName_conflict(mr, prfName, prfPara1):
         strReturn.update({str(idx) : 'Profile Name conflict'})
@@ -50,15 +50,15 @@ def new_srvsslProfile_build(prfDevIp, prfName, prfPara1, prfPara2, prfPara3, prf
     try:
         mydg = mr.tm.ltm.profile.server_ssls.server_ssl.create(name=prfName, partition='Common', defaultsFrom=prfPara1, cert=prfPara2, key=prfPara3, chain=prfPara4, ciphers=prfPara5, proxySsl=prfPara6, proxySslPassthrough=prfPara7, renegotiation=prfPara8, renegotiatePeriod=prfPara9, renegotiateSize=prfPara10, secureRenegotiation=prfPara11, serverName=prfPara12, sniDefault=prfPara13, sniRequire=prfPara14)
     except Exception as e:
-        logging.info("Exception during ServerSSL Persistence Profile creation")
+        logging.info("Exception during ServerSSL Profile creation")
         strReturn[str(idx)] = "Exception fired! (" + prfName + "): " + str(e)
         idx += 1
-        logging.info("ServerSSL Persistence Profile creation exception fired: " + str(e))
+        logging.info("ServerSSL Profile creation exception fired: " + str(e))
         return json.dumps(strReturn)
 
-    strReturn[str(idx)] = "ServerSSL Persistence Profile (" + prfName + ") has been created"
+    strReturn[str(idx)] = "ServerSSL Profile (" + prfName + ") has been created"
     idx += 1
-    logging.info("ServerSSL Persistence Profile has been created")
+    logging.info("ServerSSL Profile has been created")
 
     for keys, values in strReturn.items():
         logging.info("Key: " + keys + " Value: " + values)

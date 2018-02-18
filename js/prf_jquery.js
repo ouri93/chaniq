@@ -124,7 +124,7 @@ function initPrfOptData(prfOptData, prfType) {
 		/*
 		 * 'certKeyChain', 'ciphers', 'proxySsl', 'proxySslPassthrough', 'renegotiation', 'renegotiatePeriod', 'renegotiateSize', 'renegotiateMaxRecordDelay', 'secureRenegotiation', 'maxRenegotiationsPerMinute', 'serverName', 'sniDefault', 'sniRequire'
 		 */
-		var tmpPrfOptKeys = ['defaultsFrom', 'certKeyChain', 'ciphers', 'proxySsl', 'proxySslPassthrough', 'renegotiation', 'renegotiatePeriod', 'renegotiateSize', 'renegotiateMaxRecordDelay', 'secureRenegotiation', 'maxRenegotiationsPerMinute', 'serverName', 'sniDefault', 'sniRequire'];
+		var tmpPrfOptKeys = ['defaultsFrom', 'cert', 'key', 'chain', 'ciphers', 'proxySsl', 'proxySslPassthrough', 'renegotiation', 'renegotiatePeriod', 'renegotiateSize', 'renegotiateMaxRecordDelay', 'secureRenegotiation', 'maxRenegotiationsPerMinute', 'serverName', 'sniDefault', 'sniRequire'];
 
 	}
 	else if (prfType == "SERVERSSL"){
@@ -333,12 +333,11 @@ function setPrfOptData(prfOptData, prfType, parPrfName) {
 		prfOptData['ipDfMode'] = $('#udpDfMode option:selected').val();
 	}
 	else if (prfType == "CLIENTSSL"){
-		// defaultsFrom, 'certificate', 'key', 'certKeyChain', 'ciphers', 'proxySsl', 'proxySslPassthrough', 'renegotiation', 'renegotiatePeriod', 'renegotiateSize', 'renegotiateMaxRecordDelay', 'secureRenegotiation', 'maxRenegotiationsPerMinute', 'serverName', 'sniDefault', 'sniRequire'
+		// defaultsFrom, 'certificate', 'key', 'cert', 'key', 'chain', 'ciphers', 'proxySsl', 'proxySslPassthrough', 'renegotiation', 'renegotiatePeriod', 'renegotiateSize', 'renegotiateMaxRecordDelay', 'secureRenegotiation', 'maxRenegotiationsPerMinute', 'serverName', 'sniDefault', 'sniRequire'
 		//                clisslCert, clisslKey, clisslKeyChain, clisslCiphers, clisslPxySsl, clisslPxySslPassTh, clisslRego, prfRegoPeriod, prfRegoSize, clisslRegoMaxRcdDly, clisslSecRego, clisslMxRegoPerMin, clisslSrvName, clisslSniDft, clisslSNIRqr
 		prfOptData['cert'] = $('#clisslCert option:selected').val();
 		prfOptData['key'] = $('#clisslKey option:selected').val();
-		// Dictionary value
-		prfOptData['certKeyChain'] = $('#clisslKeyChain option:selected').val();
+		prfOptData['chain'] = $('#clisslKeyChain option:selected').val();
 		prfOptData['ciphers'] = $('#clisslCiphers').val();
 		prfOptData['proxySsl'] = $('#clisslPxySsl option:selected').val();
 		prfOptData['proxySslPassthrough'] = $('#clisslPxySslPassTh option:selected').val();
@@ -425,6 +424,45 @@ function iruleNameProcessData(response_in) {
 	
 	//alert("Return output: " + strResult);
 	$('#persistIRule').append(strResult);
+}
+
+function certNameProcessData(response_in) {
+	var strResult = '';
+	//Remove existing profile types and then add new ones
+	$('#clisslCert option').each(function(index) {
+		if (index != 0) $(this).remove();
+	});
+	$('#clisslKeyChain option').each(function(index) {
+		if (index != 0) $(this).remove();
+	});
+	
+	
+	$.each(response_in, function(index) {
+		if (response_in[index] != "none"){
+			strResult += "<option value='" + response_in[index] + "'>" + response_in[index] + "</option>";
+		}
+	});
+	
+	//alert("Return output: " + strResult);
+	$('#clisslCert').append(strResult);
+	$('#clisslKeyChain').append(strResult);
+}
+
+function keyNameProcessData(response_in) {
+	var strResult = '';
+	//Remove existing profile types and then add new ones
+	$('#clisslKey option').each(function(index) {
+		if (index != 0) $(this).remove();
+	});
+	
+	$.each(response_in, function(index) {
+		if (response_in[index] != "none"){
+			strResult += "<option value='" + response_in[index] + "'>" + response_in[index] + "</option>";
+		}
+	});
+	
+	//alert("Return output: " + strResult);
+	$('#clisslKey').append(strResult);
 }
 
 function getHttpSettingsProcessData(response_in){
@@ -846,7 +884,7 @@ function getPrfHtml(prfType, parPrfName){
 	}
 	else if (prfType == "TCP"){
 		//defaultsFrom, 'resetOnTimeout', 'proxyBufferHigh', 'proxyBufferLow', 'receiveWindowSize', 'sendBufferSize', 'ackOnPush', 'nagle', 'initCwnd', 'slowStart', 'selectiveAcks'
-		strHtml += "<tr id='r1'><td width='132px' ><label>Reset on Timeout</label></td><td><select id='tpcRstOnTO'><option value='disabled'>Disabled</option><option value='enabled' selected>Enabled</option></select></td></tr>";
+		strHtml += "<tr id='r1'><td width='132px' ><label>Reset on Timeout</label></td><td><select id='tcpRstOnTO'><option value='disabled'>Disabled</option><option value='enabled' selected>Enabled</option></select></td></tr>";
 		strHtml += "<tr id='r2'><td width='132px' ><label>Proxy Buffer High</label></td><td><input type='text' id='tcpPxyBfHigh' value='49152'/></td></tr>";
 		strHtml += "<tr id='r3'><td width='132px' ><label>Proxy Buffer Low</label></td><td><input type='text' id='tcpPxyBfLow' value='32768'/></td></tr>";
 		strHtml += "<tr id='r4'><td width='132px' ><label>Receive Window</label></td><td><input type='text' id='tcpRcvWin' value='65535'/></td></tr>";
@@ -868,20 +906,20 @@ function getPrfHtml(prfType, parPrfName){
 		strHtml += "<tr id='r7'><td width='132px' ><label>TTL Mode</label></td><td><select id='udpTtlMode'><option value='proxy' selected>Proxy</option><option value='preserve'>Preserve</option><option value='decrement'>Decrement</option><option value='set'>Set</option></td></tr>";
 		strHtml += "<tr id='r8'><td width='132px' ><label>TTL IPv4</label></td><td><input type='text' id='udpTtlV4' value='255'/></td></tr>";
 		strHtml += "<tr id='r9'><td width='132px' ><label>TTL IPv6</label></td><td><input type='text' id='udpTtlV6' value='64'/></td></tr>";
-		strHtml += "<tr id='r10'><td width='132px' ><label>Don't Fragment Mode</label></td><td><select id='udpDfMode'><option value='pmtu' selected>PMTU</option><option value='preserve'>Preserve</option><option value='enabled'>Enabled</option><option value='disabled'>Disabled</option></td></tr>";
+		strHtml += "<tr id='r10'><td width='132px' ><label>Don't Fragment Mode</label></td><td><select id='udpDfMode'><option value='pmtu' selected>PMTU</option><option value='preserve'>Preserve</option><option value='set'>Enable</option><option value='clear'>Disable</option></td></tr>";
 		
 	}
 	else if (prfType == "CLIENTSSL"){
 		//defaultsFrom, 'certKeyChain', 'ciphers', 'proxySsl', 'proxySslPassthrough', 'renegotiation', 'renegotiatePeriod', 'renegotiateSize', 'renegotiateMaxRecordDelay', 'secureRenegotiation', 'maxRenegotiationsPerMinute', 'serverName', 'sniDefault', 'sniRequire'
-		strHtml += "<tr id='r1'><td width='132px' ><label>Certificate</label></td><td><select id='clisslCert'><option value='none' selected>Node</option></select></td></tr>";
-		strHtml += "<tr id='r2'><td width='132px' ><label>Key</label></td><td><select id='clisslKey'><option value='none' selected>Node</option></select></td></tr>";
-		strHtml += "<tr id='r3'><td width='132px' ><label>Certificate Key Chain</label></td><td><select id='clisslKeyChain'><option value='none' selected>Node</option></select></td></tr>";
+		strHtml += "<tr id='r1'><td width='132px' ><label>Certificate</label></td><td><select id='clisslCert'><option value='none' selected>None</option></select></td></tr>";
+		strHtml += "<tr id='r2'><td width='132px' ><label>Key</label></td><td><select id='clisslKey'><option value='none' selected>None</option></select></td></tr>";
+		strHtml += "<tr id='r3'><td width='132px' ><label>Certificate Key Chain</label></td><td><select id='clisslKeyChain'><option value='none' selected>None</option></select></td></tr>";
 		strHtml += "<tr id='r4'><td width='132px' ><label>Ciphers</label></td><td><input type='text' id='clisslCiphers' value='DEFAULT'/></td></tr>";
 		strHtml += "<tr id='r5'><td width='132px' ><label>Proxy SSL</label></td><td><select id='clisslPxySsl'><option value='disabled' selected>Disabled</option><option value='enabled'>Enabled</option></select></td></tr>";
 		strHtml += "<tr id='r6'><td width='132px' ><label>Proxy SSL Passthrough</label></td><td><select id='clisslPxySslPassTh'><option value='disabled' selected>Disabled</option><option value='enabled'>Enabled</option></select></td></tr>";
 		strHtml += "<tr id='r7'><td width='132px' ><label>Renegotiation</label></td><td><select id='clisslRego'><option value='disabled'>Disabled</option><option value='enabled' selected>Enabled</option></select></td></tr>";
 		strHtml += "<tr id='r8'><td width='132px' ><label>Renegotiate Period</label></td><td><select id='prfRegoPeriod'><option value='indefinite' selected>Indefinite</option><option value='specify'>Specify</option></select><input type='text' id='prfRegoPeriodSpecify' disabled='disabled'/><label>Seconds</label></td></tr>";
-		strHtml += "<tr id='r9'><td width='132px' ><label>Renegotiate Size</label></td><td><select id='prfRegoSize'><option value='indefinite' selected>Indefinite</option><option value='specify'>Specify</option></select><input type='text' id='prfRegoSizeSpecify' disabled='disabled'/><label>Seconds</label></td></tr>";
+		strHtml += "<tr id='r9'><td width='132px' ><label>Renegotiate Size</label></td><td><select id='prfRegoSize'><option value='indefinite' selected>Indefinite</option><option value='specify'>Specify</option></select><input type='text' id='prfRegoSizeSpecify' disabled='disabled'/><label>megabytes</label></td></tr>";
 		strHtml += "<tr id='r10'><td width='132px' ><label>Renegotiate Max Record Delay</label></td><td><select id='clisslRegoMaxRcdDly'><option value='indefinite' selected>Indefinite</option><option value='specify'>Specify</option></select><input type='text' id='clisslRegoMaxRcdDlySpecify' disabled='disabled'/><label>Records</label></td></tr>";
 		strHtml += "<tr id='r11'><td width='132px' ><label>Secure Renegotiation</label></td><td><select id='clisslSecRego'><option value='require' selected>Require</option><option value='request'>Request</option><option value='require-strict'>Require Strict</option></td></tr>";
 		strHtml += "<tr id='r12'><td width='132px' ><label>Max Renegotiations</label></td><td><input type='text' id='clisslMxRegoPerMin' value='5' /><label>per minute</label></td></tr>";
@@ -891,15 +929,15 @@ function getPrfHtml(prfType, parPrfName){
 	}
 	else if (prfType == "SERVERSSL"){
 		//defaultsFrom, 'cert', 'key', 'chain', 'ciphers', 'proxySsl', 'proxySslPassthrough', 'renegotiation', 'renegotiatePeriod', 'renegotiateSize', 'secureRenegotiation', 'serverName', 'sniDefault', 'sniRequire
-		strHtml += "<tr id='r1'><td width='132px' ><label>Certificate</label></td><td><select id='srvsslCert'><option value='none' selected>Node</option></select></td></tr>";
-		strHtml += "<tr id='r2'><td width='132px' ><label>Key</label></td><td><select id='srvsslKey'><option value='none' selected>Node</option></select></td></tr>";
-		strHtml += "<tr id='r3'><td width='132px' ><label>Certificate Key Chain</label></td><td><select id='srvsslChain'><option value='none' selected>Node</option></select></td></tr>";
+		strHtml += "<tr id='r1'><td width='132px' ><label>Certificate</label></td><td><select id='srvsslCert'><option value='none' selected>None</option></select></td></tr>";
+		strHtml += "<tr id='r2'><td width='132px' ><label>Key</label></td><td><select id='srvsslKey'><option value='none' selected>None</option></select></td></tr>";
+		strHtml += "<tr id='r3'><td width='132px' ><label>Certificate Key Chain</label></td><td><select id='srvsslChain'><option value='none' selected>None</option></select></td></tr>";
 		strHtml += "<tr id='r4'><td width='132px' ><label>Ciphers</label></td><td><input type='text' id='srvsslCiphers' value='DEFAULT'/></td></tr>";
 		strHtml += "<tr id='r5'><td width='132px' ><label>Proxy SSL</label></td><td><select id='srvsslPxySsl'><option value='disabled' selected>Disabled</option><option value='enabled'>Enabled</option></select></td></tr>";
 		strHtml += "<tr id='r6'><td width='132px' ><label>Proxy SSL Passthrough</label></td><td><select id='srvsslPxySslPassTh'><option value='disabled' selected>Disabled</option><option value='enabled'>Enabled</option></select></td></tr>";
 		strHtml += "<tr id='r7'><td width='132px' ><label>Renegotiation</label></td><td><select id='srvsslRego'><option value='disabled'>Disabled</option><option value='enabled' selected>Enabled</option></select></td></tr>";
 		strHtml += "<tr id='r8'><td width='132px' ><label>Renegotiate Period</label></td><td><select id='prfRegoPeriod'><option value='indefinite' selected>Indefinite</option><option value='specify'>Specify</option></select><input type='text' id='prfRegoPeriodSpecify' disabled='disabled'/><label>Seconds</label></td></tr>";
-		strHtml += "<tr id='r9'><td width='132px' ><label>Renegotiate Size</label></td><td><select id='prfRegoSize'><option value='indefinite' selected>Indefinite</option><option value='specify'>Specify</option></select><input type='text' id='prfRegoSizeSpecify' disabled='disabled'/><label>Seconds</label></td></tr>";
+		strHtml += "<tr id='r9'><td width='132px' ><label>Renegotiate Size</label></td><td><select id='prfRegoSize'><option value='indefinite' selected>Indefinite</option><option value='specify'>Specify</option></select><input type='text' id='prfRegoSizeSpecify' disabled='disabled'/><label>megabytes</label></td></tr>";
 		strHtml += "<tr id='r10'><td width='132px' ><label>Secure Renegotiation</label></td><td><select id='srvsslSecRego'><option value='require' selected>Require</option><option value='request'>Request</option><option value='require-strict'>Require Strict</option></td></tr>";
 		strHtml += "<tr id='r11'><td width='132px' ><label>Server Name</label></td><td><input type='text' id='srvsslSrvName' /></td></tr>";
 		strHtml += "<tr id='r12'><td width='132px' ><label>Default SSL Profile for SNI</label></td><td><select id='srvsslSniDft'><option value='true'>Enabled</option><option value='false' selected>Disabled</option></select></td></tr>";
@@ -1123,6 +1161,44 @@ $(function () {
 				});
 				ajxOut.done(iruleNameProcessData);
 			}
+			else if (prfType == 'CLIENTSSL' || prfType == 'SERVERSSL') {
+				// Get Cert and Key list
+				ajxOut = $.ajax({
+					url: '/content/get_profile_names.php',
+					type: 'POST',
+					async: false,
+					dataType: 'JSON',
+					data: {method:'get_profile_names', DevIP:arr[1], PrfType:'CERT'},
+					error: function(jqXHR, textStatus, errorThrown){
+						alert("Ajax call failed!");
+			            console.log('jqXHR:');
+			            console.log(jqXHR);
+			            console.log('textStatus:');
+			            console.log(textStatus);
+			            console.log('errorThrown:');
+			            console.log(errorThrown);
+					}
+				});
+				ajxOut.done(certNameProcessData);
+				
+				ajxOut2 = $.ajax({
+					url: '/content/get_profile_names.php',
+					type: 'POST',
+					async: false,
+					dataType: 'JSON',
+					data: {method:'get_profile_names', DevIP:arr[1], PrfType:'KEY'},
+					error: function(jqXHR, textStatus, errorThrown){
+						alert("Ajax call failed!");
+			            console.log('jqXHR:');
+			            console.log(jqXHR);
+			            console.log('textStatus:');
+			            console.log(textStatus);
+			            console.log('errorThrown:');
+			            console.log(errorThrown);
+					}
+				});
+				ajxOut2.done(keyNameProcessData);
+			}
 			
 			// 3. Load the chosen profile configuration
 			ajaxOut = $.ajax({
@@ -1137,7 +1213,7 @@ $(function () {
 		            console.log(textStatus);
 		            console.log('errorThrown:');
 		            console.log(errorThrown);
-				},
+				}
 	    	});
 			ajaxOut.done(function(response_in){
 				processGetProfileData(response_in, prfType);

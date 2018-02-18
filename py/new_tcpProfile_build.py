@@ -34,11 +34,11 @@ def new_tcpProfile_build(prfDevIp, prfName, prfPara1, prfPara2, prfPara3, prfPar
     mr = ManagementRoot(str(prfDevIp), 'admin', 'rlatkdcks')
 	
     idx = 1
-    strReturn = {str(idx) : 'TCP Persistence Profile Creation Report'}
+    strReturn = {str(idx) : 'TCP Profile Creation Report'}
 
     idx += 1
 
-    logging.info("Profile Creation process has been initiated. TCP Persistence Profile Name: " + prfName)
+    logging.info("Profile Creation process has been initiated. TCP Profile Name: " + prfName)
 
     if check_profileName_conflict(mr, prfName, prfPara1):
         strReturn.update({str(idx) : 'Profile Name conflict'})
@@ -50,15 +50,15 @@ def new_tcpProfile_build(prfDevIp, prfName, prfPara1, prfPara2, prfPara3, prfPar
     try:
         mydg = mr.tm.ltm.profile.tcps.tcp.create(name=prfName, partition='Common', defaultsFrom=prfPara1, resetOnTimeout=prfPara2, proxyBufferHigh=prfPara3, proxyBufferLow=prfPara4, receiveWindowSize=prfPara5, sendBufferSize=prfPara6, ackOnPush=prfPara7, nagle=prfPara8, initCwnd=prfPara9, slowStart=prfPara10, selectiveAcks=prfPara11)
     except Exception as e:
-        logging.info("Exception during TCP Persistence Profile creation")
+        logging.info("Exception during TCP  Profile creation")
         strReturn[str(idx)] = "Exception fired! (" + prfName + "): " + str(e)
         idx += 1
-        logging.info("TCP Persistence Profile creation exception fired: " + str(e))
+        logging.info("TCP Profile creation exception fired: " + str(e))
         return json.dumps(strReturn)
 
-    strReturn[str(idx)] = "TCP Persistence Profile (" + prfName + ") has been created"
+    strReturn[str(idx)] = "TCP Profile (" + prfName + ") has been created"
     idx += 1
-    logging.info("TCP Persistence Profile has been created")
+    logging.info("TCP Profile has been created")
 
     for keys, values in strReturn.items():
         logging.info("Key: " + keys + " Value: " + values)

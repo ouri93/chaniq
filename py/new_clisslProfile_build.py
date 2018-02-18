@@ -34,11 +34,11 @@ def new_clisslProfile_build(prfDevIp, prfName, prfPara1, prfPara2, prfPara3, prf
     mr = ManagementRoot(str(prfDevIp), 'admin', 'rlatkdcks')
 	
     idx = 1
-    strReturn = {str(idx) : 'ClientSSL Persistence Profile Creation Report'}
+    strReturn = {str(idx) : 'ClientSSL Profile Creation Report'}
 
     idx += 1
 
-    logging.info("Profile Creation process has been initiated. ClientSSL Persistence Profile Name: " + prfName)
+    logging.info("Profile Creation process has been initiated. ClientSSL Profile Name: " + prfName)
 
     if check_profileName_conflict(mr, prfName, prfPara1):
         strReturn.update({str(idx) : 'Profile Name conflict'})
@@ -48,17 +48,17 @@ def new_clisslProfile_build(prfDevIp, prfName, prfPara1, prfPara2, prfPara3, prf
     logging.info("No profile name conflict. Now creating the requested profile")
 		
     try:
-        mydg = mr.tm.ltm.profile.client_ssls.client_ssl.create(name=prfName, partition='Common', defaultsFrom=prfPara1, cert=prfPara2, key=prfPara3, certKeyChain=prfPara4, ciphers=prfPara5, proxySsl=prfPara6, proxySslPassthrough=prfPara7, renegotiation=prfPara8, renegotiatePeriod=prfPara9, renegotiateSize=prfPara10, renegotiateMaxRecordDelay=prfPara11, secureRenegotiation=prfPara12, maxRenegotiationsPerMinute=prfPara13, serverName=prfPara14, sniDefault=prfPara15, sniRequire=prfPara16)
+        mydg = mr.tm.ltm.profile.client_ssls.client_ssl.create(name=prfName, partition='Common', defaultsFrom=prfPara1, cert=prfPara2, key=prfPara3, chain=prfPara4, ciphers=prfPara5, proxySsl=prfPara6, proxySslPassthrough=prfPara7, renegotiation=prfPara8, renegotiatePeriod=prfPara9, renegotiateSize=prfPara10, renegotiateMaxRecordDelay=prfPara11, secureRenegotiation=prfPara12, maxRenegotiationsPerMinute=prfPara13, serverName=prfPara14, sniDefault=prfPara15, sniRequire=prfPara16)
     except Exception as e:
-        logging.info("Exception during ClientSSL Persistence Profile creation")
+        logging.info("Exception during ClientSSL Profile creation")
         strReturn[str(idx)] = "Exception fired! (" + prfName + "): " + str(e)
         idx += 1
-        logging.info("ClientSSL Persistence Profile creation exception fired: " + str(e))
+        logging.info("ClientSSL Profile creation exception fired: " + str(e))
         return json.dumps(strReturn)
 
-    strReturn[str(idx)] = "ClientSSL Persistence Profile (" + prfName + ") has been created"
+    strReturn[str(idx)] = "ClientSSL Profile (" + prfName + ") has been created"
     idx += 1
-    logging.info("ClientSSL Persistence Profile has been created")
+    logging.info("ClientSSL Profile has been created")
 
     for keys, values in strReturn.items():
         logging.info("Key: " + keys + " Value: " + values)

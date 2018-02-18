@@ -256,7 +256,30 @@ def get_policies(mr):
 		if output != '':
 			output = output + ':'
 		output = output + pf.name
-	logging.info('Policy: %s' % output)
+
+	return output
+
+def get_certs(mr):
+	sysCerts = mr.tm.sys.crypto.certs.get_collection()
+	logging.info("get_certs() called")
+	output = 'none'
+	for aCert in sysCerts:
+		if output != '':
+			output = output + ':'
+		output = output + aCert.name
+	
+	return output
+
+def get_keys(mr):
+	sysKeys = mr.tm.sys.crypto.keys.get_collection()
+	logging.info("get_keys() called")
+	output = 'none'
+	for aKey in sysKeys:
+		if output != '':
+			output = output + ':'
+		output = output + aKey.name
+		logging.info('Key Name: ' + output)
+
 	return output
 	
 def get_active_profiles(dev_ip, pf_type):
@@ -276,6 +299,8 @@ def get_active_profiles(dev_ip, pf_type):
 	6. IRULE
 	7. SNATPOOL
 	8. POLICY
+	9. Cert (Updated on Feb 14, 2018)
+	10. Key (Updated on Feb 14, 2018)
 	'''
 	logging.info('Profile Types: %s' % pf_type)
 	if pf_type == "TCP":
@@ -324,6 +349,13 @@ def get_active_profiles(dev_ip, pf_type):
 		output = get_snatpools(mr)
 	elif pf_type == "POLICY":
 		output = get_policies(mr)
+	elif pf_type == "CERT":
+		logging.info("Cert profile identified!")
+		output = get_certs(mr)
+	elif pf_type == "KEY":
+		logging.info("Key profile identified!")
+		output = get_keys(mr)
+	
 		
 	logging.info('output in get_active_profiles: %s' % output)
 	return output

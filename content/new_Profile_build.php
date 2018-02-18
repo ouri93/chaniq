@@ -182,7 +182,7 @@
             $prfPara1 = $profileData->defaultsFrom;
             $prfPara2 = $profileData->cert;
             $prfPara3 = $profileData->key;
-            $prfPara4 = $profileData->certKeyChain;
+            $prfPara4 = $profileData->chain;
             $prfPara5 = $profileData->ciphers;
             $prfPara6 = $profileData->proxySsl;
             $prfPara7 = $profileData->proxySslPassthrough;

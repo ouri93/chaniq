@@ -17,14 +17,7 @@ def get_setting_list_val(aPrf, attName):
         return ' '.join(listVals)
     except AttributeError:
         return ""
-def get_setting_dict_val(aPrf, fstAttName, sndAttName):
-    try:
-      accessVal = 'aPrf' + '.' + fstAttName
-      prfDict = eval(accessVal)
-      return (prfDict.get(sndAttName)).split('/')[2]
-    except AttributeError:
-        return ""
-    
+
 def getDnsPrfSettings(mr, parPrfName):
     dnsPrfs = mr.tm.ltm.profile.dns_s.get_collection()
     output = ''
@@ -177,6 +170,129 @@ def getUniSettings(mr, parPrfName):
     logging.info('getUniSettings(): ' + output)
     return output
 
+def getF4Settings(mr, parPrfName):
+    f4Prfs = mr.tm.ltm.profile.fastl4s.get_collection()
+    output = ''
+    
+    try:
+        for aprf in f4Prfs:
+            if(aprf.name == parPrfName):
+                output += '/Common/'+ parPrfName + '|'
+                output += get_setting_val(aprf, 'resetOnTimeout') + '|'
+                output += get_setting_val(aprf, 'reassembleFragments') + '|'
+                output += get_setting_val(aprf, 'idleTimeout') + '|'
+                output += get_setting_val(aprf, 'tcpHandshakeTimeout') + '|'
+                output += get_setting_val(aprf, 'tcpTimestampMode') + '|'
+                output += get_setting_val(aprf, 'tcpWscaleMode') + '|'
+                output += get_setting_val(aprf, 'looseInitialization') + '|'
+                output += get_setting_val(aprf, 'looseClose') + '|'
+                output += get_setting_val(aprf, 'tcpCloseTimeout') + '|'
+                output += get_setting_val(aprf, 'keepAliveInterval')
+    except Exception as e:
+        logging.info("Exception during retrieving FastL4 profile setting: " + str(e))
+    logging.info('getF4Settings(): ' + output)
+    return output
+
+def getTcpSettings(mr, parPrfName):
+    tcpPrfs = mr.tm.ltm.profile.tcps.get_collection()
+    output = ''
+    
+    try:
+        for aprf in tcpPrfs:
+            if(aprf.name == parPrfName):
+                output += '/Common/'+ parPrfName + '|'
+                output += get_setting_val(aprf, 'resetOnTimeout') + '|'
+                output += str(get_setting_val(aprf, 'proxyBufferHigh')) + '|'
+                output += str(get_setting_val(aprf, 'proxyBufferLow')) + '|'
+                output += str(get_setting_val(aprf, 'receiveWindowSize')) + '|'
+                output += str(get_setting_val(aprf, 'sendBufferSize')) + '|'
+                output += get_setting_val(aprf, 'ackOnPush') + '|'
+                output += get_setting_val(aprf, 'nagle') + '|'
+                output += str(get_setting_val(aprf, 'initCwnd')) + '|'
+                output += get_setting_val(aprf, 'slowStart') + '|'
+                output += get_setting_val(aprf, 'selectiveAcks')
+    except Exception as e:
+        logging.info("Exception during retrieving TCP profile setting: " + str(e))
+    logging.info('getTcpSettings(): ' + output)
+    return output
+
+def getUdpSettings(mr, parPrfName):
+    udpPrfs = mr.tm.ltm.profile.udps.get_collection()
+    output = ''
+    
+    try:
+        for aprf in udpPrfs:
+            if(aprf.name == parPrfName):
+                output += '/Common/'+ parPrfName + '|'
+                output += get_setting_val(aprf, 'proxyMss') + '|'
+                output += get_setting_val(aprf, 'idleTimeout') + '|'
+                output += get_setting_val(aprf, 'ipTosToClient') + '|'
+                output += get_setting_val(aprf, 'linkQosToClient') + '|'
+                output += get_setting_val(aprf, 'datagramLoadBalancing') + '|'
+                output += get_setting_val(aprf, 'allowNoPayload') + '|'
+                output += get_setting_val(aprf, 'ipTtlMode') + '|'
+                output += str(get_setting_val(aprf, 'ipTtlV4')) + '|'
+                output += str(get_setting_val(aprf, 'ipTtlV6')) + '|'
+                output += get_setting_val(aprf, 'ipDfMode')
+    except Exception as e:
+        logging.info("Exception during retrieving UDP profile setting: " + str(e))
+    logging.info('getUdpSettings(): ' + output)
+    return output
+
+def getClisslSettings(mr, parPrfName):
+    clisslPrfs = mr.tm.ltm.profile.client_ssls.get_collection()
+    output = ''
+    
+    try:
+        for aprf in clisslPrfs:
+            if(aprf.name == parPrfName):
+                output += '/Common/'+ parPrfName + '|'
+                output += get_setting_val(aprf, 'cert') + '|'
+                output += get_setting_val(aprf, 'key') + '|'
+                output += get_setting_val(aprf, 'chain') + '|'
+                output += get_setting_val(aprf, 'ciphers') + '|'
+                output += get_setting_val(aprf, 'proxySsl') + '|'
+                output += get_setting_val(aprf, 'proxySslPassthrough') + '|'
+                output += get_setting_val(aprf, 'renegotiation') + '|'
+                output += get_setting_val(aprf, 'renegotiatePeriod') + '|'
+                output += get_setting_val(aprf, 'renegotiateSize') + '|'
+                output += get_setting_val(aprf, 'renegotiateMaxRecordDelay') + '|'
+                output += get_setting_val(aprf, 'secureRenegotiation') + '|'
+                output += str(get_setting_val(aprf, 'maxRenegotiationsPerMinute')) + '|'
+                output += get_setting_val(aprf, 'serverName') + '|'
+                output += get_setting_val(aprf, 'sniDefault') + '|'
+                output += get_setting_val(aprf, 'sniRequire')
+    except Exception as e:
+        logging.info("Exception during retrieving Client SSL profile setting: " + str(e))
+    logging.info('getClisslSettings(): ' + output)
+    return output
+
+def getSrvsslSettings(mr, parPrfName):
+    srvsslPrfs = mr.tm.ltm.profile.server_ssls.get_collection()
+    output = ''
+    
+    try:
+        for aprf in srvsslPrfs:
+            if(aprf.name == parPrfName):
+                output += '/Common/'+ parPrfName + '|'
+                output += get_setting_val(aprf, 'cert') + '|'
+                output += get_setting_val(aprf, 'key') + '|'
+                output += get_setting_val(aprf, 'chain') + '|'
+                output += get_setting_val(aprf, 'ciphers') + '|'
+                output += get_setting_val(aprf, 'proxySsl') + '|'
+                output += get_setting_val(aprf, 'proxySslPassthrough') + '|'
+                output += get_setting_val(aprf, 'renegotiation') + '|'
+                output += get_setting_val(aprf, 'renegotiatePeriod') + '|'
+                output += get_setting_val(aprf, 'renegotiateSize') + '|'
+                output += get_setting_val(aprf, 'secureRenegotiation') + '|'
+                output += get_setting_val(aprf, 'serverName') + '|'
+                output += get_setting_val(aprf, 'sniDefault') + '|'
+                output += get_setting_val(aprf, 'sniRequire')
+    except Exception as e:
+        logging.info("Exception during retrieving Server SSL profile setting: " + str(e))
+    logging.info('getSrvsslSettings(): ' + output)
+    return output
+
 def getOCSettings(mr, parPrfName):
     ocPrfs = mr.tm.ltm.profile.one_connects.get_collection()
     output = ''
@@ -236,15 +352,15 @@ def getPrfSettings(dev_ip, prfType, parPrfName):
     elif prfType == "Universal":
         output = getUniSettings(mr, parPrfName)
     elif prfType == "FastL4":
-        output = getHttpExpSettings(mr, parPrfName)
+        output = getF4Settings(mr, parPrfName)
     elif prfType == "TCP":
-        output = getHttpExpSettings(mr, parPrfName)
+        output = getTcpSettings(mr, parPrfName)
     elif prfType == "UDP":
-        output = getHttpExpSettings(mr, parPrfName)
+        output = getUdpSettings(mr, parPrfName)
     elif prfType == "CLIENTSSL":
-        output = getHttpExpSettings(mr, parPrfName)
+        output = getClisslSettings(mr, parPrfName)
     elif prfType == "SERVERSSL":
-        output = getHttpExpSettings(mr, parPrfName)
+        output = getSrvsslSettings(mr, parPrfName)
     elif prfType == "OneConnect":
         output = getOCSettings(mr, parPrfName)
     elif prfType == "Stream":
