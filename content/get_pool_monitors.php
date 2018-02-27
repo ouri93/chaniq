@@ -36,7 +36,7 @@
         {
             //$bigipIP = json_decode($_POST['DevIP']);
             $bigipIP = $_POST['DevIP'];
-            $monType = $_POST['MonType'];
+            $monType = $_POST['LoadTypeName'];
             //error_log(date("y-m-d H:i:s").": get_pool_monitors() - Device IP sent over POST\n", 3, "/var/log/chaniqphp.log");
             file_put_contents("/var/log/chaniqphp.log", "get_pool_monitor() Device IP: " . $bigipIP, FILE_APPEND);
         }

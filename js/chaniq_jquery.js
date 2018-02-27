@@ -11,7 +11,7 @@ function getPoolMonAjax(phpFileName, bigipName, bigipIP, monType) {
   	return $.ajax({
   		url: 'content/get_pool_monitors.php',
    		type: 'POST',
-   		data: {method: phpFileName, DevName: bigipName, DevIP: bigipIP, MonType: monType}
+   		data: {method: phpFileName, DevName: bigipName, DevIP: bigipIP, LoadTypeName: monType}
    	});
 }
 

@@ -1,6 +1,6 @@
 <div>
     <form action="index.php?go=new_vs_findltm" class="register" method="POST">
-        <h1> Create new Virtual Server </h1>
+        <h1> Create a new Virtual Server </h1>
         <fieldset class="row1">
             <legend>Virtual Server</legend>
             <p>

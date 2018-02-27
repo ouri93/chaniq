@@ -2,7 +2,8 @@
 if(isset($_GET['go'])) {
     switch ($_GET['go']) {
         case "home": include('content/contentbase.php'); break;
-        case "new_vs": include('content/new_vs_data.php'); break;
+        //case "new_vs": include('content/new_vs_data.php'); break;
+        case "new_vs": include('content/new_vs.php'); break;
         case "new_vs_findltm": include('content/new_vs_findltm.php'); break;
         case "new_vs_simulate": include('content/new_vs_simulate.php'); break;
         case "new_vs_build": include('content/new_vs_build.php'); break;
@@ -13,6 +14,8 @@ if(isset($_GET['go'])) {
         case "new_cert": include('content/new_cert.php'); break;
         case "new_irule": include('content/new_irule.php');break;
         case "new_monitor": include('content/new_monitor.php');break;
+        case "new_snatpool": include('content/new_snatpool.php');break;
+        case "new_policies": include('content/new_policies.php');break;
         case "chg_vs": include('content/chg_vs.php'); break;
         case "chg_pool": include('content/chg_pool.php');break;
         case "chg_profile": include('content/chg_profile.php');break;
@@ -22,6 +25,13 @@ if(isset($_GET['go'])) {
         case "new_monitor": include('content/profile.php');break;
         case "mon_vs": include('content/mon_vs.php'); break;
         case "mon_pool": include('content/mon_pool.php');break;
+        case "del_vs": include('content/del_vs.php');break;
+        case "del_profile": include('content/del_profile.php');break;
+        case "del_cert": include('content/del_cert.php'); break;
+        case "del_irule": include('content/del_irule.php');break;
+        case "del_monitor": include('content/del_monitor.php');break;
+        case "del_snatpool": include('content/del_snatpool.php');break;
+        case "del_policies": include('content/del_policies.php');break;
         case "admin_user": include('admin/admin_user.php');break;
         case "ltmadmin_pass": include('admin/ltmadmin_pass.php');break;
         case "about": include('content/about.php'); break;

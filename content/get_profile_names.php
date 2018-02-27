@@ -36,7 +36,7 @@
         {
             //$bigipIP = json_decode($_POST['DevIP']);
             $bigipIP = $_POST['DevIP'];
-            $prfType = $_POST['PrfType'];
+            $prfType = $_POST['LoadTypeName'];
             //error_log(date("y-m-d H:i:s").": get_profile_names() - Device IP sent over POST\n", 3, "/var/log/chaniqphp.log");
             file_put_contents("/var/log/chaniqphp.log", "get_profile_names() Device IP: " . $bigipIP."\n", FILE_APPEND);
         }

@@ -18,6 +18,8 @@
          echo "<li><a href='?go=new_cert'>Cert</a></li>";
          echo "<li><a href='?go=new_irule'>iRule</a></li>";
          echo "<li><a href='?go=new_monitor'>Monitor</a></li>";
+         echo "<li><a href='?go=new_snatpool'>Snatpool</a></li>";
+         echo "<li><a href='?go=new_policies'>Policies</a></li>";
          echo "</ul>";
      echo "</div>";
      echo "<div class='menu-item'>";
@@ -30,6 +32,19 @@
              echo "<li><a href='?go=chg_irule'>iRule</a></li>";
              echo "<li><a href='?go=chg_monitor'>Monitor</a></li>";
          echo "</ul>";
+     echo "</div>";
+     echo "<div class='menu-item'>";
+     echo "<h4><a href='#'>Delete</a></h4>";
+     echo "<ul> <!-- Expanding white area -->";
+     echo "<li><a href='?go=del_vs'>VS</a></li>";
+     echo "<li><a href='?go=del_profile'>Profile</a></li>";
+     echo "<li><a href='?go=del_pool'>Pool</a></li>";
+     echo "<li><a href='?go=del_cert'>Cert</a></li>";
+     echo "<li><a href='?go=del_irule'>iRule</a></li>";
+     echo "<li><a href='?go=del_monitor'>Monitor</a></li>";
+     echo "<li><a href='?go=del_snatpool'>Snatpool</a></li>";
+     echo "<li><a href='?go=del_policies'>Policies</a></li>";
+     echo "</ul>";
      echo "</div>";
      }
      ?>             

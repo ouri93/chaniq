@@ -25,7 +25,7 @@ function isadmin(){
  * 
  */
 function parse_ini_section_file (){
-    $iniarray = parse_ini_file('config/chaniq.ini', TRUE);
+    $iniarray = parse_ini_file('/var/www/chaniq/config/chaniq.ini', TRUE);
     /* Error handling code */
     /* print_r($secdata); */
     return $iniarray;
@@ -494,6 +494,27 @@ function build_nodes($allPostData) {
     
 }
 
+/*
+ * $active_ltm: string, LTM Device IP
+ * $pool_membername: List of Pool member names
+ * $pool_memberip: List of Pool member IP addresses
+ */
+function build_nodes2($active_ltm, $pool_membername, $pool_memberip) {
+
+     foreach ($pool_membername as $key => $value) {
+     echo "key: " .$key . "    value: " .$value ."<br>";
+     }
+    
+    //1. Create nodes
+    $cmd = '/usr/bin/python /var/www/chaniq/py/build_nodes.py '.$active_ltm.' '. escapeshellarg(json_encode($pool_membername)).' '. escapeshellarg(json_encode($pool_memberip));
+    
+    $output = shell_exec($cmd);
+    //echo "Output: " .$output ."<br>";
+    $outputdata = json_decode($output, true);
+    
+    return $outputdata;
+    
+}
 function build_pools($allPostData) {
     // Parsing variables
     $vs_dnsname = $allPostData['vs_dnsname'];

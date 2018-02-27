@@ -72,26 +72,10 @@
             <?php
                 dynamic_select($tcp_profiles, "vs_tcpprofile", "TCP Profile", "tcp")
             ?>
-<!--                 <label>TCP Profile</label>
-                <select name="vs_tcpprofile" required="required">
-                    <option>tcp</option>
-                </select> -->
             <?php
                 dynamic_select($persist_profiles, "vs_persistence", "Persistence", "none")
             ?>                
                     
-<!-- 
-            	<label>Persistence</label>
-                <select name="vs_persistence" required="required">
-                	<option>None</option>
-                    <option>Source_addr</option>
-                    <option>Dest_addr</option>
-                    <option>Hash</option>
-                    <option>Universal</option>
-                    <option selected="selected" >Cookie</option>
-                    <option>Ssl</option>
-                </select>
- -->
                 <label>Redirection</label>
                 <select name="vs_redirect" required="required">
                     <option>NO</option>
@@ -111,18 +95,9 @@
                 dynamic_select($http_profiles, "vs_httpprofile", "HTTP Profile", "http");
                 
                 dynamic_select($clissl_profiles, "vs_sslclient", "Client SSL Profile", "clientssl");
-                /*                 echo "<label>Client SSL Profile</label>";
-                 echo "<select name='vs_sslclient' required='required'>";
-                 echo "    <option>Auto</option>";
-                 echo "    <option>clientssl</option>";
-                 echo "</select>"; */
                 
                 dynamic_select($srvssl_profiles, "vs_sslserver", "Server SSL Profile", "serverssl");
-                /*                 echo "<label>Server SSL Profile</label>";
-                 echo "<select name='vs_sslserver' required='required'>";
-                 echo "    <option>Auto</option>";
-                 echo "    <option>serverssl</option>";
-                 echo "</select>"; */
+
                 echo "</p>";
             }
             
@@ -134,12 +109,7 @@
                 <?php
                 dynamic_select($pool_healthmons, "vs_poolmon", "Pool Monitor", "tcp");
                 ?>
-<!--                    <label>Pool Monitor: </label>
-                    <select name="vs_poolmon" required="required">
-                        <option>None</option>
-                        <option>tcp</option>
-                        <option>others from LTM</option>
-                    </select> -->
+
                 </p>
                 <table id="dataTable" class="form" border="1">
                     <tbody>
@@ -165,11 +135,6 @@
                             array_push($pool_healthmons, "Inherit");
                             dynamic_select($pool_healthmons, "pool_membermon[]", "Pool Monitor", "Inherit");
                             ?>
-<!--                                 <label>Monitor: </label>
-                                <select name="pool_membermon[]" required="requried" >
-                                    <option>Inherit</option>
-                                    <option>Pool Member Specific</option>
-                                </select> -->
                             </td>
                         </tr>
                         <?php } ?>

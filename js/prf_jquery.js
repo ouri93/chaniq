@@ -195,7 +195,7 @@ function setHttpPrfOptData(prfOptData, prfType, pxyMode, parPrfName ) {
 
 function setPrfOptData(prfOptData, prfType, parPrfName) {
 
-	prfOptData['PrfType'] = prfType;
+	prfOptData['LoadTypeName'] = prfType;
 	prfOptData['defaultsFrom'] = '/Common/' + parPrfName;
 	
 	if(prfType == 'DNS'){
@@ -520,7 +520,7 @@ function getPrfSettingsProcessData(response_in){
 
 function processGetProfileData(response_in, prfType){
 	var responseArray = response_in.split('|');
-	alert('First Data: ' + responseArray[0] + 'Profile Type: ' + prfType);
+	//alert('First Data: ' + responseArray[0] + 'Profile Type: ' + prfType);
 	/* Debugging */
 	/*
 	var strResult = '';
@@ -982,7 +982,7 @@ function getStrHttpHtml(pxyMode){
 		type: 'POST',
 		async: false,
 		dataType: 'JSON',
-		data: {method:'get_profile_names', DevIP:arr[1], PrfType:prfType},
+		data: {method:'get_profile_names', DevIP:arr[1], LoadTypeName:prfType},
 		error: function(jqXHR, textStatus, errorThrown){
 			alert("Ajax call failed!");
             console.log('jqXHR:');
@@ -1042,7 +1042,7 @@ $(function () {
 		url: '/content/get_profile_names.php',
 		type: 'POST',
 		dataType: 'JSON',
-		data: {method:'get_profile_names', DevIP:arr[1], PrfType:prfType},
+		data: {method:'get_profile_names', DevIP:arr[1], LoadTypeName:prfType},
 		error: function(jqXHR, textStatus, errorThrown){
 			alert("Ajax call failed!");
             console.log('jqXHR:');
@@ -1073,7 +1073,7 @@ $(function () {
 			url: '/content/get_profile_names.php',
 			type: 'POST',
 			dataType: 'JSON',
-			data: {method:'get_profile_names', DevIP:arr[1], PrfType:prfType},
+			data: {method:'get_profile_names', DevIP:arr[1], LoadTypeName:prfType},
 			error: function(jqXHR, textStatus, errorThrown){
 				alert("Ajax call failed!");
 	            console.log('jqXHR:');
@@ -1121,7 +1121,7 @@ $(function () {
 			ajaxOut = $.ajax({
 	    		url:'/content/getHttpSettings.php',
 	    		type: 'POST',
-	    		data: {method:'getHttpSettings', DevIP:arr[1], ProxyType:pxyMode, PrfType:prfType, PrfName:parPrfName },
+	    		data: {method:'getHttpSettings', DevIP:arr[1], ProxyType:pxyMode, LoadTypeName:prfType, PrfName:parPrfName },
 	    		error: function(jqXHR, textStatus, errorThrown){
 					alert("Ajax call failed!");
 		            console.log('jqXHR:');
@@ -1148,7 +1148,7 @@ $(function () {
 					url: '/content/get_profile_names.php',
 					type: 'POST',
 					dataType: 'JSON',
-					data: {method:'get_profile_names', DevIP:arr[1], PrfType:'IRULE'},
+					data: {method:'get_profile_names', DevIP:arr[1], LoadTypeName:'IRULE'},
 					error: function(jqXHR, textStatus, errorThrown){
 						alert("Ajax call failed!");
 			            console.log('jqXHR:');
@@ -1168,7 +1168,7 @@ $(function () {
 					type: 'POST',
 					async: false,
 					dataType: 'JSON',
-					data: {method:'get_profile_names', DevIP:arr[1], PrfType:'CERT'},
+					data: {method:'get_profile_names', DevIP:arr[1], LoadTypeName:'CERT'},
 					error: function(jqXHR, textStatus, errorThrown){
 						alert("Ajax call failed!");
 			            console.log('jqXHR:');
@@ -1186,7 +1186,7 @@ $(function () {
 					type: 'POST',
 					async: false,
 					dataType: 'JSON',
-					data: {method:'get_profile_names', DevIP:arr[1], PrfType:'KEY'},
+					data: {method:'get_profile_names', DevIP:arr[1], LoadTypeName:'KEY'},
 					error: function(jqXHR, textStatus, errorThrown){
 						alert("Ajax call failed!");
 			            console.log('jqXHR:');
@@ -1204,7 +1204,7 @@ $(function () {
 			ajaxOut = $.ajax({
 	    		url:'/content/getPrfSettings.php',
 	    		type: 'POST',
-	    		data: {method:'getPrfSettings', DevIP:arr[1], PrfType:prfType, ParPrfName:parPrfName },
+	    		data: {method:'getPrfSettings', DevIP:arr[1], LoadTypeName:prfType, ParPrfName:parPrfName },
 	    		error: function(jqXHR, textStatus, errorThrown){
 					alert("Ajax call failed!");
 		            console.log('jqXHR:');
@@ -1219,98 +1219,6 @@ $(function () {
 				processGetProfileData(response_in, prfType);
 			});			
 		} 
-		/*
-		else if (prfType == "DNS"){
-			//alert(iterAssArray(prfOptData));
-			// 2. Build Dynamic configuration page according to the chosen profile name
-			var strHtml = getPrfHtml(prfType, parPrfName);
-	    	$('#prfConfTable_tbody tr').each(function(index) {
-	    		if (index != 0 && index != 1) $(this).remove();
-	    	});
-			$('#prfConfTable_tbody').append(strHtml);
-			// 3. Load the chosen profile configuration
-			ajaxOut = $.ajax({
-	    		url:'/content/getPrfSettings.php',
-	    		type: 'POST',
-	    		data: {method:'getPrfSettings', DevIP:arr[1], PrfType:prfType, ParPrfName:parPrfName },
-	    		error: function(jqXHR, textStatus, errorThrown){
-					alert("Ajax call failed!");
-		            console.log('jqXHR:');
-		            console.log(jqXHR);
-		            console.log('textStatus:');
-		            console.log(textStatus);
-		            console.log('errorThrown:');
-		            console.log(errorThrown);
-				}
-	    	}); 
-			ajaxOut.done(function(response_in){
-				processGetProfileData(response_in, prfType);
-			});
-			
-		}
-		else if (prfType == "Cookie"){
-			var strHtml = getPrfHtml(prfType, parPrfName);
-	    	$('#prfConfTable_tbody tr').each(function(index) {
-	    		if (index != 0 && index != 1) $(this).remove();
-	    	});
-			$('#prfConfTable_tbody').append(strHtml);
-			// 3. Load the chosen profile configuration
-			ajaxOut = $.ajax({
-	    		url:'/content/getPrfSettings.php',
-	    		type: 'POST',
-	    		data: {method:'getPrfSettings', DevIP:arr[1], PrfType:prfType, ParPrfName:parPrfName },
-	    		error: function(jqXHR, textStatus, errorThrown){
-					alert("Ajax call failed!");
-		            console.log('jqXHR:');
-		            console.log(jqXHR);
-		            console.log('textStatus:');
-		            console.log(textStatus);
-		            console.log('errorThrown:');
-		            console.log(errorThrown);
-				},
-	    	});
-			ajaxOut.done(function(response_in){
-				processGetProfileData(response_in, prfType);
-			});
-
-		}
-		else if (prfType == "DestAddrAffinity"){
-			
-		}
-		else if (prfType == "SrcAddrAffinity"){
-			
-		}
-		else if (prfType == "Hash"){
-			
-		}
-		else if (prfType == "SSL"){
-			
-		}
-		else if (prfType == "Universal"){
-			
-		}
-		else if (prfType == "FastL4"){
-			
-		}
-		else if (prfType == "TCP"){
-			
-		}
-		else if (prfType == "UDP"){
-			
-		}
-		else if (prfType == "CLIENTSSL"){
-			
-		}
-		else if (prfType == "SERVERSSL"){
-			
-		}
-		else if (prfType == "OneConnect"){
-			
-		}
-		else if (prfType == "Stream"){
-			
-		}
-		*/
 	});
 	
 
@@ -1413,60 +1321,6 @@ $(function () {
 				processBuildProfileData(response_in, prfType);
 			});			
 		}
-		/*
-		else if (prfType == "DNS"){
-			// 2. Retrieve configuration data and save them according to the chosen profile name
-			setPrfOptData(prfOptData, prfType, parPrfName);
-			//alert(iterAssArray(prfOptData));
-			if( !validateInput(prfOptData)) return;
-
-			// 3. Load the chosen profile configuration
-			ajaxOut = $.ajax({
-	    		url:'/content/new_Profile_build.php',
-	    		type: 'POST',
-	    		dataType: 'JSON',
-	    		data: {'newProfileBuild': JSON.stringify(prfOptData)},
-	    		error: function(jqXHR, textStatus, errorThrown){
-					alert("Ajax call failed!");
-		            console.log('jqXHR:');
-		            console.log(jqXHR);
-		            console.log('textStatus:');
-		            console.log(textStatus);
-		            console.log('errorThrown:');
-		            console.log(errorThrown);
-				}
-	    	}); 
-	    	ajaxOut.done(newProfileBuildProcessData);
-
-		}
-		else if (prfType == "Cookie"){
-			// 2. Retrieve configuration data and save them according to the chosen profile name
-			setPrfOptData(prfOptData, prfType, parPrfName);
-			//alert(iterAssArray(prfOptData));
-			if( !validateInput(prfOptData)) return;
-
-			// 3. Load the chosen profile configuration
-			ajaxOut = $.ajax({
-	    		url:'/content/new_Profile_build.php',
-	    		type: 'POST',
-	    		dataType: 'JSON',
-	    		data: {'newProfileBuild': JSON.stringify(prfOptData)},
-	    		error: function(jqXHR, textStatus, errorThrown){
-					alert("Ajax call failed!");
-		            console.log('jqXHR:');
-		            console.log(jqXHR);
-		            console.log('textStatus:');
-		            console.log(textStatus);
-		            console.log('errorThrown:');
-		            console.log(errorThrown);
-				}
-	    	}); 
-			ajaxOut.done(function(response_in){
-				processBuildProfileData(response_in, prfType);
-			});
-
-		}	
-		*/		
 	});
 	
 });

@@ -149,7 +149,7 @@ img.center {
 }
 
 .menu-item:hover ul {
-    height: 123px;
+    height: 163px;
 }
 
 /* ul styles */
@@ -534,6 +534,17 @@ form.inner-form select{
     width:120px;
 }
 
+.inner-form label{
+    color:#444;
+    width:80px;
+    float: left;
+    text-align: right;
+    margin-right: 6px;
+    margin-top:2px;
+}
+.inner-form table{
+    width: 690px;
+}
 .ltmDeviceList {
 	float: left;
 	width: 50%;
