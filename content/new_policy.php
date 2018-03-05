@@ -6,11 +6,11 @@
     }
     ?>
     <form class="register">
-        <fieldset  id='snatpool_iframe_fieldset' class="row1">
+        <fieldset  id='policy_iframe_fieldset' class="row1">
 		<!-- IFrame content here -->
 		<!-- Default Page content - HTTP Profile -->
-		<legend>Snatpool Configuration</legend>
-		<iframe src="/content/if_new_snatpool.php" width="720px" height="600" frameborder="0"></iframe>       	
+		<legend>Policy Configuration</legend>
+		<iframe src="/content/if_new_policy.php" width="720px" height="600px" frameborder="0" onload="this.style.height=this.contentDocument.body.scrollHeight +'px';"></iframe>       	
         </fieldset>
     </form>
 </div>

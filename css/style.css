@@ -393,7 +393,6 @@ form.register select{
     margin-right:5px;
 }
 
-
 /* Beginneing of CSS for form.inner-form */
 form.inner-form label.optional{
     float: left;
@@ -545,6 +544,14 @@ form.inner-form select{
 .inner-form table{
     width: 690px;
 }
+
+.inner-form th{
+	padding-left:5px;
+	text-align: left;
+	background-color:#edeeef;
+	
+}
+
 .ltmDeviceList {
 	float: left;
 	width: 50%;

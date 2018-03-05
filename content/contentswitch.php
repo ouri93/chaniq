@@ -15,7 +15,7 @@ if(isset($_GET['go'])) {
         case "new_irule": include('content/new_irule.php');break;
         case "new_monitor": include('content/new_monitor.php');break;
         case "new_snatpool": include('content/new_snatpool.php');break;
-        case "new_policies": include('content/new_policies.php');break;
+        case "new_policies": include('content/new_policy.php');break;
         case "chg_vs": include('content/chg_vs.php'); break;
         case "chg_pool": include('content/chg_pool.php');break;
         case "chg_profile": include('content/chg_profile.php');break;
