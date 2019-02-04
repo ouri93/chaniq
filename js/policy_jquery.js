@@ -86,11 +86,74 @@ function loadOptNames(ltmIP, loadType, selID){
 	});
 }
 
+function loadOptNamesProcessData(response_in, selID) {
+	var strResult = '';
+	//Remove existing profile types and then add new ones
+	$('#' + selID + ' option').each(function(index) {
+		if (index != 0) $(this).remove();
+	});
+	
+	$.each(response_in, function(index) {
+		if (response_in[index] != "none"){
+			if (response_in[index] == "tcp" && selID == 'vs_tcpprofile') strResult += "<option value='" + response_in[index] + "' selected>" + response_in[index] + "</option>";
+			else strResult += "<option value='" + response_in[index] + "'>" + response_in[index] + "</option>";
+		}
+	});
+	
+	//alert("Return output: " + strResult);
+	$('#' + selID).append(strResult);
+}
+
+
+function loadOptNames(ltmIP, loadType, selID){
+	var callingUrl = '';
+	if (loadType != 'ALL') callingUrl = 'get_profile_names';
+	else callingUrl = 'get_pool_monitors';
+
+	ajxOut = $.ajax({
+		url: '/content/' + callingUrl + '.php',
+		type: 'POST',
+		dataType: 'JSON',
+		data: {method:callingUrl, DevIP:ltmIP, LoadTypeName:loadType},
+		error: function(jqXHR, textStatus, errorThrown){
+			alert("Ajax call failed!");
+            console.log('jqXHR:');
+            console.log(jqXHR);
+            console.log('textStatus:');
+            console.log(textStatus);
+            console.log('errorThrown:');
+            console.log(errorThrown);
+		}
+	});
+	ajxOut.done(function (response_in) {
+			loadOptNamesProcessData(response_in, selID);
+	});
+}
+
+function loadRuleCondOpt(loadedCondOpt) {
+
+}
+
+function loadRuleActOpt(loadedActOpt) {
+	
+}
+
+
 //JQueury 
 $(function () {
+	// Load predefined condition and action options
+	loadedCondOpt = {}
+	loadedActOpt = {}
+	loadRuleCondOpt(loadedCondOpt)
+	loadRuleActOpt(loadedActOpt)
+	
 	$('#div_ltmchoice').on('change', function() {
 		var nameAndIp = $('#ltmSelBox option:selected').val();
 		if (nameAndIp == 'Select...') return;
+		
+		// Load initial values from device
+		var arr = nameAndIp.split(":");
+
 
 	});
 	

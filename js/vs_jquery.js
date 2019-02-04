@@ -209,6 +209,50 @@ function loadOptNames(ltmIP, loadType, selID){
 	});
 }
 
+function loadObjNames(ltmIP, objType, selID){
+	var callingUrl = '';
+	alert("loadObjNames called - selID: " + selID + " objType: " + objType);
+	callingUrl = 'get_ltmobj_names';
+	
+	ajxOut = $.ajax({
+		url: '/content/' + callingUrl + '.php',
+		type: 'POST',
+		dataType: 'JSON',
+		data: {method:callingUrl, DevIP:ltmIP, LoadTypeName:objType},
+		error: function(jqXHR, textStatus, errorThrown){
+			alert("Ajax call failed!");
+            console.log('jqXHR:');
+            console.log(jqXHR);
+            console.log('textStatus:');
+            console.log(textStatus);
+            console.log('errorThrown:');
+            console.log(errorThrown);
+		}
+	});
+	ajxOut.done(function (response_in) {
+			loadObjNamesProcessData(response_in, selID);
+	});
+}
+
+function loadObjNamesProcessData(response_in, selID) {
+	var strResult = '';
+	alert("loadObjNameProcessData called - selID: " + selID);
+	//Remove existing profile types and then add new ones
+	$('#' + selID + ' option').each(function(index) {
+		if (index != 0) $(this).remove();
+	});
+	
+	$.each(response_in, function(index) {
+		if (response_in[index] != "none"){
+			strResult += "<option value='" + response_in[index] + "'>" + response_in[index] + "</option>";
+		}
+	});
+	
+	//alert("Return output: " + strResult);
+	$('#' + selID).append(strResult);
+}
+
+
 function isMinNumOfPoolMbr(){
 	minPoolMbr = parseInt($('#vs_poolmbrnum option:selected').val());
 	if (minPoolMbr > 0) return true;
@@ -462,5 +506,13 @@ $(function () {
 		for(i=0;i<$numOfPoolmbr;i++){
 			loadOptNames(arr[1], 'ALL', "pool_membermon" + i);			
 		}
+	});
+	///////////////////////////////// Virtual Server modification ///////////////////////////////
+	$('#chg_div_ltmchoice').on('change', function() {
+		var nameAndIp = $('#ltmSelBox option:selected').val();
+		if (nameAndIp == 'Select...') return;
+		
+		var arr = nameAndIp.split(":");
+		loadObjNames(arr[1], 'VS', 'chg_vs_sel_vs');
 	});
 });

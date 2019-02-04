@@ -5,7 +5,12 @@
         header('Location: index.php');
     }
     ?>
-    <p> Change virtual server </p>
+    <form class="register">
+        <fieldset  id='vs_iframe_fieldset' class="row1">
+		<!-- IFrame content here -->
+		<!-- Default Page content - HTTP Profile -->
+		<legend>Virtual Server Modification</legend>
+		<iframe src="/content/if_chg_vs.php" width="720px" height="600" frameborder="0"></iframe>       	
+        </fieldset>
+    </form>
 </div>
-
-

@@ -48,7 +48,7 @@
                 <table class="form" border="1">
                     <tbody id="polDataTbody" >
                         <tr>
-                            <td style="width:120px"> <label>Policy Name: </label> </td>
+                            <td style="width:120px"> <label>*Policy Name: </label> </td>
                             <td> <input type="text" name="pol_name" id="pol_name" /></td>
                         </tr>
                         <tr>
@@ -57,7 +57,7 @@
                         </tr>
                         <tr>
                         	<td> <label>Strategy: </label> </td>
-                            <td><label>Execute</label><select style='width:60px;height:20px;' id='pol_strategy'><option value='none'>None</option></select><label>matching rule</label></td>
+                            <td><label>Execute</label><select style='width:60px;height:20px;' id='pol_strategy'><option value='all-match'>all</option><option value='first-match' selected>first</option><option value='best-match'>best</option></select><label>matching rule</label></td>
                         </tr>
                     </tbody>
                 </table>
@@ -87,7 +87,7 @@
                 <table class="form" border="1">
                 	<tbody id="polDataTbody3">
                 	   	<tr>
-                            <td style="width:120px"> <label>Rule Name: </label> </td>
+                            <td style="width:120px"> <label>*Rule Name: </label> </td>
                             <td> <input type="text" name="rule_name" id="rule_name" /></td>
                         </tr>
                         <tr>
@@ -114,10 +114,11 @@
                 		<td><p>Ignore<input type='button' id='ruleact_add1' style="width:15px; font-weight:900; float: right;" value='+' /></p></td>
                 	</tr>
                 </table>                
-                <p>
-                </p>
+                <p></p>
                 <input id="rule_add" type="button" name="rule_add" value="Add Rule" style="width:70px; float: right;" />
+                <p></p>
             </fieldset>
+            <p>*: Required field</p>
             <input id="pol_build" type="button" name="pol_build" value="Deploy Policy" style="width:100px; float: right;" />
             <p></p>
             <fieldset class="row1">        
