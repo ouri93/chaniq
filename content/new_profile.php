@@ -59,6 +59,7 @@
                 $allBigips = load_all_bigips();
                 $allBigipNames = array();
 
+		$allBigipNames[0] = 'Select...';
                 $i=0;
                 foreach($allBigips as $name => $ip){
                     $allBigipNames[$i] = $name . ":" . $ip;
@@ -69,7 +70,7 @@
             <p>
                 <div id="ltmDeviceList" class="ltmDeviceList">
                 	<?php 
-                	dynamic_select($allBigipNames, "ltmSelBox", "", "");
+			dynamic_select($allBigipNames, "ltmSelBox", "", "Select...");
                 	?>
                 </div>
             </p>
