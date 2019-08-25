@@ -1,0 +1,29 @@
+
+index.php
+
+--------------------------------------------------------------------------------------
+|  header.php                                                                         |
+|                                                                                     |
+|-- DIV: content ---------------------------------------------------------------------|
+|                   |                                                                 |
+| sidebar.php       |  content/contentswitch.php                                      |
+| (DIV: sidebar)    |  (DIV: maincontent)                                             |
+|                   |  - Initially shows default content(content/contentbase.php)     |
+|                   |  - According to a chosen menu of sidebar.php, corresponding     |
+|                   |    content will be displayed.                                   |
+|                   |                                                                 |
+|                   |                                                                 |
+|                   |                                                                 |
+|                   |                                                                 |
+|                   |                                                                 |
+|                   |                                                                 |
+|                   |                                                                 |
+|                   |                                                                 |
+|                   |                                                                 |
+|                   |                                                                 |
+|                   |                                                                 |
+--------------------------------------------------------------------------------------|
+| footer.php                                                                          |
+|                                                                                     |
+|                                                                                     |
+--------------------------------------------------------------------------------------
