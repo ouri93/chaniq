@@ -286,7 +286,7 @@ def get_active_profiles(dev_ip, pf_type):
 	logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
 	#logging.info('Called get_profiles(): %s %s' % (dev_ip, pf_type))
 	
-	mr = ManagementRoot('192.168.80.150', 'admin', 'rlatkdcks')
+	mr = ManagementRoot(dev_ip, 'admin', 'rlatkdcks')
 	output = ''
 	
 	'''

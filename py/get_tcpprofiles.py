@@ -7,7 +7,7 @@ def get_active_tcpprofiles(dev_ip):
 	logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
 	logging.info('Dev IP in get_tcpprofiles: %s' % dev_ip)
 	
-	mr = ManagementRoot('192.168.80.150', 'admin', 'rlatkdcks')
+	mr = ManagementRoot(dev_ip, 'admin', 'rlatkdcks')
 	tcppf =mr.tm.ltm.profile.tcps.get_collection()
 	output = ''
 

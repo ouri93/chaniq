@@ -26,7 +26,7 @@ def new_f4Profile_build(prfDevIp, prfName, prfPara1, prfPara2, prfPara3, prfPara
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
     #logging.info('Called get_profiles(): %s %s' % (dev_ip, pf_type))
 	
-    mr = ManagementRoot('192.168.80.150', 'admin', 'rlatkdcks')
+    mr = ManagementRoot(prfDevIp, 'admin', 'rlatkdcks')
     output = ''
 
     logging.info("new_f4Profile_build.py Parms DevIP: " + prfDevIp + " Profile name: " + prfName + " Defaults-from: " + prfPara1) 
