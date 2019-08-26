@@ -37,9 +37,11 @@
          - Protocol profiles - TCP, UDP
          - SSL profiles - Client, Server
          - Other profiles - OneConnect, Stream
-      b) Loading static BIG-IP device list from /config/chaniq.ini
+      b) Loading static BIG-IP device list from /config/chaniq.ini (Location: /content/new_profile.php)
          *** Loading BIG-IP device lists should be included within iframe in the future ***
          - BIG-IP device list (Default: 'Select...')
+         - If a BIG-IP device is chosen, the chosen BIG-IP device IP address is passed to a corresponding iframe php file
+           e.g. With HTTP profile creation, 
       c) According to a chosen Profile type, correspondig iframe content is loaded
          *** e.g. By default, HTTP profile (/content/if_prf_svc_http.php) is loaded in the beginning **
          - Service profile iframes: /content/if_prf_svc_http.php, /content/if_prf_svc_dns.php
@@ -49,8 +51,11 @@
          - Protocol profile iframes: /content/if_prf_prot_fastl4.php, /content/if_prf_prot_tcp.php, /content/if_prf_prot_udp.php
          - SSL profile iframes: /content/if_prf_ssl_client.php, /content/if_prf_ssl_server.php
          - Other profile iframes: /content/if_prf_other_oneconnect.php, /content/if_prf_other_stream.php
+      d) Once an iframe php file is determined, default page loading process is started by /js/prf_jquery.js loading event handler
+         - Values of BIG-IP IP address(ltmSelBox), Profile Type (selectedPrfType), and Proxy Type (selectedPrfProxyType) if HTTP profile, 
+           are fed to value fileds
+         - Profile names of a corresponding profile type is collected with Ajax call
+         - The collected profile names are dynamcially added to Parent Profile names
  iv) Click on 'Build' button to create a requested profile
-     a) Each 'Build' button of different profiles fires different on_click event (Event Handler location: /js/prf_jquery.js)
-        - P
-     vs_btn_build on_click event is fired (Event Handler location: /js/vs_jquery.js)
-        - Save given configuration-> Create Nodes -> Create Pools -> Create Virtual Servers
+     a) 'Build' button (prf_btn_build) of different profiles fires a on_click event (Event Handler location: /js/prf_jquery.js) and
+        collected data through Ajax is posted to a BIG-IP divce to create the object.
