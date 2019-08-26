@@ -70,7 +70,7 @@
             <p>
                 <div id="ltmDeviceList" class="ltmDeviceList">
                 	<?php 
-                	dynamic_select($allBigipNames, "ltmSelBox", "", "Select...");
+			dynamic_select($allBigipNames, "ltmSelBox", "", "Select...");
                 	?>
                 </div>
             </p>
