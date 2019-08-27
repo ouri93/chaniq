@@ -1,0 +1,28 @@
+** index.php **
+
+--------------------------------------------------------------------------------------|
+|  header.php                                                                         |
+|                                                                                     |
+|-- DIV: content ---------------------------------------------------------------------|
+|                   |                                                                 |
+| sidebar.php       |  content/contentswitch.php                                      |
+| (DIV: sidebar)    |  (DIV: maincontent)                                             |
+|                   |  - Initially shows default content(content/contentbase.php)     |
+|                   |  - According to a chosen menu from a sidebar.php, corresponding |
+|                   |    content will be displayed.                                   |
+|                   |  - Each content from the chosen menu will be displayed within   |
+|                   |    iframe. E.g New Virtual Server Build (content/new_vs.php)    |
+|                   |    defines an iframe and feeds the iframe with the content of   |
+|                   |    content/if_new_vs.php                                        |
+|                   |    ( ** This two files process can be simplied later ** )       |
+|                   |                                                                 |
+|                   |                                                                 |
+|                   |                                                                 |
+|                   |                                                                 |
+|                   |                                                                 |
+|                   |                                                                 |
+--------------------------------------------------------------------------------------|
+| footer.php                                                                          |
+|                                                                                     |
+|                                                                                     |
+--------------------------------------------------------------------------------------|

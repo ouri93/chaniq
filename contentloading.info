@@ -1,0 +1,61 @@
+** How is generally Content loaded? **
+
+
+0. Default content
+ i) When a user authentication process is completed, default content page is loaded (/content/contentbase.php)
+
+1. Building a new Virtual Server (Deploy -> VS)
+ i) User clicks on Deploy -> VS from the left menu and it opens http://chan-iq/index.php with a parameter '?go=new_vs'
+ ii) Passed parameter ('?go=new_vs') to /content/contentswitch.php of index.php is checked through 'switch' statement and
+     /content/new_vs.php is included within /content/contentswitch.php
+ iii) Within /content/new_vs.php, a new iframe for dynamically loaded content is created, content is fed with /content/if_new_vs.php
+     a) Loading static BIG-IP device list from /config/chaniq.ini
+        - BIG-IP device list (Default: 'Select...')
+     b) Loading static Virtual Server configuration 
+        *** Once a BIG-IP device is chosen, corresponding Virtual Server configuration is dynamically loaded ***
+        - Row1: DNS/VS Name, Dest. IP, Service port
+        - Row2: Description, Environment, Virtual Server Type (Standard, Forwarding IP)
+        - Row3: TCP Profile (Default: none), Persistence (Default: none), Redirection (Default: none)
+        - Row4: iRule (Default: none), SNAT Pool (Default: none), Policies (Default: none)
+        - Row5: HTTP Profile (Default: none), Client SSL Profile (Default: none), Server SSL Profile (Default: none)
+     c) Loading static Pool Members configuration (Pool members are expandable up to 10)
+        - DNS/Pool Name, Pool Monitor, Number of pool members
+ iv) Click on 'Build' button to create a requested virtual server
+     a) vs_btn_build on_click event is fired (Event Handler location: /js/vs_jquery.js)
+        - Save given configuration-> Create Nodes -> Create Pools -> Create Virtual Servers
+        
+2. Building a new Profile (Deploy -> Profile)
+ i) User clicks on Deploy -> Profile from the left menu and it opens http://chan-iq/index.php with a parameter '?go=new_profile'
+ ii) Passed parameter ('?go=new_profile') to /content/contentswitch.php of index.php is checked through 'switch' statement and
+     /content/new_profile.php is included within /content/contentswitch.php
+ iii) /content/new_profle.php loads correspodning content
+      *** When a user clicks on Profile under Deploy, by default HTTP profile page is loaded (/content/if_prf_svc_http.php) ***
+      *** Two hidden parameters are passed to ifame (/content/if_prf_svc_http.php); selectedPrfProxyType, selectedPrfType (Default: HTTP reverse) ***
+      a) On the loading phase, Profile Types are loaded as sub-menu on the top of maincontent area
+         - Services profiles - HTTP, DNS
+         - Persistence profiles - Cookie, Destination Address Affinity, Source Address Affinity, Hash, SSL, Universal
+         - Protocol profiles - TCP, UDP
+         - SSL profiles - Client, Server
+         - Other profiles - OneConnect, Stream
+      b) Loading static BIG-IP device list from /config/chaniq.ini (Location: /content/new_profile.php)
+         *** Loading BIG-IP device lists should be included within iframe in the future ***
+         - BIG-IP device list (Default: 'Select...')
+         - If a BIG-IP device is chosen, the chosen BIG-IP device IP address is passed to a corresponding iframe php file
+           e.g. With HTTP profile creation, 
+      c) According to a chosen Profile type, correspondig iframe content is loaded
+         *** e.g. By default, HTTP profile (/content/if_prf_svc_http.php) is loaded in the beginning **
+         - Service profile iframes: /content/if_prf_svc_http.php, /content/if_prf_svc_dns.php
+         - Persistence profile iframes: /content/if_prf_persist_cookie.php, /content/if_prf_persist_dest.php, /content/if_prf_persist_hash.php,
+                                        /content/if_prf_persist_hash.php, /content/if_prf_persist_src.php, /content/if_prf_persist_ssl.php,
+                                        /content/if_prf_persist_univ.php
+         - Protocol profile iframes: /content/if_prf_prot_fastl4.php, /content/if_prf_prot_tcp.php, /content/if_prf_prot_udp.php
+         - SSL profile iframes: /content/if_prf_ssl_client.php, /content/if_prf_ssl_server.php
+         - Other profile iframes: /content/if_prf_other_oneconnect.php, /content/if_prf_other_stream.php
+      d) Once an iframe php file is determined, default page loading process is started by /js/prf_jquery.js loading event handler
+         - Values of BIG-IP IP address(ltmSelBox), Profile Type (selectedPrfType), and Proxy Type (selectedPrfProxyType) if HTTP profile, 
+           are fed to value fileds
+         - Profile names of a corresponding profile type is collected with Ajax call
+         - The collected profile names are dynamcially added to Parent Profile names
+ iv) Click on 'Build' button to create a requested profile
+     a) 'Build' button (prf_btn_build) of different profiles fires a on_click event (Event Handler location: /js/prf_jquery.js) and
+        collected data through Ajax is posted to a BIG-IP divce to create the object.
