@@ -13,10 +13,34 @@
         <script> window.jQuery || document.write("<script src='/js/jquery-3.2.1.js'><\/script>"); </script>  
                  
         <script type="text/javascript" src="/js/prf_jquery.js"></script>
+        <?php include('../utility/utility.php'); ?>        
         <title>Create SSL Persistence Profile</title>
     </head>
     <body style="background-color: #ffffff;">
         <form class="inner-form">
+            <fieldset class="row1">
+                <legend>Select a target LTM</legend>
+                <?php
+                    // Load all BIG-IP devices name and IP
+                    $allBigips = load_all_bigips();
+                    $allBigipNames = array();
+    
+                    $allBigipNames[0] = 'Select...';
+                    $i=1;
+                    foreach($allBigips as $name => $ip){
+                        $allBigipNames[$i] = $name . ":" . $ip;
+                        $i += 1;
+                    }
+                    asort($allBigipNames);
+                ?>
+                <p>
+                    <div id='div_ltmchoice' class="ltmDeviceList">
+                    	<?php 
+                        dynamic_select($allBigipNames, "ltmSelBox", "", "Select...");
+                    	?>
+                    </div>
+                </p>
+            </fieldset> 
             <fieldset class="row1">
                 <p>
                 	<table id="prfConfTable" class="form" border="1">

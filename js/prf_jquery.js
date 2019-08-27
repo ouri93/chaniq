@@ -969,7 +969,7 @@ function setPrfHtml(prfType, response_in){
 
 function getStrHttpHtml(pxyMode){
 	// Default Page Load action - Load parent profile names
-	var nameAndIp = window.parent.document.getElementById('ltmSelBox').value;
+	var nameAndIp = $('#ltmSelBox option:selected').val();
 	var prfType = window.parent.document.getElementById('selectedPrfType').value;
 	if (prfType == 'HTTP')
 		prfType = prfType + ":dnsresolver";
@@ -1028,35 +1028,38 @@ function getStrHttpHtml(pxyMode){
 }
 
 $(function () {
-	// Default Page Load action - Load parent profile names
-	var nameAndIp = window.parent.document.getElementById('ltmSelBox').value;
-	var prfType = window.parent.document.getElementById('selectedPrfType').value;
-	if (prfType == 'HTTP')
-		prfType = prfType + ":" + window.parent.document.getElementById('selectedPrfProxyType').value;
-
-	var arr = nameAndIp.split(":");
-	//alert("Device IP: " + arr[1] + " Profile Type: " + prfType);
-	
-	// Call Ajax to retrieve parent profile names
-	ajxOut = $.ajax({
-		url: '/content/get_profile_names.php',
-		type: 'POST',
-		dataType: 'JSON',
-		data: {method:'get_profile_names', DevIP:arr[1], LoadTypeName:prfType},
-		error: function(jqXHR, textStatus, errorThrown){
-			alert("Ajax call failed!");
-            console.log('jqXHR:');
-            console.log(jqXHR);
-            console.log('textStatus:');
-            console.log(textStatus);
-            console.log('errorThrown:');
-            console.log(errorThrown);
-		}
+	$('#div_ltmchoice').on('change', function() {
+		var nameAndIp = $('#ltmSelBox option:selected').val();
+		if (nameAndIp == 'Select...') return;
+		
+		var prfType = window.parent.document.getElementById('selectedPrfType').value;
+		if (prfType == 'HTTP')
+			prfType = prfType + ":" + window.parent.document.getElementById('selectedPrfProxyType').value;
+		
+		var arr = nameAndIp.split(":");
+		//alert("Device IP: " + arr[1] + " Profile Type: " + prfType);
+		
+		// Call Ajax to retrieve parent profile names
+		ajxOut = $.ajax({
+			url: '/content/get_profile_names.php',
+			type: 'POST',
+			dataType: 'JSON',
+			data: {method:'get_profile_names', DevIP:arr[1], LoadTypeName:prfType},
+			error: function(jqXHR, textStatus, errorThrown){
+				alert("Ajax call failed!");
+	            console.log('jqXHR:');
+	            console.log(jqXHR);
+	            console.log('textStatus:');
+	            console.log(textStatus);
+	            console.log('errorThrown:');
+	            console.log(errorThrown);
+			}
+		});
+		ajxOut.done(prfNameProcessData);
 	});
-	ajxOut.done(prfNameProcessData);
 	
 	$('#svc_prf_proxymode_select').on('change', function() {
-		var nameAndIp = window.parent.document.getElementById('ltmSelBox').value;
+		var nameAndIp = $('#ltmSelBox option:selected').val();
 		var arr = nameAndIp.split(":");
 		var pxyMode = $('#svc_prf_proxymode_select').val();
 		var prfType = 'HTTP:'
@@ -1094,7 +1097,7 @@ $(function () {
 	//Dynamically add Parent profile names
 	$('#svc_prf_type_select').on('change', function() {
 		//alert("Chosen Parent Name: " + $('#svc_prf_type_select').val());
-		var nameAndIp = window.parent.document.getElementById('ltmSelBox').value;
+		var nameAndIp = $('#ltmSelBox option:selected').val();
 		var arr = nameAndIp.split(":");
 		var pxyMode = $('#svc_prf_proxymode_select').val();
 		var prfType = window.parent.document.getElementById('selectedPrfType').value;
@@ -1247,7 +1250,7 @@ $(function () {
 	
 	$('#prf_btn_build').on('click', function(){
 		//Retrieve the element data of the parent window
-		var nameAndIp = window.parent.document.getElementById('ltmSelBox').value;
+		var nameAndIp = $('#ltmSelBox option:selected').val();
 		var arr = nameAndIp.split(":");
 		// prfName - User provided profile name
 		var prfName = $('#prf_name').val();

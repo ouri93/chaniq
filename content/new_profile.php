@@ -52,31 +52,13 @@
        
     ?>
 	<form class="register">
-        <fieldset class="row1">
-            <legend>Select a target LTM</legend>
-            <?php
-                // Load all BIG-IP devices name and IP
-                $allBigips = load_all_bigips();
-                $allBigipNames = array();
-
-                $allBigipNames[0] = 'Select...';
-                $i=0;
-                foreach($allBigips as $name => $ip){
-                    $allBigipNames[$i] = $name . ":" . $ip;
-                    $i += 1;
-                }
-                asort($allBigipNames);
-            ?>
-            <p>
-                <div id="ltmDeviceList" class="ltmDeviceList">
-                	<?php 
-			dynamic_select($allBigipNames, "ltmSelBox", "", "Select...");
-                	?>
-                </div>
-            </p>
-        </fieldset>
-	
         <fieldset  id='prf_iframe_fieldset' class="row1">
+        <!-- 
+        Set Default Profile values - HTTP Reverse proxy type Profile
+        All other profile build events are initiated through Top Profile List menu
+        Handler: On_click event of 'ul_prf_selected li' 
+        Jquery file: /js/chaniq_jquery.js  
+        -->
         <input type='hidden' id='selectedPrfProxyType' value='reverse' />
         <input type='hidden' id='selectedPrfType' value='HTTP' />
 		<!-- IFrame content here -->

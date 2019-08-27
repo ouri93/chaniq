@@ -8,7 +8,7 @@
     // Call new_Profile_build() by echo statement
     if (isset($_POST['newProfileBuild'])){
         $profileData = json_decode($_POST['newProfileBuild']);
-        file_put_contents("/var/log/chaniqphp.log", "new_Profile_build() phpFile: " . $profileData->phpFileName ."\n", FILE_APPEND);
+        file_put_contents("/var/log/chaniqphp.log", "new_Profile_build() php File: " . $profileData->phpFileName ."\n", FILE_APPEND);
         
         // Call the fuction new_Profile_build()
         echo ($profileData->phpFileName)($profileData);
