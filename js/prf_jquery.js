@@ -192,7 +192,7 @@ function setHttpPrfOptData(prfOptData, prfType, pxyMode, parPrfName ) {
 	}
 	
 }
-
+// Retrieve input profile data from Web interface and save the data onto prfOptData dictionary
 function setPrfOptData(prfOptData, prfType, parPrfName) {
 
 	prfOptData['LoadTypeName'] = prfType;
@@ -1262,7 +1262,7 @@ $(function () {
 		//alert("Proxy Mode: " + pxyMode + " Profile Type: " + prfType + " Parent Profile name: " + parPrfName);
 		var prfOptData = {'phpFileName':'', 'DevIP':'', 'name':''};
 
-		alert("prf_btn_build in prf_jquery.js - Profile Type is: " + prfType + "\n");
+		alert("prf_btn_build event in prf_jquery.js - Profile Type is: " + prfType + "\n");
 
 		if (prfType == 'HTTP')
 			prfOptData['phpFileName'] = 'new_httpProfile_build';
@@ -1307,7 +1307,8 @@ $(function () {
 			alert(iterAssArray(prfOptData));
 			if( !validateInput(prfOptData)) return;
 
-			// 3. Load the chosen profile configuration
+			// 3. Send the retrieved data to new_Profile_build.php where it calls a proper python file 
+			// based on profile type name
 			ajaxOut = $.ajax({
 	    		url:'/content/new_Profile_build.php',
 	    		type: 'POST',

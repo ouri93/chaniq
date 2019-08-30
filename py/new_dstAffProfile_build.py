@@ -26,7 +26,7 @@ def new_dstAffProfile_build(prfDevIp, prfName, prfPara1, prfPara2, prfPara3, prf
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
     #logging.info('Called get_profiles(): %s %s' % (dev_ip, pf_type))
 	
-    mr = ManagementRoot('192.168.80.150', 'admin', 'rlatkdcks')
+    mr = ManagementRoot(prfDevIp, 'admin', 'rlatkdcks')
     output = ''
 
     logging.info("new_dstAffProfile_build.py Parms DevIP: " + prfDevIp + " Profile name: " + prfName + " Defaults-from: " + prfPara1) 
@@ -66,6 +66,6 @@ def new_dstAffProfile_build(prfDevIp, prfName, prfPara1, prfPara2, prfPara3, prf
     return json.dumps(strReturn)
 
 if __name__ == "__main__":
-    #logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-    #logging.info('main called: param1: ')
+    logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
+    logging.info('Building New Destination Affinity Persistence has been started!')
     print new_dstAffProfile_build(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9], sys.argv[10])
