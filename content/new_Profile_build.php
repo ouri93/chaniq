@@ -21,13 +21,14 @@
     //'phpFileName', 'DevIP', 'name', 'proxyType', 'defaultsFrom', 'basicAuthRealm', 'fallbackHost', 'fallbackStatusCodes', 'headerErase'
     //'headerInsert','requestChunking', 'responseChunkimg','insertXforwardedFor', 'serverAgentName', 'dnsResolver'
     function new_Profile_build($profileData) {
-        file_put_contents("/var/log/chaniqphp.log", "new_Profile_build() called\n", FILE_APPEND);
         $cmd = '';
         
         $phpFileName = $profileData->phpFileName;
         $prfDevIp = $profileData->DevIP;
         $prfName = $profileData->name;
-        $prfType = $profileData->PrfType;
+        //$prfType = $profileData->PrfType;
+        $prfType = $profileData->LoadTypeName;
+        file_put_contents("/var/log/chaniqphp.log", "new_Profile_build() called.\n Device IP: " . $prfDevIp . " Profile Type:" . $prfType . " Php Filename: " . $phpFileName . "\n", FILE_APPEND);
         
         if ($prfType == 'DNS'){
             $prfDftFrom = $profileData->defaultsFrom;
@@ -258,12 +259,12 @@
             $rtnOutput = [];
             
             foreach ($outputdata as $key => $value){
-                file_put_contents("/var/log/chaniqphp.log", "shell_exec() Return - Key: " . $key . " Value: " . $value , FILE_APPEND);
+                file_put_contents("/var/log/chaniqphp.log", "shell_exec() Return - Key: " . $key . " Value: " . $value . "\n", FILE_APPEND);
                 array_push($rtnOutput, (string)$value);
             }
             
             foreach ($rtnOutput as $value){
-                file_put_contents("/var/log/chaniqphp.log", "String Returned: " . $value , FILE_APPEND);
+                file_put_contents("/var/log/chaniqphp.log", "String Returned: " . $value  . "\n", FILE_APPEND);
             }
             
             $json = json_encode($rtnOutput);

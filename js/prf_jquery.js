@@ -778,6 +778,7 @@ function newProfileBuildProcessData(response_in) {
 
 function processBuildProfileData(response_in, prfType) {
 	var strResult = '';
+
 	$.each(response_in, function(index) {
 		if(index == 0) 
 			strResult = "<b>" + response_in[index] + "</b><br>";
@@ -785,7 +786,6 @@ function processBuildProfileData(response_in, prfType) {
 			strResult += response_in[index] + "<br>";
 	});
 	
-	//alert("Return output: " + strResult);
 	$('#newprf_EvalReview').html(strResult);	
 }
 
@@ -810,7 +810,7 @@ function getPrfHtml(prfType, parPrfName){
 		strHtml += "<tr id='r3'><td width='132px' ><label>HTTPOnly Attribute</label></td><td><select id='ckHttpOnly' ><option value='enabled'>Enabled</option><option value='disabled' selected>Disabled</option></select></td></tr>";
 		strHtml += "<tr id='r4'><td width='132px' ><label>Secure Attribute</label></td><td><select id='ckSecure' ><option value='enabled'>Enabled</option><option value='disabled' selected>Disabled</option></select></td></tr>";
 		strHtml += "<tr id='r5'><td width='132px' ><label>Always Send Cookie</label></td><td><input type='checkbox' id='ckAlzSend' value='enabled'/></td></tr>";
-		strHtml += "<tr id='r6'><td width='132px' ><label>Expiration</label></td><td><input type='text' id='ckExp' value='0'><br><p> Note: 0 - Session Cookie. To specify specific expiration period, use D:H:M:S format.</p></td></tr>";
+		strHtml += "<tr id='r6'><td width='132px' ><label>Expiration</label></td><td><input type='text' id='ckExp' value='0' /><br><p> Note: 0 - Session Cookie. To specify specific expiration period, use D:H:M:S format.</p></td></tr>";
 		strHtml += "<tr id='r7'><td width='132px' ><label>Override Connection Limit</label></td><td><select id='ckConnLimit' ><option value='enabled' selected>Enabled</option><option value='disabled'>Disabled</option></select></td></tr>";
 		
 	}
@@ -1261,6 +1261,9 @@ $(function () {
 		var prfType = window.parent.document.getElementById('selectedPrfType').value;
 		//alert("Proxy Mode: " + pxyMode + " Profile Type: " + prfType + " Parent Profile name: " + parPrfName);
 		var prfOptData = {'phpFileName':'', 'DevIP':'', 'name':''};
+
+		alert("prf_btn_build in prf_jquery.js - Profile Type is: " + prfType + "\n");
+
 		if (prfType == 'HTTP')
 			prfOptData['phpFileName'] = 'new_httpProfile_build';
 		else
@@ -1301,7 +1304,7 @@ $(function () {
 		else {
 			// 2. Retrieve configuration data and save them according to the chosen profile name
 			setPrfOptData(prfOptData, prfType, parPrfName);
-			//alert(iterAssArray(prfOptData));
+			alert(iterAssArray(prfOptData));
 			if( !validateInput(prfOptData)) return;
 
 			// 3. Load the chosen profile configuration
