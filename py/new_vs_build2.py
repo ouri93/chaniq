@@ -56,7 +56,7 @@ def new_vs_build2(active_ltm, vs_dnsname, vs_dest, vs_port, vs_desc, vs_env, vs_
 
         # Create the profiles. When a virtual server is created which has a TCP 
         # base protocol then it is automatically assigned the base "tcp" profile.
-        # This profile cannot be removed without assigning someother TCP profile.
+        # This profile cannot be removed without assigning some other TCP profile.
         # To do this you have to wrap the deletion of the "tcp" profile and the
         # creation of the of the other TCP profile in a transaction.
         tx = mr.tm.transactions.transaction

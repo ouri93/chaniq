@@ -25,7 +25,7 @@
         $pmPoolMemberMon = $_POST['PmPoolMemberMon'];
         $pmPriGroup = $_POST['PmPrigroup'];
         
-        file_put_contents("/var/log/chaniqphp.log", "new_pool_build() Device IP: " . $devIp, FILE_APPEND);
+        file_put_contents("/var/log/chaniqphp.log", "new_pool_build() Device IP: " . $devIp . "\n", FILE_APPEND);
         /*
         if(isset($_POST['DevIp']))
         {
@@ -50,12 +50,12 @@
         $rtnOutput = [];
         
         foreach ($outputdata as $key => $value){
-            file_put_contents("/var/log/chaniqphp.log", "shell_exec() Return - Key: " . $key . " Value: " . $value , FILE_APPEND);
+            file_put_contents("/var/log/chaniqphp.log", "shell_exec() Return - Key: " . $key . " Value: " . $value . "\n", FILE_APPEND);
             array_push($rtnOutput, (string)$value);
         }
         
         foreach ($rtnOutput as $value){
-            file_put_contents("/var/log/chaniqphp.log", "Strint Return: " . $value , FILE_APPEND);
+            file_put_contents("/var/log/chaniqphp.log", "Strint Return: " . $value . "\n" , FILE_APPEND);
         }
         
         $json = json_encode($rtnOutput);

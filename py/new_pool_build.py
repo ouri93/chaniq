@@ -28,7 +28,7 @@ def check_poolname_conflict(mr, std_poolname):
 #def new_pool_build(active_ltm, vs_dnsname, vs_port, vs_env, vs_poolmon, pLBMethod):
 def new_pool_build(active_ltm, vs_dnsname, vs_port, vs_env, vs_poolmon, pLBMethod, pPriGroup, pPriGroupLessThan, pool_membername, pool_memberip, pool_memberport, pmMon, pmPriGroup):
     
-    logging.info("new_pool_build.py parms DevIP: " + active_ltm + " VS Name: " + vs_dnsname + " VS Port: " + vs_port + " Env: " + vs_env + " Pool Mon: " + vs_poolmon + " LB Method: " + pLBMethod + " Pri Group: " + pPriGroup + " Lessthan: " + pPriGroupLessThan + " PM Names: " + pool_membername + " PM IPs: " + pool_memberip + " PM Ports: " + pool_memberport + " PM Mons:" + pmMon + " PM Pri:" + pmPriGroup) 
+    logging.info("new_pool_build.py parms DevIP: " + active_ltm + " Pool Name: " + vs_dnsname + " VS Port: " + vs_port + " Env: " + vs_env + " Pool Mon: " + vs_poolmon + " LB Method: " + pLBMethod + " Pri Group: " + pPriGroup + " Lessthan: " + pPriGroupLessThan + " PM Names: " + pool_membername + " PM IPs: " + pool_memberip + " PM Ports: " + pool_memberport + " PM Mons:" + pmMon + " PM Pri:" + pmPriGroup) 
      
     mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     
@@ -55,50 +55,71 @@ def new_pool_build(active_ltm, vs_dnsname, vs_port, vs_env, vs_poolmon, pLBMetho
         idx += 1
         return json.dumps(strReturn)
     logging.info("No Pool name conflict. Now creating a pool")
+    
     #Create a pool
-    if pPriGroup != 'Lessthan':
-        mypool = mr.tm.ltm.pools.pool.create(name=std_poolname, partition='Common', loadBalancingMode=pLBMethod, monitor='/Common/'+vs_poolmon)
-    else:
-        mypool = mr.tm.ltm.pools.pool.create(name=std_poolname, partition='Common', loadBalancingMode=pLBMethod, monitor='/Common/'+vs_poolmon, minActiveMembers=pPriGroupLessThan)
+    try:
+        if pPriGroup != 'Lessthan':
+            mypool = mr.tm.ltm.pools.pool.create(name=std_poolname, partition='Common', loadBalancingMode=pLBMethod, monitor='/Common/'+vs_poolmon)
+        else:
+            mypool = mr.tm.ltm.pools.pool.create(name=std_poolname, partition='Common', loadBalancingMode=pLBMethod, monitor='/Common/'+vs_poolmon, minActiveMembers=pPriGroupLessThan)
+            
+        mypool_1 = mr.tm.ltm.pools.pool.load(name=std_poolname, partition='Common')
+    except Exception as e:
+        logging.info("Exception during building base Pool creation")
+        strReturn[str(idx)] = "Exception fired!: " + str(e)
+        idx += 1
+        logging.info("Base Pool Creation has failed with the excpetion of " + str(e))
+        return json.dumps(strReturn)
+    
+    strReturn[str(idx)] = "Base Pool has been created (Without pool members and Priority Group)"
+    idx += 1
         
-    mypool_1 = mr.tm.ltm.pools.pool.load(name=std_poolname, partition='Common')
-    
     #for membername, memberip, memberport, membermon in map(None, membernames, memberips, memberports, membermons):
-    count = 1
-    if pPriGroup != 'Lessthan':
-        for membername, memberip, memberport, membermon in zip(membernames, memberips, memberports, membermons):
-            if (membername == ''):
-                break
-            logging.info("Count: " + str(count) + " Member Name: " + membername + " IP: " + memberip + " port: " + memberport + " mon: " + membermon)
-            # Pool member creation issue - Calling Pool creation method too fast??
-            if (str(membermon) == 'Inherit'):
-                poolm = mypool_1.members_s.members.create(name=membername+':'+memberport, partition='Common', address=memberip, monitor=vs_poolmon )
-                logging.info("Inherit")
-            else:
-                poolm = mypool_1.members_s.members.create(name=membername+':'+memberport, partition='Common', address=memberip, monitor=membermon )
-                logging.info("Custom Pool monitor")
-                
-            logging.info("Count: " + str(count) + " Member Name: " + membername + " IP: " + memberip + " Port: " + memberport + " Monitor: " + membermon + " Pool Monitor: " + vs_poolmon)
-            strReturn[str(idx)] = 'Member(' + membername + ' IP:' + memberip + ':' + memberport + ' Monitor: ' + membermon + ') has been created'
-            idx += 1
-            count = count + 1
-    else:
-        for membername, memberip, memberport, membermon, memberPriGroup in zip(membernames, memberips, memberports, membermons, memberPriGroups):
-            if (membername == ''):
-                break            
-            logging.info("Count: " + str(count) + " Member Name: " + membername + " IP: " + memberip + " port: " + memberport + " mon: " + membermon + " PoolMember Priority: " + memberPriGroup)
-            # Pool member creation issue - Calling Pool creation method too fast??
-            if (str(membermon) == 'Inherit'):
-                poolm = mypool_1.members_s.members.create(name=membername+':'+memberport, partition='Common', address=memberip, monitor=vs_poolmon, priorityGroup=memberPriGroup )
-                logging.info("Inherit")
-            else:
-                poolm = mypool_1.members_s.members.create(name=membername+':'+memberport, partition='Common', address=memberip, monitor=membermon, priorityGroup=memberPriGroup )
-                logging.info("Custom Pool Monitor")
-    
-            logging.info("Count: " + str(count) + " Member Name: " + membername + " IP: " + memberip + " Port: " + memberport + " Monitor: " + membermon + " Pool Monitor: " + vs_poolmon)
-            strReturn[str(idx)] = 'Member(' + membername + ' IP:' + memberip + ':' + memberport + ' Monitor: ' + membermon + ') has been created'
-            idx += 1
-            count = count + 1            
+    try:
+        count = 1
+        if pPriGroup != 'Lessthan':
+            for membername, memberip, memberport, membermon in zip(membernames, memberips, memberports, membermons):
+                if (membername == ''):
+                    break
+                logging.info("Count: " + str(count) + " Member Name: " + membername + " IP: " + memberip + " port: " + memberport + " mon: " + membermon)
+                # Pool member creation issue - Calling Pool creation method too fast??
+                if (str(membermon) == 'Inherit'):
+                    poolm = mypool_1.members_s.members.create(name=membername+':'+memberport, partition='Common', address=memberip, monitor=vs_poolmon )
+                    logging.info("Inherit")
+                else:
+                    poolm = mypool_1.members_s.members.create(name=membername+':'+memberport, partition='Common', address=memberip, monitor=membermon )
+                    logging.info("Custom Pool monitor")
+                    
+                logging.info("Count: " + str(count) + " Member Name: " + membername + " IP: " + memberip + " Port: " + memberport + " Monitor: " + membermon + " Pool Monitor: " + vs_poolmon)
+                strReturn[str(idx)] = 'Member(' + membername + ' IP:' + memberip + ':' + memberport + ' Monitor: ' + membermon + ') has been updated with the built pool'
+                idx += 1
+                count = count + 1
+        else:
+            for membername, memberip, memberport, membermon, memberPriGroup in zip(membernames, memberips, memberports, membermons, memberPriGroups):
+                if (membername == ''):
+                    break            
+                logging.info("Count: " + str(count) + " Member Name: " + membername + " IP: " + memberip + " port: " + memberport + " mon: " + membermon + " PoolMember Priority: " + memberPriGroup)
+                # Pool member creation issue - Calling Pool creation method too fast??
+                if (str(membermon) == 'Inherit'):
+                    poolm = mypool_1.members_s.members.create(name=membername+':'+memberport, partition='Common', address=memberip, monitor=vs_poolmon, priorityGroup=memberPriGroup )
+                    logging.info("Inherit")
+                else:
+                    poolm = mypool_1.members_s.members.create(name=membername+':'+memberport, partition='Common', address=memberip, monitor=membermon, priorityGroup=memberPriGroup )
+                    logging.info("Custom Pool Monitor")
+        
+                logging.info("Count: " + str(count) + " Member Name: " + membername + " IP: " + memberip + " Port: " + memberport + " Monitor: " + membermon + " Pool Monitor: " + vs_poolmon)
+                strReturn[str(idx)] = 'Member(' + membername + ' IP:' + memberip + ':' + memberport + ' Monitor: ' + membermon + ') has been updated with the built pool'
+                idx += 1
+                count = count + 1
+    except Exception as e:
+        logging.info("Exception occurred during updating base Pool with pool properties")
+        strReturn[str(idx)] = "Exception fired!: " + str(e)
+        idx += 1
+        logging.info("Base Pool update has failed with the exception of " + str(e))
+        return json.dumps(strReturn)
+                    
+    strReturn[str(idx)] = 'Pool creation process has been completed successfully'
+    idx += 1
     logging.info("Final strReturn:  Started")            
     
     for keys, values in strReturn.items():
