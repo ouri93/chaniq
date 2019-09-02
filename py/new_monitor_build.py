@@ -137,9 +137,9 @@ def check_monname_conflict(mr, std_monname, mMonType):
     return byMonType[mMonType](mr, std_monname)
 
 #def new_monitor_build(active_ltm, vs_dnsname, vs_port, vs_env, vs_poolmon, pLBMethod):
-def new_monitor_build(mDevIp, mVsName, mVsPort, mDesc, mEnv, mMonType, mMonCode, mParMonType, mInterval, mTimeout, mSend, mRecv, mUsername, mPassword, mReverse, mAliasPort, mCipherlist ):
+def new_monitor_build(mDevIp, monName, mDesc, mEnv, mMonType, mMonCode, mParMonType, mInterval, mTimeout, mSend, mRecv, mUsername, mPassword, mReverse, mAliasPort, mCipherlist ):
     
-    logging.info("new_monitor_build.py parms DevIP: " + mDevIp + " VS Name: " + mVsName + " VS Port: " + mVsPort + " Env: " + mEnv + " Mon Code: " + mMonCode + " Interval: " + mInterval + " Send: " + mSend + " Reverse: " + mReverse + " Alias Port: " + mAliasPort + " CipherList: " + mCipherlist) 
+    logging.info("new_monitor_build.py parms DevIP: " + mDevIp + " VS Name: " + monName + " Env: " + mEnv + " Mon Code: " + mMonCode + " Interval: " + mInterval + " Send: " + mSend + " Reverse: " + mReverse + " Alias Port: " + mAliasPort + " CipherList: " + mCipherlist) 
 
     mr = ManagementRoot(str(mDevIp), 'admin', 'rlatkdcks')
     
@@ -148,7 +148,7 @@ def new_monitor_build(mDevIp, mVsName, mVsPort, mDesc, mEnv, mMonType, mMonCode,
     
     idx += 1
  
-    std_monname = build_std_names.build_std_mon_name(str(mEnv), str(mVsName), str(mVsPort))
+    std_monname = build_std_names.build_std_mon_name(str(mEnv), str(monName))
     logging.info("Monitor Creation process has been initiated. Pool Name: " + std_monname) 
     
     if check_monname_conflict(mr, std_monname, mMonType):
@@ -183,4 +183,4 @@ def new_monitor_build(mDevIp, mVsName, mVsPort, mDesc, mEnv, mMonType, mMonCode,
     return json.dumps(strReturn)
 
 if __name__ == "__main__":
-    print new_monitor_build(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9], sys.argv[10], sys.argv[11], sys.argv[12], sys.argv[13], sys.argv[14], sys.argv[15], sys.argv[16], sys.argv[17])
+    print new_monitor_build(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9], sys.argv[10], sys.argv[11], sys.argv[12], sys.argv[13], sys.argv[14], sys.argv[15], sys.argv[16])

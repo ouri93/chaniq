@@ -48,7 +48,7 @@ def check_datagroupname_conflict(mr, std_irname):
 
 def check_irname_conflict(mr, std_irname, irType, irDgType):
     
-    logging.info("new_irule_build() - check_irname_conflict() iRule/Data Group name: " + std_irname + " Monitor Type: " + irType + " DG Type: " + irDgType)
+    logging.info("new_irule_build() - check_irname_conflict() iRule/Data Group name: " + std_irname + " Config Type: " + irType + " DataGroup Type: " + irDgType)
     
     byIrType = {
         "iRule": check_irulename_conflict,
@@ -57,10 +57,8 @@ def check_irname_conflict(mr, std_irname, irType, irDgType):
     
     return byIrType[irType](mr, std_irname)
 
-#def new_irule_build(active_ltm, vs_dnsname, vs_port, vs_env, vs_poolmon, pLBMethod):
-def new_irule_build(irDevIp, irVsName, irVsPort, irEnv, irType, irCode, irDgType, irDgData):
-    
-    logging.info("new_irule_build.py parms DevIP: " + irDevIp + " VS Name: " + irVsName + " VS Port: " + irVsPort + " Env: " + irEnv + " Mon Code: " + irCode + " DG Type: " + irDgType + " DG Data: " + irDgData) 
+def new_irule_build(irDevIp, irDgName, irEnv, irType, irCode, irDgType, irDgData):
+    logging.info("new_irule_build.py parms\n DevIP: " + irDevIp + "\niRule/Data Group Name: " + irDgName + "\nEnv: " + irEnv + "\nConfig Type: " + irType + "\niRule Code: " + irCode + "\nDG Type: " + irDgType + "\nDG Data: " + irDgData + "\n") 
 
     mr = ManagementRoot(str(irDevIp), 'admin', 'rlatkdcks')
     
@@ -69,7 +67,7 @@ def new_irule_build(irDevIp, irVsName, irVsPort, irEnv, irType, irCode, irDgType
     
     idx += 1
  
-    std_irname = build_std_names.build_std_ir_name(str(irEnv), str(irVsName), str(irVsPort), str(irType))
+    std_irname = build_std_names.build_std_ir_name(str(irEnv), str(irDgName), str(irType))
     logging.info("iRule/Data Group Creation process has been initiated. iRule/Data Group Name: " + std_irname) 
     
     if check_irname_conflict(mr, std_irname, irType, irDgType):
@@ -101,7 +99,7 @@ def new_irule_build(irDevIp, irVsName, irVsPort, irEnv, irType, irCode, irDgType
         logging.info("iRule/Data Group Exception printing")
         strReturn[str(idx)] = "Exception fired! (" + std_irname + "): " + str(e)
         idx += 1
-        logging.info("iRule/Data Group creation exception fired: " + str(e))
+        logging.info("Exception during iRule/Data Group creation has been fired: " + str(e))
         return json.dumps(strReturn)
     
     strReturn[str(idx)] = irType + " iRule/Data Group (" + std_irname + ") has been created"
@@ -115,4 +113,4 @@ def new_irule_build(irDevIp, irVsName, irVsPort, irEnv, irType, irCode, irDgType
     return json.dumps(strReturn)
 
 if __name__ == "__main__":
-    print new_irule_build(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8])
+    print new_irule_build(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7])

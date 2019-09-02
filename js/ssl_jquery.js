@@ -134,7 +134,7 @@ $(function () {
     	var creType = $('#create_type_select').val();
     	alert("Selected Creation type: " + creType);
     	var strCertCreHtml = getCertCreateHtml(creType);
-    	//alert("Created HTML code: " + strCertImpHtml);
+    	alert("Created HTML code: " + strCertImpHtml);
     	
     	$('#crtConfTable_tbody tr').each(function(index) {
     		if (index != 0) $(this).remove();

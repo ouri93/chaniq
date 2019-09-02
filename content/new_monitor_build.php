@@ -25,8 +25,7 @@
 
         $phpFileName = $monData->phpFileName;
         $mDevIp = $monData->DevIP;
-        $mVsName = $monData->MVsName;
-        $mVsPort = $monData->MVsPort;
+        $monName = $monData->MonName;
         $mDesc = $monData->MDesc;
         $mEnv = $monData->MEnv;
         $mMonType = $monData->MMonType;
@@ -47,7 +46,7 @@
         
         file_put_contents("/var/log/chaniqphp.log", "new_monitor_build() Device IP: " . $mDevIp . " Desc: " .$mDesc. " Reverse: " .$mReverse." Alias Port: " .$mAliasPort." Cipherlist: " .$mCipherlist."\n", FILE_APPEND);
         
-        $cmd = '/usr/bin/python /var/www/chaniq/py/new_monitor_build.py '. escapeshellarg($mDevIp) .' '. escapeshellarg($mVsName) .' '. escapeshellarg($mVsPort) .' '. escapeshellarg($mDesc) .' '. $mEnv .' '. escapeshellarg($mMonType) .' '. $mMonCode .' '. escapeshellarg($mParMonType) .' '. escapeshellarg($mInterval) .' '. escapeshellarg($mTimeout) .' '. escapeshellarg($mSend) .' '. escapeshellarg($mRecv) .' '. escapeshellarg($mUsername) .' '. escapeshellarg($mPassword) .' '. escapeshellarg($mReverse) .' '. escapeshellarg($mAliasPort) .' '. escapeshellarg($mCipherlist);
+        $cmd = '/usr/bin/python /var/www/chaniq/py/new_monitor_build.py '. escapeshellarg($mDevIp) .' '. escapeshellarg($monName) .' '. escapeshellarg($mDesc) .' '. $mEnv .' '. escapeshellarg($mMonType) .' '. $mMonCode .' '. escapeshellarg($mParMonType) .' '. escapeshellarg($mInterval) .' '. escapeshellarg($mTimeout) .' '. escapeshellarg($mSend) .' '. escapeshellarg($mRecv) .' '. escapeshellarg($mUsername) .' '. escapeshellarg($mPassword) .' '. escapeshellarg($mReverse) .' '. escapeshellarg($mAliasPort) .' '. escapeshellarg($mCipherlist);
         
         $output = shell_exec($cmd);
         error_log(date("y-m-d H:i:s").": After python call -new_monitor_build.php() new_monitor_build() function called!\n", 3, "/var/log/chaniqphp.log");
@@ -58,12 +57,12 @@
         $rtnOutput = [];
         
         foreach ($outputdata as $key => $value){
-            file_put_contents("/var/log/chaniqphp.log", "shell_exec() Return - Key: " . $key . " Value: " . $value , FILE_APPEND);
+            file_put_contents("/var/log/chaniqphp.log", "shell_exec() Return - Key: " . $key . " Value: " . $value ."\n" , FILE_APPEND);
             array_push($rtnOutput, (string)$value);
         }
         
         foreach ($rtnOutput as $value){
-            file_put_contents("/var/log/chaniqphp.log", "String Returned: " . $value , FILE_APPEND);
+            file_put_contents("/var/log/chaniqphp.log", "String Returned: " . $value ."\n", FILE_APPEND);
         }
         
         $json = json_encode($rtnOutput);

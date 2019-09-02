@@ -24,33 +24,37 @@
             
         $phpFileName = $irData->phpFileName;
         $irDevIp = $irData->DevIP;
-        $irVsName = $irData->IrVsName;
-        $irVsPort = $irData->IrVsPort;
+        $irDgName = $irData->IrDgName;
         $irEnv = $irData->IrEnv;
         $irType = $irData->IrType;
         $irCode = $irData->IrCode;
         $irDgType = $irData->IrDgType;
         $irDgData =  $irData->IrDgData;
         
-        file_put_contents("/var/log/chaniqphp.log", "new_irule_build() Device IP: " . $irDevIp . " VS name: " .$irVsName. " Port: " .$irVsPort." Env: " .$irEnv." Irule Type: " .$irType." Irule Code: " .$irCode." DG Type: " .$irDgType." DG Data: " .$irDgData."\n", FILE_APPEND);
+        file_put_contents("/var/log/chaniqphp.log", "new_irule_build() Device IP: " . $irDevIp . " iRule/DataGroup name: " .$irDgName. " Env: " .$irEnv." Config Type: " .$irType." Irule Code: " .$irCode." DataGroup Type: " .$irDgType." DG Data: " .$irDgData . "\n", FILE_APPEND);
         
-        $cmd = '/usr/bin/python /var/www/chaniq/py/new_irule_build.py '. escapeshellarg($irDevIp) .' '. escapeshellarg($irVsName) .' '. escapeshellarg($irVsPort) .' '. $irEnv .' '. escapeshellarg($irType) .' '. escapeshellarg($irCode) .' '. escapeshellarg($irDgType) .' '. escapeshellarg($irDgData);
+        $cmd = '/usr/bin/python /var/www/chaniq/py/new_irule_build.py '. escapeshellarg($irDevIp) .' '. escapeshellarg($irDgName) .' '. escapeshellarg($irEnv) .' '. escapeshellarg($irType) .' '. escapeshellarg($irCode) .' '. escapeshellarg($irDgType) .' '. escapeshellarg($irDgData);
+
+        file_put_contents("/var/log/chaniqphp.log", "Python CMD output: " . $cmd . "\n", FILE_APPEND);
         
         $output = shell_exec($cmd);
-        error_log(date("y-m-d H:i:s").": After python call -new_irule_build.php() new_irule_build() function called!\n", 3, "/var/log/chaniqphp.log");
+        file_put_contents("/var/log/chaniqphp.log", "After python call - new_irule_build.php() -> new_irule_build() function called!\n", FILE_APPEND);
         
         $outputdata = json_decode($output, true);
-        ksort($outputdata);
+        
+        if (!ksort($outputdata)){
+            file_put_contents("/var/log/chaniqphp.log", "Ksort returned False!\n", FILE_APPEND);
+        };
         
         $rtnOutput = [];
         
         foreach ($outputdata as $key => $value){
-            file_put_contents("/var/log/chaniqphp.log", "shell_exec() Return - Key: " . $key . " Value: " . $value , FILE_APPEND);
+            file_put_contents("/var/log/chaniqphp.log", "shell_exec() Return - Key: " . $key . " Value: " . $value . "\n", FILE_APPEND);
             array_push($rtnOutput, (string)$value);
         }
         
         foreach ($rtnOutput as $value){
-            file_put_contents("/var/log/chaniqphp.log", "String Returned: " . $value , FILE_APPEND);
+            file_put_contents("/var/log/chaniqphp.log", "String Returned: " . $value . "\n", FILE_APPEND);
         }
         
         $json = json_encode($rtnOutput);

@@ -294,39 +294,15 @@ function setMonHtml(monType, response_in)
 	return strHtml;
 }
 
-function buildIrAjax(phpFileName, irData) {
-	//alert(monData['interval'] + ":" + monData['send']);
-	return $.ajax({
-		url: 'content/new_irule_build.php',
-		type: 'POST',
-		dataType: 'JSON',
-		data: {'jsonIrData': JSON.stringify(irData)},
-		error: function(jqXHR, textStatus, errorThrown){
-			alert("Ajax call failed!");
-            console.log('jqXHR:');
-            console.log(jqXHR);
-            console.log('textStatus:');
-            console.log(textStatus);
-            console.log('errorThrown:');
-            console.log(errorThrown);
-		}
-	});	
-}
+$(function () {
+	$('#div_ltmchoice').on('change', function() {
+		var nameAndIp = $('#ltmSelBox option:selected').val();
+		if (nameAndIp == 'Select...') return;
 
-function buildIrProcessData(response_in) {
-	var strResult = '';
-	$.each(response_in, function(index) {
-		if(index == 0) 
-			strResult = "<b>" + response_in[index] + "</b><br>";
-		else
-			strResult += response_in[index] + "<br>";
+		var arr = nameAndIp.split(":");
+
 	});
 	
-	//alert("Return output: " + strResult);
-	$('#newIr_EvalReview').html(strResult);
-}
-
-$(function () {
     $('#btnRight').click(function (e) {
         var selectedOpts = $('#lstBox1 option:selected');
         if (selectedOpts.length == 0) {
@@ -719,20 +695,6 @@ $(function () {
     	
     	ajaxOut = buildIrAjax("new_irule_build", irData);
     	ajaxOut.done(buildIrProcessData);
-    });
-    
-    $('#cert_import_btn').on('click', function() {
-    	//alert("Cert Import button clicked!");
-    	$('#cert_iframe_fieldset').empty();
-    	$('#cert_iframe_fieldset').append('<legend>Import Cert/Key Configuration</legend>');
-    	$('#cert_iframe_fieldset').append('<iframe src="/content/if_ssl_import.php" width="725px" height="600" frameborder="0"></iframe>');
-    });
-
-    $('#cert_create_btn').on('click', function() {
-    	//alert("Cert Create button clicked!");
-    	$('#cert_iframe_fieldset').empty();
-    	$('#cert_iframe_fieldset').append('<legend>Create Cert/Key Configuration</legend>');
-    	$('#cert_iframe_fieldset').append('<iframe src="/content/if_ssl_create.php" width="725px" height="600" frameborder="0"></iframe>');    	
     });
     
     // Profile Submenu event handlers
