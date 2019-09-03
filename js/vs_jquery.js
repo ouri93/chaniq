@@ -173,6 +173,7 @@ function loadOptNamesProcessData(response_in, selID) {
 		if (index != 0) $(this).remove();
 	});
 	
+	if (selID == 'vs_pool_chosen') strResult += "<option value='newPool'>New Pool</option>";
 	$.each(response_in, function(index) {
 		if (response_in[index] != "none"){
 			if (response_in[index] == "tcp" && selID == 'vs_tcpprofile') strResult += "<option value='" + response_in[index] + "' selected>" + response_in[index] + "</option>";
@@ -186,8 +187,11 @@ function loadOptNamesProcessData(response_in, selID) {
 
 function loadOptNames(ltmIP, loadType, selID){
 	var callingUrl = '';
-	if (loadType != 'ALL') callingUrl = 'get_profile_names';
-	else callingUrl = 'get_pool_monitors';
+	
+	if (loadType == 'POOL') callingUrl = 'get_pool_names';
+	else if (loadType == 'ALL') callingUrl = 'get_pool_monitors';
+	else callingUrl = 'get_profile_names';
+
 
 	ajxOut = $.ajax({
 		url: '/content/' + callingUrl + '.php',
@@ -260,18 +264,43 @@ function isMinNumOfPoolMbr(){
 }
 
 function isValidInputs(){
-	if (dnsValidation('vs_dnsname') && ipValidation('vs_dest') && portValidation('vs_port') && dnsValidation('vs_poolname') && isMinNumOfPoolMbr())
+	if (dnsValidation('vs_dnsname') && ipValidation('vs_dest') && portValidation('vs_port') ) {
 		return true;
-	else return false;
+	}
+/*	
+	if ($('#chkbox_vs_new_pool').prop('checked')){
+		if (dnsValidation('vs_dnsname') && ipValidation('vs_dest') && portValidation('vs_port') && dnsValidation('vs_poolname') && isMinNumOfPoolMbr() ) {
+			alert('checkbox_vs_new_pool: checked');
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	else {
+		if (dnsValidation('vs_dnsname') && ipValidation('vs_dest') && portValidation('vs_port')) {
+			alert('checkbox_vs_new_pool: Not checked');
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+*/
 }
 
 //JQueury 
 $(function () {
+	
+	// Default - Disable new pool creation
+	/*
+	$('#vs_poolname').prop('disabled', true).css('opacity', 0.3);
+	$('#vs_poolmon').prop('disabled', true).css('opacity', 0.3);
+	$('#vs_poolmbrnum').prop('disabled', true).css('opacity', 0.3);
+	*/
 	$('#div_ltmchoice').on('change', function() {
 		var nameAndIp = $('#ltmSelBox option:selected').val();
 		if (nameAndIp == 'Select...') return;
-		
-		//$('body').fadeOut();
 		
 		var arr = nameAndIp.split(":");
 		loadOptNames(arr[1], 'TCP', 'vs_tcpprofile');
@@ -284,9 +313,65 @@ $(function () {
 		loadOptNames(arr[1], 'SERVERSSL', 'vs_srvsslprf');
 		loadOptNames(arr[1], 'ALL', 'vs_poolmon');
 		loadOptNames(arr[1], 'ALL', 'vs_poolmbrmon');
-		
-		//$('body').fadeIn();
+		loadOptNames(arr[1], 'POOL', 'vs_pool_chosen');
 
+	});
+	
+	// Open a New Pool build iFrame window as a popup
+/*	
+	$('#btn_createPool').on('click', function() {
+		var poolCreationPopup = window.open('/content/if_new_pool.php', '_blank', 'width=750, height=700, frameborder=0');
+		
+		// Referesh Pool list - Detecting the popup iFrame window and update Pool list with a new pool
+		$(poolCreationPopup).on('beforeunload', function(){
+			var nameAndIp = $('#ltmSelBox option:selected').val();
+			if (nameAndIp == 'Select...') return;
+			
+			var arr = nameAndIp.split(":");
+			loadOptNames(arr[1], 'POOL', 'vs_pool_chosen');
+		});
+	});
+	
+	$('#chkbox_vs_new_pool').change(function() {
+		if(this.checked){
+			// Disable pool choice selection box
+			//alert("chkbox_vs_new_pool is checked!");
+			$('#vs_pool_chosen').prop('disabled', true).css('opacity', 0.3);
+			$('#vs_poolname').prop('disabled', false).css('opacity', 1.0);
+			$('#vs_poolmon').prop('disabled', false).css('opacity', 1.0);
+			$('#vs_poolmbrnum').prop('disabled', false).css('opacity', 1.0);
+			
+			// Open Pool creation iframe as a popup window
+			window.open('/content/if_new_pool.php', '_blank', 'width=750, height=700, frameborder=0');
+			//var win=window.open();
+			//win.document.write('<iframe src="/content/if_new_pool.php" width="720px" height="600" frameborder="0"></iframe>');
+		}
+		else {
+			// Disable pool and pool member creation elements
+			//alert("chkbox_vs_new_pool is unchecked!");
+			$('#vs_pool_chosen').prop('disabled', false).css('opacity', 1.0);
+			$('#vs_poolname').prop('disabled', true).css('opacity', 0.3);
+			$('#vs_poolmon').prop('disabled', true).css('opacity', 0.3);
+			$('#vs_poolmbrnum').prop('disabled', true).css('opacity', 0.3);
+		}
+	});
+*/	
+	
+	// If 'New Pool' is selected from Pool filed, pop up a New pool creation iFrame window.
+	// When a new pool is created successfully, updte Pool list with the newly created pool.
+	$('#vs_pool_chosen').on('change', function(){
+		if ($('#vs_pool_chosen option:selected').val() == 'newPool'){
+			var poolCreationPopup = window.open('/content/if_new_pool.php', '_blank', 'width=750, height=700, frameborder=0');
+			
+			// Referesh Pool list - Detecting the popup iFrame window and update Pool list with a new pool
+			$(poolCreationPopup).on('beforeunload', function(){
+				var nameAndIp = $('#ltmSelBox option:selected').val();
+				if (nameAndIp == 'Select...') return;
+				
+				var arr = nameAndIp.split(":");
+				loadOptNames(arr[1], 'POOL', 'vs_pool_chosen');
+			});
+		}
 	});
 	
 	$('#vs_btn_build').on('click', function() {
@@ -295,7 +380,13 @@ $(function () {
 			return;
 		}
 			
-		// Gather input values
+		/*
+		var isNewPool = 0;
+		if ($('#chkbox_vs_new_pool').prop('checked'))
+			isNewPool = 1;
+		*/
+		
+		// Gather input values		
 		var nameAndIp = $('#ltmSelBox option:selected').val();
 		var arr = nameAndIp.split(":");
 		var active_ltm = arr[1];
@@ -314,15 +405,18 @@ $(function () {
         var vs_httpprofile = $('#vs_httpprf option:selected').val();
         var vs_sslclient = $('#vs_clisslprf option:selected').val();
         var vs_sslserver = $('#vs_srvsslprf option:selected').val();
+        
+        var vs_poolname = $('#vs_pool_chosen option:selected').val();
+                
+/*
         var vs_poolname = $('#vs_poolname').val();
         var vs_poolmon = $('#vs_poolmon option:selected').val();
-
         var vs_poolmbrnum = parseInt($('#vs_poolmbrnum option:selected').val());
         var pool_membernames = '';
         var pool_memberips = '';
         var pool_memberports = '';
         var pool_membermons = '';
-        
+
         var numOfRow = $('#dataTable tr').length;
         //alert("Length of TR: " + numOfRow);
         for(i=0; i<vs_poolmbrnum;i++){
@@ -427,10 +521,10 @@ $(function () {
     		alert("Ajax call for Node build failed!");
     		return;
     	});
-        
+*/
         // 3. Build Virtual Server
-    	//active_ltm, vs_dnsname, vs_dest, vs_port, vs_desc, vs_env, vs_tcpprofile, vs_persistence, vs_redirect, vs_type, vs_httpprofile, vs_sslclient, vs_sslserver, vs_irule, vs_snatpool, vs_policy
-    	var vsData = {'PhpFileName':'', 'DevIP':'', 'Vs_name':'', 'Vs_dest':'', 'Vs_port':'', 'Vs_desc':'', 'Vs_env':'', 'Vs_tcpprf':'','Vs_persist':'', 'Vs_redirect':'', 'Vs_type':'', 'Vs_httpprf':'', 'Vs_clisslprf':'', 'Vs_srvsslprf':'', 'Vs_irule':'', 'Vs_snatpool':'', 'Vs_policy':''};
+    	// active_ltm, vs_dnsname, vs_dest, vs_port, vs_desc, vs_env, vs_tcpprofile, vs_persistence, vs_redirect, vs_type, vs_httpprofile, vs_sslclient, vs_sslserver, vs_irule, vs_snatpool, vs_policy
+    	var vsData = {'PhpFileName':'', 'DevIP':'', 'Vs_name':'', 'Vs_dest':'', 'Vs_port':'', 'Vs_desc':'', 'Vs_env':'', 'Vs_tcpprf':'','Vs_persist':'', 'Vs_redirect':'', 'Vs_type':'', 'Vs_httpprf':'', 'Vs_clisslprf':'', 'Vs_srvsslprf':'', 'Vs_irule':'', 'Vs_snatpool':'', 'Vs_policy':'', 'Vs_poolname':''};
     	vsData['PhpFileName'] = 'new_vs_build2';
     	vsData['DevIP'] = arr[1];
     	vsData['Vs_name'] = vs_dnsname;
@@ -448,6 +542,8 @@ $(function () {
     	vsData['Vs_irule'] = vs_irule;
     	vsData['Vs_snatpool'] = vs_snatpool;
     	vsData['Vs_policy'] = vs_policy;
+    	
+    	vsData['Vs_poolname'] = vs_poolname;
     	
     	ajxOut = $.ajax({
     		url: '/content/new_vs_build2.php',
@@ -482,7 +578,8 @@ $(function () {
     		return;
     	});
 	});
-	
+
+/*
 	$('#vs_poolmbrnum').on('change', function() {
 		var $numOfPoolmbr = parseInt($('#vs_poolmbrnum option:selected').val());
 		//alert("Number of pool members: " + $numOfPoolmbr);
@@ -507,6 +604,7 @@ $(function () {
 			loadOptNames(arr[1], 'ALL', "pool_membermon" + i);			
 		}
 	});
+*/	
 	///////////////////////////////// Virtual Server modification ///////////////////////////////
 	$('#chg_div_ltmchoice').on('change', function() {
 		var nameAndIp = $('#ltmSelBox option:selected').val();

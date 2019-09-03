@@ -105,9 +105,16 @@
                     <label> Server SSL Profile:</label>
                 	<select id='vs_srvsslprf' name='vs_srvsslprf'><option value='none'>None</option></select>
 				</p>
+				<p>
+					<label> Pool:</label>
+					<select id='vs_pool_chosen' name='vs_pool_chosen'><option value='none' selected='selected'>None</option><option value='newPool'>New Pool</option></select>
+					<!--  <input id="btn_createPool" type="button" style="width:130px" name="btn_createPool" value="Create a New Pool" />
+					<label>Create a new pool?</label><input aligh='right' type='checkbox' id='chkbox_vs_new_pool' />  -->
+				</p>
 				</fieldset>
+				<!-- 
                 <fieldset class="row1">
-                    <legend>Pool Members</legend>
+                    <legend>Pool Configuration</legend>
                     <p>
                     <label>*DNS/Pool Name:</label>
                     <input type='text' id='vs_poolname' required />
@@ -131,14 +138,16 @@
                     <table id="dataTable" class="form" border="1">
                         <tbody id="poolmbrTbody">
                         </tbody>
-                    </table>
+                    </table> -->
                     <!-- 
                     <p></p>
                     <input type="button" value="Remove Member" onClick="deleteRow('dataTable')"  /> 
                     <input type="button" value="Add Member" onClick="addRow('dataTable')" /> 
                     <div class="clear"></div>
                      -->
+                <!-- 
                 </fieldset>
+                -->
                 <p>*: Required field</p>
     		</fieldset>
             

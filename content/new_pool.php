@@ -10,7 +10,7 @@
 		<!-- IFrame content here -->
 		<!-- iFrame for Pool Build -->
 		<legend>Pool Build Configuration</legend>
-		<iframe src="/content/if_new_pool.php" width="720px" height="600" frameborder="0"></iframe>       	
+		<iframe src="/content/if_new_pool.php" width="720px" height="600" frameborder="0"></iframe>
         </fieldset>
     </form>
 </div>

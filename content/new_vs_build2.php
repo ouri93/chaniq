@@ -39,10 +39,11 @@ function new_vs_build2($vsData) {
     $vs_irule = $vsData->Vs_irule;
     $vs_snatpool = $vsData->Vs_snatpool;
     $vs_policy = $vsData->Vs_policy;
+    $vs_poolname = $vsData->Vs_poolname;
     
-    file_put_contents("/var/log/chaniqphp.log", "new_vs_build2() Device IP: " . $vsDevIp . " VS Name: " .$vs_dnsname. " VS Port: " .$vs_port. " VS Env: " .$vs_env. " TCP Profile: " .$vs_tcpprofile.  " VS Redirection: " .$vs_redirect. " VS Persist: " .$vs_persistence. " VS Type: " .$vs_type. " VS iRule: " .$vs_irule."\n", FILE_APPEND);
+    file_put_contents("/var/log/chaniqphp.log", "new_vs_build2() Device IP: " . $vsDevIp . " VS Name: " .$vs_dnsname. " VS Port: " .$vs_port. " VS Env: " .$vs_env. " TCP Profile: " .$vs_tcpprofile.  " VS Redirection: " .$vs_redirect. " VS Persist: " .$vs_persistence. " VS Type: " .$vs_type. " VS iRule: " .$vs_irule. " VS Poolname: " .$vs_poolname."\n", FILE_APPEND);
     
-    $cmd = '/usr/bin/python /var/www/chaniq/py/new_vs_build2.py '. escapeshellarg($vsDevIp) .' '. escapeshellarg($vs_dnsname) .' '. escapeshellarg($vs_dest) .' '. escapeshellarg($vs_port) .' '. escapeshellarg($vs_desc) .' '. escapeshellarg($vs_env) .' '. escapeshellarg($vs_tcpprofile).' '. escapeshellarg($vs_persistence) .' '. escapeshellarg($vs_redirect) .' '.escapeshellarg($vs_type) .' '.escapeshellarg($vs_httpprofile) .' '.escapeshellarg($vs_sslclient) .' '.escapeshellarg($vs_sslserver) .' '. escapeshellarg($vs_irule) .' '.escapeshellarg($vs_snatpool) .' '.escapeshellarg($vs_policy);
+    $cmd = '/usr/bin/python /var/www/chaniq/py/new_vs_build2.py '. escapeshellarg($vsDevIp) .' '. escapeshellarg($vs_dnsname) .' '. escapeshellarg($vs_dest) .' '. escapeshellarg($vs_port) .' '. escapeshellarg($vs_desc) .' '. escapeshellarg($vs_env) .' '. escapeshellarg($vs_tcpprofile).' '. escapeshellarg($vs_persistence) .' '. escapeshellarg($vs_redirect) .' '.escapeshellarg($vs_type) .' '.escapeshellarg($vs_httpprofile) .' '.escapeshellarg($vs_sslclient) .' '.escapeshellarg($vs_sslserver) .' '. escapeshellarg($vs_irule) .' '.escapeshellarg($vs_snatpool) .' '.escapeshellarg($vs_policy) .' '.escapeshellarg($vs_poolname);
     
     $output = shell_exec($cmd);
     error_log(date("y-m-d H:i:s").": After python call -new_vs_build2.php() new_vs_build2() function called!\n", 3, "/var/log/chaniqphp.log");
@@ -53,12 +54,12 @@ function new_vs_build2($vsData) {
     $rtnOutput = [];
     
     foreach ($outputdata as $key => $value){
-        file_put_contents("/var/log/chaniqphp.log", "shell_exec() Return - Key: " . $key . " Value: " . $value , FILE_APPEND);
+        file_put_contents("/var/log/chaniqphp.log", "shell_exec() Return - Key: " . $key . " Value: " . $value . "\n" , FILE_APPEND);
         array_push($rtnOutput, (string)$value);
     }
     
     foreach ($rtnOutput as $value){
-        file_put_contents("/var/log/chaniqphp.log", "String Returned: " . $value , FILE_APPEND);
+        file_put_contents("/var/log/chaniqphp.log", "String Returned: " . $value . "\n", FILE_APPEND);
     }
     
     $json = json_encode($rtnOutput);

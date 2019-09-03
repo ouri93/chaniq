@@ -27,7 +27,7 @@ def check_vsname_conflict(mr, std_poolname):
     else:
         return False
 
-def new_vs_build2(active_ltm, vs_dnsname, vs_dest, vs_port, vs_desc, vs_env, vs_tcpprofile, vs_persistence, vs_redirect, vs_type, vs_httpprofile, vs_sslclient, vs_sslserver, vs_irule, vs_snatpool, vs_policy):
+def new_vs_build2(active_ltm, vs_dnsname, vs_dest, vs_port, vs_desc, vs_env, vs_tcpprofile, vs_persistence, vs_redirect, vs_type, vs_httpprofile, vs_sslclient, vs_sslserver, vs_irule, vs_snatpool, vs_policy, vs_poolname):
     
     mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     
@@ -35,14 +35,15 @@ def new_vs_build2(active_ltm, vs_dnsname, vs_dest, vs_port, vs_desc, vs_env, vs_
     strReturn = {str(idx) : 'VS Creation Report'}
     idx += 1
     
-    logging.info(str(active_ltm) + " VS DNS:" + str(vs_dnsname) + " VS DEST:" + str(vs_dest) + " VS PORT:" + str(vs_port) + " VS DESC:" + str(vs_desc) + " VS Env.:" + str(vs_env) + " VS TCP Prf:" + str(vs_tcpprofile) + " VS Persist:" + str(vs_persistence) + " VS Redirect:" + str(vs_redirect) + " VS Type:" + str(vs_type) + " VS HTTP Prf:" + str(vs_httpprofile) + " VS Clientssl:" + str(vs_sslclient) + " VS Serverssl:" + str(vs_sslserver) + " VS iRule: " + str(vs_irule) + " VS SNATPOOL: " + str(vs_snatpool) + " VS Policy: " + str(vs_policy) )
+    logging.info(str(active_ltm) + " VS DNS:" + str(vs_dnsname) + " VS DEST:" + str(vs_dest) + " VS PORT:" + str(vs_port) + " VS DESC:" + str(vs_desc) + " VS Env.:" + str(vs_env) + " VS TCP Prf:" + str(vs_tcpprofile) + " VS Persist:" + str(vs_persistence) + " VS Redirect:" + str(vs_redirect) + " VS Type:" + str(vs_type) + " VS HTTP Prf:" + str(vs_httpprofile) + " VS Clientssl:" + str(vs_sslclient) + " VS Serverssl:" + str(vs_sslserver) + " VS iRule: " + str(vs_irule) + " VS SNATPOOL: " + str(vs_snatpool) + " VS Policy: " + str(vs_policy) + " VS Pool Name: " + str(vs_poolname) )
     logging.info("Before VS Build - Env Name: " + str(vs_env) + " DNS name: " + str(vs_dnsname) + " Port: " + str(vs_port))
     std_vsname = build_std_names.build_std_vs_name(str(vs_env), str(vs_dnsname), str(vs_port))
-    std_poolname = build_std_names.build_std_pool_name(str(vs_env), str(vs_dnsname), str(vs_port))
+    
+    #std_poolname = build_std_names.build_std_pool_name(str(vs_env), str(vs_dnsname), str(vs_port))
     
     logging.info("VS Creation process has been initiated. VS Name: " + std_vsname) 
     try:    
-        fieldNames = {"name":std_vsname, "description":vs_desc, "ip":vs_dest, "port":vs_port, "ipProtocol":"tcp", "pool":std_poolname, \
+        fieldNames = {"name":std_vsname, "description":vs_desc, "ip":vs_dest, "port":vs_port, "ipProtocol":"tcp", "pool":vs_poolname, \
         "protocolProfileClient":vs_tcpprofile, "httpProfile":vs_httpprofile, "oneConnectProfile":"none", "sslProfileClient":vs_sslclient, \
         "sslProfileServer":vs_sslserver, "rules":vs_irule, "sourceAddressTranslation":vs_snatpool, "persistence":vs_persistence,  "policies":vs_policy}
         
@@ -132,4 +133,4 @@ def new_vs_build2(active_ltm, vs_dnsname, vs_dest, vs_port, vs_desc, vs_env, vs_
 
 
 if __name__ == "__main__":
-    print new_vs_build2(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9], sys.argv[10], sys.argv[11], sys.argv[12], sys.argv[13], sys.argv[14], sys.argv[15], sys.argv[16])
+    print new_vs_build2(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9], sys.argv[10], sys.argv[11], sys.argv[12], sys.argv[13], sys.argv[14], sys.argv[15], sys.argv[16], sys.argv[17])
