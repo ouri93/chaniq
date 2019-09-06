@@ -238,6 +238,55 @@ function loadObjNames(ltmIP, objType, selID){
 	});
 }
 
+function loadVSConfig(ltmIP, vsName){
+	var callingUrl = '';
+	callingUrl = 'get_vs_config';
+	
+	ajxOut = $.ajax({
+		url: '/content/' + callingUrl + '.php',
+		type: 'POST',
+		dataType: 'JSON',
+		data: {method:callingUrl, DevIP:ltmIP, VsName:vsName},
+		error: function(jqXHR, textStatus, errorThrown){
+			alert("Ajax call to VS configuration has failed!");
+            console.log('jqXHR:');
+            console.log(jqXHR);
+            console.log('textStatus:');
+            console.log(textStatus);
+            console.log('errorThrown:');
+            console.log(errorThrown);
+		}
+	});
+	ajxOut.done(function (response_in) {
+			loadVSConfigProcessData(response_in);
+	});
+}
+
+function loadVSConfigProcessData(response_in) {
+	var strResult = '';
+
+	//Fill in Virtual Server configuration data with the data given by BIG-IP
+	// ID list: vs_desc, vs_dest, vs_port, vs_type, vs_tcpprofile, vs_persist, vs_irule, vs_snatpool, 
+	//          vs_policy, vs_httpprf, vs_clisslprf, vs_srvsslprf, chg_vs_pool_chosen
+	
+	$('#vs_desc').value('value_from_bigip');
+	$('#vs_dest').value('value_from_bigip');
+	$('#vs_port').value('value_from_bigip');
+	
+	$('#vs_tcpprofile option').filter( function() {
+		return $(this).text() == 'value_from_bigip';
+	}).prop('selected', true);
+
+	$.each(response_in, function(index) {
+		if (response_in[index] != "none"){
+			strResult += "<option value='" + response_in[index] + "'>" + response_in[index] + "</option>";
+		}
+	});
+	
+	//alert("Return output: " + strResult);
+	$('#' + selID).append(strResult);
+}
+
 function loadObjNamesProcessData(response_in, selID) {
 	var strResult = '';
 	alert("loadObjNameProcessData called - selID: " + selID);
@@ -612,5 +661,45 @@ $(function () {
 		
 		var arr = nameAndIp.split(":");
 		loadObjNames(arr[1], 'VS', 'chg_vs_sel_vs');
+
+		loadOptNames(arr[1], 'TCP', 'vs_tcpprofile');
+		loadOptNames(arr[1], 'PERSIST', 'vs_persist');
+		loadOptNames(arr[1], 'IRULE', 'vs_irule');
+		loadOptNames(arr[1], 'SNATPOOL', 'vs_snatpool');
+		loadOptNames(arr[1], 'POLICY', 'vs_policy');
+		loadOptNames(arr[1], 'HTTP', 'vs_httpprf');
+		loadOptNames(arr[1], 'CLIENTSSL', 'vs_clisslprf');
+		loadOptNames(arr[1], 'SERVERSSL', 'vs_srvsslprf');
+		loadOptNames(arr[1], 'ALL', 'vs_poolmon');
+		loadOptNames(arr[1], 'ALL', 'vs_poolmbrmon');
+		
+		loadOptNames(arr[1], 'POOL', 'chg_vs_pool_chosen');
+	});
+	
+	$('#chg_vs_sel_vs').on('change', function() {
+		var vsname_chosen = $('#chg_vs_sel_vs option:selected').val();
+		alert('Chosen VS name: ' + vsname_chosen);
+		
+		var nameAndIp = $('#ltmSelBox option:selected').val();
+		var arr = nameAndIp.split(":");
+		var active_ltm = arr[1];
+		var vs_dnsname = vsname_chosen;
+		var vs_dest;
+        var vs_port;
+        var vs_desc;
+        var vs_type = $('#vs_type option:selected').val();
+        var vs_tcpprofile = $('#vs_tcpprofile option:selected').val();
+        var vs_persistence = $('#vs_persist option:selected').val();
+        var vs_redirect = $('#vs_redirect option:selected').val();
+        var vs_irule = $('#vs_irule option:selected').val();
+        var vs_snatpool = $('#vs_snatpool option:selected').val();
+        var vs_policy = $('#vs_policy option:selected').val();
+        var vs_httpprofile = $('#vs_httpprf option:selected').val();
+        var vs_sslclient = $('#vs_clisslprf option:selected').val();
+        var vs_sslserver = $('#vs_srvsslprf option:selected').val();
+        
+        var vs_poolname = $('#vs_pool_chosen option:selected').val();
+		// Load the chosen VS configuration - Descritpion, Dest IP, Service Port, VS Type, TCP Profile, Persistence, iRule, SNAT Pool, Policies, HTTP Profile, Client SSL Profile, Server SSL profile, Pool name
+		
 	});
 });

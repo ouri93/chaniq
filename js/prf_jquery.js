@@ -394,11 +394,20 @@ function setPrfOptData(prfOptData, prfType, parPrfName) {
 
 function prfNameProcessData(response_in) {
 	var strResult = '';
+
+	if (GetParentURLParameter('go')=='chg_profile'){
+		$('#chg_svc_prf_name_select option').each(function(index) {
+			if (index != 0) $(this).remove();
+		});
+	}
+	
 	//Remove existing profile types and then add new ones
 	$('#svc_prf_type_select option').each(function(index) {
 		if (index != 0) $(this).remove();
 	});
 	
+	//chg_svc_prf_name_select
+
 	$.each(response_in, function(index) {
 		if (response_in[index] != "none"){
 			strResult += "<option value='" + response_in[index] + "'>" + response_in[index] + "</option>";
@@ -406,6 +415,10 @@ function prfNameProcessData(response_in) {
 	});
 	
 	//alert("Return output: " + strResult);
+	if (GetParentURLParameter('go')=='chg_profile'){
+		$('#chg_svc_prf_name_select').append(strResult);
+	}
+	
 	$('#svc_prf_type_select').append(strResult);
 }
 
@@ -1027,8 +1040,46 @@ function getStrHttpHtml(pxyMode){
 	return strHtml;
 }
 
+//Read a page's GET URL variables and return them as an associate array
+// e.g. URL: http://www.example.com/?me=myValue&name2=SomeOtherValue
+//      Return: { "me": "myValue", "name2": "SomeOtherValue" }
+function getUrlQryStrings() {
+	var urlQryStrings = [], hash;
+	var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+    for(var i = 0; i < hashes.length; i++)
+    {
+        hash = hashes[i].split('=');
+        urlQryStrings.push(hash[0]);
+        urlQryStrings[hash[0]] = hash[1];
+    }
+    return urlQryStrings;
+}
+
+//Read the parent URL parameters and return a query parameter value against a given key
+//e.g. URL: http://www.example.com/?go=chg_profile
+//     GetParentURLParameter('go')
+//     Return: chg_profile
+function GetParentURLParameter(sParam)
+{
+   var parentURL = (window.location != window.parent.location)
+    ? document.referrer
+    : document.location.href;
+
+   var parentQry = parentURL.slice(parentURL.indexOf('?')+1).split('&');
+   alert("Given URL: " + parentQry);
+   for (var i = 0; i < parentQry.length; i++)
+   {
+       var sParameterName = parentQry[i].split('=');
+       if (sParameterName[0] == sParam)
+       {
+           return sParameterName[1];
+       }
+   }
+}
+
 $(function () {
 	$('#div_ltmchoice').on('change', function() {
+
 		var nameAndIp = $('#ltmSelBox option:selected').val();
 		if (nameAndIp == 'Select...') return;
 		
@@ -1039,6 +1090,7 @@ $(function () {
 		var arr = nameAndIp.split(":");
 		//alert("Device IP: " + arr[1] + " Profile Type: " + prfType);
 		
+		
 		// Call Ajax to retrieve parent profile names
 		ajxOut = $.ajax({
 			url: '/content/get_profile_names.php',
@@ -1046,7 +1098,7 @@ $(function () {
 			dataType: 'JSON',
 			data: {method:'get_profile_names', DevIP:arr[1], LoadTypeName:prfType},
 			error: function(jqXHR, textStatus, errorThrown){
-				alert("Ajax call failed!");
+				alert("Ajax call for retrieving profile names has failed!");
 	            console.log('jqXHR:');
 	            console.log(jqXHR);
 	            console.log('textStatus:');
@@ -1330,4 +1382,15 @@ $(function () {
 		}
 	});
 	
+	// Event handler when Pool name is chosen
+	$('#chg_svc_prf_name_select').on('change', function(){
+		// Load the corresponding Service profile configuration retrieved from BIG-IP
+		
+	});
+	
+	
+	// Event handler for Profile change button click
+	$('#prf_btn_change').on('click', function(){
+		
+	});
 });

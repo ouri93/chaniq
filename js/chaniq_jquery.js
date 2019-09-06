@@ -769,5 +769,5 @@ $(function () {
     		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_other_stream.php" width="725px" height="600" frameborder="0"></iframe>');
     	}
     });
-    
+
 });

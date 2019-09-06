@@ -609,4 +609,19 @@ function load_all_bigips() {
     return $rtnDevices;
 }
 
+//Read the parent URL parameters and return a query parameter value against a given key
+//e.g. URL: http://www.example.com/?go=chg_profile
+//     GetParentURLParameter('go')
+//     Return: chg_profile
+function GetParentURLParameter($sParam)
+{
+    $parentURL = $_SERVER['HTTP_REFERER'];
+    
+    $parentQry = explode('?', $parentURL);
+    //echo "In utility.php - GetParentURLParameter(): Query parameters: " . $parentQry[1] . "\r\n";
+    
+    parse_str($parentQry[1], $output);
+    return $output[$sParam];
+}
+
 ?>

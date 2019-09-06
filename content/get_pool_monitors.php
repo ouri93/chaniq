@@ -23,7 +23,7 @@
     {
         $cmd = '/usr/bin/python /var/www/chaniq/py/get_healthmon.py '.$active_ltm.' ' . escapeshellarg($mon_type);
         //echo "<br>Command:" .$cmd." <br>";
-        error_log(date("y-m-d H:i:s").": get_healthmon() - get_healthmon() called\n", 3, "/var/log/chaniqphp.log");
+        error_log(date("y-m-d H:i:s").": get_pool_monitors() - get_healthmon() called\n", 3, "/var/log/chaniqphp.log");
         exec($cmd, $output);
         
         //echo "<br>Output: " .$output[0];

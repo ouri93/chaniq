@@ -37,6 +37,8 @@
                     <div id='div_ltmchoice' class="ltmDeviceList">
                     	<?php 
                         dynamic_select($allBigipNames, "ltmSelBox", "", "Select...");
+                        //echo "In if_prf_svc_svc_http.php: Parenet URI :" . $_SERVER['HTTP_REFERER'] . "\r\n";
+                        //echo GetParentURLParameter('go');
                     	?>
                     </div>
                 </p>
@@ -45,7 +47,16 @@
                 <p>
                 	<table id="prfConfTable" class="form" border="1">
     	            	<tbody id="prfConfTable_tbody">
-    	            	<tr> <td width='132px'><label>*Name:</label> </td><td><input type='text' id='prf_name' required='required' /></td></tr>
+    	            	<tr>
+    	            		<?php
+    	            		if (GetParentURLParameter('go') == 'new_profile') {
+    	            		     echo "<td width='132px'><label>*Name:</label> </td><td><input type='text' id='prf_name' required='required' /></td>";
+    	            		}
+    	            		elseif (GetParentURLParameter('go') == 'chg_profile'){
+    	            		    echo "<td width='132px'><label>*Name:</label> </td><td><select id='chg_svc_prf_name_select' required='required'> <option value='none' selected='selected'>None</option></td>";
+    	            		}
+    	            		?>
+    	            	</tr>
     	            	<tr> <td width='132px'><label>*Proxy Mode:</label> </td><td><select id='svc_prf_proxymode_select' required='required'><option value='reverse' selected='selected'>Reverse</option><option value='transparent'>Transparent</option><option value='explicit'>Explicit</option></td></tr>
     	            	<tr id='tr_svc_prf_type' >
     	            		<td width='132px' ><label>*Parent Profile:</label></td><td><select id='svc_prf_type_select' required='required' ><option id='noDelete' value='select' selected='selected' >Select...</option></select></td>
@@ -56,7 +67,14 @@
                 </p>
                 <p>*: Required field</p>
                 <p align="right">
-    	            <input id="prf_btn_build" type="button" style="width:130px" name="prf_btn_build" value="Build" />
+                	<?php
+                	if (GetParentURLParameter('go') == 'new_profile') {
+    	               echo '<input id="prf_btn_build" type="button" style="width:130px" name="prf_btn_build" value="Build" />';
+                	}
+                	elseif (GetParentURLParameter('go') == 'chg_profile'){
+                	    echo '<input id="prf_btn_change" type="button" style="width:130px" name="prf_btn_change" value="Apply Changes" />';
+                	}
+    	            ?>
                 </p>
                 <p></p>
             </fieldset>
