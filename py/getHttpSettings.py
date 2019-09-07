@@ -97,26 +97,59 @@ def getHttpTransSettings(mr, prfName):
     logging.info('getHttpTransSettings(): ' + output)
     return output
 
-def getHttpSettings(dev_ip, proxyType, prfType, prfName):
+def loadHttpSettings(mr, prfName):
+    http_prfs = mr.tm.ltm.profile.https.get_collection()
+    output = ''
+
+    # Print HTTP Profile settings for a gvien http profile name
+    #outputDict = {'proxyType':'explicit', 'defaultsFrom':'/Common/http', 'basicAuthRealm':'', 
+    #              'fallbackHost':'', 'fallbackStatusCodes':'', 'headerErase':'', 'headerInsert':'', 
+    #              'insertXforwardedFor':'', 'serverAgentName':''}
+    try:
+        for aHttpPrf in http_prfs:
+            if aHttpPrf.fullPath == '/Common/' + prfName:
+                output += get_setting_val(aHttpPrf,'proxyType|') + "|"
+                output += get_setting_val(aHttpPrf,'fullPath|') + "|"
+                output += get_setting_val(aHttpPrf, 'basicAuthRealm') + "|"
+                output += get_setting_val(aHttpPrf, 'fallbackHost') + "|"
+                output += get_setting_list_val(aHttpPrf, 'fallbackStatusCodes') + "|"
+                output += get_setting_val(aHttpPrf, 'headerErase') + "|"
+                output += get_setting_val(aHttpPrf, 'headerInsert') + "|"
+                output += get_setting_val(aHttpPrf, 'requestChunking') + "|"
+                output += get_setting_val(aHttpPrf, 'responseChunking') + "|"                
+                output += get_setting_val(aHttpPrf, 'insertXforwardedFor') + "|"
+                output += get_setting_val(aHttpPrf, 'serverAgentName')
+                if aHttpPrf.proxyType == 'explicit':
+                    output += "|" + get_setting_dict_val(aHttpPrf, 'explicitProxy', 'dnsResolver')
+    except Exception as e:
+        logging.info("loadHttpSettings() - Exception during loading HTTP profile setting: " + str(e))
+        
+    return output
+    
+def getHttpSettings(dev_ip, proxyType, prfType, prfName, prfMode):
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-    logging.info('Called getHttpSettings(): %s %s %s %s' % (dev_ip, proxyType, prfType, prfName))
+    logging.info('Called getHttpSettings(): %s %s %s %s %s' % (dev_ip, proxyType, prfType, prfName, prfMode))
     
     mr = ManagementRoot(dev_ip, 'admin', 'rlatkdcks')
 
     output = {}
-    '''
-    Suppported Proxy Mode
-    1. Reverse
-    2. Explicit
-    3. Transparent
-    '''
-    if proxyType == "reverse" :
-        logging.info('getHttpSettings() reverse Proxy mode')
-        output = getHttpRevSettings(mr, prfName)
-    elif proxyType == "explicit" :
-        output = getHttpExpSettings(mr, prfName)
-    elif proxyType == "transparent":
-        output = getHttpTransSettings(mr, prfName)
+    
+    if prfMode == 'new_profile':
+        '''
+        Suppported Proxy Mode
+        1. Reverse
+        2. Explicit
+        3. Transparent
+        '''
+        if proxyType == "reverse" :
+            logging.info('getHttpSettings() reverse Proxy mode')
+            output = getHttpRevSettings(mr, prfName)
+        elif proxyType == "explicit" :
+            output = getHttpExpSettings(mr, prfName)
+        elif proxyType == "transparent":
+            output = getHttpTransSettings(mr, prfName)
+    if prfMode == 'chg_profile':
+        output = loadHttpSettings(mr, prfName)
 
     return output
     #print json.dumps(output)
@@ -125,4 +158,4 @@ if __name__ == "__main__":
     #logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
     #logging.info('main called: param1: ')
     # argv[1] - Device IP, argv[2] - Monitor Type, argv[3] - Parent Monitor Name
-    print getHttpSettings(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
+    print getHttpSettings(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])

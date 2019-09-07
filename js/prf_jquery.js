@@ -1148,6 +1148,9 @@ $(function () {
 	
 	//Dynamically add Parent profile names
 	$('#svc_prf_type_select').on('change', function() {
+		//Execute this event handler only if you are in Profile Build mode.
+		if (GetParentURLParameter('go')=='chg_profile') return;
+		
 		//alert("Chosen Parent Name: " + $('#svc_prf_type_select').val());
 		var nameAndIp = $('#ltmSelBox option:selected').val();
 		var arr = nameAndIp.split(":");
@@ -1382,9 +1385,147 @@ $(function () {
 		}
 	});
 	
-	// Event handler when Pool name is chosen
+	// Event handler when a Pool name is chosen
 	$('#chg_svc_prf_name_select').on('change', function(){
+		//Retrieve the element data of the parent window
+		var nameAndIp = $('#ltmSelBox option:selected').val();
+		var arr = nameAndIp.split(":");
+		var prfType = window.parent.document.getElementById('selectedPrfType').value;
 		// Load the corresponding Service profile configuration retrieved from BIG-IP
+		// parPrfName is used for dual purpose - If Profile change mode is active, a chosen profile name is saved.
+		// If Profile build mode is active ('new_profile'), parent profile name is saved
+		var prfMode = GetParentURLParameter('go');
+		var parPrfName;
+		if (prfMode=='chg_profile'){
+			parPrfName = this.value;
+		}
+		else if (prfMode=='new_profile'){
+			parPrfName = $('#svc_prf_type_select').val();
+		}
+		var pxyMode = $('#svc_prf_proxymode_select').val();
+		alert("Mode: " + prfMode + "\nChosen Profile Info: DevIP: " + arr[1] + "\nChosen or Parent Profile name: " + parPrfName + "\nProfile Type: " + prfType);
+
+		var prfOptData = {'phpFileName':'', 'DevIP':'', 'name':''};
+
+		//////////////////////// Beginning of Profile Data loading ////////////////////////
+		// 1. Build configuration data structure according to the chosen profile name		
+		if (prfType == "HTTP") initHttpPrfOptData(prfOptData, prfType, pxyMode);
+		else initPrfOptData(prfOptData, prfType);
+		
+		
+		// Profile Names: HTTP, DNS, Cookie, DestAddrAffinity, SrcAddrAffinity, Hash, SSL, Universal, FastL4, TCP, UDP, CLIENTSSL, SERVERSSL, OneConnect, Stream
+		if (prfType == "HTTP"){
+			//alert(iterAssArray(prfOptData));
+			// 2. Build Dynamic configuration page according to the chosen profile name
+			var strHtml = getStrHttpHtml(pxyMode);
+	    	$('#prfConfTable_tbody tr').each(function(index) {
+	    		if (index != 0 && index != 1 && index != 2) $(this).remove();
+	    	});
+
+			$('#prfConfTable_tbody').append(strHtml);
+			// 3. Load the chosen profile configuration
+			ajaxOut = $.ajax({
+	    		url:'/content/getHttpSettings.php',
+	    		type: 'POST',
+	    		data: {method:'getHttpSettings', DevIP:arr[1], ProxyType:pxyMode, LoadTypeName:prfType, PrfName:parPrfName, PrfMode:prfMode },
+	    		error: function(jqXHR, textStatus, errorThrown){
+					alert("Ajax call for retrieving HTTP Profile config has failed!");
+		            console.log('jqXHR:');
+		            console.log(jqXHR);
+		            console.log('textStatus:');
+		            console.log(textStatus);
+		            console.log('errorThrown:');
+		            console.log(errorThrown);
+				}
+	    	}); 
+	    	ajaxOut.done(getHttpSettingsProcessData);
+			
+		}
+		else {
+			var strHtml = getPrfHtml(prfType, parPrfName);
+	    	$('#prfConfTable_tbody tr').each(function(index) {
+	    		if (index != 0 && index != 1) $(this).remove();
+	    	});
+			$('#prfConfTable_tbody').append(strHtml);
+
+			if (prfType == 'Hash' || prfType == 'Universal'){
+				// Get iRule list
+				ajxOut = $.ajax({
+					url: '/content/get_profile_names.php',
+					type: 'POST',
+					dataType: 'JSON',
+					data: {method:'get_profile_names', DevIP:arr[1], LoadTypeName:'IRULE'},
+					error: function(jqXHR, textStatus, errorThrown){
+						alert("Ajax call failed!");
+			            console.log('jqXHR:');
+			            console.log(jqXHR);
+			            console.log('textStatus:');
+			            console.log(textStatus);
+			            console.log('errorThrown:');
+			            console.log(errorThrown);
+					}
+				});
+				ajxOut.done(iruleNameProcessData);
+			}
+			else if (prfType == 'CLIENTSSL' || prfType == 'SERVERSSL') {
+				// Get Cert and Key list
+				ajxOut = $.ajax({
+					url: '/content/get_profile_names.php',
+					type: 'POST',
+					async: false,
+					dataType: 'JSON',
+					data: {method:'get_profile_names', DevIP:arr[1], LoadTypeName:'CERT'},
+					error: function(jqXHR, textStatus, errorThrown){
+						alert("Ajax call failed!");
+			            console.log('jqXHR:');
+			            console.log(jqXHR);
+			            console.log('textStatus:');
+			            console.log(textStatus);
+			            console.log('errorThrown:');
+			            console.log(errorThrown);
+					}
+				});
+				ajxOut.done(certNameProcessData);
+				
+				ajxOut2 = $.ajax({
+					url: '/content/get_profile_names.php',
+					type: 'POST',
+					async: false,
+					dataType: 'JSON',
+					data: {method:'get_profile_names', DevIP:arr[1], LoadTypeName:'KEY'},
+					error: function(jqXHR, textStatus, errorThrown){
+						alert("Ajax call failed!");
+			            console.log('jqXHR:');
+			            console.log(jqXHR);
+			            console.log('textStatus:');
+			            console.log(textStatus);
+			            console.log('errorThrown:');
+			            console.log(errorThrown);
+					}
+				});
+				ajxOut2.done(keyNameProcessData);
+			}
+			
+			// 3. Load the chosen profile configuration
+			ajaxOut = $.ajax({
+	    		url:'/content/getPrfSettings.php',
+	    		type: 'POST',
+	    		data: {method:'getPrfSettings', DevIP:arr[1], LoadTypeName:prfType, ParPrfName:parPrfName },
+	    		error: function(jqXHR, textStatus, errorThrown){
+					alert("Ajax call failed!");
+		            console.log('jqXHR:');
+		            console.log(jqXHR);
+		            console.log('textStatus:');
+		            console.log(textStatus);
+		            console.log('errorThrown:');
+		            console.log(errorThrown);
+				}
+	    	});
+			ajaxOut.done(function(response_in){
+				processGetProfileData(response_in, prfType);
+			});			
+		} 		
+        //////////////////////// End of Profile Data Loading ////////////////////////
 		
 	});
 	
