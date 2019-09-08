@@ -6,6 +6,7 @@ import json
 def get_setting_val(aPrf, attName):
     try:
         accessVal = 'aPrf' + '.' + attName
+        logging.info('get_setting_val(): ' + accessVal)
         return eval(accessVal)
     except AttributeError:
         return ""
@@ -14,6 +15,7 @@ def get_setting_list_val(aPrf, attName):
     try:
         accessVal = 'aPrf' + '.' + attName
         listVals = eval(accessVal)
+        logging.info('get_setting_list_val(): ' + accessVal)
         return ' '.join(listVals)
     except AttributeError:
         return ""
@@ -22,6 +24,7 @@ def get_setting_dict_val(aPrf, fstAttName, sndAttName):
       accessVal = 'aPrf' + '.' + fstAttName
       prfDict = eval(accessVal)
       logging.info("explictProxy Values: " + (prfDict.get(sndAttName)).split('/')[2])
+      logging.info('get_setting_dict_val(): ' + accessVal)
       return (prfDict.get(sndAttName)).split('/')[2]
     except AttributeError:
         return ""
@@ -97,6 +100,7 @@ def getHttpTransSettings(mr, prfName):
     logging.info('getHttpTransSettings(): ' + output)
     return output
 
+# A HTTP profile name is given, load the corresponding HTTP profile configuration
 def loadHttpSettings(mr, prfName):
     http_prfs = mr.tm.ltm.profile.https.get_collection()
     output = ''
@@ -105,11 +109,12 @@ def loadHttpSettings(mr, prfName):
     #outputDict = {'proxyType':'explicit', 'defaultsFrom':'/Common/http', 'basicAuthRealm':'', 
     #              'fallbackHost':'', 'fallbackStatusCodes':'', 'headerErase':'', 'headerInsert':'', 
     #              'insertXforwardedFor':'', 'serverAgentName':''}
+    # Note: In Profile change mode, teh second return value is the name of parent profile
     try:
         for aHttpPrf in http_prfs:
             if aHttpPrf.fullPath == '/Common/' + prfName:
-                output += get_setting_val(aHttpPrf,'proxyType|') + "|"
-                output += get_setting_val(aHttpPrf,'fullPath|') + "|"
+                output += get_setting_val(aHttpPrf,'proxyType') + "|"
+                output += get_setting_val(aHttpPrf,'defaultsFrom') + "|"
                 output += get_setting_val(aHttpPrf, 'basicAuthRealm') + "|"
                 output += get_setting_val(aHttpPrf, 'fallbackHost') + "|"
                 output += get_setting_list_val(aHttpPrf, 'fallbackStatusCodes') + "|"

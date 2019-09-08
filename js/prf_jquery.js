@@ -481,7 +481,9 @@ function keyNameProcessData(response_in) {
 function getHttpSettingsProcessData(response_in){
 	//alert("Data: " + response_in);
 	var responseArray = response_in.split('|');
-
+	
+	var prfMode = GetParentURLParameter('go');
+	
 	/* Debugging */
 	/*
 	var strResult = '';
@@ -491,7 +493,14 @@ function getHttpSettingsProcessData(response_in){
 	
 	$('#newprf_EvalReview').html(strResult);
 	*/
-	
+	if (prfMode == 'chg_profile')
+	{
+		// String parsing - '/Common/parent_prf_name'
+		var parPrfName = responseArray[1].split("/");
+
+		$('#svc_prf_proxymode_select option[value="' + responseArray[0] + '"]').attr('selected', 'selected');
+		$('#svc_prf_type_select option[value="' + parPrfName[2] + '"]').attr('selected', 'selected');
+	}
 	$('#httpBasicAuth').val(responseArray[2]);
 	$('#httpFallbackHost').val(responseArray[3]);
 	$('#httpFallbackErrorCodes').val(responseArray[4]);
@@ -980,11 +989,13 @@ function setPrfHtml(prfType, response_in){
 	return strHtml;
 }
 
+// If a profile type is HTTP, build configuration html code accordingly (reverse, transparent, explicit)
+// If Proxy mode is explicit, it requires DNS Resolver profile.
 function getStrHttpHtml(pxyMode){
 	// Default Page Load action - Load parent profile names
 	var nameAndIp = $('#ltmSelBox option:selected').val();
 	var prfType = window.parent.document.getElementById('selectedPrfType').value;
-	if (prfType == 'HTTP')
+	if (prfType == 'HTTP' )
 		prfType = prfType + ":dnsresolver";
 
 	var arr = nameAndIp.split(":");
@@ -1146,7 +1157,7 @@ $(function () {
     	});
 	});
 	
-	//Dynamically add Parent profile names
+	//Dynamically add Parent profile names - Event hadnler for when a Parent Profile is selected
 	$('#svc_prf_type_select').on('change', function() {
 		//Execute this event handler only if you are in Profile Build mode.
 		if (GetParentURLParameter('go')=='chg_profile') return;
@@ -1385,7 +1396,7 @@ $(function () {
 		}
 	});
 	
-	// Event handler when a Pool name is chosen
+	// Event handler when a profile name is chosen
 	$('#chg_svc_prf_name_select').on('change', function(){
 		//Retrieve the element data of the parent window
 		var nameAndIp = $('#ltmSelBox option:selected').val();
@@ -1398,10 +1409,12 @@ $(function () {
 		var parPrfName;
 		if (prfMode=='chg_profile'){
 			parPrfName = this.value;
+			if (parPrfName == 'none') return;
 		}
 		else if (prfMode=='new_profile'){
 			parPrfName = $('#svc_prf_type_select').val();
 		}
+		
 		var pxyMode = $('#svc_prf_proxymode_select').val();
 		alert("Mode: " + prfMode + "\nChosen Profile Info: DevIP: " + arr[1] + "\nChosen or Parent Profile name: " + parPrfName + "\nProfile Type: " + prfType);
 
