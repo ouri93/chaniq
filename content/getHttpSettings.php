@@ -35,10 +35,10 @@
             //$bigipIP = json_decode($_POST['DevIP']);
             $bigipIP = $_POST['DevIP'];
             $proxyType = $_POST['ProxyType'];
-            $prfType = $_POST['PrfType'];
+            $prfType = $_POST['LoadTypeName'];
             $prfName = $_POST['PrfName'];
             $prfMode = $_POST['PrfMode'];
-            
+
             //error_log(date("y-m-d H:i:s").": getHttpSettings() - Device IP sent over POST\n", 3, "/var/log/chaniqphp.log");
             file_put_contents("/var/log/chaniqphp.log", "getHttpSettings() \nDevice IP: " . $bigipIP . "\nProxy Type: " . $proxyType . "\nProfile Type: " . $prfType . "\nChosen or Parent Profile Name: " . $prfName . "\nProfile Mode: " . $prfMode . "\n", FILE_APPEND);
         }

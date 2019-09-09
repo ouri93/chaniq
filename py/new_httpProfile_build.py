@@ -26,10 +26,27 @@ def new_httpProfile_build(prfDevIp, prfName, prfPxyType, prfDftFrom, prfBscAuthR
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
     #logging.info('Called get_profiles(): %s %s' % (dev_ip, pf_type))
 	
+    # Default value set if no value is given
+    if (prfInstXFF == ''):
+         prfInstXFF='disabled'
+         
+         
     mr = ManagementRoot(prfDevIp, 'admin', 'rlatkdcks')
     output = ''
 
-    logging.info("new_httpProfile_build.py Parms DevIP: " + prfDevIp + " Profile name: " + prfName + " Defaults-from: " + prfDftFrom) 
+    logging.info("new_httpProfile_build.py Parms DevIP: " + prfDevIp \
+                 + " Profile name: " + prfName \
+                 + " Defaults-from: " + prfDftFrom \
+                 + " Profile Proxy Type: " + prfPxyType \
+                 + " Basic Auth Realm: " + prfBscAuthRealm \
+                 + " Fallback Host: " + prfFallbackHost \
+                 + " Fallback on Error Codes: " + prfFallbackStsCode \
+                 + " Request Header Erase: " + prfHdrErase \
+                 + " Request Header Insert: " + prfHdrInsert \
+                 + " Request Chunking: " + prfReqChunking \
+                 + " Response Chunking: " + prfRespChunking \
+                 + " Inser X-forwared-for: " + prfInstXFF \
+                 + " Server Agent name: " + prfSrvAgtName ) 
 
     mr = ManagementRoot(str(prfDevIp), 'admin', 'rlatkdcks')
 	
@@ -60,8 +77,8 @@ def new_httpProfile_build(prfDevIp, prfName, prfPxyType, prfDftFrom, prfBscAuthR
         new_records = []
         arrRecords = prfFallbackStsCode.split(' ')
         for arrRecord in arrRecords:
-            #aRecord = arrRecord.split(':')
-            #logging.info("FallbackStatus Codes: " + arrRecord)
+            aRecord = arrRecord.split(':')
+            logging.info("FallbackStatus Codes: " + arrRecord)
             nr = [str(arrRecord)]
             new_records.extend(nr)
         if prfPxyType == 'explicit':
@@ -69,7 +86,7 @@ def new_httpProfile_build(prfDevIp, prfName, prfPxyType, prfDftFrom, prfBscAuthR
             #logging.info("DNS Resolver Full name: " + proxyDict['dnsResolver'])
             mydg = mr.tm.ltm.profile.https.http.create(name=prfName, partition='Common', proxyType=prfPxyType, defaultsFrom=prfDftFrom, basicAuthRealm=prfBscAuthRealm, fallbackHost=prfFallbackHost, fallbackStatusCodes=new_records, headerErase=prfHdrErase,	headerInsert=prfHdrInsert, requestChunking=prfReqChunking, responseChunking=prfRespChunking, insertXforwardedFor=prfInstXFF, serverAgentName=prfSrvAgtName, explicitProxy=proxyDict)
         else:
-            mydg = mr.tm.ltm.profile.https.http.create(name=prfName, partition='Common', proxyType=prfPxyType, defaultsFrom=prfDftFrom, basicAuthRealm=prfBscAuthRealm, fallbackHost=prfFallbackHost, fallbackStatusCodes=new_records, headerErase=prfHdrErase,    headerInsert=prfHdrInsert, requestChunking=prfReqChunking, responseChunking=prfRespChunking, insertXforwardedFor=prfInstXFF, serverAgentName=prfSrvAgtName)
+            mydg = mr.tm.ltm.profile.https.http.create(name=prfName, partition='Common', proxyType=prfPxyType, defaultsFrom=prfDftFrom, basicAuthRealm=prfBscAuthRealm, fallbackHost=prfFallbackHost, fallbackStatusCodes=new_records, headerErase=prfHdrErase, headerInsert=prfHdrInsert, requestChunking=prfReqChunking, responseChunking=prfRespChunking, insertXforwardedFor=prfInstXFF, serverAgentName=prfSrvAgtName)
     except Exception as e:
         logging.info("Exception during Profile creation")
         strReturn[str(idx)] = "Exception fired! (" + prfName + "): " + str(e)

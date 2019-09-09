@@ -485,14 +485,14 @@ function getHttpSettingsProcessData(response_in){
 	var prfMode = GetParentURLParameter('go');
 	
 	/* Debugging */
-	/*
-	var strResult = '';
+
+	var strResult = 'Debugging Info - Loading Http profile settings';
 	$.each(responseArray, function(index) {
 		strResult += responseArray[index] + "<br>";
 	});
 	
 	$('#newprf_EvalReview').html(strResult);
-	*/
+
 	if (prfMode == 'chg_profile')
 	{
 		// String parsing - '/Common/parent_prf_name'
@@ -1033,7 +1033,7 @@ function getStrHttpHtml(pxyMode){
 	var strHtml = '';
 	strHtml += "<tr id='r1'><td width='132px' ><label>Basic Auth Realm</label></td><td><input type='text' id='httpBasicAuth' /></td></tr>";
 	strHtml += "<tr id='r2'><td width='132px' ><label>Fallback Host</label></td><td><input type='text' id='httpFallbackHost' /></td></tr>";
-	strHtml += "<tr id='r3'><td width='132px' ><label>Fallback on Error Codes</label></td><td><input type='text' id='httpFallbackErrorCodes' /></td></tr>";
+	strHtml += "<tr id='r3'><td width='132px' ><label>Fallback on Error Codes</label></td><td><input type='text' id='httpFallbackErrorCodes' /> e.g. '404 502 503' </td></tr>";
 	strHtml += "<tr id='r4'><td width='132px' ><label>Request Header Erase</label></td><td><input type='text' id='httpReqHdrErase' /></td></tr>";
 	strHtml += "<tr id='r5'><td width='132px' ><label>Request Header Insert</label></td><td><input type='text' id='httpReqHdrInsert' /></td></tr>";
 	strHtml += "<tr id='r6'><td width='132px' ><label>Request Chunking</label></td><td><select id='httpReqChunk' ><option value='preserve' selected >Preserve</option><option value='selective' >Selective</option><option value='rechunk' >Rechunk</option></select></td></tr>";
@@ -1168,6 +1168,7 @@ $(function () {
 		var pxyMode = $('#svc_prf_proxymode_select').val();
 		var prfType = window.parent.document.getElementById('selectedPrfType').value;
 		var parPrfName = $('#svc_prf_type_select').val();
+		var prfMode = GetParentURLParameter('go');
 		//alert("Proxy Mode: " + pxyMode + " Profile Type: " + prfType + " Parent Profile name: " + parPrfName);
 		var prfOptData = {'phpFileName':'', 'DevIP':'', 'name':''};
 
@@ -1187,10 +1188,11 @@ $(function () {
 
 			$('#prfConfTable_tbody').append(strHtml);
 			// 3. Load the chosen profile configuration
+			alert("Before ajax call of getHttpSettings.php. Dev IP: " + arr[1] + " Proxy Type: " + pxyMode + " Profile Type: " + prfType + " Parent Profile Name: " + parPrfName + "\n");
 			ajaxOut = $.ajax({
 	    		url:'/content/getHttpSettings.php',
 	    		type: 'POST',
-	    		data: {method:'getHttpSettings', DevIP:arr[1], ProxyType:pxyMode, LoadTypeName:prfType, PrfName:parPrfName },
+	    		data: {method:'getHttpSettings', DevIP:arr[1], ProxyType:pxyMode, LoadTypeName:prfType, PrfName:parPrfName, PrfMode:prfMode },
 	    		error: function(jqXHR, textStatus, errorThrown){
 					alert("Ajax call failed!");
 		            console.log('jqXHR:');

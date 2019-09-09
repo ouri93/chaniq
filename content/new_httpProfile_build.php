@@ -43,7 +43,7 @@
         $prfSrvAgtName = $profileData->serverAgentName;
         $prfDnsResolver = '';
         
-        file_put_contents("/var/log/chaniqphp.log", "new_httpProfile_build() Device IP: " . $prfDevIp . " Profile Name: " .$prfName. " Proxy Type: " .$prfPxyType." Defaults-From: " .$prfDftFrom." Basic Auth Realm: " .$prfBscAuthRealm." Fallback Host: " .$prfFallbackHost." FallbackHost Status: " .$prfFallbackStsCode. "Request Chunking: " .$prfReqChunking. "Response Chunking: " .$prfRespChunking." Insert XFF: " .$prfInstXFF." Server Agent Name: " .$prfSrvAgtName."\n", FILE_APPEND);
+        file_put_contents("/var/log/chaniqphp.log", "new_httpProfile_build() Device IP: " . $prfDevIp . " Profile Name: " .$prfName. " Proxy Type: " .$prfPxyType." Defaults-From: " .$prfDftFrom." Basic Auth Realm: " .$prfBscAuthRealm." Fallback Host: " .$prfFallbackHost." FallbackHost Status: " .$prfFallbackStsCode. " Request Chunking: " .$prfReqChunking. " Response Chunking: " .$prfRespChunking. " Insert XFF: " .$prfInstXFF." Server Agent Name: " .$prfSrvAgtName."\n", FILE_APPEND);
         
         $cmd = '/usr/bin/python /var/www/chaniq/py/new_httpProfile_build.py '. escapeshellarg($prfDevIp) .' '. escapeshellarg($prfName) .' '. escapeshellarg($prfPxyType) .' '. escapeshellarg($prfDftFrom) .' '. escapeshellarg($prfBscAuthRealm) .' '. escapeshellarg($prfFallbackHost) .' '. escapeshellarg($prfFallbackStsCode) .' '. escapeshellarg($prfHdrErase) .' '. escapeshellarg($prfHdrInsert) .' '. escapeshellarg($prfReqChunking) . ' ' . escapeshellarg($prfRespChunking).' '. escapeshellarg($prfInstXFF) .' '. escapeshellarg($prfSrvAgtName);
         
