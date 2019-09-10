@@ -22,14 +22,14 @@ def check_profileName_conflict(mr, prfName, prfDftFrom):
     else:
         return False  
 		
-def new_streamProfile_build(prfDevIp, prfName, prfPara1, prfPara2, prfPara3):
+def new_streamProfile_build(prfDevIp, prfName, prfDplyOrChg, prfPara1, prfPara2, prfPara3):
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
     #logging.info('Called get_profiles(): %s %s' % (dev_ip, pf_type))
 	
     mr = ManagementRoot(prfDevIp, 'admin', 'rlatkdcks')
     output = ''
 
-    logging.info("new_streamProfile_build.py Parms DevIP: " + prfDevIp + " Profile name: " + prfName + " Defaults-from: " + prfPara1) 
+    logging.info("new_streamProfile_build.py Parms DevIP: " + prfDevIp + " Profile name: " + prfName + " Profile Deploy or Change: " + prfDplyOrChg + " Defaults-from: " + prfPara1) 
 
     mr = ManagementRoot(str(prfDevIp), 'admin', 'rlatkdcks')
 	
@@ -68,4 +68,4 @@ def new_streamProfile_build(prfDevIp, prfName, prfPara1, prfPara2, prfPara3):
 if __name__ == "__main__":
     #logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
     #logging.info('main called: param1: ')
-    print new_streamProfile_build(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
+    print new_streamProfile_build(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])

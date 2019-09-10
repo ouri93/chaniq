@@ -22,14 +22,14 @@ def check_profileName_conflict(mr, prfName, prfDftFrom):
     else:
         return False  
 		
-def new_udpProfile_build(prfDevIp, prfName, prfPara1, prfPara2, prfPara3, prfPara4, prfPara5, prfPara6, prfPara7, prfPara8, prfPara9, prfPara10, prfPara11):
+def new_udpProfile_build(prfDevIp, prfName, prfDplyOrChg, prfPara1, prfPara2, prfPara3, prfPara4, prfPara5, prfPara6, prfPara7, prfPara8, prfPara9, prfPara10, prfPara11):
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
     #logging.info('Called get_profiles(): %s %s' % (dev_ip, pf_type))
 	
     mr = ManagementRoot(prfDevIp, 'admin', 'rlatkdcks')
     output = ''
 
-    logging.info("new_udpProfile_build.py Parms DevIP: " + prfDevIp + " Profile name: " + prfName + " Defaults-from: " + prfPara1) 
+    logging.info("new_udpProfile_build.py Parms DevIP: " + prfDevIp + " Profile name: " + prfName + " Profile Deploy or Change: " + prfDplyOrChg + " Defaults-from: " + prfPara1) 
 
     mr = ManagementRoot(str(prfDevIp), 'admin', 'rlatkdcks')
 	
@@ -68,4 +68,4 @@ def new_udpProfile_build(prfDevIp, prfName, prfPara1, prfPara2, prfPara3, prfPar
 if __name__ == "__main__":
     #logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
     #logging.info('main called: param1: ')
-    print new_udpProfile_build(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9], sys.argv[10], sys.argv[11], sys.argv[12], sys.argv[13])
+    print new_udpProfile_build(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9], sys.argv[10], sys.argv[11], sys.argv[12], sys.argv[13], sys.argv[14])

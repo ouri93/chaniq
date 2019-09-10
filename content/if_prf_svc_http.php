@@ -59,7 +59,7 @@
     	            	</tr>
     	            	<tr> <td width='132px'><label>*Proxy Mode:</label> </td><td><select id='svc_prf_proxymode_select' required='required'><option value='reverse' selected='selected'>Reverse</option><option value='transparent'>Transparent</option><option value='explicit'>Explicit</option></td></tr>
     	            	<tr id='tr_svc_prf_type' >
-    	            		<td width='132px' ><label>*Parent Profile:</label></td><td><select id='svc_prf_type_select' required='required' ><option id='noDelete' value='select' selected='selected' >Select...</option></select></td>
+    	            		<td width='132px' ><label>*Parent Profile:</label></td><td><select id='svc_prf_type_select' required='required' ><option id='noDelete' value='select' selected='selected' >Select...</option></td>
     	            	</tr>
     			        <!--  Conditional HTML code here  --> 
             	        </tbody>

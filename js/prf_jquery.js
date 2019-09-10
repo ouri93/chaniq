@@ -501,6 +501,9 @@ function getHttpSettingsProcessData(response_in){
 		$('#svc_prf_proxymode_select option[value="' + responseArray[0] + '"]').attr('selected', 'selected');
 		$('#svc_prf_type_select option[value="' + parPrfName[2] + '"]').attr('selected', 'selected');
 	}
+	// If the defaultsFrom property value of a profile is null, that means the profile is F5 Built-in profile. 
+	if (responseArray[1] == '') responseArray[1] = 'select';
+	$('#svc_prf_type_select option[value="' + responseArray[1] + '"]').prop('selected', 'selected');
 	$('#httpBasicAuth').val(responseArray[2]);
 	$('#httpFallbackHost').val(responseArray[3]);
 	$('#httpFallbackErrorCodes').val(responseArray[4]);
@@ -508,7 +511,8 @@ function getHttpSettingsProcessData(response_in){
 	$('#httpReqHdrInsert').val(responseArray[6]);
 	$('#httpReqChunk option[value="' + responseArray[7] + '"]').attr('selected', 'selected');
 	$('#httpRespChunk option[value="' + responseArray[8] + '"]').attr('selected', 'selected');
-	$('#httpXFF option:selected').val(responseArray[9]);
+	//$('#httpXFF option:selected').val(responseArray[9]);
+	$('#httpXFF option[value="' + responseArray[9] + '"]').attr('selected', 'selected');
 	$('#httpAgentName').val(responseArray[10]);
 	if(responseArray[11] != ''){
 		$('#httpDnsResolver option[value="' + responseArray[11] + '"]').attr('selected', 'selected');
@@ -1328,8 +1332,10 @@ $(function () {
 		var parPrfName = $('#svc_prf_type_select').val();
 		var prfType = window.parent.document.getElementById('selectedPrfType').value;
 		//alert("Proxy Mode: " + pxyMode + " Profile Type: " + prfType + " Parent Profile name: " + parPrfName);
-		var prfOptData = {'phpFileName':'', 'DevIP':'', 'name':''};
-
+		// prfOptData has been extended with a Query string value of the Parent URL
+		var prfOptData = {'phpFileName':'', 'DevIP':'', 'name':'', 'dplyOrChg':''};
+		
+		
 		alert("prf_btn_build event in prf_jquery.js - Profile Type is: " + prfType + "\n");
 
 		if (prfType == 'HTTP')
@@ -1339,6 +1345,7 @@ $(function () {
 		
 		prfOptData['DevIP'] = arr[1];
 		prfOptData['name'] = prfName;
+		prfOptData['dplyOrChg'] = GetParentURLParameter('go');
 		
 		// 1. Build configuration data structure according to the chosen profile name		
 		if (prfType == "HTTP") initHttpPrfOptData(prfOptData, prfType, pxyMode);
@@ -1547,6 +1554,32 @@ $(function () {
 	
 	// Event handler for Profile change button click
 	$('#prf_btn_change').on('click', function(){
+		//Retrieve the element data of the parent window
+		var nameAndIp = $('#ltmSelBox option:selected').val();
+		var arr = nameAndIp.split(":");
+		// prfName - User provided profile name
+		var prfName = $('#chg_svc_prf_name_select').val();
+		// pxyMode - HTTP profile only. HTTP proxy mode - reverse, explicit, transparent
+		var pxyMode = $('#svc_prf_proxymode_select').val();
+		// parPrfName - Parent Profile Name
+		var parPrfName = $('#svc_prf_type_select').val();
+		var prfType = window.parent.document.getElementById('selectedPrfType').value;
+		//alert("Proxy Mode: " + pxyMode + " Profile Type: " + prfType + " Parent Profile name: " + parPrfName);
+		// prfOptData has been extended with a Query string value of the Parent URL
+		var prfOptData = {'phpFileName':'', 'DevIP':'', 'name':'', 'dplyOrChg':''};
 		
+		
+		alert("prf_btn_build event in prf_jquery.js - Profile Type is: " + prfType + "\n");
+
+		if (prfType == 'HTTP')
+			prfOptData['phpFileName'] = 'new_httpProfile_build';
+		else
+			prfOptData['phpFileName'] = 'new_Profile_build';
+		
+		prfOptData['DevIP'] = arr[1];
+		prfOptData['name'] = prfName;
+		prfOptData['dplyOrChg'] = GetParentURLParameter('go');
+		
+		alert("Profile Name: " + prfName + "\nProxy Mode: " + pxyMode + "\nProfile Type: " + prfType + "\nParent Profile name: " + parPrfName + "\nDeploy or Change: " + prfOptData['dplyOrChg'] + "\n");
 	});
 });

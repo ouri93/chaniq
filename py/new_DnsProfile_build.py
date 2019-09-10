@@ -22,14 +22,14 @@ def check_profileName_conflict(mr, prfName, prfDftFrom):
     else:
         return False  
 		
-def new_DnsProfile_build(prfDevIp, prfName, prfDftFrom, prfHwValid, prfHwRespCache, prfDnsExp, prfGtm, prfUnhandledAct, prfUseBind, prfZoneXfr, prfDnsSecurity, prfRecursion):
+def new_DnsProfile_build(prfDevIp, prfName, prfDplyOrChg, prfDftFrom, prfHwValid, prfHwRespCache, prfDnsExp, prfGtm, prfUnhandledAct, prfUseBind, prfZoneXfr, prfDnsSecurity, prfRecursion):
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
     #logging.info('Called get_profiles(): %s %s' % (dev_ip, pf_type))
 	
     mr = ManagementRoot(prfDevIp, 'admin', 'rlatkdcks')
     output = ''
 
-    logging.info("new_DnsProfile_build.py Parms DevIP: " + prfDevIp + " Profile name: " + prfName + " Defaults-from: " + prfDftFrom) 
+    logging.info("new_DnsProfile_build.py Parms DevIP: " + prfDevIp + " Profile name: " + prfName + " Profile Deploy or Change: " + prfDplyOrChg + " Defaults-from: " + prfDftFrom) 
 
     mr = ManagementRoot(str(prfDevIp), 'admin', 'rlatkdcks')
 	
@@ -69,4 +69,4 @@ def new_DnsProfile_build(prfDevIp, prfName, prfDftFrom, prfHwValid, prfHwRespCac
 if __name__ == "__main__":
     #logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
     #logging.info('main called: param1: ')
-    print new_DnsProfile_build(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9], sys.argv[10], sys.argv[11], sys.argv[12])
+    print new_DnsProfile_build(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9], sys.argv[10], sys.argv[11], sys.argv[12], sys.argv[13])

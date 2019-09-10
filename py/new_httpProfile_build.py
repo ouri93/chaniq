@@ -22,7 +22,7 @@ def check_profileName_conflict(mr, prfName, prfPxyType, prfDftFrom):
     else:
         return False  
 		
-def new_httpProfile_build(prfDevIp, prfName, prfPxyType, prfDftFrom, prfBscAuthRealm, prfFallbackHost, prfFallbackStsCode, prfHdrErase,	prfHdrInsert, prfReqChunking, prfRespChunking, prfInstXFF, prfSrvAgtName):
+def new_httpProfile_build(prfDevIp, prfName, prfDplyOrChg, prfPxyType, prfDftFrom, prfBscAuthRealm, prfFallbackHost, prfFallbackStsCode, prfHdrErase,	prfHdrInsert, prfReqChunking, prfRespChunking, prfInstXFF, prfSrvAgtName):
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
     #logging.info('Called get_profiles(): %s %s' % (dev_ip, pf_type))
 	
@@ -38,6 +38,7 @@ def new_httpProfile_build(prfDevIp, prfName, prfPxyType, prfDftFrom, prfBscAuthR
                  + " Profile name: " + prfName \
                  + " Defaults-from: " + prfDftFrom \
                  + " Profile Proxy Type: " + prfPxyType \
+                 + " Profile Deploy or Change: " + prfDplyOrChg \
                  + " Basic Auth Realm: " + prfBscAuthRealm \
                  + " Fallback Host: " + prfFallbackHost \
                  + " Fallback on Error Codes: " + prfFallbackStsCode \
@@ -106,4 +107,4 @@ def new_httpProfile_build(prfDevIp, prfName, prfPxyType, prfDftFrom, prfBscAuthR
 if __name__ == "__main__":
     #logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
     #logging.info('main called: param1: ')
-    print new_httpProfile_build(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9], sys.argv[10], sys.argv[11], sys.argv[12], sys.argv[13])
+    print new_httpProfile_build(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9], sys.argv[10], sys.argv[11], sys.argv[12], sys.argv[13], sys.argv[14])

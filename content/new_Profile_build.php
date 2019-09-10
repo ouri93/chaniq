@@ -18,7 +18,7 @@
         echo "AJAX call failed";
     }
     
-    //'phpFileName', 'DevIP', 'name', 'proxyType', 'defaultsFrom', 'basicAuthRealm', 'fallbackHost', 'fallbackStatusCodes', 'headerErase'
+    //'phpFileName', 'DevIP', 'name', 'dplyOrChg', 'proxyType', 'defaultsFrom', 'basicAuthRealm', 'fallbackHost', 'fallbackStatusCodes', 'headerErase'
     //'headerInsert','requestChunking', 'responseChunkimg','insertXforwardedFor', 'serverAgentName', 'dnsResolver'
     function new_Profile_build($profileData) {
         $cmd = '';
@@ -26,9 +26,10 @@
         $phpFileName = $profileData->phpFileName;
         $prfDevIp = $profileData->DevIP;
         $prfName = $profileData->name;
+        $prfDplyOrChg = $profileData->dplyOrChg;
         //$prfType = $profileData->PrfType;
         $prfType = $profileData->LoadTypeName;
-        file_put_contents("/var/log/chaniqphp.log", "new_Profile_build() called.\n Device IP: " . $prfDevIp . " Profile Type:" . $prfType . " Php Filename: " . $phpFileName . "\n", FILE_APPEND);
+        file_put_contents("/var/log/chaniqphp.log", "new_Profile_build() called.\n Device IP: " . $prfDevIp . " Deploy or Change: " . $prfDplyOrChg . " Profile Type:" . $prfType . " Php Filename: " . $phpFileName . "\n", FILE_APPEND);
         
         if ($prfType == 'DNS'){
             $prfDftFrom = $profileData->defaultsFrom;
@@ -42,8 +43,8 @@
             $prfDnsSecurity = $profileData->enableDnsFirewall;
             $prfRecursion = $profileData->processRd;
 
-            file_put_contents("/var/log/chaniqphp.log", "new_DnsProfile_build() Device IP: " . $prfDevIp . " Profile Name: " .$prfName. " Defaults-From: " .$prfDftFrom." HW Query Validation: " .$prfHwValid." HW Response Cache: " .$prfHwRespCache." DNS Express: " .$prfDnsExp. " GSLB: " .$prfGtm. " Unhandled Query Action: " .$prfUnhandledAct." Use BIND: " .$prfUseBind." Zone Transfer: " .$prfZoneXfr."\n", FILE_APPEND);
-            $cmd = '/usr/bin/python /var/www/chaniq/py/new_DnsProfile_build.py '. escapeshellarg($prfDevIp) .' '. escapeshellarg($prfName) .' '. escapeshellarg($prfDftFrom) .' '. escapeshellarg($prfHwValid) .' '. escapeshellarg($prfHwRespCache) .' '. escapeshellarg($prfDnsExp) .' '. escapeshellarg($prfGtm) .' '. escapeshellarg($prfUnhandledAct) .' '. escapeshellarg($prfUseBind) .' '. escapeshellarg($prfZoneXfr).' '. escapeshellarg($prfDnsSecurity) .' '. escapeshellarg($prfRecursion);
+            file_put_contents("/var/log/chaniqphp.log", "new_DnsProfile_build() Device IP: " . $prfDevIp . " Profile Name: " .$prfName. " Profile Deploy or Change: " .$prfDplyOrChg . " Defaults-From: " .$prfDftFrom." HW Query Validation: " .$prfHwValid." HW Response Cache: " .$prfHwRespCache." DNS Express: " .$prfDnsExp. " GSLB: " .$prfGtm. " Unhandled Query Action: " .$prfUnhandledAct." Use BIND: " .$prfUseBind." Zone Transfer: " .$prfZoneXfr."\n", FILE_APPEND);
+            $cmd = '/usr/bin/python /var/www/chaniq/py/new_DnsProfile_build.py '. escapeshellarg($prfDevIp) .' '. escapeshellarg($prfName) .' '. escapeshellarg($prfDplyOrChg) .' '. escapeshellarg($prfDftFrom) .' '. escapeshellarg($prfHwValid) .' '. escapeshellarg($prfHwRespCache) .' '. escapeshellarg($prfDnsExp) .' '. escapeshellarg($prfGtm) .' '. escapeshellarg($prfUnhandledAct) .' '. escapeshellarg($prfUseBind) .' '. escapeshellarg($prfZoneXfr).' '. escapeshellarg($prfDnsSecurity) .' '. escapeshellarg($prfRecursion);
         }
         else if ($prfType == 'Cookie'){
             $prfPara1 = $profileData->defaultsFrom;
@@ -55,8 +56,8 @@
             $prfPara7 = $profileData->expiration;
             $prfPara8 = $profileData->overrideConnectionLimit;
             
-            file_put_contents("/var/log/chaniqphp.log", "new_cookieProfile_build() Device IP: " . $prfDevIp . " Profile Name: " .$prfName. " Defaults-From: " .$prfPara1." Cookie Method: " .$prfPara2." Cookie Name: " .$prfPara3." Http Only: " .$prfPara4. " Secure Attribute: " .$prfPara5. " Always Send Cookie: " .$prfPara6." Expiration: " .$prfPara7." Override Connection Limit: " .$prfPara8."\n", FILE_APPEND);
-            $cmd = '/usr/bin/python /var/www/chaniq/py/new_cookieProfile_build.py '. escapeshellarg($prfDevIp) .' '. escapeshellarg($prfName) .' '. escapeshellarg($prfPara1) .' '. escapeshellarg($prfPara2) .' '. escapeshellarg($prfPara3) .' '. escapeshellarg($prfPara4) .' '. escapeshellarg($prfPara5) .' '. escapeshellarg($prfPara6) .' '. escapeshellarg($prfPara7).' '. escapeshellarg($prfPara8);
+            file_put_contents("/var/log/chaniqphp.log", "new_cookieProfile_build() Device IP: " . $prfDevIp . " Profile Name: " .$prfName. " Profile Deploy or Change: " .$prfDplyOrChg . " Defaults-From: " .$prfPara1." Cookie Method: " .$prfPara2." Cookie Name: " .$prfPara3." Http Only: " .$prfPara4. " Secure Attribute: " .$prfPara5. " Always Send Cookie: " .$prfPara6." Expiration: " .$prfPara7." Override Connection Limit: " .$prfPara8."\n", FILE_APPEND);
+            $cmd = '/usr/bin/python /var/www/chaniq/py/new_cookieProfile_build.py '. escapeshellarg($prfDevIp) .' '. escapeshellarg($prfName) .' '. escapeshellarg($prfDplyOrChg) .' '. escapeshellarg($prfPara1) .' '. escapeshellarg($prfPara2) .' '. escapeshellarg($prfPara3) .' '. escapeshellarg($prfPara4) .' '. escapeshellarg($prfPara5) .' '. escapeshellarg($prfPara6) .' '. escapeshellarg($prfPara7).' '. escapeshellarg($prfPara8);
         }
         else if ($prfType == 'DestAddrAffinity'){
             $prfPara1 = $profileData->defaultsFrom;
@@ -68,8 +69,8 @@
             $prfPara7 = $profileData->mask;
             $prfPara8 = $profileData->overrideConnectionLimit;
             
-            file_put_contents("/var/log/chaniqphp.log", "new_dstAffProfile_build() Device IP: " . $prfDevIp . " Profile Name: " .$prfName. " Defaults-From: " .$prfPara1." Match Across Services: " .$prfPara2." Match Across VSs: " .$prfPara3." Match Across Pools: " .$prfPara4. " Hash Algo.: " .$prfPara5. " Timeout: " .$prfPara6." Prefix Length: " .$prfPara7." Override Connection Limit: " .$prfPara8."\n", FILE_APPEND);
-            $cmd = '/usr/bin/python /var/www/chaniq/py/new_dstAffProfile_build.py '. escapeshellarg($prfDevIp) .' '. escapeshellarg($prfName) .' '. escapeshellarg($prfPara1) .' '. escapeshellarg($prfPara2) .' '. escapeshellarg($prfPara3) .' '. escapeshellarg($prfPara4) .' '. escapeshellarg($prfPara5) .' '. escapeshellarg($prfPara6) .' '. escapeshellarg($prfPara7).' '. escapeshellarg($prfPara8);
+            file_put_contents("/var/log/chaniqphp.log", "new_dstAffProfile_build() Device IP: " . $prfDevIp . " Profile Name: " .$prfName. " Profile Deploy or Change: " .$prfDplyOrChg . " Defaults-From: " .$prfPara1." Match Across Services: " .$prfPara2." Match Across VSs: " .$prfPara3." Match Across Pools: " .$prfPara4. " Hash Algo.: " .$prfPara5. " Timeout: " .$prfPara6." Prefix Length: " .$prfPara7." Override Connection Limit: " .$prfPara8."\n", FILE_APPEND);
+            $cmd = '/usr/bin/python /var/www/chaniq/py/new_dstAffProfile_build.py '. escapeshellarg($prfDevIp) .' '. escapeshellarg($prfName) .' '. escapeshellarg($prfDplyOrChg) .' '. escapeshellarg($prfPara1) .' '. escapeshellarg($prfPara2) .' '. escapeshellarg($prfPara3) .' '. escapeshellarg($prfPara4) .' '. escapeshellarg($prfPara5) .' '. escapeshellarg($prfPara6) .' '. escapeshellarg($prfPara7).' '. escapeshellarg($prfPara8);
         }
         else if ($prfType == 'SrcAddrAffinity'){
             $prfPara1 = $profileData->defaultsFrom;
@@ -82,8 +83,8 @@
             $prfPara8 = $profileData->mapProxies;
             $prfPara9 = $profileData->overrideConnectionLimit;
             
-            file_put_contents("/var/log/chaniqphp.log", "new_srcAffProfile_build() Device IP: " . $prfDevIp . " Profile Name: " .$prfName. " Defaults-From: " .$prfPara1." Match Across Services: " .$prfPara2." Match Across VSs: " .$prfPara3." Match Across Pools: " .$prfPara4. " Hash Algo.: " .$prfPara5. " Timeout: " .$prfPara6." Prefix Length: " .$prfPara7. " Map Proxies:" .$prfPara8." Override Connection Limit: " .$prfPara9."\n", FILE_APPEND);
-            $cmd = '/usr/bin/python /var/www/chaniq/py/new_srcAffProfile_build.py '. escapeshellarg($prfDevIp) .' '. escapeshellarg($prfName) .' '. escapeshellarg($prfPara1) .' '. escapeshellarg($prfPara2) .' '. escapeshellarg($prfPara3) .' '. escapeshellarg($prfPara4) .' '. escapeshellarg($prfPara5) .' '. escapeshellarg($prfPara6) .' '. escapeshellarg($prfPara7).' '. escapeshellarg($prfPara8).' '. escapeshellarg($prfPara9);
+            file_put_contents("/var/log/chaniqphp.log", "new_srcAffProfile_build() Device IP: " . $prfDevIp . " Profile Name: " .$prfName. " Profile Deploy or Change: " .$prfDplyOrChg . " Defaults-From: " .$prfPara1." Match Across Services: " .$prfPara2." Match Across VSs: " .$prfPara3." Match Across Pools: " .$prfPara4. " Hash Algo.: " .$prfPara5. " Timeout: " .$prfPara6." Prefix Length: " .$prfPara7. " Map Proxies:" .$prfPara8." Override Connection Limit: " .$prfPara9."\n", FILE_APPEND);
+            $cmd = '/usr/bin/python /var/www/chaniq/py/new_srcAffProfile_build.py '. escapeshellarg($prfDevIp) .' '. escapeshellarg($prfName) .' '. escapeshellarg($prfDplyOrChg) .' '. escapeshellarg($prfPara1) .' '. escapeshellarg($prfPara2) .' '. escapeshellarg($prfPara3) .' '. escapeshellarg($prfPara4) .' '. escapeshellarg($prfPara5) .' '. escapeshellarg($prfPara6) .' '. escapeshellarg($prfPara7).' '. escapeshellarg($prfPara8).' '. escapeshellarg($prfPara9);
         }
         else if ($prfType == 'Hash'){
             $prfPara1 = $profileData->defaultsFrom;
@@ -100,8 +101,8 @@
             $prfPara12 = $profileData->rule;
             $prfPara13 = $profileData->overrideConnectionLimit;
             
-            file_put_contents("/var/log/chaniqphp.log", "new_hashProfile_build() Device IP: " . $prfDevIp . " Profile Name: " .$prfName. " Defaults-From: " .$prfPara1." Match Across Services: " .$prfPara2." Match Across VSs: " .$prfPara3." Match Across Pools: " .$prfPara4. " Hash Algo: " .$prfPara5. " Hash Offset: " .$prfPara6. " Hash Length: " .$prfPara7. " Hash Start Pattern: " .$prfPara8. " Hash End Pattern: " .$prfPara9. " Hash Buffer Limit: " .$prfPara10." Timeout: " .$prfPara11." Rule: " .$prfPara12. " Override Connection Limit: " .$prfPara13."\n", FILE_APPEND);
-            $cmd = '/usr/bin/python /var/www/chaniq/py/new_hashProfile_build.py '. escapeshellarg($prfDevIp) .' '. escapeshellarg($prfName) .' '. escapeshellarg($prfPara1) .' '. escapeshellarg($prfPara2) .' '. escapeshellarg($prfPara3) .' '. escapeshellarg($prfPara4) .' '. escapeshellarg($prfPara5) .' '. escapeshellarg($prfPara6) .' '. escapeshellarg($prfPara7).' '. escapeshellarg($prfPara8).' '. escapeshellarg($prfPara9).' '. escapeshellarg($prfPara10).' '. escapeshellarg($prfPara11).' '. escapeshellarg($prfPara12).' '. escapeshellarg($prfPara13);
+            file_put_contents("/var/log/chaniqphp.log", "new_hashProfile_build() Device IP: " . $prfDevIp . " Profile Name: " .$prfName. " Profile Deploy or Change: " .$prfDplyOrChg . " Defaults-From: " .$prfPara1." Match Across Services: " .$prfPara2." Match Across VSs: " .$prfPara3." Match Across Pools: " .$prfPara4. " Hash Algo: " .$prfPara5. " Hash Offset: " .$prfPara6. " Hash Length: " .$prfPara7. " Hash Start Pattern: " .$prfPara8. " Hash End Pattern: " .$prfPara9. " Hash Buffer Limit: " .$prfPara10." Timeout: " .$prfPara11." Rule: " .$prfPara12. " Override Connection Limit: " .$prfPara13."\n", FILE_APPEND);
+            $cmd = '/usr/bin/python /var/www/chaniq/py/new_hashProfile_build.py '. escapeshellarg($prfDevIp) .' '. escapeshellarg($prfName) .' '. escapeshellarg($prfDplyOrChg) .' '. escapeshellarg($prfPara1) .' '. escapeshellarg($prfPara2) .' '. escapeshellarg($prfPara3) .' '. escapeshellarg($prfPara4) .' '. escapeshellarg($prfPara5) .' '. escapeshellarg($prfPara6) .' '. escapeshellarg($prfPara7).' '. escapeshellarg($prfPara8).' '. escapeshellarg($prfPara9).' '. escapeshellarg($prfPara10).' '. escapeshellarg($prfPara11).' '. escapeshellarg($prfPara12).' '. escapeshellarg($prfPara13);
         }
         else if ($prfType == 'SSL'){
             $prfPara1 = $profileData->defaultsFrom;
@@ -111,8 +112,8 @@
             $prfPara5 = $profileData->timeout;
             $prfPara6 = $profileData->overrideConnectionLimit;
             
-            file_put_contents("/var/log/chaniqphp.log", "new_sslProfile_build() Device IP: " . $prfDevIp . " Profile Name: " .$prfName. " Defaults-From: " .$prfPara1." Match Across Services: " .$prfPara2." Match Across VSs: " .$prfPara3." Match Across Pools: " .$prfPara4. " Timeout: " .$prfPara5. " Override Connection Limit: " .$prfPara6."\n", FILE_APPEND);
-            $cmd = '/usr/bin/python /var/www/chaniq/py/new_sslProfile_build.py '. escapeshellarg($prfDevIp) .' '. escapeshellarg($prfName) .' '. escapeshellarg($prfPara1) .' '. escapeshellarg($prfPara2) .' '. escapeshellarg($prfPara3) .' '. escapeshellarg($prfPara4) .' '. escapeshellarg($prfPara5) .' '. escapeshellarg($prfPara6);
+            file_put_contents("/var/log/chaniqphp.log", "new_sslProfile_build() Device IP: " . $prfDevIp . " Profile Name: " .$prfName. " Profile Deploy or Change: " .$prfDplyOrChg . " Defaults-From: " .$prfPara1." Match Across Services: " .$prfPara2." Match Across VSs: " .$prfPara3." Match Across Pools: " .$prfPara4. " Timeout: " .$prfPara5. " Override Connection Limit: " .$prfPara6."\n", FILE_APPEND);
+            $cmd = '/usr/bin/python /var/www/chaniq/py/new_sslProfile_build.py '. escapeshellarg($prfDevIp) .' '. escapeshellarg($prfName) .' '. escapeshellarg($prfDplyOrChg) .' '. escapeshellarg($prfPara1) .' '. escapeshellarg($prfPara2) .' '. escapeshellarg($prfPara3) .' '. escapeshellarg($prfPara4) .' '. escapeshellarg($prfPara5) .' '. escapeshellarg($prfPara6);
             
         }
         else if ($prfType == 'Universal'){
@@ -124,8 +125,8 @@
             $prfPara6 = $profileData->rule;
             $prfPara7 = $profileData->overrideConnectionLimit;
             
-            file_put_contents("/var/log/chaniqphp.log", "new_uniProfile_build() Device IP: " . $prfDevIp . " Profile Name: " .$prfName. " Defaults-From: " .$prfPara1." Match Across Services: " .$prfPara2." Match Across VSs: " .$prfPara3." Match Across Pools: " .$prfPara4. " Timeout: " .$prfPara5. " Rule: " .$prfPara6. " Override Connection Limit: " .$prfPara7."\n", FILE_APPEND);
-            $cmd = '/usr/bin/python /var/www/chaniq/py/new_uniProfile_build.py '. escapeshellarg($prfDevIp) .' '. escapeshellarg($prfName) .' '. escapeshellarg($prfPara1) .' '. escapeshellarg($prfPara2) .' '. escapeshellarg($prfPara3) .' '. escapeshellarg($prfPara4) .' '. escapeshellarg($prfPara5) .' '. escapeshellarg($prfPara6) .' '. escapeshellarg($prfPara7);
+            file_put_contents("/var/log/chaniqphp.log", "new_uniProfile_build() Device IP: " . $prfDevIp . " Profile Name: " .$prfName. " Profile Deploy or Change: " .$prfDplyOrChg . " Defaults-From: " .$prfPara1." Match Across Services: " .$prfPara2." Match Across VSs: " .$prfPara3." Match Across Pools: " .$prfPara4. " Timeout: " .$prfPara5. " Rule: " .$prfPara6. " Override Connection Limit: " .$prfPara7."\n", FILE_APPEND);
+            $cmd = '/usr/bin/python /var/www/chaniq/py/new_uniProfile_build.py '. escapeshellarg($prfDevIp) .' '. escapeshellarg($prfName) .' '. escapeshellarg($prfDplyOrChg) .' '. escapeshellarg($prfPara1) .' '. escapeshellarg($prfPara2) .' '. escapeshellarg($prfPara3) .' '. escapeshellarg($prfPara4) .' '. escapeshellarg($prfPara5) .' '. escapeshellarg($prfPara6) .' '. escapeshellarg($prfPara7);
             
         }
         else if ($prfType == 'FastL4'){
@@ -141,8 +142,8 @@
             $prfPara10 = $profileData->tcpCloseTimeout;
             $prfPara11 = $profileData->keepAliveInterval;
 
-            file_put_contents("/var/log/chaniqphp.log", "new_f4Profile_build() Device IP: " . $prfDevIp . " Profile Name: " .$prfName. " Defaults-From: " .$prfPara1." Reset on Timeout: " .$prfPara2." Reassemble IP Fragment: " .$prfPara3." Idle Timeout: " .$prfPara4. " TCP Handshake Timeout: " .$prfPara5. " TCP Timestamp Mode: " .$prfPara6. " TCP Window Scale Mode: " .$prfPara7. " Loose Initiation: " .$prfPara8. " Loose Close: " .$prfPara9." TCP Close Timeout: " .$prfPara10." TCP Keep Alive Interval: " .$prfPara11."\n", FILE_APPEND);
-            $cmd = '/usr/bin/python /var/www/chaniq/py/new_f4Profile_build.py '. escapeshellarg($prfDevIp) .' '. escapeshellarg($prfName) .' '. escapeshellarg($prfPara1) .' '. escapeshellarg($prfPara2) .' '. escapeshellarg($prfPara3) .' '. escapeshellarg($prfPara4) .' '. escapeshellarg($prfPara5) .' '. escapeshellarg($prfPara6) .' '. escapeshellarg($prfPara7).' '. escapeshellarg($prfPara8).' '. escapeshellarg($prfPara9).' '. escapeshellarg($prfPara10).' '. escapeshellarg($prfPara11);
+            file_put_contents("/var/log/chaniqphp.log", "new_f4Profile_build() Device IP: " . $prfDevIp . " Profile Name: " .$prfName. " Profile Deploy or Change: " .$prfDplyOrChg . " Defaults-From: " .$prfPara1." Reset on Timeout: " .$prfPara2." Reassemble IP Fragment: " .$prfPara3." Idle Timeout: " .$prfPara4. " TCP Handshake Timeout: " .$prfPara5. " TCP Timestamp Mode: " .$prfPara6. " TCP Window Scale Mode: " .$prfPara7. " Loose Initiation: " .$prfPara8. " Loose Close: " .$prfPara9." TCP Close Timeout: " .$prfPara10." TCP Keep Alive Interval: " .$prfPara11."\n", FILE_APPEND);
+            $cmd = '/usr/bin/python /var/www/chaniq/py/new_f4Profile_build.py '. escapeshellarg($prfDevIp) .' '. escapeshellarg($prfName) .' '. escapeshellarg($prfDplyOrChg) .' '. escapeshellarg($prfPara1) .' '. escapeshellarg($prfPara2) .' '. escapeshellarg($prfPara3) .' '. escapeshellarg($prfPara4) .' '. escapeshellarg($prfPara5) .' '. escapeshellarg($prfPara6) .' '. escapeshellarg($prfPara7).' '. escapeshellarg($prfPara8).' '. escapeshellarg($prfPara9).' '. escapeshellarg($prfPara10).' '. escapeshellarg($prfPara11);
             
         }
         else if ($prfType == 'TCP'){
@@ -158,8 +159,8 @@
             $prfPara10 = $profileData->slowStart;
             $prfPara11 = $profileData->selectiveAcks;
             
-            file_put_contents("/var/log/chaniqphp.log", "new_tcpProfile_build() Device IP: " . $prfDevIp . " Profile Name: " .$prfName. " Defaults-From: " .$prfPara1." Reset on Timeout: " .$prfPara2." Proxy Buffer High: " .$prfPara3." Proxy Buffer Low: " .$prfPara4. " Receive Window: " .$prfPara5. " Send Buffer: " .$prfPara6. " Acknowledge on Push: " .$prfPara7. " Nagle's Algorithm: " .$prfPara8. " Initial Congestion Window Size: " .$prfPara9." Slow Start: " .$prfPara10." Selective ACKs: " .$prfPara11."\n", FILE_APPEND);
-            $cmd = '/usr/bin/python /var/www/chaniq/py/new_tcpProfile_build.py '. escapeshellarg($prfDevIp) .' '. escapeshellarg($prfName) .' '. escapeshellarg($prfPara1) .' '. escapeshellarg($prfPara2) .' '. escapeshellarg($prfPara3) .' '. escapeshellarg($prfPara4) .' '. escapeshellarg($prfPara5) .' '. escapeshellarg($prfPara6) .' '. escapeshellarg($prfPara7).' '. escapeshellarg($prfPara8).' '. escapeshellarg($prfPara9).' '. escapeshellarg($prfPara10).' '. escapeshellarg($prfPara11);
+            file_put_contents("/var/log/chaniqphp.log", "new_tcpProfile_build() Device IP: " . $prfDevIp . " Profile Name: " .$prfName. " Profile Deploy or Change: " .$prfDplyOrChg . " Defaults-From: " .$prfPara1." Reset on Timeout: " .$prfPara2." Proxy Buffer High: " .$prfPara3." Proxy Buffer Low: " .$prfPara4. " Receive Window: " .$prfPara5. " Send Buffer: " .$prfPara6. " Acknowledge on Push: " .$prfPara7. " Nagle's Algorithm: " .$prfPara8. " Initial Congestion Window Size: " .$prfPara9." Slow Start: " .$prfPara10." Selective ACKs: " .$prfPara11."\n", FILE_APPEND);
+            $cmd = '/usr/bin/python /var/www/chaniq/py/new_tcpProfile_build.py '. escapeshellarg($prfDevIp) .' '. escapeshellarg($prfName) .' '. escapeshellarg($prfDplyOrChg) .' '. escapeshellarg($prfPara1) .' '. escapeshellarg($prfPara2) .' '. escapeshellarg($prfPara3) .' '. escapeshellarg($prfPara4) .' '. escapeshellarg($prfPara5) .' '. escapeshellarg($prfPara6) .' '. escapeshellarg($prfPara7).' '. escapeshellarg($prfPara8).' '. escapeshellarg($prfPara9).' '. escapeshellarg($prfPara10).' '. escapeshellarg($prfPara11);
             
         }
         else if ($prfType == 'UDP'){
@@ -175,8 +176,8 @@
             $prfPara10 = $profileData->ipTtlV6;
             $prfPara11 = $profileData->ipDfMode;
             
-            file_put_contents("/var/log/chaniqphp.log", "new_udpProfile_build() Device IP: " . $prfDevIp . " Profile Name: " .$prfName. " Defaults-From: " .$prfPara1." Proxy Maximum Segment: " .$prfPara2." Idle Timeout: " .$prfPara3." IP ToS: " .$prfPara4. " Link QoS: " .$prfPara5. " Datagram LB: " .$prfPara6. " Allow No Pyaload: " .$prfPara7. " TTL Mode: " .$prfPara8. " TTL IPv4: " .$prfPara9." TTL IPv6: " .$prfPara10." Don't Fragment Mode: " .$prfPara11."\n", FILE_APPEND);
-            $cmd = '/usr/bin/python /var/www/chaniq/py/new_udpProfile_build.py '. escapeshellarg($prfDevIp) .' '. escapeshellarg($prfName) .' '. escapeshellarg($prfPara1) .' '. escapeshellarg($prfPara2) .' '. escapeshellarg($prfPara3) .' '. escapeshellarg($prfPara4) .' '. escapeshellarg($prfPara5) .' '. escapeshellarg($prfPara6) .' '. escapeshellarg($prfPara7).' '. escapeshellarg($prfPara8).' '. escapeshellarg($prfPara9).' '. escapeshellarg($prfPara10).' '. escapeshellarg($prfPara11);
+            file_put_contents("/var/log/chaniqphp.log", "new_udpProfile_build() Device IP: " . $prfDevIp . " Profile Name: " .$prfName. " Profile Deploy or Change: " .$prfDplyOrChg . " Defaults-From: " .$prfPara1." Proxy Maximum Segment: " .$prfPara2." Idle Timeout: " .$prfPara3." IP ToS: " .$prfPara4. " Link QoS: " .$prfPara5. " Datagram LB: " .$prfPara6. " Allow No Pyaload: " .$prfPara7. " TTL Mode: " .$prfPara8. " TTL IPv4: " .$prfPara9." TTL IPv6: " .$prfPara10." Don't Fragment Mode: " .$prfPara11."\n", FILE_APPEND);
+            $cmd = '/usr/bin/python /var/www/chaniq/py/new_udpProfile_build.py '. escapeshellarg($prfDevIp) .' '. escapeshellarg($prfName) .' '. escapeshellarg($prfDplyOrChg) .' '. escapeshellarg($prfPara1) .' '. escapeshellarg($prfPara2) .' '. escapeshellarg($prfPara3) .' '. escapeshellarg($prfPara4) .' '. escapeshellarg($prfPara5) .' '. escapeshellarg($prfPara6) .' '. escapeshellarg($prfPara7).' '. escapeshellarg($prfPara8).' '. escapeshellarg($prfPara9).' '. escapeshellarg($prfPara10).' '. escapeshellarg($prfPara11);
             
         }
         else if ($prfType == 'CLIENTSSL'){
@@ -197,8 +198,8 @@
             $prfPara15 = $profileData->sniDefault;
             $prfPara16 = $profileData->sniRequire;
             
-            file_put_contents("/var/log/chaniqphp.log", "new_clisslProfile_build() Device IP: " . $prfDevIp . " Profile Name: " .$prfName. " Defaults-From: " .$prfPara1." Certificate: " .$prfPara2." Key: " .$prfPara3." Chain: " .$prfPara4. " Ciphers: " .$prfPara5. " proxy SSL: " .$prfPara6. " Proxsy SSL Pass-through: " .$prfPara7. " Renegotiation: " .$prfPara8. " Renegotiate Period: " .$prfPara9." Renegotiate Size: " .$prfPara10." Renegotiate Max Record Delay: " .$prfPara11." Secure Renegotiation: " .$prfPara12." Max Renegotiations: " .$prfPara13." Server Name: " .$prfPara14." Default SSL Profile for SNI: " .$prfPara15." Require Peer SNI support: " .$prfPara16."\n", FILE_APPEND);
-            $cmd = '/usr/bin/python /var/www/chaniq/py/new_clisslProfile_build.py '. escapeshellarg($prfDevIp) .' '. escapeshellarg($prfName) .' '. escapeshellarg($prfPara1) .' '. escapeshellarg($prfPara2) .' '. escapeshellarg($prfPara3) .' '. escapeshellarg($prfPara4) .' '. escapeshellarg($prfPara5) .' '. escapeshellarg($prfPara6) .' '. escapeshellarg($prfPara7).' '. escapeshellarg($prfPara8).' '. escapeshellarg($prfPara9).' '. escapeshellarg($prfPara10).' '. escapeshellarg($prfPara11).' '. escapeshellarg($prfPara12).' '. escapeshellarg($prfPara13).' '. escapeshellarg($prfPara14).' '. escapeshellarg($prfPara15).' '. escapeshellarg($prfPara16);
+            file_put_contents("/var/log/chaniqphp.log", "new_clisslProfile_build() Device IP: " . $prfDevIp . " Profile Name: " .$prfName. " Profile Deploy or Change: " .$prfDplyOrChg . " Defaults-From: " .$prfPara1." Certificate: " .$prfPara2." Key: " .$prfPara3." Chain: " .$prfPara4. " Ciphers: " .$prfPara5. " proxy SSL: " .$prfPara6. " Proxsy SSL Pass-through: " .$prfPara7. " Renegotiation: " .$prfPara8. " Renegotiate Period: " .$prfPara9." Renegotiate Size: " .$prfPara10." Renegotiate Max Record Delay: " .$prfPara11." Secure Renegotiation: " .$prfPara12." Max Renegotiations: " .$prfPara13." Server Name: " .$prfPara14." Default SSL Profile for SNI: " .$prfPara15." Require Peer SNI support: " .$prfPara16."\n", FILE_APPEND);
+            $cmd = '/usr/bin/python /var/www/chaniq/py/new_clisslProfile_build.py '. escapeshellarg($prfDevIp) .' '. escapeshellarg($prfName) .' '. escapeshellarg($prfDplyOrChg) .' '. escapeshellarg($prfPara1) .' '. escapeshellarg($prfPara2) .' '. escapeshellarg($prfPara3) .' '. escapeshellarg($prfPara4) .' '. escapeshellarg($prfPara5) .' '. escapeshellarg($prfPara6) .' '. escapeshellarg($prfPara7).' '. escapeshellarg($prfPara8).' '. escapeshellarg($prfPara9).' '. escapeshellarg($prfPara10).' '. escapeshellarg($prfPara11).' '. escapeshellarg($prfPara12).' '. escapeshellarg($prfPara13).' '. escapeshellarg($prfPara14).' '. escapeshellarg($prfPara15).' '. escapeshellarg($prfPara16);
             
         }
         else if ($prfType == 'SERVERSSL'){
@@ -217,8 +218,8 @@
             $prfPara13 = $profileData->sniDefault;
             $prfPara14 = $profileData->sniRequire;
             
-            file_put_contents("/var/log/chaniqphp.log", "new_srvsslProfile_build() Device IP: " . $prfDevIp . " Profile Name: " .$prfName. " Defaults-From: " .$prfPara1." Certificate: " .$prfPara2." Key: " .$prfPara3." Chain: " .$prfPara4. " Ciphers: " .$prfPara5. " proxy SSL: " .$prfPara6. " Proxsy SSL Pass-through: " .$prfPara7. " Renegotiation: " .$prfPara8. " Renegotiate Period: " .$prfPara9." Renegotiate Size: " .$prfPara10." Secure Renegotiation: " .$prfPara11." Server Name: " .$prfPara12." Default SSL Profile for SNI: " .$prfPara13." Require Peer SNI support: " .$prfPara14."\n", FILE_APPEND);
-            $cmd = '/usr/bin/python /var/www/chaniq/py/new_srvsslProfile_build.py '. escapeshellarg($prfDevIp) .' '. escapeshellarg($prfName) .' '. escapeshellarg($prfPara1) .' '. escapeshellarg($prfPara2) .' '. escapeshellarg($prfPara3) .' '. escapeshellarg($prfPara4) .' '. escapeshellarg($prfPara5) .' '. escapeshellarg($prfPara6) .' '. escapeshellarg($prfPara7).' '. escapeshellarg($prfPara8).' '. escapeshellarg($prfPara9).' '. escapeshellarg($prfPara10).' '. escapeshellarg($prfPara11).' '. escapeshellarg($prfPara12).' '. escapeshellarg($prfPara13).' '. escapeshellarg($prfPara14);
+            file_put_contents("/var/log/chaniqphp.log", "new_srvsslProfile_build() Device IP: " . $prfDevIp . " Profile Name: " .$prfName. " Profile Deploy or Change: " .$prfDplyOrChg . " Defaults-From: " .$prfPara1." Certificate: " .$prfPara2." Key: " .$prfPara3." Chain: " .$prfPara4. " Ciphers: " .$prfPara5. " proxy SSL: " .$prfPara6. " Proxsy SSL Pass-through: " .$prfPara7. " Renegotiation: " .$prfPara8. " Renegotiate Period: " .$prfPara9." Renegotiate Size: " .$prfPara10." Secure Renegotiation: " .$prfPara11." Server Name: " .$prfPara12." Default SSL Profile for SNI: " .$prfPara13." Require Peer SNI support: " .$prfPara14."\n", FILE_APPEND);
+            $cmd = '/usr/bin/python /var/www/chaniq/py/new_srvsslProfile_build.py '. escapeshellarg($prfDevIp) .' '. escapeshellarg($prfName) .' '. escapeshellarg($prfDplyOrChg) .' '. escapeshellarg($prfPara1) .' '. escapeshellarg($prfPara2) .' '. escapeshellarg($prfPara3) .' '. escapeshellarg($prfPara4) .' '. escapeshellarg($prfPara5) .' '. escapeshellarg($prfPara6) .' '. escapeshellarg($prfPara7).' '. escapeshellarg($prfPara8).' '. escapeshellarg($prfPara9).' '. escapeshellarg($prfPara10).' '. escapeshellarg($prfPara11).' '. escapeshellarg($prfPara12).' '. escapeshellarg($prfPara13).' '. escapeshellarg($prfPara14);
         }
         else if ($prfType == 'OneConnect'){
             $prfPara1 = $profileData->defaultsFrom;
@@ -229,8 +230,8 @@
             $prfPara6 = $profileData->idleTimeoutOverride;
             $prfPara7 = $profileData->limitType;
             
-            file_put_contents("/var/log/chaniqphp.log", "new_ocProfile_build() Device IP: " . $prfDevIp . " Profile Name: " .$prfName. " Defaults-From: " .$prfPara1." Source Prefix Length: " .$prfPara2." Maximum Size: " .$prfPara3." Maximum Age: " .$prfPara4. " Maximum Reuse: " .$prfPara5. " Idle Timeout Override: " .$prfPara6. " Limit Type: " .$prfPara7."\n", FILE_APPEND);
-            $cmd = '/usr/bin/python /var/www/chaniq/py/new_ocProfile_build.py '. escapeshellarg($prfDevIp) .' '. escapeshellarg($prfName) .' '. escapeshellarg($prfPara1) .' '. escapeshellarg($prfPara2) .' '. escapeshellarg($prfPara3) .' '. escapeshellarg($prfPara4) .' '. escapeshellarg($prfPara5) .' '. escapeshellarg($prfPara6) .' '. escapeshellarg($prfPara7);
+            file_put_contents("/var/log/chaniqphp.log", "new_ocProfile_build() Device IP: " . $prfDevIp . " Profile Name: " .$prfName. " Profile Deploy or Change: " .$prfDplyOrChg . " Defaults-From: " .$prfPara1." Source Prefix Length: " .$prfPara2." Maximum Size: " .$prfPara3." Maximum Age: " .$prfPara4. " Maximum Reuse: " .$prfPara5. " Idle Timeout Override: " .$prfPara6. " Limit Type: " .$prfPara7."\n", FILE_APPEND);
+            $cmd = '/usr/bin/python /var/www/chaniq/py/new_ocProfile_build.py '. escapeshellarg($prfDevIp) .' '. escapeshellarg($prfName) .' '. escapeshellarg($prfDplyOrChg) .' '. escapeshellarg($prfPara1) .' '. escapeshellarg($prfPara2) .' '. escapeshellarg($prfPara3) .' '. escapeshellarg($prfPara4) .' '. escapeshellarg($prfPara5) .' '. escapeshellarg($prfPara6) .' '. escapeshellarg($prfPara7);
             
         }
         else if ($prfType == 'Stream'){
@@ -238,8 +239,8 @@
             $prfPara2 = $profileData->source;
             $prfPara3 = $profileData->tmTarget;
             
-            file_put_contents("/var/log/chaniqphp.log", "new_streamProfile_build() Device IP: " . $prfDevIp . " Profile Name: " .$prfName. " Defaults-From: " .$prfPara1." Source: " .$prfPara2." Target: " .$prfPara3."\n", FILE_APPEND);
-            $cmd = '/usr/bin/python /var/www/chaniq/py/new_streamProfile_build.py '. escapeshellarg($prfDevIp) .' '. escapeshellarg($prfName) .' '. escapeshellarg($prfPara1) .' '. escapeshellarg($prfPara2) .' '. escapeshellarg($prfPara3);
+            file_put_contents("/var/log/chaniqphp.log", "new_streamProfile_build() Device IP: " . $prfDevIp . " Profile Name: " .$prfName. " Profile Deploy or Change: " .$prfDplyOrChg . " Defaults-From: " .$prfPara1." Source: " .$prfPara2." Target: " .$prfPara3."\n", FILE_APPEND);
+            $cmd = '/usr/bin/python /var/www/chaniq/py/new_streamProfile_build.py '. escapeshellarg($prfDevIp) .' '. escapeshellarg($prfName) .' '. escapeshellarg($prfDplyOrChg) .' '. escapeshellarg($prfPara1) .' '. escapeshellarg($prfPara2) .' '. escapeshellarg($prfPara3);
             
         }
         
