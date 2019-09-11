@@ -31,7 +31,8 @@ def new_httpProfile_build(prfDevIp, prfName, prfDplyOrChg, prfPxyType, prfDftFro
          prfInstXFF='disabled'
          
          
-    mr = ManagementRoot(prfDevIp, 'admin', 'rlatkdcks')
+    #mr = ManagementRoot(prfDevIp, 'admin', 'rlatkdcks')
+    mr = ManagementRoot(str(prfDevIp), 'admin', 'rlatkdcks')
     output = ''
 
     logging.info("new_httpProfile_build.py Parms DevIP: " + prfDevIp \
@@ -49,32 +50,90 @@ def new_httpProfile_build(prfDevIp, prfName, prfDplyOrChg, prfPxyType, prfDftFro
                  + " Inser X-forwared-for: " + prfInstXFF \
                  + " Server Agent name: " + prfSrvAgtName ) 
 
-    mr = ManagementRoot(str(prfDevIp), 'admin', 'rlatkdcks')
-	
-    idx = 1
-    strReturn = {str(idx) : 'Profile Creation Report'}
-
-    idx += 1
-    #logging.info("ProxyType before change: " + prfPxyType)
-    tmp = prfPxyType.split(":")
-    #logging.info("ProxyType after change: tmp[0]: " + tmp[0])
+    	
+    # Process to build new HTTP profile
+    if prfDplyOrChg == 'new_profile':
+        logging.info("Profile Creation process has been initiated. Profile Name: " + prfName)
+        
+        idx = 1
+        strReturn = {str(idx) : 'Profile Creation Report'}
     
-    pxyLen = len(tmp)
-    prfPxyType = tmp[0]
-    if pxyLen == 2:
-        dnsRzvName = tmp[1]
-        logging.info("ProxyType: " + prfPxyType + " DNS Resolver name: " + dnsRzvName)
-    #std_irname = build_std_names.build_std_ir_name(str(irEnv), str(irVsName), str(irVsPort), str(irType))
-    logging.info("Profile Creation process has been initiated. Profile Name: " + prfName)
-
-    if check_profileName_conflict(mr, prfName, prfPxyType, prfDftFrom):
-        strReturn.update({str(idx) : 'Profile Name conflict'})
-        logging.info("Profile name conflict.")
         idx += 1
-        return json.dumps(strReturn)
-    logging.info("No profile name conflict. Now creating the requested profile")
-		
-    try:
+        #logging.info("ProxyType before change: " + prfPxyType)
+        tmp = prfPxyType.split(":")
+        #logging.info("ProxyType after change: tmp[0]: " + tmp[0])
+        
+        pxyLen = len(tmp)
+        prfPxyType = tmp[0]
+        if pxyLen == 2:
+            dnsRzvName = tmp[1]
+            logging.info("ProxyType: " + prfPxyType + " DNS Resolver name: " + dnsRzvName)
+        #std_irname = build_std_names.build_std_ir_name(str(irEnv), str(irVsName), str(irVsPort), str(irType))
+    
+        if check_profileName_conflict(mr, prfName, prfPxyType, prfDftFrom):
+            strReturn.update({str(idx) : 'Profile Name conflict'})
+            logging.info("Profile name conflict.")
+            idx += 1
+            return json.dumps(strReturn)
+        logging.info("No profile name conflict. Now creating the requested profile")
+    		
+        try:
+            new_records = []
+            arrRecords = prfFallbackStsCode.split(' ')
+            for arrRecord in arrRecords:
+                aRecord = arrRecord.split(':')
+                logging.info("FallbackStatus Codes: " + arrRecord)
+                nr = [str(arrRecord)]
+                new_records.extend(nr)
+            if prfPxyType == 'explicit':
+                proxyDict = {'dnsResolver': '/Common/' + dnsRzvName}
+                #logging.info("DNS Resolver Full name: " + proxyDict['dnsResolver'])
+                mydg = mr.tm.ltm.profile.https.http.create(name=prfName, partition='Common', proxyType=prfPxyType, defaultsFrom=prfDftFrom, basicAuthRealm=prfBscAuthRealm, fallbackHost=prfFallbackHost, fallbackStatusCodes=new_records, headerErase=prfHdrErase,	headerInsert=prfHdrInsert, requestChunking=prfReqChunking, responseChunking=prfRespChunking, insertXforwardedFor=prfInstXFF, serverAgentName=prfSrvAgtName, explicitProxy=proxyDict)
+            else:
+                mydg = mr.tm.ltm.profile.https.http.create(name=prfName, partition='Common', proxyType=prfPxyType, defaultsFrom=prfDftFrom, basicAuthRealm=prfBscAuthRealm, fallbackHost=prfFallbackHost, fallbackStatusCodes=new_records, headerErase=prfHdrErase, headerInsert=prfHdrInsert, requestChunking=prfReqChunking, responseChunking=prfRespChunking, insertXforwardedFor=prfInstXFF, serverAgentName=prfSrvAgtName)
+        except Exception as e:
+            logging.info("Exception during Profile creation")
+            strReturn[str(idx)] = "Exception fired! (" + prfName + "): " + str(e)
+            idx += 1
+            logging.info("Profile creation exception fired: " + str(e))
+            return json.dumps(strReturn)
+    # Process to change an existing HTTP profile
+    else:
+        logging.info("HTTP profile modification process has been initiated. Profile Name: " + prfName)
+        
+        idx = 1
+        strReturn = {str(idx) : 'Profile Modification Report'}
+    
+        idx += 1
+        logging.info("ProxyType before change: " + prfPxyType)
+        tmp = prfPxyType.split(":")
+        logging.info("ProxyType after change: tmp[0]: " + tmp[0])
+
+        try:
+            # Loading profile for a given profile name
+            aHttpProf = mr.tm.ltm.profile.https.http.load(name=prfName, partition='Common')
+        except Exception as e:
+            logging.info("Exception during loading HTTP Profile" + prfName)
+            strReturn[str(idx)] = "HTTP Profile Loading Exception fired! (" + prfName + "): " + str(e)
+            idx += 1
+            return json.dumps(strReturn)
+        
+        pxyLen = len(tmp)
+        prfPxyType = tmp[0]
+        if pxyLen == 2:
+            dnsRzvName = tmp[1]
+            logging.info("ProxyType: " + prfPxyType + " DNS Resolver name: " + dnsRzvName)
+
+        if prfPxyType == 'explicit':
+            proxyDict = {'dnsResolver': dnsRzvName}
+            aHttpProf.explicitProxy = proxyDict
+      
+        # Set HTTP profile values
+        aHttpProf.proxyType = prfPxyType
+        aHttpProf.defaultsFrom = prfDftFrom
+        aHttpProf.basicAuthRealm = prfBscAuthRealm
+        aHttpProf.fallbackHost = prfFallbackHost
+        
         new_records = []
         arrRecords = prfFallbackStsCode.split(' ')
         for arrRecord in arrRecords:
@@ -82,22 +141,33 @@ def new_httpProfile_build(prfDevIp, prfName, prfDplyOrChg, prfPxyType, prfDftFro
             logging.info("FallbackStatus Codes: " + arrRecord)
             nr = [str(arrRecord)]
             new_records.extend(nr)
-        if prfPxyType == 'explicit':
-            proxyDict = {'dnsResolver': '/Common/' + dnsRzvName}
-            #logging.info("DNS Resolver Full name: " + proxyDict['dnsResolver'])
-            mydg = mr.tm.ltm.profile.https.http.create(name=prfName, partition='Common', proxyType=prfPxyType, defaultsFrom=prfDftFrom, basicAuthRealm=prfBscAuthRealm, fallbackHost=prfFallbackHost, fallbackStatusCodes=new_records, headerErase=prfHdrErase,	headerInsert=prfHdrInsert, requestChunking=prfReqChunking, responseChunking=prfRespChunking, insertXforwardedFor=prfInstXFF, serverAgentName=prfSrvAgtName, explicitProxy=proxyDict)
-        else:
-            mydg = mr.tm.ltm.profile.https.http.create(name=prfName, partition='Common', proxyType=prfPxyType, defaultsFrom=prfDftFrom, basicAuthRealm=prfBscAuthRealm, fallbackHost=prfFallbackHost, fallbackStatusCodes=new_records, headerErase=prfHdrErase, headerInsert=prfHdrInsert, requestChunking=prfReqChunking, responseChunking=prfRespChunking, insertXforwardedFor=prfInstXFF, serverAgentName=prfSrvAgtName)
-    except Exception as e:
-        logging.info("Exception during Profile creation")
-        strReturn[str(idx)] = "Exception fired! (" + prfName + "): " + str(e)
-        idx += 1
-        logging.info("Profile creation exception fired: " + str(e))
-        return json.dumps(strReturn)
+            
+        aHttpProf.fallbackStatusCodes = arrRecords
+        aHttpProf.headerErase = prfHdrErase
+        aHttpProf.headerInsert = prfHdrInsert
+        aHttpProf.requestChunking = prfReqChunking
+        aHttpProf.responseChunking = prfRespChunking
+        aHttpProf.insertXforwardedFor = prfInstXFF
+        aHttpProf.serverAgentName = prfSrvAgtName
+        
+        # Update HTTP profile        
+        try:
+            aHttpProf.update()
+        except Exception as e:
+            logging.info("Exception during updating HTTP Profile modification")
+            strReturn[str(idx)] = "Exception fired! (" + prfName + "): " + str(e)
+            idx += 1
+            logging.info("HTTP Profile modificaiton creation Exception fired: " + str(e))
+            return json.dumps(strReturn)
+        
+    if prfDplyOrChg == 'new_profile':
+        strReturn[str(idx)] = "HTTP Profile (" + prfName + ") has been created"
+        logging.info("HTTP Profile has been created")
+    else:
+        strReturn[str(idx)] = "Modifying HTTP Profile (" + prfName + ") has been completed"
+        logging.info("HTTP Profile modification has been completed")
 
-    strReturn[str(idx)] = "HTTP Profile (" + prfName + ") has been created"
     idx += 1
-    logging.info("HTTP Profile has been created")
 
     for keys, values in strReturn.items():
         logging.info("Key: " + keys + " Value: " + values)

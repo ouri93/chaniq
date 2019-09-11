@@ -16,9 +16,12 @@ function iterArray(aArray){
 
 function validateInput(prfOptData) {
 	$('#prf_name').css('border-color', '#E1E1E1');
-	//alert("DNS REsolver: " + prfOptData['dnsResolver']);
+	//alert("DNS REsolver: " + prfOptData['dnsResolver']); 
 	if(prfOptData['name'] == '') {
-		$('#prf_name').css('border-color', 'red');
+		if (GetParentURLParameter('go') == 'new_profile' ) {
+			$('#prf_name').css('border-color', 'red');	
+		}
+		else $('#chg_svc_prf_name_select').css('border-color', 'red');
 		return false;
 	}
 	if (prfOptData['dnsResolver'] == 'select'){
@@ -1434,7 +1437,6 @@ $(function () {
 		if (prfType == "HTTP") initHttpPrfOptData(prfOptData, prfType, pxyMode);
 		else initPrfOptData(prfOptData, prfType);
 		
-		
 		// Profile Names: HTTP, DNS, Cookie, DestAddrAffinity, SrcAddrAffinity, Hash, SSL, Universal, FastL4, TCP, UDP, CLIENTSSL, SERVERSSL, OneConnect, Stream
 		if (prfType == "HTTP"){
 			//alert(iterAssArray(prfOptData));
@@ -1557,7 +1559,7 @@ $(function () {
 		//Retrieve the element data of the parent window
 		var nameAndIp = $('#ltmSelBox option:selected').val();
 		var arr = nameAndIp.split(":");
-		// prfName - User provided profile name
+		// prfName - Selected profile name
 		var prfName = $('#chg_svc_prf_name_select').val();
 		// pxyMode - HTTP profile only. HTTP proxy mode - reverse, explicit, transparent
 		var pxyMode = $('#svc_prf_proxymode_select').val();
@@ -1567,7 +1569,6 @@ $(function () {
 		//alert("Proxy Mode: " + pxyMode + " Profile Type: " + prfType + " Parent Profile name: " + parPrfName);
 		// prfOptData has been extended with a Query string value of the Parent URL
 		var prfOptData = {'phpFileName':'', 'DevIP':'', 'name':'', 'dplyOrChg':''};
-		
 		
 		alert("prf_btn_build event in prf_jquery.js - Profile Type is: " + prfType + "\n");
 
@@ -1581,5 +1582,62 @@ $(function () {
 		prfOptData['dplyOrChg'] = GetParentURLParameter('go');
 		
 		alert("Profile Name: " + prfName + "\nProxy Mode: " + pxyMode + "\nProfile Type: " + prfType + "\nParent Profile name: " + parPrfName + "\nDeploy or Change: " + prfOptData['dplyOrChg'] + "\n");
+
+		// 1. Build configuration data structure according to the selected profile name		
+		if (prfType == "HTTP") initHttpPrfOptData(prfOptData, prfType, pxyMode);
+		else initPrfOptData(prfOptData, prfType);
+		
+		if (prfType == "HTTP"){
+			// 2. Retrieve configuration data and save them according to the chosen profile name
+			setHttpPrfOptData(prfOptData, prfType, pxyMode, parPrfName);
+			//alert(iterAssArray(prfOptData));
+			if( !validateInput(prfOptData)) return;
+
+			// 3. Load the chosen profile configuration
+			ajaxOut = $.ajax({
+	    		url:'/content/new_httpProfile_build.php',
+	    		type: 'POST',
+	    		dataType: 'JSON',
+	    		data: {'newProfileBuild': JSON.stringify(prfOptData)},
+	    		error: function(jqXHR, textStatus, errorThrown){
+					alert("Ajax call failed!");
+		            console.log('jqXHR:');
+		            console.log(jqXHR);
+		            console.log('textStatus:');
+		            console.log(textStatus);
+		            console.log('errorThrown:');
+		            console.log(errorThrown);
+				}
+	    	}); 
+	    	ajaxOut.done(newProfileBuildProcessData);
+
+		}
+		else {
+			// 2. Retrieve configuration data and save them according to the chosen profile name
+			setPrfOptData(prfOptData, prfType, parPrfName);
+			alert(iterAssArray(prfOptData));
+			if( !validateInput(prfOptData)) return;
+
+			// 3. Send the retrieved data to new_Profile_build.php where it calls a proper python file 
+			// based on profile type name
+			ajaxOut = $.ajax({
+	    		url:'/content/new_Profile_build.php',
+	    		type: 'POST',
+	    		dataType: 'JSON',
+	    		data: {'newProfileBuild': JSON.stringify(prfOptData)},
+	    		error: function(jqXHR, textStatus, errorThrown){
+					alert("Ajax call failed!");
+		            console.log('jqXHR:');
+		            console.log(jqXHR);
+		            console.log('textStatus:');
+		            console.log(textStatus);
+		            console.log('errorThrown:');
+		            console.log(errorThrown);
+				}
+	    	}); 
+			ajaxOut.done(function(response_in){
+				processBuildProfileData(response_in, prfType);
+			});			
+		}
 	});
 });

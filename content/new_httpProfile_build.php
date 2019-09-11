@@ -15,7 +15,7 @@
     }
     else{
 
-        echo "AJAX call failed";
+        echo "AJAX call failed due to missing POST data";
     }
     
     //'phpFileName', 'DevIP', 'name', 'proxyType', 'defaultsFrom', 'basicAuthRealm', 'fallbackHost', 'fallbackStatusCodes', 'headerErase'
