@@ -1480,7 +1480,7 @@ $(function () {
 					dataType: 'JSON',
 					data: {method:'get_profile_names', DevIP:arr[1], LoadTypeName:'IRULE'},
 					error: function(jqXHR, textStatus, errorThrown){
-						alert("Ajax call failed!");
+						alert("Ajax call for " + prfType + " profile name loadig has failed!");
 			            console.log('jqXHR:');
 			            console.log(jqXHR);
 			            console.log('textStatus:');
@@ -1500,7 +1500,7 @@ $(function () {
 					dataType: 'JSON',
 					data: {method:'get_profile_names', DevIP:arr[1], LoadTypeName:'CERT'},
 					error: function(jqXHR, textStatus, errorThrown){
-						alert("Ajax call failed!");
+						alert("Ajax call for " + prfType + " profile Cert name loadig has failed!");
 			            console.log('jqXHR:');
 			            console.log(jqXHR);
 			            console.log('textStatus:');
@@ -1518,7 +1518,7 @@ $(function () {
 					dataType: 'JSON',
 					data: {method:'get_profile_names', DevIP:arr[1], LoadTypeName:'KEY'},
 					error: function(jqXHR, textStatus, errorThrown){
-						alert("Ajax call failed!");
+						alert("Ajax call for " + prfType + " profile Key loading has failed!");
 			            console.log('jqXHR:');
 			            console.log(jqXHR);
 			            console.log('textStatus:');
@@ -1534,9 +1534,9 @@ $(function () {
 			ajaxOut = $.ajax({
 	    		url:'/content/getPrfSettings.php',
 	    		type: 'POST',
-	    		data: {method:'getPrfSettings', DevIP:arr[1], LoadTypeName:prfType, ParPrfName:parPrfName },
+	    		data: {method:'getPrfSettings', DevIP:arr[1], LoadTypeName:prfType, ParPrfName:parPrfName, PrfMode:prfMode },
 	    		error: function(jqXHR, textStatus, errorThrown){
-					alert("Ajax call failed!");
+					alert("Ajax call for " + prfType + " profile setting loading has failed!");
 		            console.log('jqXHR:');
 		            console.log(jqXHR);
 		            console.log('textStatus:');

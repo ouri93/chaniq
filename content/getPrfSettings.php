@@ -14,11 +14,11 @@
      * @return Array
      *
      */
-    function getSettings($active_ltm, $prfType, $parPrfName)
+    function getSettings($active_ltm, $prfType, $parPrfName, $prfMode)
     {
-        $cmd = '/usr/bin/python /var/www/chaniq/py/getPrfSettings.py '.$active_ltm.' ' . escapeshellarg($prfType) .' '.escapeshellarg($parPrfName);
+        $cmd = '/usr/bin/python /var/www/chaniq/py/getPrfSettings.py '.$active_ltm.' ' . escapeshellarg($prfType) .' '.escapeshellarg($parPrfName).' '.escapeshellarg($prfMode);
         //echo "<br>Command:" .$cmd." <br>";
-        error_log(date("y-m-d H:i:s").": getSettings() called\n", 3, "/var/log/chaniqphp.log");
+        error_log(date("y-m-d H:i:s").": getPrfSettings.php getSettings() called\n", 3, "/var/log/chaniqphp.log");
         exec($cmd, $output);
         
         //$rtn_out = explode(":", $output['0']);
@@ -33,12 +33,13 @@
             $bigipIP = $_POST['DevIP'];
             $prfType = $_POST['LoadTypeName'];
             $parPrfName = $_POST['ParPrfName'];
+            $prfMode = $_POST['PrfMode'];
             
             //error_log(date("y-m-d H:i:s").": getPrfSettings() - Device IP sent over POST\n", 3, "/var/log/chaniqphp.log");
-            file_put_contents("/var/log/chaniqphp.log", "getPrfSettings() Device IP: " . $bigipIP ."\n", FILE_APPEND);
+            file_put_contents("/var/log/chaniqphp.log", "getPrfSettings.php getPrfSettings() Device IP: " . $bigipIP . "\nProfile Type: " . $prfType . "\nParent Profile name: " . $parPrfName . "\nProfile Build-Change: " . $prfMode . "\n", FILE_APPEND);
         }
         
-        $prfSettings = getSettings($bigipIP, $prfType, $parPrfName);
+        $prfSettings = getSettings($bigipIP, $prfType, $parPrfName, $prfMode);
 
         //file_put_contents("/var/log/chaniqphp.log", $prfType . "(" . $parPrfName . ") Profile Settings: " . $prfSettings . "\n", FILE_APPEND);
         return $prfSettings;

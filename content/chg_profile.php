@@ -64,7 +64,7 @@
         <input type='hidden' id='selectedPrfType' value='HTTP' />
 		<!-- IFrame content here -->
 		<!-- Default Page content - HTTP Profile -->
-		<legend>Change HTTP Profile Configuration</legend>
+		<legend>HTTP Profile Configuration</legend>
 		<iframe src="/content/if_prf_svc_http.php" width="725px" height="600" frameborder="0"></iframe>       	
         </fieldset>
     </form>

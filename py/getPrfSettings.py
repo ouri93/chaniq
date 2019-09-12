@@ -3,13 +3,20 @@ import sys
 import logging
 import json
 
+# Parameters
+#   aPrf - Profile Name
+#   attName - Attribute name of a profile
+# Return Value - Return "" if error. Otherwise return the requested attribute value
 def get_setting_val(aPrf, attName):
     try:
         accessVal = 'aPrf' + '.' + attName
         return eval(accessVal)
     except AttributeError:
         return ""
-
+# Parameters
+#   aPrf - Profile Name
+#   attName - Attribute name of a profile
+# Return Value - Return "" if error. Otherwise return the requested list type attribute value(s)
 def get_setting_list_val(aPrf, attName):
     try:
         accessVal = 'aPrf' + '.' + attName
@@ -17,7 +24,21 @@ def get_setting_list_val(aPrf, attName):
         return ' '.join(listVals)
     except AttributeError:
         return ""
-
+# Parameters
+#   aPrf - Profile Name
+#   fstAttName - First attribute name of a profile
+#   sndAttName - Second attribute name of a profile
+# Return Value - Return "" if error. Otherwise return the requested dictionary type attribute value(s)
+def get_setting_dict_val(aPrf, fstAttName, sndAttName):
+    try:
+      accessVal = 'aPrf' + '.' + fstAttName
+      prfDict = eval(accessVal)
+      logging.info("Dictionary Values: " + (prfDict.get(sndAttName)).split('/')[2])
+      logging.info('get_setting_dict_val(): ' + accessVal)
+      return (prfDict.get(sndAttName)).split('/')[2]
+    except AttributeError:
+        return ""
+    
 def getDnsPrfSettings(mr, parPrfName):
     dnsPrfs = mr.tm.ltm.profile.dns_s.get_collection()
     output = ''
@@ -328,47 +349,50 @@ def getStreamSettings(mr, parPrfName):
     logging.info('getStreamSettings(): ' + output)
     return output
 
-def getPrfSettings(dev_ip, prfType, parPrfName):
+def getPrfSettings(dev_ip, prfType, parPrfName, prfMode):
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-    logging.info('Called getPrfSettings(): %s %s %s' % (dev_ip, prfType, parPrfName))
+    logging.info('Called getPrfSettings(): %s %s %s %s' % (dev_ip, prfType, parPrfName, prfMode))
     
     mr = ManagementRoot(dev_ip, 'admin', 'rlatkdcks')
 
     output = {}
-
-    if prfType == "DNS" :
-        logging.info('getPrfSettings() DNS')
-        output = getDnsPrfSettings(mr, parPrfName)
-    elif prfType == "Cookie":
-        output = getCookiePrfSettings(mr, parPrfName)            
-    elif prfType == "DestAddrAffinity":
-        output = getDstAffSettings(mr, parPrfName)
-    elif prfType == "SrcAddrAffinity":
-        output = getSrcAffSettings(mr, parPrfName)
-    elif prfType == "Hash":
-        output = getHashSettings(mr, parPrfName)
-    elif prfType == "SSL":
-        output = getSSLSettings(mr, parPrfName)
-    elif prfType == "Universal":
-        output = getUniSettings(mr, parPrfName)
-    elif prfType == "FastL4":
-        output = getF4Settings(mr, parPrfName)
-    elif prfType == "TCP":
-        output = getTcpSettings(mr, parPrfName)
-    elif prfType == "UDP":
-        output = getUdpSettings(mr, parPrfName)
-    elif prfType == "CLIENTSSL":
-        output = getClisslSettings(mr, parPrfName)
-    elif prfType == "SERVERSSL":
-        output = getSrvsslSettings(mr, parPrfName)
-    elif prfType == "OneConnect":
-        output = getOCSettings(mr, parPrfName)
-    elif prfType == "Stream":
-        output = getStreamSettings(mr, parPrfName)
+    
+    if prfMode == 'new_profile':
+        if prfType == "DNS" :
+            logging.info('getPrfSettings.py getPrfSettings() - Build DNS')
+            output = getDnsPrfSettings(mr, parPrfName)
+        elif prfType == "Cookie":
+            output = getCookiePrfSettings(mr, parPrfName)            
+        elif prfType == "DestAddrAffinity":
+            output = getDstAffSettings(mr, parPrfName)
+        elif prfType == "SrcAddrAffinity":
+            output = getSrcAffSettings(mr, parPrfName)
+        elif prfType == "Hash":
+            output = getHashSettings(mr, parPrfName)
+        elif prfType == "SSL":
+            output = getSSLSettings(mr, parPrfName)
+        elif prfType == "Universal":
+            output = getUniSettings(mr, parPrfName)
+        elif prfType == "FastL4":
+            output = getF4Settings(mr, parPrfName)
+        elif prfType == "TCP":
+            output = getTcpSettings(mr, parPrfName)
+        elif prfType == "UDP":
+            output = getUdpSettings(mr, parPrfName)
+        elif prfType == "CLIENTSSL":
+            output = getClisslSettings(mr, parPrfName)
+        elif prfType == "SERVERSSL":
+            output = getSrvsslSettings(mr, parPrfName)
+        elif prfType == "OneConnect":
+            output = getOCSettings(mr, parPrfName)
+        elif prfType == "Stream":
+            output = getStreamSettings(mr, parPrfName)
+    elif prfMode == 'chg_profile':
+        pass
 
     return output
     #print json.dumps(output)
 
 if __name__ == "__main__":
     # argv[1] - Device IP, argv[2] - Profile Type, argv[3] - Parent Profile Name
-    print getPrfSettings(sys.argv[1], sys.argv[2], sys.argv[3])
+    print getPrfSettings(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
