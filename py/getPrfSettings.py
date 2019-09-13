@@ -38,7 +38,7 @@ def get_setting_dict_val(aPrf, fstAttName, sndAttName):
       return (prfDict.get(sndAttName)).split('/')[2]
     except AttributeError:
         return ""
-    
+
 def getDnsPrfSettings(mr, parPrfName):
     dnsPrfs = mr.tm.ltm.profile.dns_s.get_collection()
     output = ''
@@ -349,6 +349,31 @@ def getStreamSettings(mr, parPrfName):
     logging.info('getStreamSettings(): ' + output)
     return output
 
+# Only called when the application is in Profile Change mode
+def loadDnsPrfSettings(mr, prfName):
+    # Load DNS setting and return the setting result
+    dnsPrfs = mr.tm.ltm.profile.dns_s.get_collection()
+    output = ''
+    
+    #outputDict = {'defaultsFrom', 'enableHardwareQueryValidation', 'enableHardwareResponseCache', 'enableDnsExpress', 'enableGtm', 'unhandledQueryAction', 'useLocalBind', 'processXfr','enableDnsFirewall', 'processRd']
+    try:
+        for aprf in dnsPrfs:
+            if(aprf.name == prfName):
+                output += get_setting_val(aprf, 'defaultsFrom') + '|'
+                output += get_setting_val(aprf, 'enableHardwareQueryValidation') + '|'
+                output += get_setting_val(aprf, 'enableHardwareResponseCache') + '|'
+                output += get_setting_val(aprf, 'enableDnsExpress') + '|'
+                output += get_setting_val(aprf, 'enableGtm') + '|'
+                output += get_setting_val(aprf, 'unhandledQueryAction') + '|'
+                output += get_setting_val(aprf, 'useLocalBind') + '|'                
+                output += get_setting_val(aprf, 'processXfr') + '|'
+                output += get_setting_val(aprf, 'enableDnsFirewall') + '|'
+                output += get_setting_val(aprf, 'processRd')
+    except Exception as e:
+        logging.info("Exception during retrieving DNS profile setting: " + str(e))
+    logging.info('getPrfSettings.py loadDnsPrfSettings(): ' + output)
+    return output
+
 def getPrfSettings(dev_ip, prfType, parPrfName, prfMode):
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
     logging.info('Called getPrfSettings(): %s %s %s %s' % (dev_ip, prfType, parPrfName, prfMode))
@@ -388,7 +413,7 @@ def getPrfSettings(dev_ip, prfType, parPrfName, prfMode):
         elif prfType == "Stream":
             output = getStreamSettings(mr, parPrfName)
     elif prfMode == 'chg_profile':
-        pass
+        output = loadDnsPrfSettings(mr, parPrfName)
 
     return output
     #print json.dumps(output)

@@ -10,7 +10,8 @@
      *
      * @param String $active_ltm The name of active LTM device
      * @param String $prfType The name of Profile Type
-     * @param String $parParName The name of Parent Profile name
+     * @param String $parParName This variable used to dual purpose. In Profile Change mode it stores selected profile name
+     *                                                               In Profile build mode, it stores selected parent profile name
      * @return Array
      *
      */
@@ -36,7 +37,7 @@
             $prfMode = $_POST['PrfMode'];
             
             //error_log(date("y-m-d H:i:s").": getPrfSettings() - Device IP sent over POST\n", 3, "/var/log/chaniqphp.log");
-            file_put_contents("/var/log/chaniqphp.log", "getPrfSettings.php getPrfSettings() Device IP: " . $bigipIP . "\nProfile Type: " . $prfType . "\nParent Profile name: " . $parPrfName . "\nProfile Build-Change: " . $prfMode . "\n", FILE_APPEND);
+            file_put_contents("/var/log/chaniqphp.log", "getPrfSettings.php getPrfSettings() \nDevice IP: " . $bigipIP . "\nProfile Type: " . $prfType . "\nParent Profile or Selected Profile name: " . $parPrfName . "\nProfile Build-Change: " . $prfMode . "\n", FILE_APPEND);
         }
         
         $prfSettings = getSettings($bigipIP, $prfType, $parPrfName, $prfMode);

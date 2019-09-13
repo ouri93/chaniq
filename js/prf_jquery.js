@@ -550,16 +550,29 @@ function getPrfSettingsProcessData(response_in){
 function processGetProfileData(response_in, prfType){
 	var responseArray = response_in.split('|');
 	//alert('First Data: ' + responseArray[0] + 'Profile Type: ' + prfType);
+
+	var prfMode = GetParentURLParameter('go');
+	var parPrfName = '';
+	
 	/* Debugging */
-	/*
-	var strResult = '';
+
+	var strResult = 'Debugging Info - Loading ' + prfType + ' profile settings\n';
 	$.each(responseArray, function(index) {
 		strResult += responseArray[index] + "<br>";
 	});
-	
 	$('#newprf_EvalReview').html(strResult);
-	*/
+
+	if (prfMode == 'chg_profile')
+	{
+		// String parsing - '/Common/parent_prf_name'
+		parPrfName = responseArray[0].split("/");
+	}
+	alert("Parent Prfile name: " + parPrfName);
 	if(prfType == 'DNS'){
+		if (prfMode == 'chg_profile')
+		{
+			$('#svc_prf_type_select option[value="' + parPrfName[2] + '"]').attr('selected', 'selected');
+		}
 		$('#dnsHwPrtoValid option[value="' + responseArray[1] + '"]').attr('selected', 'selected');
 		$('#dnsHwRespCache option[value="' + responseArray[2] + '"]').attr('selected', 'selected');
 		$('#dnsExp option[value="' + responseArray[3] + '"]').attr('selected', 'selected');
@@ -1358,7 +1371,10 @@ $(function () {
 			// 2. Retrieve configuration data and save them according to the chosen profile name
 			setHttpPrfOptData(prfOptData, prfType, pxyMode, parPrfName);
 			//alert(iterAssArray(prfOptData));
-			if( !validateInput(prfOptData)) return;
+			if( !validateInput(prfOptData)){
+				alert("HTTP Profile name is required!");
+				return;
+			}
 
 			// 3. Load the chosen profile configuration
 			ajaxOut = $.ajax({
@@ -1383,7 +1399,10 @@ $(function () {
 			// 2. Retrieve configuration data and save them according to the chosen profile name
 			setPrfOptData(prfOptData, prfType, parPrfName);
 			alert(iterAssArray(prfOptData));
-			if( !validateInput(prfOptData)) return;
+			if( !validateInput(prfOptData)){
+				alert("Profile name is required!");
+				return;
+			}
 
 			// 3. Send the retrieved data to new_Profile_build.php where it calls a proper python file 
 			// based on profile type name
@@ -1408,7 +1427,7 @@ $(function () {
 		}
 	});
 	
-	// Event handler when a profile name is chosen
+	// Event handler when a parent profile name is chosen
 	$('#chg_svc_prf_name_select').on('change', function(){
 		//Retrieve the element data of the parent window
 		var nameAndIp = $('#ltmSelBox option:selected').val();
@@ -1420,6 +1439,7 @@ $(function () {
 		var prfMode = GetParentURLParameter('go');
 		var parPrfName;
 		if (prfMode=='chg_profile'){
+			// In Profile Change mode, variable 'parPrfName'(Parent Profile Name) is used to store a profile name
 			parPrfName = this.value;
 			if (parPrfName == 'none') return;
 		}
@@ -1591,7 +1611,10 @@ $(function () {
 			// 2. Retrieve configuration data and save them according to the chosen profile name
 			setHttpPrfOptData(prfOptData, prfType, pxyMode, parPrfName);
 			//alert(iterAssArray(prfOptData));
-			if( !validateInput(prfOptData)) return;
+			if( !validateInput(prfOptData)){
+				alert("HTTP Profile name is required!");
+				return;
+			}
 
 			// 3. Load the chosen profile configuration
 			ajaxOut = $.ajax({
@@ -1600,7 +1623,7 @@ $(function () {
 	    		dataType: 'JSON',
 	    		data: {'newProfileBuild': JSON.stringify(prfOptData)},
 	    		error: function(jqXHR, textStatus, errorThrown){
-					alert("Ajax call failed!");
+					alert("Ajax call for HTTP Profile change has failed!");
 		            console.log('jqXHR:');
 		            console.log(jqXHR);
 		            console.log('textStatus:');
@@ -1616,7 +1639,10 @@ $(function () {
 			// 2. Retrieve configuration data and save them according to the chosen profile name
 			setPrfOptData(prfOptData, prfType, parPrfName);
 			alert(iterAssArray(prfOptData));
-			if( !validateInput(prfOptData)) return;
+			if( !validateInput(prfOptData)){
+				alert("Profile name is required!");
+				return;
+			}
 
 			// 3. Send the retrieved data to new_Profile_build.php where it calls a proper python file 
 			// based on profile type name
@@ -1626,7 +1652,7 @@ $(function () {
 	    		dataType: 'JSON',
 	    		data: {'newProfileBuild': JSON.stringify(prfOptData)},
 	    		error: function(jqXHR, textStatus, errorThrown){
-					alert("Ajax call failed!");
+					alert("Ajax call for " + prfType + " profile change has failed!");
 		            console.log('jqXHR:');
 		            console.log(jqXHR);
 		            console.log('textStatus:');
