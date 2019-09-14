@@ -496,17 +496,21 @@ function getHttpSettingsProcessData(response_in){
 	
 	$('#newprf_EvalReview').html(strResult);
 
+	// String parsing - '/Common/parent_prf_name'
+	var parPrfName = responseArray[1].split("/");
+	
 	if (prfMode == 'chg_profile')
 	{
-		// String parsing - '/Common/parent_prf_name'
-		var parPrfName = responseArray[1].split("/");
-
 		$('#svc_prf_proxymode_select option[value="' + responseArray[0] + '"]').attr('selected', 'selected');
-		$('#svc_prf_type_select option[value="' + parPrfName[2] + '"]').attr('selected', 'selected');
+		// If the defaultsFrom property value of a profile is null, that means the profile is F5 Built-in profile. 
+		if (responseArray[1] == '') {
+			responseArray[1] = 'select';
+			$('#svc_prf_type_select option[value="' + responseArray[1] + '"]').prop('selected', 'selected');
+		}
+		else		
+			$('#svc_prf_type_select option[value="' + parPrfName[2] + '"]').prop('selected', 'selected');
 	}
-	// If the defaultsFrom property value of a profile is null, that means the profile is F5 Built-in profile. 
-	if (responseArray[1] == '') responseArray[1] = 'select';
-	$('#svc_prf_type_select option[value="' + responseArray[1] + '"]').prop('selected', 'selected');
+	
 	$('#httpBasicAuth').val(responseArray[2]);
 	$('#httpFallbackHost').val(responseArray[3]);
 	$('#httpFallbackErrorCodes').val(responseArray[4]);
@@ -562,17 +566,27 @@ function processGetProfileData(response_in, prfType){
 	});
 	$('#newprf_EvalReview').html(strResult);
 
+	// String parsing - '/Common/parent_prf_name'
+	parPrfName = responseArray[0].split("/");
+
+	$('#svc_prf_type_select').prop('disabled', false);
+	// If Profile mode is 'chg_profile", you must set Parent Profile name loaded from BIG-IP
+	// If Profile mode is 'new_profile", Parent Profile name stays intact.
 	if (prfMode == 'chg_profile')
-	{
-		// String parsing - '/Common/parent_prf_name'
-		parPrfName = responseArray[0].split("/");
-	}
-	alert("Parent Prfile name: " + parPrfName);
-	if(prfType == 'DNS'){
-		if (prfMode == 'chg_profile')
-		{
-			$('#svc_prf_type_select option[value="' + parPrfName[2] + '"]').attr('selected', 'selected');
+	{	
+		// If the defaultsFrom property value of a profile is null, that means the profile is F5 Built-in profile.
+		if (responseArray[0] == '') {
+			responseArray[0] = 'select';
+			$('#svc_prf_type_select option[value="' + responseArray[0] + '"]').prop('selected', 'selected');
+			$('#svc_prf_type_select').prop('disabled', true);
 		}
+		else
+			$('#svc_prf_type_select').prop('disabled', false);
+			$('#svc_prf_type_select option[value="' + parPrfName[2] + '"]').prop('selected', 'selected');
+	}
+	
+	alert("Profile Type: " + prfMode + "\nParent Profile name: " + parPrfName + "\nresponseArrya[0] value: " + responseArray[0] );
+	if(prfType == 'DNS'){
 		$('#dnsHwPrtoValid option[value="' + responseArray[1] + '"]').attr('selected', 'selected');
 		$('#dnsHwRespCache option[value="' + responseArray[2] + '"]').attr('selected', 'selected');
 		$('#dnsExp option[value="' + responseArray[3] + '"]').attr('selected', 'selected');
@@ -590,7 +604,9 @@ function processGetProfileData(response_in, prfType){
 		$('#ckSecure option[value="' + responseArray[4] + '"]').attr('selected', 'selected');
 		if (responseArray[5] == 'enabled') $('#ckAlzSend').prop('checked', true);	
 		else  $('#ckAlzSend').prop('checked', false);
-		$('#ckExp').val(responseArray[6]);
+		// If cookie expiration is '' (session cookie), replace the '' with '0'
+		if (responseArray[6] == '') $('#ckExp').val('0')
+		else $('#ckExp').val(responseArray[6]);
 		$('#ckConnLimit option[value="' + responseArray[7] + '"]').attr('selected', 'selected');
 	}
 	else if(prfType == 'DestAddrAffinity'){
@@ -1097,7 +1113,7 @@ function GetParentURLParameter(sParam)
     : document.location.href;
 
    var parentQry = parentURL.slice(parentURL.indexOf('?')+1).split('&');
-   alert("Given URL: " + parentQry);
+   //alert("Given URL: " + parentQry);
    for (var i = 0; i < parentQry.length; i++)
    {
        var sParameterName = parentQry[i].split('=');
@@ -1189,7 +1205,7 @@ $(function () {
 		var prfType = window.parent.document.getElementById('selectedPrfType').value;
 		var parPrfName = $('#svc_prf_type_select').val();
 		var prfMode = GetParentURLParameter('go');
-		//alert("Proxy Mode: " + pxyMode + " Profile Type: " + prfType + " Parent Profile name: " + parPrfName);
+		alert("Proxy Mode: " + pxyMode + "\nProfile Type: " + prfType + "\nParent Profile name: " + parPrfName + "\nProfile Mode: " + prfMode);
 		var prfOptData = {'phpFileName':'', 'DevIP':'', 'name':''};
 
 		// 1. Build configuration data structure according to the chosen profile name		
@@ -1295,7 +1311,7 @@ $(function () {
 			ajaxOut = $.ajax({
 	    		url:'/content/getPrfSettings.php',
 	    		type: 'POST',
-	    		data: {method:'getPrfSettings', DevIP:arr[1], LoadTypeName:prfType, ParPrfName:parPrfName },
+	    		data: {method:'getPrfSettings', DevIP:arr[1], LoadTypeName:prfType, ParPrfName:parPrfName, PrfMode:prfMode },
 	    		error: function(jqXHR, textStatus, errorThrown){
 					alert("Ajax call failed!");
 		            console.log('jqXHR:');
@@ -1590,7 +1606,7 @@ $(function () {
 		// prfOptData has been extended with a Query string value of the Parent URL
 		var prfOptData = {'phpFileName':'', 'DevIP':'', 'name':'', 'dplyOrChg':''};
 		
-		alert("prf_btn_build event in prf_jquery.js - Profile Type is: " + prfType + "\n");
+		alert("prf_btn_change event in prf_jquery.js - Profile Type is: " + prfType + "\n");
 
 		if (prfType == 'HTTP')
 			prfOptData['phpFileName'] = 'new_httpProfile_build';

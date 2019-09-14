@@ -39,15 +39,17 @@ def get_setting_dict_val(aPrf, fstAttName, sndAttName):
     except AttributeError:
         return ""
 
-def getDnsPrfSettings(mr, parPrfName):
-    dnsPrfs = mr.tm.ltm.profile.dns_s.get_collection()
+def getDnsPrfSettings(mr, parPrfName, prfMode):
+
     output = ''
     
+    #outputDict = {'defaultsFrom', 'enableHardwareQueryValidation', 'enableHardwareResponseCache', 'enableDnsExpress', 'enableGtm', 'unhandledQueryAction', 'useLocalBind', 'processXfr','enableDnsFirewall', 'processRd']
+    dnsPrfs = mr.tm.ltm.profile.dns_s.get_collection()
     #outputDict = {'defaultsFrom', 'enableHardwareQueryValidation', 'enableHardwareResponseCache', 'enableDnsExpress', 'enableGtm', 'unhandledQueryAction', 'useLocalBind', 'processXfr','enableDnsFirewall', 'processRd']
     try:
         for aprf in dnsPrfs:
             if(aprf.name == parPrfName):
-                output += '/Common/'+ parPrfName + '|'
+                output += get_setting_val(aprf, 'defaultsFrom') + '|'
                 output += get_setting_val(aprf, 'enableHardwareQueryValidation') + '|'
                 output += get_setting_val(aprf, 'enableHardwareResponseCache') + '|'
                 output += get_setting_val(aprf, 'enableDnsExpress') + '|'
@@ -62,295 +64,8 @@ def getDnsPrfSettings(mr, parPrfName):
     logging.info('getDnsPrfSettings(): ' + output)
     return output
 
-def getCookiePrfSettings(mr, parPrfName):
-    cookiePrfs = mr.tm.ltm.persistence.cookies.get_collection()
-    output = ''
-    
-    #outputDict = {'defaultsFrom', 'method'- Cookie method(hash, insert, passive, rewrite), 'cookieName', 'httponly', 'secure', 'alwaysSend', 'expiration', 'overrideConnectionLimit']
-    try:
-        for aprf in cookiePrfs:
-            if(aprf.name == parPrfName):
-                output += '/Common/'+ parPrfName + '|'
-                output += get_setting_val(aprf, 'method') + '|'
-                output += get_setting_val(aprf, 'cookieName') + '|'
-                output += get_setting_val(aprf, 'httponly') + '|'
-                output += get_setting_val(aprf, 'secure') + '|'
-                output += get_setting_val(aprf, 'alwaysSend') + '|'
-                output += get_setting_val(aprf, 'expiration') + '|'                
-                output += get_setting_val(aprf, 'overrideConnectionLimit')
-    except Exception as e:
-        logging.info("Exception during retrieving Cookie Persistence profile setting: " + str(e))
-    logging.info('getCookiePrfSettings(): ' + output)
-    return output
-
-def getDstAffSettings(mr, parPrfName):
-    dstAffPrfs = mr.tm.ltm.persistence.dest_addrs.get_collection()
-    output = ''
-    
-    #outputDict = {'defaultsFrom', 'matchAcrossServices', 'matchAcrossVirtuals', 'matchAcrossPools','hashAlgorithm', 'timeout', 'mask', 'overrideConnectionLimit']
-    try:
-        for aprf in dstAffPrfs:
-            if(aprf.name == parPrfName):
-                output += '/Common/'+ parPrfName + '|'
-                output += get_setting_val(aprf, 'matchAcrossServices') + '|'
-                output += get_setting_val(aprf, 'matchAcrossVirtuals') + '|'
-                output += get_setting_val(aprf, 'matchAcrossPools') + '|'
-                output += get_setting_val(aprf, 'hashAlgorithm') + '|'
-                output += get_setting_val(aprf, 'timeout') + '|'
-                output += get_setting_val(aprf, 'mask') + '|'                
-                output += get_setting_val(aprf, 'overrideConnectionLimit')
-    except Exception as e:
-        logging.info("Exception during retrieving Destination Address Persistence profile setting: " + str(e))
-    logging.info('getDstAffSettings(): ' + output)
-    return output
-
-def getSrcAffSettings(mr, parPrfName):
-    srcAffPrfs = mr.tm.ltm.persistence.source_addrs.get_collection()
-    output = ''
-    
-    #outputDict = {'defaultsFrom', 'matchAcrossServices', 'matchAcrossVirtuals', 'matchAcrossPools','hashAlgorithm', 'timeout', 'mask', 'mapProxies', 'overrideConnectionLimit']
-    try:
-        for aprf in srcAffPrfs:
-            if(aprf.name == parPrfName):
-                output += '/Common/'+ parPrfName + '|'
-                output += get_setting_val(aprf, 'matchAcrossServices') + '|'
-                output += get_setting_val(aprf, 'matchAcrossVirtuals') + '|'
-                output += get_setting_val(aprf, 'matchAcrossPools') + '|'
-                output += get_setting_val(aprf, 'hashAlgorithm') + '|'
-                output += get_setting_val(aprf, 'timeout') + '|'
-                output += get_setting_val(aprf, 'mask') + '|'
-                output += get_setting_val(aprf, 'mapProxies') + '|'
-                output += get_setting_val(aprf, 'overrideConnectionLimit')
-    except Exception as e:
-        logging.info("Exception during retrieving Source Address Persistence profile setting: " + str(e))
-    logging.info('getSrcAffSettings(): ' + output)
-    return output
-
-def getHashSettings(mr, parPrfName):
-    hashPrfs = mr.tm.ltm.persistence.hashs.get_collection()
-    output = ''
-    
-    #outputDict = {defaultsFrom, matchAcrossServices, matchAcrossVirtuals, matchAcrossPools, hashAlgorithm, hashOffset, hashLength, hashStartPattern, hashEndPattern, hashBufferLimit, timeout, rule, overrideConnectionLimit]
-    try:
-        for aprf in hashPrfs:
-            if(aprf.name == parPrfName):
-                output += '/Common/'+ parPrfName + '|'
-                output += get_setting_val(aprf, 'matchAcrossServices') + '|'
-                output += get_setting_val(aprf, 'matchAcrossVirtuals') + '|'
-                output += get_setting_val(aprf, 'matchAcrossPools') + '|'
-                output += get_setting_val(aprf, 'hashAlgorithm') + '|'
-                output += str(get_setting_val(aprf, 'hashOffset')) + '|'
-                output += str(get_setting_val(aprf, 'hashLength')) + '|'
-                output += get_setting_val(aprf, 'hashStartPattern') + '|'
-                output += get_setting_val(aprf, 'hashEndPattern') + '|'
-                output += str(get_setting_val(aprf, 'hashBufferLimit')) + '|'
-                output += get_setting_val(aprf, 'timeout') + '|'
-                output += get_setting_val(aprf, 'rule') + '|'
-                output += get_setting_val(aprf, 'overrideConnectionLimit')
-    except Exception as e:
-        logging.info("Exception during retrieving Hash Persistence profile setting: " + str(e))
-    logging.info('getHashSettings(): ' + output)
-    return output
-
-def getSSLSettings(mr, parPrfName):
-    sslPrfs = mr.tm.ltm.persistence.ssls.get_collection()
-    output = ''
-    
-    #outputDict = {defaultsFrom, matchAcrossServices, matchAcrossVirtuals, matchAcrossPools, timeout, overrideConnectionLimit]
-    try:
-        for aprf in sslPrfs:
-            if(aprf.name == parPrfName):
-                output += '/Common/'+ parPrfName + '|'
-                output += get_setting_val(aprf, 'matchAcrossServices') + '|'
-                output += get_setting_val(aprf, 'matchAcrossVirtuals') + '|'
-                output += get_setting_val(aprf, 'matchAcrossPools') + '|'
-                output += get_setting_val(aprf, 'timeout') + '|'
-                output += get_setting_val(aprf, 'overrideConnectionLimit')
-    except Exception as e:
-        logging.info("Exception during retrieving SSL Persistence profile setting: " + str(e))
-    logging.info('getSSLSettings(): ' + output)
-    return output
-
-def getUniSettings(mr, parPrfName):
-    uniPrfs = mr.tm.ltm.persistence.universals.get_collection()
-    output = ''
-    
-    #outputDict = {defaultsFrom, matchAcrossServices, matchAcrossVirtuals, matchAcrossPools, timeout, rule, overrideConnectionLimit]
-    try:
-        for aprf in uniPrfs:
-            if(aprf.name == parPrfName):
-                output += '/Common/'+ parPrfName + '|'
-                output += get_setting_val(aprf, 'matchAcrossServices') + '|'
-                output += get_setting_val(aprf, 'matchAcrossVirtuals') + '|'
-                output += get_setting_val(aprf, 'matchAcrossPools') + '|'
-                output += get_setting_val(aprf, 'timeout') + '|'
-                output += get_setting_val(aprf, 'rule') + '|'
-                output += get_setting_val(aprf, 'overrideConnectionLimit')
-    except Exception as e:
-        logging.info("Exception during retrieving Universal Persistence profile setting: " + str(e))
-    logging.info('getUniSettings(): ' + output)
-    return output
-
-def getF4Settings(mr, parPrfName):
-    f4Prfs = mr.tm.ltm.profile.fastl4s.get_collection()
-    output = ''
-    
-    try:
-        for aprf in f4Prfs:
-            if(aprf.name == parPrfName):
-                output += '/Common/'+ parPrfName + '|'
-                output += get_setting_val(aprf, 'resetOnTimeout') + '|'
-                output += get_setting_val(aprf, 'reassembleFragments') + '|'
-                output += get_setting_val(aprf, 'idleTimeout') + '|'
-                output += get_setting_val(aprf, 'tcpHandshakeTimeout') + '|'
-                output += get_setting_val(aprf, 'tcpTimestampMode') + '|'
-                output += get_setting_val(aprf, 'tcpWscaleMode') + '|'
-                output += get_setting_val(aprf, 'looseInitialization') + '|'
-                output += get_setting_val(aprf, 'looseClose') + '|'
-                output += get_setting_val(aprf, 'tcpCloseTimeout') + '|'
-                output += get_setting_val(aprf, 'keepAliveInterval')
-    except Exception as e:
-        logging.info("Exception during retrieving FastL4 profile setting: " + str(e))
-    logging.info('getF4Settings(): ' + output)
-    return output
-
-def getTcpSettings(mr, parPrfName):
-    tcpPrfs = mr.tm.ltm.profile.tcps.get_collection()
-    output = ''
-    
-    try:
-        for aprf in tcpPrfs:
-            if(aprf.name == parPrfName):
-                output += '/Common/'+ parPrfName + '|'
-                output += get_setting_val(aprf, 'resetOnTimeout') + '|'
-                output += str(get_setting_val(aprf, 'proxyBufferHigh')) + '|'
-                output += str(get_setting_val(aprf, 'proxyBufferLow')) + '|'
-                output += str(get_setting_val(aprf, 'receiveWindowSize')) + '|'
-                output += str(get_setting_val(aprf, 'sendBufferSize')) + '|'
-                output += get_setting_val(aprf, 'ackOnPush') + '|'
-                output += get_setting_val(aprf, 'nagle') + '|'
-                output += str(get_setting_val(aprf, 'initCwnd')) + '|'
-                output += get_setting_val(aprf, 'slowStart') + '|'
-                output += get_setting_val(aprf, 'selectiveAcks')
-    except Exception as e:
-        logging.info("Exception during retrieving TCP profile setting: " + str(e))
-    logging.info('getTcpSettings(): ' + output)
-    return output
-
-def getUdpSettings(mr, parPrfName):
-    udpPrfs = mr.tm.ltm.profile.udps.get_collection()
-    output = ''
-    
-    try:
-        for aprf in udpPrfs:
-            if(aprf.name == parPrfName):
-                output += '/Common/'+ parPrfName + '|'
-                output += get_setting_val(aprf, 'proxyMss') + '|'
-                output += get_setting_val(aprf, 'idleTimeout') + '|'
-                output += get_setting_val(aprf, 'ipTosToClient') + '|'
-                output += get_setting_val(aprf, 'linkQosToClient') + '|'
-                output += get_setting_val(aprf, 'datagramLoadBalancing') + '|'
-                output += get_setting_val(aprf, 'allowNoPayload') + '|'
-                output += get_setting_val(aprf, 'ipTtlMode') + '|'
-                output += str(get_setting_val(aprf, 'ipTtlV4')) + '|'
-                output += str(get_setting_val(aprf, 'ipTtlV6')) + '|'
-                output += get_setting_val(aprf, 'ipDfMode')
-    except Exception as e:
-        logging.info("Exception during retrieving UDP profile setting: " + str(e))
-    logging.info('getUdpSettings(): ' + output)
-    return output
-
-def getClisslSettings(mr, parPrfName):
-    clisslPrfs = mr.tm.ltm.profile.client_ssls.get_collection()
-    output = ''
-    
-    try:
-        for aprf in clisslPrfs:
-            if(aprf.name == parPrfName):
-                output += '/Common/'+ parPrfName + '|'
-                output += get_setting_val(aprf, 'cert') + '|'
-                output += get_setting_val(aprf, 'key') + '|'
-                output += get_setting_val(aprf, 'chain') + '|'
-                output += get_setting_val(aprf, 'ciphers') + '|'
-                output += get_setting_val(aprf, 'proxySsl') + '|'
-                output += get_setting_val(aprf, 'proxySslPassthrough') + '|'
-                output += get_setting_val(aprf, 'renegotiation') + '|'
-                output += get_setting_val(aprf, 'renegotiatePeriod') + '|'
-                output += get_setting_val(aprf, 'renegotiateSize') + '|'
-                output += get_setting_val(aprf, 'renegotiateMaxRecordDelay') + '|'
-                output += get_setting_val(aprf, 'secureRenegotiation') + '|'
-                output += str(get_setting_val(aprf, 'maxRenegotiationsPerMinute')) + '|'
-                output += get_setting_val(aprf, 'serverName') + '|'
-                output += get_setting_val(aprf, 'sniDefault') + '|'
-                output += get_setting_val(aprf, 'sniRequire')
-    except Exception as e:
-        logging.info("Exception during retrieving Client SSL profile setting: " + str(e))
-    logging.info('getClisslSettings(): ' + output)
-    return output
-
-def getSrvsslSettings(mr, parPrfName):
-    srvsslPrfs = mr.tm.ltm.profile.server_ssls.get_collection()
-    output = ''
-    
-    try:
-        for aprf in srvsslPrfs:
-            if(aprf.name == parPrfName):
-                output += '/Common/'+ parPrfName + '|'
-                output += get_setting_val(aprf, 'cert') + '|'
-                output += get_setting_val(aprf, 'key') + '|'
-                output += get_setting_val(aprf, 'chain') + '|'
-                output += get_setting_val(aprf, 'ciphers') + '|'
-                output += get_setting_val(aprf, 'proxySsl') + '|'
-                output += get_setting_val(aprf, 'proxySslPassthrough') + '|'
-                output += get_setting_val(aprf, 'renegotiation') + '|'
-                output += get_setting_val(aprf, 'renegotiatePeriod') + '|'
-                output += get_setting_val(aprf, 'renegotiateSize') + '|'
-                output += get_setting_val(aprf, 'secureRenegotiation') + '|'
-                output += get_setting_val(aprf, 'serverName') + '|'
-                output += get_setting_val(aprf, 'sniDefault') + '|'
-                output += get_setting_val(aprf, 'sniRequire')
-    except Exception as e:
-        logging.info("Exception during retrieving Server SSL profile setting: " + str(e))
-    logging.info('getSrvsslSettings(): ' + output)
-    return output
-
-def getOCSettings(mr, parPrfName):
-    ocPrfs = mr.tm.ltm.profile.one_connects.get_collection()
-    output = ''
-    
-    try:
-        for aprf in ocPrfs:
-            if(aprf.name == parPrfName):
-                output += '/Common/'+ parPrfName + '|'
-                output += get_setting_val(aprf, 'sourceMask') + '|'
-                output += str(get_setting_val(aprf, 'maxSize')) + '|'
-                output += str(get_setting_val(aprf, 'maxAge')) + '|'
-                output += str(get_setting_val(aprf, 'maxReuse')) + '|'
-                output += get_setting_val(aprf, 'idleTimeoutOverride') + '|'
-                output += get_setting_val(aprf, 'limitType')
-    except Exception as e:
-        logging.info("Exception during retrieving OneConnect Persistence profile setting: " + str(e))
-    logging.info('getOCSettings(): ' + output)
-    return output
-
-
-def getStreamSettings(mr, parPrfName):
-    strmPrfs = mr.tm.ltm.profile.streams.get_collection()
-    output = ''
-    
-    try:
-        for aprf in strmPrfs:
-            if(aprf.name == parPrfName):
-                output += '/Common/'+ parPrfName + '|'
-                output += get_setting_val(aprf, 'source') + '|'
-                output += get_setting_val(aprf, 'tmTarget')
-    except Exception as e:
-        logging.info("Exception during retrieving Stream Persistence profile setting: " + str(e))
-    logging.info('getStreamSettings(): ' + output)
-    return output
-
 # Only called when the application is in Profile Change mode
-def loadDnsPrfSettings(mr, prfName):
+def loadDnsPrfSettings(mr, prfName, prfMode):
     # Load DNS setting and return the setting result
     dnsPrfs = mr.tm.ltm.profile.dns_s.get_collection()
     output = ''
@@ -374,6 +89,314 @@ def loadDnsPrfSettings(mr, prfName):
     logging.info('getPrfSettings.py loadDnsPrfSettings(): ' + output)
     return output
 
+def getCookiePrfSettings(mr, parPrfName, prfMode):
+    cookiePrfs = mr.tm.ltm.persistence.cookies.get_collection()
+    output = ''
+    
+    #outputDict = {'defaultsFrom', 'method'- Cookie method(hash, insert, passive, rewrite), 'cookieName', 'httponly', 'secure', 'alwaysSend', 'expiration', 'overrideConnectionLimit']
+    try:
+        for aprf in cookiePrfs:
+            if(aprf.name == parPrfName):
+                output += get_setting_val(aprf, 'defaultsFrom') + '|'
+                output += get_setting_val(aprf, 'method') + '|'
+                output += get_setting_val(aprf, 'cookieName') + '|'
+                output += get_setting_val(aprf, 'httponly') + '|'
+                output += get_setting_val(aprf, 'secure') + '|'
+                output += get_setting_val(aprf, 'alwaysSend') + '|'
+                output += get_setting_val(aprf, 'expiration') + '|'                
+                output += get_setting_val(aprf, 'overrideConnectionLimit')
+    except Exception as e:
+        logging.info("Exception during retrieving Cookie Persistence profile setting: " + str(e))
+    logging.info('getCookiePrfSettings(): ' + output)
+    return output
+
+def loadCookiePrfSettings(mr, prfName, prfMode):
+    cookiePrfs = mr.tm.ltm.persistence.cookies.get_collection()
+    output = ''
+    
+    #outputDict = {'defaultsFrom', 'method'- Cookie method(hash, insert, passive, rewrite), 'cookieName', 'httponly', 'secure', 'alwaysSend', 'expiration', 'overrideConnectionLimit']
+    try:
+        for aprf in cookiePrfs:
+            if(aprf.name == parPrfName):
+                output += get_setting_val(aprf, 'defaultsFrom') + '|'
+                output += get_setting_val(aprf, 'method') + '|'
+                output += get_setting_val(aprf, 'cookieName') + '|'
+                output += get_setting_val(aprf, 'httponly') + '|'
+                output += get_setting_val(aprf, 'secure') + '|'
+                output += get_setting_val(aprf, 'alwaysSend') + '|'
+                output += get_setting_val(aprf, 'expiration') + '|'                
+                output += get_setting_val(aprf, 'overrideConnectionLimit')
+    except Exception as e:
+        logging.info("Exception during retrieving Cookie Persistence profile setting: " + str(e))
+    logging.info('getCookiePrfSettings(): ' + output)
+    return output
+
+def getDstAffSettings(mr, parPrfName, prfMode):
+    dstAffPrfs = mr.tm.ltm.persistence.dest_addrs.get_collection()
+    output = ''
+    
+    #outputDict = {'defaultsFrom', 'matchAcrossServices', 'matchAcrossVirtuals', 'matchAcrossPools','hashAlgorithm', 'timeout', 'mask', 'overrideConnectionLimit']
+    try:
+        for aprf in dstAffPrfs:
+            if(aprf.name == parPrfName):
+                output += get_setting_val(aprf, 'defaultsFrom') + '|'
+                output += get_setting_val(aprf, 'matchAcrossServices') + '|'
+                output += get_setting_val(aprf, 'matchAcrossVirtuals') + '|'
+                output += get_setting_val(aprf, 'matchAcrossPools') + '|'
+                output += get_setting_val(aprf, 'hashAlgorithm') + '|'
+                output += get_setting_val(aprf, 'timeout') + '|'
+                output += get_setting_val(aprf, 'mask') + '|'                
+                output += get_setting_val(aprf, 'overrideConnectionLimit')
+    except Exception as e:
+        logging.info("Exception during retrieving Destination Address Persistence profile setting: " + str(e))
+    logging.info('getDstAffSettings(): ' + output)
+    return output
+
+def getSrcAffSettings(mr, parPrfName, prfMode):
+    srcAffPrfs = mr.tm.ltm.persistence.source_addrs.get_collection()
+    output = ''
+    
+    #outputDict = {'defaultsFrom', 'matchAcrossServices', 'matchAcrossVirtuals', 'matchAcrossPools','hashAlgorithm', 'timeout', 'mask', 'mapProxies', 'overrideConnectionLimit']
+    try:
+        for aprf in srcAffPrfs:
+            if(aprf.name == parPrfName):
+                output += get_setting_val(aprf, 'defaultsFrom') + '|'
+                output += get_setting_val(aprf, 'matchAcrossServices') + '|'
+                output += get_setting_val(aprf, 'matchAcrossVirtuals') + '|'
+                output += get_setting_val(aprf, 'matchAcrossPools') + '|'
+                output += get_setting_val(aprf, 'hashAlgorithm') + '|'
+                output += get_setting_val(aprf, 'timeout') + '|'
+                output += get_setting_val(aprf, 'mask') + '|'
+                output += get_setting_val(aprf, 'mapProxies') + '|'
+                output += get_setting_val(aprf, 'overrideConnectionLimit')
+    except Exception as e:
+        logging.info("Exception during retrieving Source Address Persistence profile setting: " + str(e))
+    logging.info('getSrcAffSettings(): ' + output)
+    return output
+
+def getHashSettings(mr, parPrfName, prfMode):
+    hashPrfs = mr.tm.ltm.persistence.hashs.get_collection()
+    output = ''
+    
+    #outputDict = {defaultsFrom, matchAcrossServices, matchAcrossVirtuals, matchAcrossPools, hashAlgorithm, hashOffset, hashLength, hashStartPattern, hashEndPattern, hashBufferLimit, timeout, rule, overrideConnectionLimit]
+    try:
+        for aprf in hashPrfs:
+            if(aprf.name == parPrfName):
+                output += get_setting_val(aprf, 'defaultsFrom') + '|'
+                output += get_setting_val(aprf, 'matchAcrossServices') + '|'
+                output += get_setting_val(aprf, 'matchAcrossVirtuals') + '|'
+                output += get_setting_val(aprf, 'matchAcrossPools') + '|'
+                output += get_setting_val(aprf, 'hashAlgorithm') + '|'
+                output += str(get_setting_val(aprf, 'hashOffset')) + '|'
+                output += str(get_setting_val(aprf, 'hashLength')) + '|'
+                output += get_setting_val(aprf, 'hashStartPattern') + '|'
+                output += get_setting_val(aprf, 'hashEndPattern') + '|'
+                output += str(get_setting_val(aprf, 'hashBufferLimit')) + '|'
+                output += get_setting_val(aprf, 'timeout') + '|'
+                output += get_setting_val(aprf, 'rule') + '|'
+                output += get_setting_val(aprf, 'overrideConnectionLimit')
+    except Exception as e:
+        logging.info("Exception during retrieving Hash Persistence profile setting: " + str(e))
+    logging.info('getHashSettings(): ' + output)
+    return output
+
+def getSSLSettings(mr, parPrfName, prfMode):
+    sslPrfs = mr.tm.ltm.persistence.ssls.get_collection()
+    output = ''
+    
+    #outputDict = {defaultsFrom, matchAcrossServices, matchAcrossVirtuals, matchAcrossPools, timeout, overrideConnectionLimit]
+    try:
+        for aprf in sslPrfs:
+            if(aprf.name == parPrfName):
+                output += get_setting_val(aprf, 'defaultsFrom') + '|'
+                output += get_setting_val(aprf, 'matchAcrossServices') + '|'
+                output += get_setting_val(aprf, 'matchAcrossVirtuals') + '|'
+                output += get_setting_val(aprf, 'matchAcrossPools') + '|'
+                output += get_setting_val(aprf, 'timeout') + '|'
+                output += get_setting_val(aprf, 'overrideConnectionLimit')
+    except Exception as e:
+        logging.info("Exception during retrieving SSL Persistence profile setting: " + str(e))
+    logging.info('getSSLSettings(): ' + output)
+    return output
+
+def getUniSettings(mr, parPrfName, prfMode):
+    uniPrfs = mr.tm.ltm.persistence.universals.get_collection()
+    output = ''
+    
+    #outputDict = {defaultsFrom, matchAcrossServices, matchAcrossVirtuals, matchAcrossPools, timeout, rule, overrideConnectionLimit]
+    try:
+        for aprf in uniPrfs:
+            if(aprf.name == parPrfName):
+                output += get_setting_val(aprf, 'defaultsFrom') + '|'
+                output += get_setting_val(aprf, 'matchAcrossServices') + '|'
+                output += get_setting_val(aprf, 'matchAcrossVirtuals') + '|'
+                output += get_setting_val(aprf, 'matchAcrossPools') + '|'
+                output += get_setting_val(aprf, 'timeout') + '|'
+                output += get_setting_val(aprf, 'rule') + '|'
+                output += get_setting_val(aprf, 'overrideConnectionLimit')
+    except Exception as e:
+        logging.info("Exception during retrieving Universal Persistence profile setting: " + str(e))
+    logging.info('getUniSettings(): ' + output)
+    return output
+
+def getF4Settings(mr, parPrfName, prfMode):
+    f4Prfs = mr.tm.ltm.profile.fastl4s.get_collection()
+    output = ''
+    
+    try:
+        for aprf in f4Prfs:
+            if(aprf.name == parPrfName):
+                output += get_setting_val(aprf, 'defaultsFrom') + '|'
+                output += get_setting_val(aprf, 'resetOnTimeout') + '|'
+                output += get_setting_val(aprf, 'reassembleFragments') + '|'
+                output += get_setting_val(aprf, 'idleTimeout') + '|'
+                output += get_setting_val(aprf, 'tcpHandshakeTimeout') + '|'
+                output += get_setting_val(aprf, 'tcpTimestampMode') + '|'
+                output += get_setting_val(aprf, 'tcpWscaleMode') + '|'
+                output += get_setting_val(aprf, 'looseInitialization') + '|'
+                output += get_setting_val(aprf, 'looseClose') + '|'
+                output += get_setting_val(aprf, 'tcpCloseTimeout') + '|'
+                output += get_setting_val(aprf, 'keepAliveInterval')
+    except Exception as e:
+        logging.info("Exception during retrieving FastL4 profile setting: " + str(e))
+    logging.info('getF4Settings(): ' + output)
+    return output
+
+def getTcpSettings(mr, parPrfName, prfMode):
+    tcpPrfs = mr.tm.ltm.profile.tcps.get_collection()
+    output = ''
+    
+    try:
+        for aprf in tcpPrfs:
+            if(aprf.name == parPrfName):
+                output += get_setting_val(aprf, 'defaultsFrom') + '|'
+                output += get_setting_val(aprf, 'resetOnTimeout') + '|'
+                output += str(get_setting_val(aprf, 'proxyBufferHigh')) + '|'
+                output += str(get_setting_val(aprf, 'proxyBufferLow')) + '|'
+                output += str(get_setting_val(aprf, 'receiveWindowSize')) + '|'
+                output += str(get_setting_val(aprf, 'sendBufferSize')) + '|'
+                output += get_setting_val(aprf, 'ackOnPush') + '|'
+                output += get_setting_val(aprf, 'nagle') + '|'
+                output += str(get_setting_val(aprf, 'initCwnd')) + '|'
+                output += get_setting_val(aprf, 'slowStart') + '|'
+                output += get_setting_val(aprf, 'selectiveAcks')
+    except Exception as e:
+        logging.info("Exception during retrieving TCP profile setting: " + str(e))
+    logging.info('getTcpSettings(): ' + output)
+    return output
+
+def getUdpSettings(mr, parPrfName, prfMode):
+    udpPrfs = mr.tm.ltm.profile.udps.get_collection()
+    output = ''
+    
+    try:
+        for aprf in udpPrfs:
+            if(aprf.name == parPrfName):
+                output += get_setting_val(aprf, 'defaultsFrom') + '|'
+                output += get_setting_val(aprf, 'proxyMss') + '|'
+                output += get_setting_val(aprf, 'idleTimeout') + '|'
+                output += get_setting_val(aprf, 'ipTosToClient') + '|'
+                output += get_setting_val(aprf, 'linkQosToClient') + '|'
+                output += get_setting_val(aprf, 'datagramLoadBalancing') + '|'
+                output += get_setting_val(aprf, 'allowNoPayload') + '|'
+                output += get_setting_val(aprf, 'ipTtlMode') + '|'
+                output += str(get_setting_val(aprf, 'ipTtlV4')) + '|'
+                output += str(get_setting_val(aprf, 'ipTtlV6')) + '|'
+                output += get_setting_val(aprf, 'ipDfMode')
+    except Exception as e:
+        logging.info("Exception during retrieving UDP profile setting: " + str(e))
+    logging.info('getUdpSettings(): ' + output)
+    return output
+
+def getClisslSettings(mr, parPrfName, prfMode):
+    clisslPrfs = mr.tm.ltm.profile.client_ssls.get_collection()
+    output = ''
+    
+    try:
+        for aprf in clisslPrfs:
+            if(aprf.name == parPrfName):
+                output += get_setting_val(aprf, 'defaultsFrom') + '|'
+                output += get_setting_val(aprf, 'cert') + '|'
+                output += get_setting_val(aprf, 'key') + '|'
+                output += get_setting_val(aprf, 'chain') + '|'
+                output += get_setting_val(aprf, 'ciphers') + '|'
+                output += get_setting_val(aprf, 'proxySsl') + '|'
+                output += get_setting_val(aprf, 'proxySslPassthrough') + '|'
+                output += get_setting_val(aprf, 'renegotiation') + '|'
+                output += get_setting_val(aprf, 'renegotiatePeriod') + '|'
+                output += get_setting_val(aprf, 'renegotiateSize') + '|'
+                output += get_setting_val(aprf, 'renegotiateMaxRecordDelay') + '|'
+                output += get_setting_val(aprf, 'secureRenegotiation') + '|'
+                output += str(get_setting_val(aprf, 'maxRenegotiationsPerMinute')) + '|'
+                output += get_setting_val(aprf, 'serverName') + '|'
+                output += get_setting_val(aprf, 'sniDefault') + '|'
+                output += get_setting_val(aprf, 'sniRequire')
+    except Exception as e:
+        logging.info("Exception during retrieving Client SSL profile setting: " + str(e))
+    logging.info('getClisslSettings(): ' + output)
+    return output
+
+def getSrvsslSettings(mr, parPrfName, prfMode):
+    srvsslPrfs = mr.tm.ltm.profile.server_ssls.get_collection()
+    output = ''
+    
+    try:
+        for aprf in srvsslPrfs:
+            if(aprf.name == parPrfName):
+                output += get_setting_val(aprf, 'defaultsFrom') + '|'
+                output += get_setting_val(aprf, 'cert') + '|'
+                output += get_setting_val(aprf, 'key') + '|'
+                output += get_setting_val(aprf, 'chain') + '|'
+                output += get_setting_val(aprf, 'ciphers') + '|'
+                output += get_setting_val(aprf, 'proxySsl') + '|'
+                output += get_setting_val(aprf, 'proxySslPassthrough') + '|'
+                output += get_setting_val(aprf, 'renegotiation') + '|'
+                output += get_setting_val(aprf, 'renegotiatePeriod') + '|'
+                output += get_setting_val(aprf, 'renegotiateSize') + '|'
+                output += get_setting_val(aprf, 'secureRenegotiation') + '|'
+                output += get_setting_val(aprf, 'serverName') + '|'
+                output += get_setting_val(aprf, 'sniDefault') + '|'
+                output += get_setting_val(aprf, 'sniRequire')
+    except Exception as e:
+        logging.info("Exception during retrieving Server SSL profile setting: " + str(e))
+    logging.info('getSrvsslSettings(): ' + output)
+    return output
+
+def getOCSettings(mr, parPrfName, prfMode):
+    ocPrfs = mr.tm.ltm.profile.one_connects.get_collection()
+    output = ''
+    
+    try:
+        for aprf in ocPrfs:
+            if(aprf.name == parPrfName):
+                output += get_setting_val(aprf, 'defaultsFrom') + '|'
+                output += get_setting_val(aprf, 'sourceMask') + '|'
+                output += str(get_setting_val(aprf, 'maxSize')) + '|'
+                output += str(get_setting_val(aprf, 'maxAge')) + '|'
+                output += str(get_setting_val(aprf, 'maxReuse')) + '|'
+                output += get_setting_val(aprf, 'idleTimeoutOverride') + '|'
+                output += get_setting_val(aprf, 'limitType')
+    except Exception as e:
+        logging.info("Exception during retrieving OneConnect Persistence profile setting: " + str(e))
+    logging.info('getOCSettings(): ' + output)
+    return output
+
+
+def getStreamSettings(mr, parPrfName, prfMode):
+    strmPrfs = mr.tm.ltm.profile.streams.get_collection()
+    output = ''
+    
+    try:
+        for aprf in strmPrfs:
+            if(aprf.name == parPrfName):
+                output += get_setting_val(aprf, 'defaultsFrom') + '|'
+                output += get_setting_val(aprf, 'source') + '|'
+                output += get_setting_val(aprf, 'tmTarget')
+    except Exception as e:
+        logging.info("Exception during retrieving Stream Persistence profile setting: " + str(e))
+    logging.info('getStreamSettings(): ' + output)
+    return output
+
 def getPrfSettings(dev_ip, prfType, parPrfName, prfMode):
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
     logging.info('Called getPrfSettings(): %s %s %s %s' % (dev_ip, prfType, parPrfName, prfMode))
@@ -382,38 +405,35 @@ def getPrfSettings(dev_ip, prfType, parPrfName, prfMode):
 
     output = {}
     
-    if prfMode == 'new_profile':
-        if prfType == "DNS" :
-            logging.info('getPrfSettings.py getPrfSettings() - Build DNS')
-            output = getDnsPrfSettings(mr, parPrfName)
-        elif prfType == "Cookie":
-            output = getCookiePrfSettings(mr, parPrfName)            
-        elif prfType == "DestAddrAffinity":
-            output = getDstAffSettings(mr, parPrfName)
-        elif prfType == "SrcAddrAffinity":
-            output = getSrcAffSettings(mr, parPrfName)
-        elif prfType == "Hash":
-            output = getHashSettings(mr, parPrfName)
-        elif prfType == "SSL":
-            output = getSSLSettings(mr, parPrfName)
-        elif prfType == "Universal":
-            output = getUniSettings(mr, parPrfName)
-        elif prfType == "FastL4":
-            output = getF4Settings(mr, parPrfName)
-        elif prfType == "TCP":
-            output = getTcpSettings(mr, parPrfName)
-        elif prfType == "UDP":
-            output = getUdpSettings(mr, parPrfName)
-        elif prfType == "CLIENTSSL":
-            output = getClisslSettings(mr, parPrfName)
-        elif prfType == "SERVERSSL":
-            output = getSrvsslSettings(mr, parPrfName)
-        elif prfType == "OneConnect":
-            output = getOCSettings(mr, parPrfName)
-        elif prfType == "Stream":
-            output = getStreamSettings(mr, parPrfName)
-    elif prfMode == 'chg_profile':
-        output = loadDnsPrfSettings(mr, parPrfName)
+    logging.info('getPrfSettings.py getPrfSettings() - Loading ' + prfType + ' Profile Settings\n')
+    if prfType == "DNS" :
+        output = getDnsPrfSettings(mr, parPrfName, prfMode)
+    elif prfType == "Cookie":
+        output = getCookiePrfSettings(mr, parPrfName, prfMode)            
+    elif prfType == "DestAddrAffinity":
+        output = getDstAffSettings(mr, parPrfName, prfMode)
+    elif prfType == "SrcAddrAffinity":
+        output = getSrcAffSettings(mr, parPrfName, prfMode)
+    elif prfType == "Hash":
+        output = getHashSettings(mr, parPrfName, prfMode)
+    elif prfType == "SSL":
+        output = getSSLSettings(mr, parPrfName, prfMode)
+    elif prfType == "Universal":
+        output = getUniSettings(mr, parPrfName, prfMode)
+    elif prfType == "FastL4":
+        output = getF4Settings(mr, parPrfName, prfMode)
+    elif prfType == "TCP":
+        output = getTcpSettings(mr, parPrfName, prfMode)
+    elif prfType == "UDP":
+        output = getUdpSettings(mr, parPrfName, prfMode)
+    elif prfType == "CLIENTSSL":
+        output = getClisslSettings(mr, parPrfName, prfMode)
+    elif prfType == "SERVERSSL":
+        output = getSrvsslSettings(mr, parPrfName, prfMode)
+    elif prfType == "OneConnect":
+        output = getOCSettings(mr, parPrfName, prfMode)
+    elif prfType == "Stream":
+        output = getStreamSettings(mr, parPrfName, prfMode)
 
     return output
     #print json.dumps(output)

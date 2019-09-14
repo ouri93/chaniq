@@ -22,43 +22,86 @@ def check_profileName_conflict(mr, prfName, prfDftFrom):
     else:
         return False  
 		
-def new_dstAffProfile_build(prfDevIp, prfName, prfDplyOrChg, prfPara1, prfPara2, prfPara3, prfPara4, prfPara5, prfPara6, prfPara7, prfPara8):
+def new_dstAffProfile_build(prfDevIp, prfName, prfDplyOrChg, defaultsFrom, matchAcrossServices, matchAcrossVirtuals, matchAcrossPools, hashAlgorithm, timeout, mask, overrideConnectionLimit):
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
     #logging.info('Called get_profiles(): %s %s' % (dev_ip, pf_type))
 	
-    mr = ManagementRoot(prfDevIp, 'admin', 'rlatkdcks')
+    mr = ManagementRoot(str(prfDevIp), 'admin', 'rlatkdcks')
     output = ''
 
-    logging.info("new_dstAffProfile_build.py Parms DevIP: " + prfDevIp + " Profile name: " + prfName + " Profile Deploy or Chnage: " + prfDplyOrChg + " Defaults-from: " + prfPara1) 
-
-    mr = ManagementRoot(str(prfDevIp), 'admin', 'rlatkdcks')
+    logging.info("new_dstAffProfile_build.py Parms DevIP: " + prfDevIp + " Profile name: " + prfName + " Profile Deploy or Chnage: " + prfDplyOrChg + " Defaults-from: " + defaultsFrom) 
 	
     idx = 1
-    strReturn = {str(idx) : 'Destination Address Persistence Profile Creation Report'}
-
-    idx += 1
-
-    logging.info("Profile Creation process has been initiated. Destination Address Persistence Profile Name: " + prfName)
-
-    if check_profileName_conflict(mr, prfName, prfPara1):
-        strReturn.update({str(idx) : 'Profile Name conflict'})
-        logging.info("Profile name conflict.")
+    
+    if prfDplyOrChg == 'new_profile':
+        strReturn = {str(idx) : 'Destination Address Persistence Profile Creation Report'}
+    
         idx += 1
-        return json.dumps(strReturn)
-    logging.info("No profile name conflict. Now creating the requested profile")
-		
-    try:
-        mydg = mr.tm.ltm.persistence.dest_addrs.dest_addr.create(name=prfName, partition='Common', defaultsFrom=prfPara1, matchAcrossServices=prfPara2, matchAcrossVirtuals=prfPara3, matchAcrossPools=prfPara4, hashAlgorithm=prfPara5, timeout=prfPara6, mask=prfPara7, overrideConnectionLimit=prfPara8)
-    except Exception as e:
-        logging.info("Exception during Destination Address Persistence Profile creation")
-        strReturn[str(idx)] = "Exception fired! (" + prfName + "): " + str(e)
+    
+        logging.info("Profile Creation process has been initiated. Destination Address Persistence Profile Name: " + prfName)
+    
+        if check_profileName_conflict(mr, prfName, prfPara1):
+            strReturn.update({str(idx) : 'Profile Name conflict'})
+            logging.info("Profile name conflict.")
+            idx += 1
+            return json.dumps(strReturn)
+        logging.info("No profile name conflict. Now creating the requested profile")
+    		
+        try:
+            mydg = mr.tm.ltm.persistence.dest_addrs.dest_addr.create(name=prfName, partition='Common', defaultsFrom=defaultsFrom, \
+                    matchAcrossServices=matchAcrossServices, matchAcrossVirtuals=matchAcrossVirtuals, matchAcrossPools=matchAcrossPools, \
+                    hashAlgorithm=hashAlgorithm, timeout=timeout, mask=mask, overrideConnectionLimit=overrideConnectionLimit)
+        except Exception as e:
+            logging.info("Exception during Destination Address Persistence Profile creation")
+            strReturn[str(idx)] = "Exception fired! (" + prfName + "): " + str(e)
+            idx += 1
+            logging.info("Destination Address Persistence Profile creation exception fired: " + str(e))
+            return json.dumps(strReturn)
+    elif prfDplyOrChg == 'chg_profile':
+        strReturn = {str(idx) : 'Destination Address Persistence Profile Modification Report'}
+    
         idx += 1
-        logging.info("Destination Address Persistence Profile creation exception fired: " + str(e))
-        return json.dumps(strReturn)
-
-    strReturn[str(idx)] = "Destination Address Persistence Profile (" + prfName + ") has been created"
-    idx += 1
-    logging.info("Destination Address Persistence Profile has been created")
+    
+        logging.info("Profile Modification process has been initiated. Destination Address Persistence Profile Name: " + prfName)
+        
+        # Load Destination Affinity profile settings of a given Destination Affinity profile name
+        try:
+            aDstAffPrf = mr.tm.ltm.persistence.dest_addrs.dest_addr.load(name=prfName, partition='Common')
+        except Exception as e:
+            logging.info("Exception during Destination Affinity Profile loading")
+            strReturn[str(idx)] = "Exception fired during Destination Affinity Profile setting loading! (" + prfName + "): " + str(e)
+            idx += 1
+            logging.info("Exception fired during Destination Affinity Profile setting loading! ( " + str(e) + ")")
+            return json.dumps(strReturn)
+        # Save the update DNS profile settings
+        aDstAffPrf.defaultsFrom = defaultsFrom
+        aDstAffPrf.matchAcrossServices = matchAcrossServices
+        aDstAffPrf.matchAcrossVirtuals = matchAcrossVirtuals
+        aDstAffPrf.matchAcrossPools = matchAcrossPools
+        aDstAffPrf.hashAlgorithm = hashAlgorithm
+        aDstAffPrf.timeout = timeout
+        aDstAffPrf.mask = mask
+        aDstAffPrf.overrideConnectionLimit = overrideConnectionLimit
+        
+        strReturn[str(idx)] = "Destination Affinity Profile settings have been saved!"
+        idx += 1
+        
+        try:
+            aDstAffPrf.update()
+        except Exception as e:
+            strReturn[str(idx)] = "Exception fired during Destination Affinity profile update() (" + prfName + "): " + str(e)
+            idx += 1
+            logging.info("Destination Affinity Profile creation exception fired: " + str(e))
+            return json.dumps(strReturn)
+    
+    if prfDplyOrChg == 'new_profile':     
+        strReturn[str(idx)] = "Destination Address Persistence Profile(" + prfName + ") has been created"
+        idx += 1
+        logging.info("Destination Address Persistence Profile has been created")
+    elif prfDplyOrChg == 'chg_profile':
+        strReturn[str(idx)] = "Destination Address Persistence Profile modification(" + prfName + ") has been completed"
+        idx += 1
+        logging.info("Destination Address Persistence Profile modification has been completed")
 
     for keys, values in strReturn.items():
         logging.info("Key: " + keys + " Value: " + values)
@@ -66,6 +109,4 @@ def new_dstAffProfile_build(prfDevIp, prfName, prfDplyOrChg, prfPara1, prfPara2,
     return json.dumps(strReturn)
 
 if __name__ == "__main__":
-    logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-    logging.info('Building New Destination Affinity Persistence has been started!')
     print new_dstAffProfile_build(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9], sys.argv[10], sys.argv[11])

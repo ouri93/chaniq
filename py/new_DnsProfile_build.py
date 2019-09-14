@@ -68,7 +68,7 @@ def new_DnsProfile_build(prfDevIp, prfName, prfDplyOrChg, prfDftFrom, prfHwValid
         
         logging.info("Profile Modification process has been initiated. Profile Name: " + prfName + "\n")
         
-        # Load DNS prfile settings of a given DNS profile name
+        # Load DNS profile settings of a given DNS profile name
         try:
             aDnsPrf = mr.tm.ltm.profile.dns_s.dns.load(name=prfName, partition='Common')
         except Exception as e:
