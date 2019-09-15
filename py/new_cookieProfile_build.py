@@ -27,13 +27,11 @@ def new_cookieProfile_build(prfDevIp, prfName, prfDplyOrChg, defaultsFrom, metho
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
     #logging.info('Called get_profiles(): %s %s' % (dev_ip, pf_type))
 	
-    mr = ManagementRoot(prfDevIp, 'admin', 'rlatkdcks')
+    mr = ManagementRoot(str(prfDevIp), 'admin', 'rlatkdcks')
     output = ''
 
     logging.info("new_cookieProfile_build.py Parms DevIP: " + prfDevIp + " Profile name: " + prfName + " Profile Deploy or Change: " + prfDplyOrChg + " Defaults-from: " + defaultsFrom) 
 
-    mr = ManagementRoot(str(prfDevIp), 'admin', 'rlatkdcks')
-	
     idx = 1
     if prfDplyOrChg == 'new_profile':  
         strReturn = {str(idx) : 'Cookie Persistence Profile Creation Report'}
@@ -70,12 +68,12 @@ def new_cookieProfile_build(prfDevIp, prfName, prfDplyOrChg, defaultsFrom, metho
         try:
             aCookiePrf = mr.tm.ltm.persistence.cookies.cookie.load(name=prfName, partition='Common')
         except Exception as e:
-            logging.info("Exception during DNS Profile loading")
+            logging.info("Exception during Cookie Persistence Profile loading")
             strReturn[str(idx)] = "Exception fired during Cookie Profile setting loading! (" + prfName + "): " + str(e)
             idx += 1
-            logging.info("Exception fired during Cookie Profile setting loading! ( " + str(e) + ")")
+            logging.info("Exception fired during Cookie Persistence Profile setting loading! ( " + str(e) + ")")
             return json.dumps(strReturn)
-        # Save the update DNS profile settings
+        # Save the update Cookie Persistence profile settings
         aCookiePrf.defaultsFrom = defaultsFrom
         aCookiePrf.method = method
         aCookiePrf.cookieName = cookieName

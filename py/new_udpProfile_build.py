@@ -21,44 +21,91 @@ def check_profileName_conflict(mr, prfName, prfDftFrom):
         return True
     else:
         return False  
-		
-def new_udpProfile_build(prfDevIp, prfName, prfDplyOrChg, prfPara1, prfPara2, prfPara3, prfPara4, prfPara5, prfPara6, prfPara7, prfPara8, prfPara9, prfPara10, prfPara11):
+#  'defaultsFrom', 'proxyMss', 'idleTimeout', 'ipTosToClient', 'linkQosToClient',
+#  'datagramLoadBalancing', 'allowNoPayload', 'ipDfMode', 'ipTtlV4', 'ipTtlV6',
+#  'ipDfMode'		
+def new_udpProfile_build(prfDevIp, prfName, prfDplyOrChg, defaultsFrom, proxyMss, idleTimeout, ipTosToClient, linkQosToClient, datagramLoadBalancing, allowNoPayload, ipTtlMode, ipTtlV4, ipTtlV6, ipDfMode):
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
     #logging.info('Called get_profiles(): %s %s' % (dev_ip, pf_type))
 	
-    mr = ManagementRoot(prfDevIp, 'admin', 'rlatkdcks')
+    mr = ManagementRoot(str(prfDevIp), 'admin', 'rlatkdcks')
     output = ''
 
-    logging.info("new_udpProfile_build.py Parms DevIP: " + prfDevIp + " Profile name: " + prfName + " Profile Deploy or Change: " + prfDplyOrChg + " Defaults-from: " + prfPara1) 
-
-    mr = ManagementRoot(str(prfDevIp), 'admin', 'rlatkdcks')
-	
+    logging.info("new_udpProfile_build.py Parms DevIP: " + prfDevIp + " Profile name: " + prfName + " Profile Deploy or Change: " + prfDplyOrChg + " Defaults-from: " + defaultsFrom) 
     idx = 1
-    strReturn = {str(idx) : 'UDP Persistence Profile Creation Report'}
-
-    idx += 1
-
-    logging.info("Profile Creation process has been initiated. UDP Persistence Profile Name: " + prfName)
-
-    if check_profileName_conflict(mr, prfName, prfPara1):
-        strReturn.update({str(idx) : 'Profile Name conflict'})
-        logging.info("Profile name conflict.")
+    if prfDplyOrChg == 'new_profile':
+        strReturn = {str(idx) : 'UDP Profile Creation Report'}
+    
         idx += 1
-        return json.dumps(strReturn)
-    logging.info("No profile name conflict. Now creating the requested profile")
-		
-    try:
-        mydg = mr.tm.ltm.profile.udps.udp.create(name=prfName, partition='Common', defaultsFrom=prfPara1, proxyMss=prfPara2, idleTimeout=prfPara3, ipTosToClient=prfPara4, linkQosToClient=prfPara5, datagramLoadBalancing=prfPara6, allowNoPayload=prfPara7, ipTtlMode=prfPara8, ipTtlV4=prfPara9, ipTtlV6=prfPara10, ipDfMode=prfPara11)
-    except Exception as e:
-        logging.info("Exception during UDP Persistence Profile creation")
-        strReturn[str(idx)] = "Exception fired! (" + prfName + "): " + str(e)
+    
+        logging.info("Profile Creation process has been initiated. UDP Profile Name: " + prfName)
+    
+        if check_profileName_conflict(mr, prfName, defaultsFrom):
+            strReturn.update({str(idx) : 'Profile Name conflict'})
+            logging.info("Profile name conflict.")
+            idx += 1
+            return json.dumps(strReturn)
+        logging.info("No profile name conflict. Now creating the requested profile")
+    		
+        try:
+            mydg = mr.tm.ltm.profile.udps.udp.create(name=prfName, partition='Common', defaultsFrom=defaultsFrom, proxyMss=proxyMss, idleTimeout=idleTimeout, ipTosToClient=ipTosToClient, linkQosToClient=linkQosToClient, datagramLoadBalancing=datagramLoadBalancing, allowNoPayload=allowNoPayload, ipTtlMode=ipTtlMode, ipTtlV4=ipTtlV4, ipTtlV6=ipTtlV6, ipDfMode=ipDfMode)
+        except Exception as e:
+            logging.info("Exception during UDP Profile creation")
+            strReturn[str(idx)] = "Exception fired! (" + prfName + "): " + str(e)
+            idx += 1
+            logging.info("UDP Profile creation exception fired: " + str(e))
+            return json.dumps(strReturn)
+    elif prfDplyOrChg == 'chg_profile': 
+        strReturn = {str(idx) : 'UDP Profile Creation Report'}
         idx += 1
-        logging.info("UDP Persistence Profile creation exception fired: " + str(e))
-        return json.dumps(strReturn)
-
-    strReturn[str(idx)] = "UDP Persistence Profile (" + prfName + ") has been created"
-    idx += 1
-    logging.info("UDP Persistence Profile has been created")
+    
+        logging.info("Profile Modification process has been initiated. UDP Profile Name: " + prfName)
+        
+        # Load UDP profile settings of a given UDP profile name
+        #  'defaultsFrom', 'proxyMss', 'idleTimeout', 'ipTosToClient', 'linkQosToClient',
+        #  'datagramLoadBalancing', 'allowNoPayload', 'ipDfMode', 'ipTtlV4', 'ipTtlV6',
+        #  'ipDfMode'  
+        try:
+            aUdpPrf = mr.tm.ltm.profile.udps.udp.load(name=prfName, partition='Common')
+        except Exception as e:
+            logging.info("Exception during UDP Profile loading")
+            strReturn[str(idx)] = "Exception fired during UDP Profile setting loading! (" + prfName + "): " + str(e)
+            idx += 1
+            logging.info("Exception fired during UDP Profile setting loading! ( " + str(e) + ")")
+            return json.dumps(strReturn)
+        
+        # Save the update UDP profile settings
+        aUdpPrf.defaultsFrom = defaultsFrom
+        aUdpPrf.proxyMss = proxyMss
+        aUdpPrf.idleTimeout = idleTimeout
+        aUdpPrf.ipTosToClient = ipTosToClient
+        aUdpPrf.linkQosToClient = linkQosToClient
+        aUdpPrf.datagramLoadBalancing = datagramLoadBalancing
+        aUdpPrf.allowNoPayload = allowNoPayload
+        aUdpPrf.ipDfMode = ipDfMode
+        aUdpPrf.ipTtlV4 = ipTtlV4
+        aUdpPrf.ipTtlV6 = ipTtlV6
+        aUdpPrf.ipDfMode = ipDfMode
+                
+        strReturn[str(idx)] = "UDP Profile settings have been saved!"
+        idx += 1
+        
+        try:
+            aUdpPrf.update()
+        except Exception as e:
+            strReturn[str(idx)] = "Exception fired during UDP profile update() (" + prfName + "): " + str(e)
+            idx += 1
+            logging.info("UDP Profile creation exception fired: " + str(e))
+            return json.dumps(strReturn)
+        
+    if prfDplyOrChg == 'new_profile':
+        strReturn[str(idx)] = "UDP Profile (" + prfName + ") has been created"
+        idx += 1
+        logging.info("UDP Profile has been created")
+    elif prfDplyOrChg == 'chg_profile':
+        strReturn[str(idx)] = "UDP Profile Modification(" + prfName + ") has been completed"
+        idx += 1
+        logging.info("UDP Profile Modification has been completed")
 
     for keys, values in strReturn.items():
         logging.info("Key: " + keys + " Value: " + values)

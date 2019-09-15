@@ -21,45 +21,94 @@ def check_profileName_conflict(mr, prfName, prfDftFrom):
         return True
     else:
         return False  
-		
-def new_tcpProfile_build(prfDevIp, prfName, prfDplyOrChg, prfPara1, prfPara2, prfPara3, prfPara4, prfPara5, prfPara6, prfPara7, prfPara8, prfPara9, prfPara10, prfPara11):
+
+        #  'defaultsFrom', 'resetOnTimeout', 'proxyBufferHigh', 'proxyBufferLow',
+        #  'receiveWindowSize', 'sendBufferSize', 'ackOnPush', 'nagle', 'initCwnd',
+        #  'slowStart', 'selectiveAcks' 		
+def new_tcpProfile_build(prfDevIp, prfName, prfDplyOrChg, defaultsFrom, resetOnTimeout, proxyBufferHigh, proxyBufferLow, receiveWindowSize, sendBufferSize, ackOnPush, nagle, initCwnd, slowStart, selectiveAcks):
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
     #logging.info('Called get_profiles(): %s %s' % (dev_ip, pf_type))
 	
-    mr = ManagementRoot(prfDevIp, 'admin', 'rlatkdcks')
+    mr = ManagementRoot(str(prfDevIp), 'admin', 'rlatkdcks')
     output = ''
 
-    logging.info("new_tcpProfile_build.py Parms DevIP: " + prfDevIp + " Profile name: " + prfName + " Profile Deploy or Change: " + prfDplyOrChg + " Defaults-from: " + prfPara1) 
-
-    mr = ManagementRoot(str(prfDevIp), 'admin', 'rlatkdcks')
-	
+    logging.info("new_tcpProfile_build.py Parms DevIP: " + prfDevIp + " Profile name: " + prfName + " Profile Deploy or Change: " + prfDplyOrChg + " Defaults-from: " + defaultsFrom) 
     idx = 1
-    strReturn = {str(idx) : 'TCP Profile Creation Report'}
 
-    idx += 1
-
-    logging.info("Profile Creation process has been initiated. TCP Profile Name: " + prfName)
-
-    if check_profileName_conflict(mr, prfName, prfPara1):
-        strReturn.update({str(idx) : 'Profile Name conflict'})
-        logging.info("Profile name conflict.")
+    if prfDplyOrChg == 'new_profile': 
+        strReturn = {str(idx) : 'TCP Profile Creation Report'}
         idx += 1
-        return json.dumps(strReturn)
-    logging.info("No profile name conflict. Now creating the requested profile")
-		
-    try:
-        mydg = mr.tm.ltm.profile.tcps.tcp.create(name=prfName, partition='Common', defaultsFrom=prfPara1, resetOnTimeout=prfPara2, proxyBufferHigh=prfPara3, proxyBufferLow=prfPara4, receiveWindowSize=prfPara5, sendBufferSize=prfPara6, ackOnPush=prfPara7, nagle=prfPara8, initCwnd=prfPara9, slowStart=prfPara10, selectiveAcks=prfPara11)
-    except Exception as e:
-        logging.info("Exception during TCP  Profile creation")
-        strReturn[str(idx)] = "Exception fired! (" + prfName + "): " + str(e)
+    
+        logging.info("Profile Creation process has been initiated. TCP Profile Name: " + prfName)
+    
+        if check_profileName_conflict(mr, prfName, defaultsFrom):
+            strReturn.update({str(idx) : 'Profile Name conflict'})
+            logging.info("Profile name conflict.")
+            idx += 1
+            return json.dumps(strReturn)
+        logging.info("No profile name conflict. Now creating the requested profile")
+    		
+        try:
+            mydg = mr.tm.ltm.profile.tcps.tcp.create(name=prfName, partition='Common', defaultsFrom=defaultsFrom, resetOnTimeout=resetOnTimeout,\
+                 proxyBufferHigh=proxyBufferHigh, proxyBufferLow=proxyBufferLow, receiveWindowSize=receiveWindowSize, sendBufferSize=sendBufferSize,\
+                 ackOnPush=ackOnPush, nagle=nagle, initCwnd=initCwnd, slowStart=slowStart, selectiveAcks=selectiveAcks)
+        except Exception as e:
+            logging.info("Exception during TCP  Profile creation")
+            strReturn[str(idx)] = "Exception fired! (" + prfName + "): " + str(e)
+            idx += 1
+            logging.info("TCP Profile creation exception fired: " + str(e))
+            return json.dumps(strReturn)
+    elif prfDplyOrChg == 'chg_profile':
+        strReturn = {str(idx) : 'TCP Profile Modification Report'}
         idx += 1
-        logging.info("TCP Profile creation exception fired: " + str(e))
-        return json.dumps(strReturn)
-
-    strReturn[str(idx)] = "TCP Profile (" + prfName + ") has been created"
-    idx += 1
-    logging.info("TCP Profile has been created")
-
+    
+        logging.info("Profile Modification process has been initiated. TCP Profile Name: " + prfName)
+        
+        # Load TCP profile settings of a given TCP profile name
+        #  'defaultsFrom', 'resetOnTimeout', 'proxyBufferHigh', 'proxyBufferLow',
+        #  'receiveWindowSize', 'sendBufferSize', 'ackOnPush', 'nagle', 'initCwnd',
+        #  'slowStart', 'selectiveAcks'   
+        try:
+            aTcpPrf = mr.tm.ltm.profile.tcps.tcp.load(name=prfName, partition='Common')
+        except Exception as e:
+            logging.info("Exception during TCP Profile loading")
+            strReturn[str(idx)] = "Exception fired during TCP Profile setting loading! (" + prfName + "): " + str(e)
+            idx += 1
+            logging.info("Exception fired during TCP Profile setting loading! ( " + str(e) + ")")
+            return json.dumps(strReturn)
+        
+        # Save the update TCP profile settings
+        aTcpPrf.defaultsFrom = defaultsFrom
+        aTcpPrf.resetOnTimeout = resetOnTimeout
+        aTcpPrf.proxyBufferHigh = proxyBufferHigh
+        aTcpPrf.proxyBufferLow = proxyBufferLow
+        aTcpPrf.receiveWindowSize = receiveWindowSize
+        aTcpPrf.sendBufferSize = sendBufferSize
+        aTcpPrf.ackOnPush = ackOnPush
+        aTcpPrf.nagle = nagle
+        aTcpPrf.initCwnd = initCwnd
+        aTcpPrf.slowStart = slowStart
+                
+        strReturn[str(idx)] = "TCP Profile settings have been saved!"
+        idx += 1
+        
+        try:
+            aTcpPrf.update()
+        except Exception as e:
+            strReturn[str(idx)] = "Exception fired during TCP profile update() (" + prfName + "): " + str(e)
+            idx += 1
+            logging.info("TCP Profile creation exception fired: " + str(e))
+            return json.dumps(strReturn)
+    
+    if prfDplyOrChg == 'new_profile':
+        strReturn[str(idx)] = "TCP Profile (" + prfName + ") has been created"
+        idx += 1
+        logging.info("TCP Profile has been created")
+    elif prfDplyOrChg == 'chg_profile':
+        strReturn[str(idx)] = "TCP Profile Modification(" + prfName + ") has been completed"
+        idx += 1
+        logging.info("TCP Profile modification has been completed")
+    
     for keys, values in strReturn.items():
         logging.info("Key: " + keys + " Value: " + values)
     

@@ -90,6 +90,7 @@ def new_DnsProfile_build(prfDevIp, prfName, prfDplyOrChg, prfDftFrom, prfHwValid
         aDnsPrf.processXfr = prfZoneXfr
         aDnsPrf.enableDnsFirewall = prfDnsSecurity
         aDnsPrf.processRd = prfRecursion
+        
         strReturn[str(idx)] = "DNS Profile settings have been saved!"
         idx += 1
         

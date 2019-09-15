@@ -21,45 +21,98 @@ def check_profileName_conflict(mr, prfName, prfDftFrom):
         return True
     else:
         return False  
-		
-def new_f4Profile_build(prfDevIp, prfName, prfDplyOrChg, prfPara1, prfPara2, prfPara3, prfPara4, prfPara5, prfPara6, prfPara7, prfPara8, prfPara9, prfPara10, prfPara11):
+
+
+# 'defaultsFrom', 'resetOnTimeout', 'reassembleFragments', 'idleTimeout',
+# 'tcpHandshakeTimeout', 'tcpTimestampMode', 'tcpWscaleMode', 'looseInitialization',
+# 'looseClose', 'tcpCloseTimeout', 'keepAliveInterval'		
+def new_f4Profile_build(prfDevIp, prfName, prfDplyOrChg, defaultsFrom, resetOnTimeout, reassembleFragments, idleTimeout, tcpHandshakeTimeout, tcpTimestampMode, tcpWscaleMode, looseInitialization, looseClose, tcpCloseTimeout, keepAliveInterval):
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
     #logging.info('Called get_profiles(): %s %s' % (dev_ip, pf_type))
 	
-    mr = ManagementRoot(prfDevIp, 'admin', 'rlatkdcks')
+    mr = ManagementRoot(str(prfDevIp), 'admin', 'rlatkdcks')
     output = ''
 
-    logging.info("new_f4Profile_build.py Parms DevIP: " + prfDevIp + " Profile name: " + prfName + " Profile Deploy or Change: " + prfDplyOrChg + " Defaults-from: " + prfPara1) 
-
-    mr = ManagementRoot(str(prfDevIp), 'admin', 'rlatkdcks')
+    logging.info("new_f4Profile_build.py Parms DevIP: " + prfDevIp + " Profile name: " + prfName + " Profile Deploy or Change: " + prfDplyOrChg + " Defaults-from: " + defaultsFrom) 
 	
     idx = 1
-    strReturn = {str(idx) : 'FastL4 Persistence Profile Creation Report'}
-
-    idx += 1
-
-    logging.info("Profile Creation process has been initiated. FastL4 Persistence Profile Name: " + prfName)
-
-    if check_profileName_conflict(mr, prfName, prfPara1):
-        strReturn.update({str(idx) : 'Profile Name conflict'})
-        logging.info("Profile name conflict.")
+    if prfDplyOrChg == 'new_profile':  
+        strReturn = {str(idx) : 'FastL4  Profile Creation Report'}
+    
         idx += 1
-        return json.dumps(strReturn)
-    logging.info("No profile name conflict. Now creating the requested profile")
-		
-    try:
-        mydg = mr.tm.ltm.profile.fastl4s.fastl4.create(name=prfName, partition='Common', defaultsFrom=prfPara1, resetOnTimeout=prfPara2, reassembleFragments=prfPara3, idleTimeout=prfPara4, tcpHandshakeTimeout=prfPara5, tcpTimestampMode=prfPara6, tcpWscaleMode=prfPara7, looseInitialization=prfPara8, looseClose=prfPara9, tcpCloseTimeout=prfPara10, keepAliveInterval=prfPara11)
-    except Exception as e:
-        logging.info("Exception during FastL4 Persistence Profile creation")
-        strReturn[str(idx)] = "Exception fired! (" + prfName + "): " + str(e)
+    
+        logging.info("Profile Creation process has been initiated. FastL4  Profile Name: " + prfName)
+    
+        if check_profileName_conflict(mr, prfName, defaultsFrom):
+            strReturn.update({str(idx) : 'Profile Name conflict'})
+            logging.info("Profile name conflict.")
+            idx += 1
+            return json.dumps(strReturn)
+        logging.info("No profile name conflict. Now creating the requested profile")
+    		
+        try:
+            mydg = mr.tm.ltm.profile.fastl4s.fastl4.create(name=prfName, partition='Common', defaultsFrom=defaultsFrom, resetOnTimeout=resetOnTimeout,\
+                     reassembleFragments=reassembleFragments, idleTimeout=idleTimeout, tcpHandshakeTimeout=tcpHandshakeTimeout, \
+                     tcpTimestampMode=tcpTimestampMode, tcpWscaleMode=tcpWscaleMode, looseInitialization=looseInitialization, looseClose=looseClose, \
+                     tcpCloseTimeout=tcpCloseTimeout, keepAliveInterval=keepAliveInterval)
+        except Exception as e:
+            logging.info("Exception during FastL4  Profile creation")
+            strReturn[str(idx)] = "Exception fired! (" + prfName + "): " + str(e)
+            idx += 1
+            logging.info("FastL4  Profile creation exception fired: " + str(e))
+            return json.dumps(strReturn)
+    elif prfDplyOrChg == 'chg_profile':
+        strReturn = {str(idx) : 'FastL4  Profile Modification Report'}
         idx += 1
-        logging.info("FastL4 Persistence Profile creation exception fired: " + str(e))
-        return json.dumps(strReturn)
-
-    strReturn[str(idx)] = "FastL4 Persistence Profile (" + prfName + ") has been created"
-    idx += 1
-    logging.info("FastL4 Persistence Profile has been created")
-
+    
+        logging.info("Profile Modification process has been initiated. FastL4 Profile Name: " + prfName)
+        
+        # Load FastL4 profile settings of a given FastL4 profile name
+        # 'defaultsFrom', 'resetOnTimeout', 'reassembleFragments', 'idleTimeout',
+        # 'tcpHandshakeTimeout', 'tcpTimestampMode', 'tcpWscaleMode', 'looseInitialization',
+        # 'looseClose', 'tcpCloseTimeout', 'keepAliveInterval'    
+        try:
+            aFl4Prf = mr.tm.ltm.profile.fastl4s.fastl4.load(name=prfName, partition='Common')
+        except Exception as e:
+            logging.info("Exception during FastL4 Profile loading")
+            strReturn[str(idx)] = "Exception fired during FastL4 Profile setting loading! (" + prfName + "): " + str(e)
+            idx += 1
+            logging.info("Exception fired during FastL4 Profile setting loading! ( " + str(e) + ")")
+            return json.dumps(strReturn)
+        
+        # Save the update FastL4 profile settings
+        aFl4Prf.defaultsFrom = defaultsFrom
+        aFl4Prf.resetOnTimeout = resetOnTimeout
+        aFl4Prf.reassembleFragments = reassembleFragments
+        aFl4Prf.idleTimeout = idleTimeout
+        aFl4Prf.tcpHandshakeTimeout = tcpHandshakeTimeout
+        aFl4Prf.tcpTimestampMode = tcpTimestampMode
+        aFl4Prf.tcpWscaleMode = tcpWscaleMode
+        aFl4Prf.looseInitialization = looseInitialization
+        aFl4Prf.looseClose = looseClose
+        aFl4Prf.tcpCloseTimeout = tcpCloseTimeout
+        aFl4Prf.keepAliveInterval = keepAliveInterval
+                
+        strReturn[str(idx)] = "FastL4 Profile settings have been saved!"
+        idx += 1
+        
+        try:
+            aFl4Prf.update()
+        except Exception as e:
+            strReturn[str(idx)] = "Exception fired during FastL4 profile update() (" + prfName + "): " + str(e)
+            idx += 1
+            logging.info("FastL4 Profile creation exception fired: " + str(e))
+            return json.dumps(strReturn)
+    
+    if prfDplyOrChg == 'new_profile':
+        strReturn[str(idx)] = "FastL4 Profile(" + prfName + ") has been created"
+        idx += 1
+        logging.info("FastL4  Profile has been created")
+    elif prfDplyOrChg == 'chg_profile':
+        strReturn[str(idx)] = "FastL4 Profile Modification(" + prfName + ") has been completed"
+        idx += 1
+        logging.info("FastL4  Profile Modification has been completed")
+        
     for keys, values in strReturn.items():
         logging.info("Key: " + keys + " Value: " + values)
     

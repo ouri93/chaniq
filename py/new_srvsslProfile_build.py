@@ -22,44 +22,97 @@ def check_profileName_conflict(mr, prfName, prfDftFrom):
     else:
         return False  
 		
-def new_srvsslProfile_build(prfDevIp, prfName, prfDplyOrChg, prfPara1, prfPara2, prfPara3, prfPara4, prfPara5, prfPara6, prfPara7, prfPara8, prfPara9, prfPara10, prfPara11, prfPara12, prfPara13, prfPara14):
+def new_srvsslProfile_build(prfDevIp, prfName, prfDplyOrChg, defaultsFrom, cert, key, chain, ciphers, proxySsl, proxySslPassthrough, renegotiation, renegotiatePeriod, renegotiateSize, secureRenegotiation, serverName, sniDefault, sniRequire):
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
     #logging.info('Called get_profiles(): %s %s' % (dev_ip, pf_type))
 	
-    mr = ManagementRoot(prfDevIp, 'admin', 'rlatkdcks')
+    mr = ManagementRoot(str(prfDevIp), 'admin', 'rlatkdcks')
     output = ''
 
-    logging.info("new_srvsslProfile_build.py Parms DevIP: " + prfDevIp + " Profile name: " + prfName + " Profile Deploy or Change: " + prfDplyOrChg + " Defaults-from: " + prfPara1) 
-
-    mr = ManagementRoot(str(prfDevIp), 'admin', 'rlatkdcks')
-	
+    logging.info("new_srvsslProfile_build.py Parms DevIP: " + prfDevIp + " Profile name: " + prfName + " Profile Deploy or Change: " + prfDplyOrChg + " Defaults-from: " + defaultsFrom) 
     idx = 1
-    strReturn = {str(idx) : 'ServerSSL Profile Creation Report'}
 
-    idx += 1
-
-    logging.info("Profile Creation process has been initiated. ServerSSL Profile Name: " + prfName)
-
-    if check_profileName_conflict(mr, prfName, prfPara1):
-        strReturn.update({str(idx) : 'Profile Name conflict'})
-        logging.info("Profile name conflict.")
+    if prfDplyOrChg == 'new_profile':
+        strReturn = {str(idx) : 'ServerSSL Profile Creation Report'}
         idx += 1
-        return json.dumps(strReturn)
-    logging.info("No profile name conflict. Now creating the requested profile")
-		
-    try:
-        mydg = mr.tm.ltm.profile.server_ssls.server_ssl.create(name=prfName, partition='Common', defaultsFrom=prfPara1, cert=prfPara2, key=prfPara3, chain=prfPara4, ciphers=prfPara5, proxySsl=prfPara6, proxySslPassthrough=prfPara7, renegotiation=prfPara8, renegotiatePeriod=prfPara9, renegotiateSize=prfPara10, secureRenegotiation=prfPara11, serverName=prfPara12, sniDefault=prfPara13, sniRequire=prfPara14)
-    except Exception as e:
-        logging.info("Exception during ServerSSL Profile creation")
-        strReturn[str(idx)] = "Exception fired! (" + prfName + "): " + str(e)
+    
+        logging.info("Profile Creation process has been initiated. ServerSSL Profile Name: " + prfName)
+    
+        if check_profileName_conflict(mr, prfName, defaultsFrom):
+            strReturn.update({str(idx) : 'Profile Name conflict'})
+            logging.info("Profile name conflict.")
+            idx += 1
+            return json.dumps(strReturn)
+        logging.info("No profile name conflict. Now creating the requested profile")
+    		
+        try:
+            mydg = mr.tm.ltm.profile.server_ssls.server_ssl.create(name=prfName, partition='Common', defaultsFrom=defaultsFrom, cert=cert, \
+                   key=key, chain=chain, ciphers=ciphers, proxySsl=proxySsl, proxySslPassthrough=proxySslPassthrough, renegotiation=renegotiation, \
+                   renegotiatePeriod=renegotiatePeriod, renegotiateSize=renegotiateSize, secureRenegotiation=secureRenegotiation, serverName=serverName, \
+                   sniDefault=sniDefault, sniRequire=sniRequire)
+        except Exception as e:
+            logging.info("Exception during ServerSSL Profile creation")
+            strReturn[str(idx)] = "Exception fired! (" + prfName + "): " + str(e)
+            idx += 1
+            logging.info("ServerSSL Profile creation exception fired: " + str(e))
+            return json.dumps(strReturn)
+    elif prfDplyOrChg == 'chg_profile':
+        strReturn = {str(idx) : 'ServerSSL Profile Modification Report'}
         idx += 1
-        logging.info("ServerSSL Profile creation exception fired: " + str(e))
-        return json.dumps(strReturn)
-
-    strReturn[str(idx)] = "ServerSSL Profile (" + prfName + ") has been created"
-    idx += 1
-    logging.info("ServerSSL Profile has been created")
-
+    
+        logging.info("Profile Modification process has been initiated. ServerSSL Profile Name: " + prfName)
+        
+        # Load Server SSL profile settings of a given Server SSL profile name
+        #  'defaultsFrom','cert', 'key', 'chain', 'ciphers', 'proxySsl',
+        #  'proxySslPassthrough', 'renegotiation', 'renegotiatePeriod',
+        #  'renegotiateSize', 'secureRenegotiation', 'serverName', 'sniDefault',
+        ## 'sniRequire'  
+        try:
+            aSrvsslPrf = mr.tm.ltm.profile.server_ssls.server_ssl.load(name=prfName, partition='Common')
+        except Exception as e:
+            logging.info("Exception during Server SSL Profile loading")
+            strReturn[str(idx)] = "Exception fired during Server SSL Profile setting loading! (" + prfName + "): " + str(e)
+            idx += 1
+            logging.info("Exception fired during Server SSL Profile setting loading! ( " + str(e) + ")")
+            return json.dumps(strReturn)
+        
+        # Save the update Server SSL profile settings
+        aSrvsslPrf.defaultsFrom = defaultsFrom
+        aSrvsslPrf.cert = cert
+        aSrvsslPrf.key = key
+        aSrvsslPrf.chain = chain
+        aSrvsslPrf.ciphers = ciphers
+        aSrvsslPrf.proxySsl = proxySsl
+        aSrvsslPrf.proxySslPassthrough = proxySslPassthrough
+        aSrvsslPrf.renegotiation = renegotiation
+        aSrvsslPrf.renegotiatePeriod = renegotiatePeriod
+        aSrvsslPrf.renegotiateSize = renegotiateSize
+        aSrvsslPrf.renegotiateMaxRecordDelay = renegotiateMaxRecordDelay
+        aSrvsslPrf.secureRenegotiation = secureRenegotiation
+        aSrvsslPrf.serverName = serverName
+        aSrvsslPrf.sniDefault = sniDefault
+        aSrvsslPrf.sniRequire = sniRequire        
+                
+        strReturn[str(idx)] = "Server SSL Profile settings have been saved!"
+        idx += 1
+        
+        try:
+            aSrvsslPrf.update()
+        except Exception as e:
+            strReturn[str(idx)] = "Exception fired during Server SSL profile update() (" + prfName + "): " + str(e)
+            idx += 1
+            logging.info("Server SSL Profile Modification exception fired: " + str(e))
+            return json.dumps(strReturn)
+        
+    if prfDplyOrChg == 'new_profile':        
+        strReturn[str(idx)] = "ServerSSL Profile (" + prfName + ") has been created"
+        idx += 1
+        logging.info("ServerSSL Profile has been created")
+    elif prfDplyOrChg == 'chg_profile':
+        strReturn[str(idx)] = "ServerSSL Profile Modification(" + prfName + ") has been completed"
+        idx += 1
+        logging.info("ServerSSL Profile Modification has been completed")
+    
     for keys, values in strReturn.items():
         logging.info("Key: " + keys + " Value: " + values)
     

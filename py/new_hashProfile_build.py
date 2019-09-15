@@ -21,45 +21,92 @@ def check_profileName_conflict(mr, prfName, prfDftFrom):
         return True
     else:
         return False  
-		
-def new_hashProfile_build(prfDevIp, prfName, prfDplyOrChg, prfPara1, prfPara2, prfPara3, prfPara4, prfPara5, prfPara6, prfPara7, prfPara8, prfPara9, prfPara10, prfPara11, prfPara12, prfPara13):
+# defaultsFrom, matchAcrossServices, matchAcrossVirtuals, matchAcrossPools, hashAlgorithm, hashOffset, hashLength, hashStartPattern, hashEndPattern, hashBufferLimit, timeout, rule, overrideConnectionLimit		
+def new_hashProfile_build(prfDevIp, prfName, prfDplyOrChg, defaultsFrom, matchAcrossServices, matchAcrossVirtuals, matchAcrossPools, hashAlgorithm, hashOffset, hashLength, hashStartPattern, hashEndPattern, hashBufferLimit, timeout, rule, overrideConnectionLimit):
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
     #logging.info('Called get_profiles(): %s %s' % (dev_ip, pf_type))
 	
-    mr = ManagementRoot(prfDevIp, 'admin', 'rlatkdcks')
+    mr = ManagementRoot(str(prfDevIp), 'admin', 'rlatkdcks')
     output = ''
 
-    logging.info("new_hashProfile_build.py Parms DevIP: " + prfDevIp + " Profile name: " + prfName + " Profile Deploy or Change: " + prfDplyOrChg + " Defaults-from: " + prfPara1) 
+    logging.info("new_hashProfile_build.py Parms \nDevIP: " + prfDevIp + "\nProfile name: " + prfName + "\nProfile Deploy or Change: " + prfDplyOrChg + "\nDefaults-from: " + defaultsFrom + "\n") 
 
-    mr = ManagementRoot(str(prfDevIp), 'admin', 'rlatkdcks')
-	
     idx = 1
-    strReturn = {str(idx) : 'Hash Persistence Profile Creation Report'}
 
-    idx += 1
-
-    logging.info("Profile Creation process has been initiated. Hash Persistence Profile Name: " + prfName)
-
-    if check_profileName_conflict(mr, prfName, prfPara1):
-        strReturn.update({str(idx) : 'Profile Name conflict'})
-        logging.info("Profile name conflict.")
+    if prfDplyOrChg == 'new_profile':    
+        strReturn = {str(idx) : 'Hash Persistence Profile Creation Report'}
         idx += 1
-        return json.dumps(strReturn)
-    logging.info("No profile name conflict. Now creating the requested profile")
-		
-    try:
-        mydg = mr.tm.ltm.persistence.hashs.hash.create(name=prfName, partition='Common', defaultsFrom=prfPara1, matchAcrossServices=prfPara2, matchAcrossVirtuals=prfPara3, matchAcrossPools=prfPara4, hashAlgorithm=prfPara5, hashOffset=prfPara6, hashLength=prfPara7, hashStartPattern=prfPara8, hashEndPattern=prfPara9, hashBufferLimit=prfPara10, timeout=prfPara11, rule=prfPara12, overrideConnectionLimit=prfPara13)
-    except Exception as e:
-        logging.info("Exception during Hash Persistence Profile creation")
-        strReturn[str(idx)] = "Exception fired! (" + prfName + "): " + str(e)
+    
+        logging.info("Profile Creation process has been initiated. Hash Persistence Profile Name: " + prfName)
+    
+        if check_profileName_conflict(mr, prfName, defaultsFrom):
+            strReturn.update({str(idx) : 'Profile Name conflict'})
+            logging.info("Profile name conflict.")
+            idx += 1
+            return json.dumps(strReturn)
+        logging.info("No profile name conflict. Now creating the requested profile")
+    		
+        try:
+            mydg = mr.tm.ltm.persistence.hashs.hash.create(name=prfName, partition='Common', defaultsFrom=defaultsFrom, matchAcrossServices=matchAcrossServices, matchAcrossVirtuals=matchAcrossVirtuals, matchAcrossPools=matchAcrossPools, hashAlgorithm=hashAlgorithm, hashOffset=hashOffset, hashLength=hashLength, hashStartPattern=hashStartPattern, hashEndPattern=hashEndPattern, hashBufferLimit=hashBufferLimit, timeout=timeout, rule=rule, overrideConnectionLimit=overrideConnectionLimit)
+        except Exception as e:
+            logging.info("Exception during Hash Persistence Profile creation")
+            strReturn[str(idx)] = "Exception fired! (" + prfName + "): " + str(e)
+            idx += 1
+            logging.info("Hash Persistence Profile creation exception fired: " + str(e))
+            return json.dumps(strReturn)
+    if prfDplyOrChg == 'chg_profile':
+        strReturn = {str(idx) : 'Hash Persistence Profile Modification Report'}
         idx += 1
-        logging.info("Hash Persistence Profile creation exception fired: " + str(e))
-        return json.dumps(strReturn)
+    
+        logging.info("Profile Modification process has been initiated. Hash Persistence Profile Name: " + prfName)
 
-    strReturn[str(idx)] = "Hash Persistence Profile (" + prfName + ") has been created"
-    idx += 1
-    logging.info("Hash Persistence Profile has been created")
-
+        # Load Hash Persistence profile settings of a given Hash profile name
+        try:
+            aHashPrf = mr.tm.ltm.persistence.hashs.hash.load(name=prfName, partition='Common')
+        except Exception as e:
+            logging.info("Exception during Hash Persistence Profile loading")
+            strReturn[str(idx)] = "Exception fired during Hash Persistence Profile setting loading! (" + prfName + "): " + str(e)
+            idx += 1
+            logging.info("Exception fired during Hash Persistence Profile setting loading! ( " + str(e) + ")")
+            return json.dumps(strReturn)
+        
+        # defaultsFrom, matchAcrossServices, matchAcrossVirtuals, matchAcrossPools, hashAlgorithm, hashOffset, hashLength, 
+        # hashStartPattern, hashEndPattern, hashBufferLimit, timeout, rule, overrideConnectionLimit
+        # Save the update DNS profile settings
+        aHashPrf.defaultsFrom = defaultsFrom
+        aHashPrf.matchAcrossServices = matchAcrossServices
+        aHashPrf.matchAcrossVirtuals = matchAcrossVirtuals
+        aHashPrf.matchAcrossPools = matchAcrossPools
+        aHashPrf.hashAlgorithm = hashAlgorithm
+        aHashPrf.hashOffset = hashOffset
+        aHashPrf.hashLength = hashLength
+        aHashPrf.hashStartPattern = hashStartPattern
+        aHashPrf.hashEndPattern = hashEndPattern
+        aHashPrf.hashBufferLimit = hashBufferLimit
+        aHashPrf.timeout = timeout
+        aHashPrf.rule = rule
+        aHashPrf.overrideConnectionLimit = overrideConnectionLimit
+        
+        strReturn[str(idx)] = "Hash Persistence Profile settings have been saved!"
+        idx += 1
+        
+        try:
+            aHashPrf.update()
+        except Exception as e:
+            strReturn[str(idx)] = "Exception fired during Hash Persistence profile update() (" + prfName + "): " + str(e)
+            idx += 1
+            logging.info("Hash Persistence Profile creation exception fired: " + str(e))
+            return json.dumps(strReturn)
+        
+    if prfDplyOrChg == 'new_profile':
+        strReturn[str(idx)] = "Hash Persistence Profile (" + prfName + ") has been created"
+        idx += 1
+        logging.info("Hash Persistence Profile has been created")
+    elif prfDplyOrChg == 'chg_profile':  
+        strReturn[str(idx)] = "Hash Persistence Profile modificaiton(" + prfName + ") has been completed"
+        idx += 1
+        logging.info("Hash Persistence Profile modification has been completed")
+        
     for keys, values in strReturn.items():
         logging.info("Key: " + keys + " Value: " + values)
     

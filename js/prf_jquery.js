@@ -283,7 +283,12 @@ function setPrfOptData(prfOptData, prfType, parPrfName) {
 		prfOptData['matchAcrossPools'] = $('#uniXP option:selected').val();
 		if ($('#uniTimeout').val() == '0') prfOptData['timeout'] = 'indefinite';
 		else prfOptData['timeout'] = $('#uniTimeout').val();
-		prfOptData['rule'] = $('#persistIRule option:selected').val();
+		
+		if($('#persistIRule option:selected').val() == 'select'){
+			prfOptData['rule']='';
+		}
+		else
+			prfOptData['rule'] = '/Common/' + $('#persistIRule option:selected').val();
 		prfOptData['overrideConnectionLimit'] = $('#uniConnLimit option:selected').val();
 	}
 	else if (prfType == "FastL4"){
@@ -661,7 +666,14 @@ function processGetProfileData(response_in, prfType){
 		$('#uniXP option[value="' + responseArray[3] + '"]').attr('selected', 'selected');
 		if(responseArray[4] == 'indefinite') $('#uniTimeout').val('0');
 		else  $('#uniTimeout').val(responseArray[4]);
-		$('#persistIRule option[value="' + responseArray[5] + '"]').attr('selected', 'selected');
+		if (responseArray[5] == ''){
+			$('#persistIRule option[value="select"]').attr('selected', 'selected');
+		}
+		else{
+			var prfiRuleName = responseArray[5].split("/");
+			$('#persistIRule option[value="' + prfiRuleName[2] + '"]').attr('selected', 'selected');
+		}
+			
 		$('#uniConnLimit option[value="' + responseArray[6] + '"]').attr('selected', 'selected');
 	}
 	else if (prfType == "FastL4"){
@@ -923,7 +935,7 @@ function getPrfHtml(prfType, parPrfName){
 		strHtml += "<tr id='r2'><td width='132px' ><label>Match Across Virtual Servers</label></td><td><select id='uniXVs' ><option value='enabled'>Enabled</option><option value='disabled' selected>Disabled</option></select></td></tr>";
 		strHtml += "<tr id='r3'><td width='132px' ><label>Match Across Pools</label></td><td><select id='uniXP' ><option value='enabled'>Enabled</option><option value='disabled' selected>Disabled</option></select></td></tr>";
 		strHtml += "<tr id='r4'><td width='132px' ><label>Timeout</label></td><td><input type='text' id='uniTimeout' value='180'/></td></tr>";
-		strHtml += "<tr id='r5'><td width='132px' ><label>Rule</label></td><td><select id='persistIRule' ><option value='none' selected>Select...</option></select></td></tr>";
+		strHtml += "<tr id='r5'><td width='132px' ><label>Rule</label></td><td><select id='persistIRule' ><option value='select' selected>Select...</option></select></td></tr>";
 		strHtml += "<tr id='r6'><td width='132px' ><label>Override Connection Limit</label></td><td><select id='uniConnLimit' ><option value='disabled' selected>Disabled</option><option value='enabled'>Enabled</option></select></td></tr>";
 		
 	}

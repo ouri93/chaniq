@@ -22,43 +22,85 @@ def check_profileName_conflict(mr, prfName, prfDftFrom):
     else:
         return False  
 		
-def new_ocProfile_build(prfDevIp, prfName, prfDplyOrChg, prfPara1, prfPara2, prfPara3, prfPara4, prfPara5, prfPara6, prfPara7):
+#'defaultsFrom', 'sourceMask', 'maxSize', 'maxAge', 'maxReuse', 'idleTimeoutOverride', 'limitType'
+def new_ocProfile_build(prfDevIp, prfName, prfDplyOrChg, defaultsFrom, sourceMask, maxSize, maxAge, maxReuse, idleTimeoutOverride, limitType):
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
     #logging.info('Called get_profiles(): %s %s' % (dev_ip, pf_type))
 	
-    mr = ManagementRoot(prfDevIp, 'admin', 'rlatkdcks')
+    mr = ManagementRoot(str(prfDevIp), 'admin', 'rlatkdcks')
     output = ''
 
-    logging.info("new_ocProfile_build.py Parms DevIP: " + prfDevIp + " Profile name: " + prfName + " Profile Deploy or Change: " + prfDplyOrChg + " Defaults-from: " + prfPara1) 
+    logging.info("new_ocProfile_build.py Parms DevIP: " + prfDevIp + " Profile name: " + prfName + " Profile Deploy or Change: " + prfDplyOrChg + " Defaults-from: " + defaultsFrom) 
 
-    mr = ManagementRoot(str(prfDevIp), 'admin', 'rlatkdcks')
-	
     idx = 1
-    strReturn = {str(idx) : 'OneConnect Persistence Profile Creation Report'}
-
-    idx += 1
-
-    logging.info("Profile Creation process has been initiated. OneConnect Persistence Profile Name: " + prfName)
-
-    if check_profileName_conflict(mr, prfName, prfPara1):
-        strReturn.update({str(idx) : 'Profile Name conflict'})
-        logging.info("Profile name conflict.")
+    if prfDplyOrChg == 'new_profile':    
+        strReturn = {str(idx) : 'OneConnect Profile Creation Report'}
         idx += 1
-        return json.dumps(strReturn)
-    logging.info("No profile name conflict. Now creating the requested profile")
-		
-    try:
-        mydg = mr.tm.ltm.profile.one_connects.one_connect.create(name=prfName, partition='Common', defaultsFrom=prfPara1, sourceMask=prfPara2, maxSize=prfPara3, maxAge=prfPara4, maxReuse=prfPara5, idleTimeoutOverride=prfPara6, limitType=prfPara7)
-    except Exception as e:
-        logging.info("Exception during OneConnect Persistence Profile creation")
-        strReturn[str(idx)] = "Exception fired! (" + prfName + "): " + str(e)
+    
+        logging.info("Profile Creation process has been initiated. OneConnect Profile Name: " + prfName)
+    
+        if check_profileName_conflict(mr, prfName, defaultsFrom):
+            strReturn.update({str(idx) : 'Profile Name conflict'})
+            logging.info("Profile name conflict.")
+            idx += 1
+            return json.dumps(strReturn)
+        logging.info("No profile name conflict. Now creating the requested profile")
+    		
+        try:
+            mydg = mr.tm.ltm.profile.one_connects.one_connect.create(name=prfName, partition='Common', defaultsFrom=defaultsFrom, sourceMask=sourceMask, \
+                   maxSize=maxSize, maxAge=maxAge, maxReuse=maxReuse, idleTimeoutOverride=idleTimeoutOverride, limitType=limitType)
+        except Exception as e:
+            logging.info("Exception during OneConnect Profile creation")
+            strReturn[str(idx)] = "Exception fired! (" + prfName + "): " + str(e)
+            idx += 1
+            logging.info("OneConnect Profile creation exception fired: " + str(e))
+            return json.dumps(strReturn)
+    elif prfDplyOrChg == 'chg_profile':
+        strReturn = {str(idx) : 'OneConnect Profile Modification Report'}
         idx += 1
-        logging.info("OneConnect Persistence Profile creation exception fired: " + str(e))
-        return json.dumps(strReturn)
+    
+        logging.info("Profile Modification process has been initiated. OneConnect Profile Name: " + prfName)
+        
+        # Load OneConnect profile settings of a given OneConnect profile name
+        # 'defaultsFrom', 'sourceMask', 'maxSize', 'maxAge', 'maxReuse', 'idleTimeoutOverride', 'limitType'
+        try:
+            aOCPrf = mr.tm.ltm.profile.one_connects.one_connect.load(name=prfName, partition='Common')
+        except Exception as e:
+            logging.info("Exception during OneConnect Profile loading")
+            strReturn[str(idx)] = "Exception fired during OneConnect Profile setting loading! (" + prfName + "): " + str(e)
+            idx += 1
+            logging.info("Exception fired during OneConnect Profile setting loading! ( " + str(e) + ")")
+            return json.dumps(strReturn)
+        
+        # Save the update OneConnect profile settings
+        aOCPrf.defaultsFrom = defaultsFrom
+        aOCPrf.sourceMask = sourceMask
+        aOCPrf.maxSize = maxSize
+        aOCPrf.maxAge = maxAge
+        aOCPrf.maxReuse = maxReuse
+        aOCPrf.idleTimeoutOverride = idleTimeoutOverride
+        aOCPrf.limitType = limitType
 
-    strReturn[str(idx)] = "OneConnect Persistence Profile (" + prfName + ") has been created"
-    idx += 1
-    logging.info("OneConnect Persistence Profile has been created")
+                
+        strReturn[str(idx)] = "OneConnect Profile settings have been saved!"
+        idx += 1
+        
+        try:
+            aOCPrf.update()
+        except Exception as e:
+            strReturn[str(idx)] = "Exception fired during OneConnect profile loading (" + prfName + "): " + str(e)
+            idx += 1
+            logging.info("Exception fired during OneConnect profile loading: " + str(e))
+            return json.dumps(strReturn)
+    
+    if prfDplyOrChg == 'new_profile':
+        strReturn[str(idx)] = "OneConnect Profile(" + prfName + ") has been created"
+        idx += 1
+        logging.info("OneConnect Profile has been created")
+    elif prfDplyOrChg == 'chg_profile':
+        strReturn[str(idx)] = "OneConnect Profile Modification(" + prfName + ") has been completd"
+        idx += 1
+        logging.info("OneConnect Profile Modification has been completed")
 
     for keys, values in strReturn.items():
         logging.info("Key: " + keys + " Value: " + values)
