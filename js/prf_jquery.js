@@ -504,16 +504,38 @@ function getHttpSettingsProcessData(response_in){
 	// String parsing - '/Common/parent_prf_name'
 	var parPrfName = responseArray[1].split("/");
 	
+	// BugID 09152019-1031pm
+    // Mode - Change Profile mode
+    // Symptom: When a Parent profile name is changed where a user already chose a Profile name, all other profile settings are successfully loaded. 
+	//          However the chosen Parent profile name is changed back to the original parent profile name
+	// Sol: In Profile change mode, if Profile is not in 'initial' state (Parent Profile name is 'select') and the returned parent profile name is not
+	// equal to '', then keep the current parent profile name
+	
+	// If the defaultsFrom property value of a profile is null, that means the profile is F5 Built-in profile.
+	var orgParPrfName = $('#svc_prf_type_select').val();
+	
 	if (prfMode == 'chg_profile')
 	{
 		$('#svc_prf_proxymode_select option[value="' + responseArray[0] + '"]').attr('selected', 'selected');
-		// If the defaultsFrom property value of a profile is null, that means the profile is F5 Built-in profile. 
-		if (responseArray[1] == '') {
-			responseArray[1] = 'select';
-			$('#svc_prf_type_select option[value="' + responseArray[1] + '"]').prop('selected', 'selected');
+
+		if (orgParPrfName == 'select') {
+			if (responseArray[1] == '') {
+				responseArray[1] = 'select';
+				$('#svc_prf_type_select option[value="' + responseArray[1] + '"]').prop('selected', 'selected');
+			}
+			else {
+					$('#svc_prf_type_select option[value="' + parPrfName[2] + '"]').prop('selected', 'selected');
+			}
 		}
-		else		
-			$('#svc_prf_type_select option[value="' + parPrfName[2] + '"]').prop('selected', 'selected');
+		else {
+			if (responseArray[1] == '') {
+				$('#svc_prf_type_select option[value="' + responseArray[1] + '"]').prop('selected', 'selected');
+			}
+			else{
+				$('#svc_prf_type_select option[value="' + orgParPrfName + '"]').prop('selected', 'selected');	
+			} 
+		}
+
 	}
 	
 	$('#httpBasicAuth').val(responseArray[2]);
@@ -577,19 +599,43 @@ function processGetProfileData(response_in, prfType){
 	$('#svc_prf_type_select').prop('disabled', false);
 	// If Profile mode is 'chg_profile", you must set Parent Profile name loaded from BIG-IP
 	// If Profile mode is 'new_profile", Parent Profile name stays intact.
-	if (prfMode == 'chg_profile')
-	{	
-		// If the defaultsFrom property value of a profile is null, that means the profile is F5 Built-in profile.
-		if (responseArray[0] == '') {
-			responseArray[0] = 'select';
-			$('#svc_prf_type_select option[value="' + responseArray[0] + '"]').prop('selected', 'selected');
-			$('#svc_prf_type_select').prop('disabled', true);
-		}
-		else
-			$('#svc_prf_type_select').prop('disabled', false);
-			$('#svc_prf_type_select option[value="' + parPrfName[2] + '"]').prop('selected', 'selected');
-	}
 	
+	// BugID 09152019-1031pm
+    // Mode - Change Profile mode
+    // Symptom: When a Parent profile name is changed where a user already chose a Profile name, all other profile settings are successfully loaded. 
+	//          However the chosen Parent profile name is changed back to the original parent profile name
+	// Sol: In Profile change mode, if Profile is not in 'initial' state (Parent Profile name is 'select') and the returned parent profile name is not
+	// equal to '', then keep the current parent profile name
+	
+	// If the defaultsFrom property value of a profile is null, that means the profile is F5 Built-in profile.
+	var orgParPrfName = $('#svc_prf_type_select').val();
+	
+	if (prfMode == 'chg_profile')
+	{
+		if (orgParPrfName == 'select') {
+			if (responseArray[0] == '') {
+				responseArray[0] = 'select';
+				$('#svc_prf_type_select option[value="' + responseArray[0] + '"]').prop('selected', 'selected');
+				$('#svc_prf_type_select').prop('disabled', true);
+			}
+			else {
+				$('#svc_prf_type_select').prop('disabled', false);
+				$('#svc_prf_type_select option[value="' + parPrfName[2] + '"]').prop('selected', 'selected');
+			}
+		}
+		else {
+			if (responseArray[0] == '') {
+				$('#svc_prf_type_select option[value="' + responseArray[0] + '"]').prop('selected', 'selected');
+				$('#svc_prf_type_select').prop('disabled', true);
+			}
+			else{
+				$('#svc_prf_type_select').prop('disabled', false);
+				$('#svc_prf_type_select option[value="' + orgParPrfName + '"]').prop('selected', 'selected');	
+			} 
+		}
+
+	}
+
 	alert("Profile Type: " + prfMode + "\nParent Profile name: " + parPrfName + "\nresponseArrya[0] value: " + responseArray[0] );
 	if(prfType == 'DNS'){
 		$('#dnsHwPrtoValid option[value="' + responseArray[1] + '"]').attr('selected', 'selected');
@@ -1207,8 +1253,15 @@ $(function () {
 	
 	//Dynamically add Parent profile names - Event hadnler for when a Parent Profile is selected
 	$('#svc_prf_type_select').on('change', function() {
-		//Execute this event handler only if you are in Profile Build mode.
-		if (GetParentURLParameter('go')=='chg_profile') return;
+
+		//Profile name and parent profile name cannot be same
+		if (GetParentURLParameter('go')=='chg_profile'){
+			if (this.value == $('#chg_svc_prf_name_select').val()){
+				// Update needed - If a current profile name and chosen parent profile name is same, revert the parent profile name back to original name 
+				alert("Chosen profile name and Parent profile name can't be same!\nChosen Profile Name: " + $('#chg_svc_prf_name_select').val() + "\nParent Profile Name: " + this.value);
+				return;
+			}
+		}
 		
 		//alert("Chosen Parent Name: " + $('#svc_prf_type_select').val());
 		var nameAndIp = $('#ltmSelBox option:selected').val();
