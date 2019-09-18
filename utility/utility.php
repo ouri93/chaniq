@@ -616,9 +616,16 @@ function load_all_bigips() {
 function GetParentURLParameter($sParam)
 {
     $parentURL = $_SERVER['HTTP_REFERER'];
+
+    $parsedURL = parse_url($parentURL);
+
+    // Special case where VS build configuration calls new Pool build.
+    if ( $parsedURL['path'] == '/content/if_new_vs.php') {
+        return "new_pool";
+    }
     
     $parentQry = explode('?', $parentURL);
-    //echo "In utility.php - GetParentURLParameter(): Query parameters: " . $parentQry[1] . "\r\n";
+    //echo "In utility.php - GetParentURLParameter(): Query parameters: " . $parentQry[1] . " \nParent URL" . $parentURL . "\r\n";
     
     parse_str($parentQry[1], $output);
     return $output[$sParam];
