@@ -17,7 +17,8 @@ function addRow(tableID) {
 		var colCount = table.rows[0].cells.length;
 		for(var i=0; i<colCount; i++) {
 			var newcell = row.insertCell(i);
-			newcell.innerHTML = table.rows[0].cells[i].innerHTML;
+			//newcell.innerHTML = table.rows[0].cells[i].innerHTML;
+			newcell.innerHTML = table.rows[1].cells[i].innerHTML;
 		}
 	}else{
 		 alert("Maximum number of pool members are 10.");
@@ -32,7 +33,7 @@ function deleteRow(tableID) {
 		var row = table.rows[i];
 		var chkbox = row.cells[0].childNodes[0];
 		if(null != chkbox && true == chkbox.checked) {
-			if(rowCount <= 1) { 						// limit the user from removing all the fields
+			if(rowCount <= 2) { 						// limit the user from removing all the rows and header row
 				alert("Cannot Remove all pool members.");
 				break;
 			}

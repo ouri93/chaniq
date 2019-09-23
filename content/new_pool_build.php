@@ -22,6 +22,7 @@
         $pmPoolMemberName = $_POST['PmPoolMemberNmae'];
         $pmPoolMemberIp = $_POST['PmPoolMemberIp'];
         $pmPoolMemberPort = $_POST['PmPoolMemberPort'];
+        $pmPoolMemberRatio = $_POST['PmPoolMemberRatio'];
         $pmPoolMemberMon = $_POST['PmPoolMemberMon'];
         $pmPriGroup = $_POST['PmPrigroup'];
         
@@ -38,7 +39,7 @@
         }
         */
         
-        $cmd = '/usr/bin/python /var/www/chaniq/py/new_pool_build.py '.$devIp.' '. $pVsName.' '. $pVsPort.' '. $pEnv.' '. $pMon.' '. $pLBMethod.' '. $pPriGroup.' '. $pPriGroupLessThan.' '. $pmPoolMemberName .' '. $pmPoolMemberIp .' '. $pmPoolMemberPort .' '. $pmPoolMemberMon .' '. $pmPriGroup;
+        $cmd = '/usr/bin/python /var/www/chaniq/py/new_pool_build.py '.$devIp.' '. $pVsName.' '. $pVsPort.' '. $pEnv.' '. $pMon.' '. $pLBMethod.' '. $pPriGroup.' '. $pPriGroupLessThan.' '. $pmPoolMemberName .' '. $pmPoolMemberIp .' '. $pmPoolMemberPort .' '. $pmPoolMemberRatio . ' '. $pmPoolMemberMon .' '. $pmPriGroup;
         //$cmd = '/usr/bin/python /var/www/chaniq/py/new_pool_build.py '.$devIp.' '. $pVsName.' '. $pVsPort.' '. $pEnv.' '. $pMon.' '. $pLBMethod;
         
         $output = shell_exec($cmd);
