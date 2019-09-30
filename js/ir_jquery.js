@@ -7,6 +7,43 @@
  * 
  */
 
+//Read the parent URL parameters and return a query parameter value against a given key
+//e.g. URL: http://www.example.com/?go=chg_profile
+//     GetParentURLParameter('go')
+//     Return: chg_profile
+function GetParentURLParameter(sParam)
+{
+   var parentURL = (window.location != window.parent.location)
+    ? document.referrer
+    : document.location.href;
+
+   var parentQry = parentURL.slice(parentURL.indexOf('?')+1).split('&');
+   //alert("Given URL: " + parentQry);
+   for (var i = 0; i < parentQry.length; i++)
+   {
+       var sParameterName = parentQry[i].split('=');
+       if (sParameterName[0] == sParam)
+       {
+           return sParameterName[1];
+       }
+   }
+}
+
+// Process iRule/Data Group names returned from BIG-IP
+function irdgNameLoadingProcess(response_in){
+	// Add retrieved iRule or Data Group nmae to select_ir_dg_name option list
+	var strHtml = '';
+	$('#select_ir_dg_name').empty();
+	$('#select_ir_dg_name').append('<option value="select" selected="selected">Select...</option>');
+	
+	$.each(response_in, function(index) {
+		strHtml = '';
+		strHtml = "<option>" + response_in[index] + "</option>";
+		$('#select_ir_dg_name').append(strHtml);
+	});
+}
+
+
 function buildIrAjax(phpFileName, irData) {
 	return $.ajax({
 		url: '/content/new_irule_build.php',
@@ -177,4 +214,62 @@ $(function () {
     	ajaxOut.done(buildIrProcessData);
     });
     
+    $('#chg_ir_type').on('change', function(){
+    	var ir_type = $('#chg_ir_type').val();
+    	if (ir_type == "iRule") {
+    		$('#ir_td_dg_type').empty();
+    		$('#ir_confTable_thead').empty();
+    		$('#ir_confTable_thead').append("<th style='font-weight:normal' >iRule Code</th>");
+        	$('#irConfTable_tbody').empty();
+    		$('#irConfTable_tbody').append("<tr><td><textarea id='irConfCode' rows='10' cols='90'> </textarea> </td></tr>");
+    	}
+    	else if (ir_type == "Data Group"){
+    		$('#ir_td_dg_type').empty();
+    		$('#ir_confTable_thead').empty();
+    		$('#ir_confTable_thead').append("<th style='font-weight:normal'>Data Group Configuration</th>");
+    		$('#irConfTable_tbody').empty();
+    		if (GetParentURLParameter('go') == 'new_irule')
+    			$('#ir_td_dg_type').append("<label> DG Type: </label><select name='ir_dg_type_select' id='ir_dg_type_select' required='required' ><option selected='selected'>Select...</option><option>Address</option><option>String</option><option>Integer</option></select>");
+    		else
+    			$('#ir_td_dg_type').append("<label> DG Type: </label><select name='ir_dg_type_select' id='ir_dg_type_select' disabled style='background-color: #E6E3E3;' required='required' ><option selected='selected'>Select...</option><option>Address</option><option>String</option><option>Integer</option></select>");
+    	}
+    	
+    	// Loading existing iRule or Data Group names
+    	// IrType - iRule or Data Group, IrDgPart - Partition name
+    	var irData = {'phpFileName':'', 'DevIP':'', 'IrType':'', 'IrDgPart':'' };
+    	var bigipNameAndIP = $('#ltmSelBox option:selected').val();
+    	//var bigipNameAndIP = $('#ltmSelBox').val()
+    	var arr = bigipNameAndIP.split(":");
+    	
+    	var irType = $('#chg_ir_type').val();
+    	
+    	// Data feed to irData
+    	irData['phpFileName'] = 'load_irdg_names';
+    	irData['DevIP'] = arr[1];
+    	irData['IrType'] = irType;
+    	irData['IrDgPart'] = 'Common';
+    	
+    	// Call Ajax to retrieve iRule or Data Group names
+    	ajaxOut = $.ajax({
+    		url: '/content/load_irdg_names.php',
+    		type: 'POST',
+    		dataType: 'JSON',
+    		data: {'jsonIrData': JSON.stringify(irData)},
+    		error: function(jqXHR, textStatus, errorThrown){
+    			alert("Ajax call for retrieving iRule or Data Group names has failed!");
+                console.log('jqXHR:');
+                console.log(jqXHR);
+                console.log('textStatus:');
+                console.log(textStatus);
+                console.log('errorThrown:');
+                console.log(errorThrown);
+    		}
+    	});
+    	ajaxOut.done(irdgNameLoadingProcess);
+    });
+    
+   $('#select_ir_dg_name').on('change', function(){
+	   
+   });
+   
 });

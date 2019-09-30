@@ -9,7 +9,13 @@
         <fieldset  id='ir_iframe_fieldset' class="row1">
 		<!-- IFrame content here -->
 		<!-- Default Page content - iRule build -->
-		<legend>Create iRules</legend>
+		<?php 
+		if ( GetParentURLParameter('go') == 'new_irule') {
+		  echo '<legend>Create iRules/Data Groups</legend>';    
+		}
+		else
+		    echo '<legend>Change iRules/Data Groups</legend>';
+		?>
 		<iframe src="/content/if_new_ir.php" width="720px" height="600" frameborder="0"></iframe>       	
         </fieldset>
     </form>

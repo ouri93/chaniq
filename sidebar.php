@@ -28,7 +28,6 @@
              echo "<li><a href='?go=chg_vs'>VS</a></li>";
              echo "<li><a href='?go=chg_profile'>Profile</a></li>";
              echo "<li><a href='?go=chg_pool'>Pool</a></li>";
-             echo "<li><a href='?go=chg_cert'>Cert</a></li>";
              echo "<li><a href='?go=chg_irule'>iRule</a></li>";
              echo "<li><a href='?go=chg_monitor'>Monitor</a></li>";
          echo "</ul>";

@@ -14,11 +14,24 @@
                  
         <script type="text/javascript" src="/js/ir_jquery.js"></script>
         <?php include('../utility/utility.php'); ?>
-        <title>Create iRules</title>
+        <?php
+        if (GetParentURLParameter('go') == 'new_irule' ) {
+            echo '<title>Create iRules/Data Groups</title>';    
+        }
+        else 
+            echo '<title>Change iRules/Data Groups</title>';
+        ?>
     </head>
     <body style="background-color: #ffffff;">
         <form class="inner-form">
-            <h1> Create iRules </h1>
+        	<?php
+        	if (GetParentURLParameter('go') == 'new_irule' ) {
+        	   echo '<h1> Create iRules/Data Groups </h1>';
+        	}
+        	else
+        	   echo '<h1> Change iRules/Data Groups </h1>';
+        	?>
+            
             <fieldset class="row1">
                 <legend>Select a target LTM</legend>
                 <?php
@@ -49,34 +62,58 @@
                     <tbody>
                         <tr>
                             <td>
-                                <label>* iRule/Data Group Name: </label>
-                                <input type="text" name="ir_name" id="ir_name" required="required" />
+                            <?php
+                            if (GetParentURLParameter('go') == 'new_irule' ) {
+                                echo '<label>* iRule/Data Group Name: </label>';
+                                echo '<input type="text" name="ir_name" id="ir_name" required="required" />';
+                            }
+                            else{
+                                echo '<label>* Select Type: </label>';
+                                echo '<select name="chg_ir_type" id="chg_ir_type" required="required" />';
+                                echo '<option value="select" selected="selected">Select...</option>';
+                                echo '<option value="iRule">iRule</option>';
+                                echo '<option value="Data Group"> Data Group</option>';
+                            }
+                            ?>
+                            
                             </td>
                             <td>
-                                <label>Env.: </label>
-                                <select name="ir_env" id="ir_env" required="required"> 
-                                <?php
-                                    $iniarray = parse_ini_section_file();
-                    
-                                    foreach ($iniarray as $section => $values){
-                                        $myx = (string)$section;
-                                        if ($myx == "LTM_GTM_ENVIRONMENT"){
-                                            foreach ($values as $key=>$value){
-                                                echo "<option> " . $value ."</option>";
-                                            }
+                            <?php
+                            if (GetParentURLParameter('go') == 'new_irule' ) {
+                                echo '<label>Env.: </label>';
+                                echo '<select name="ir_env" id="ir_env" required="required">';
+                            
+                                $iniarray = parse_ini_section_file();
+                
+                                foreach ($iniarray as $section => $values){
+                                    $myx = (string)$section;
+                                    if ($myx == "LTM_GTM_ENVIRONMENT"){
+                                        foreach ($values as $key=>$value){
+                                            echo "<option> " . $value ."</option>";
                                         }
                                     }
-                                ?>
+                                }
+                            }
+                            ?>
                             </select>
                             </td>
                         </tr>
                         <tr id='ir_dg_tr_select' >
                             <td>
-                                <label>* Select Type: </label>
-                                <select name="ir_type" id="ir_type" required="required" />
-                                	<option selected="selected">Select...</option>
-                                	<option>iRule</option>
-                                	<option>Data Group</option>
+                            <?php
+                                if (GetParentURLParameter('go') == 'new_irule' ) {
+                                    echo '<label>* Select Type: </label>';
+                                    echo '<select name="ir_type" id="ir_type" required="required" />';
+                                	echo '<option selected="selected">Select...</option>';
+                                	echo '<option value="iRule">iRule</option>';
+                                	echo '<option value="Data Group"> Data Group</option>';
+                                }
+                                else{
+                                    echo '<label>* Select iRule/Data Group Name: </label>';
+                                    echo '<select name="select_ir_dg_name" id="select_ir_dg_name" required="required" />';
+                                    echo '<option value="select" selected="selected">Select...</option>';
+                                }
+                        	?>
                             </td>
                             <td id="ir_td_dg_type" name="ir_td_dg_type">
     
@@ -101,7 +138,12 @@
                 </fieldset>
                 </p>
             </fieldset>
-            <input id="ir_btn_build" type="button" name="ir_btn_build" value="Deploy iRule/DG" />
+            <?php
+            if (GetParentURLParameter('go') == 'new_irule' )
+                echo '<input id="ir_btn_build" type="button" name="ir_btn_build" value="Deploy iRule/DG" />';
+            else
+                echo '<input id="chg_ir_btn_build" type="button" name="chg_ir_btn_build" value="Change iRule/DG" />';
+            ?>
             <p></p>
             <fieldset class="row1">        
                 <legend>Evaluation Result and Review</legend>

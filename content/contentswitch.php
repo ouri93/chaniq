@@ -19,8 +19,7 @@ if(isset($_GET['go'])) {
         case "chg_vs": include('content/chg_vs.php'); break;
         case "chg_pool": include('content/chg_pool.php');break;
         case "chg_profile": include('content/chg_profile.php');break;
-        case "chg_cert": include('content/chg_cert.php'); break;
-        case "chg_irule": include('content/chg_irule.php');break;
+        case "chg_irule": include('content/new_irule.php');break;
         case "chg_monitor": include('content/chg_monitor.php');break;
         case "new_monitor": include('content/profile.php');break;
         case "mon_vs": include('content/mon_vs.php'); break;
