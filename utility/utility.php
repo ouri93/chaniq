@@ -625,6 +625,8 @@ function GetParentURLParameter($sParam)
     }
     
     $parentQry = explode('?', $parentURL);
+    // If no Query parameter, return to avoid error. e.g. Initial call like https://FQDN/index.php
+    if(sizeof($parentQry)== 1) return;
     //echo "In utility.php - GetParentURLParameter(): Query parameters: " . $parentQry[1] . " \nParent URL" . $parentURL . "\r\n";
     
     parse_str($parentQry[1], $output);

@@ -85,15 +85,15 @@ def new_irule_build(irDevIp, irDgName, irEnv, irType, irCode, irDgType, irDgData
             new_records = []
             arrRecords = irDgData.split(',');
             for arrRecord in arrRecords:
-                aRecord = arrRecord.split(':')
+                aRecord = arrRecord.split(':=')
                 logging.info("name: " + aRecord[0] + " Value: " + aRecord[1])
                 nr = [{'name':str(aRecord[0]), 'data':str(aRecord[1])}]
                 new_records.extend(nr)
-            if irDgType == "Address":
+            if irDgType == "ip":
                 mydg = mr.tm.ltm.data_group.internals.internal.create(name=std_irname, partition='Common', type='ip', records=new_records)
-            elif irDgType == "String":
+            elif irDgType == "string":
                 mydg = mr.tm.ltm.data_group.internals.internal.create(name=std_irname, partition='Common', type='string', records=new_records)
-            elif irDgType == "Integer":
+            elif irDgType == "integer":
                 mydg = mr.tm.ltm.data_group.internals.internal.create(name=std_irname, partition='Common', type='integer', records=new_records)
     except Exception as e:
         logging.info("iRule/Data Group Exception printing")
