@@ -12,7 +12,7 @@ def get_setting_val(aMon, attName):
 
 def get_tcpmon_setting(mr, parent_mon):
     tcpmons = mr.tm.ltm.monitor.tcps.get_collection()
-    outputDict = {'interval':'', 'timeout':'', 'send':'', 'recv':'', 'reverse':'', 'aliasPort':''}
+    outputDict = {'interval':'', 'timeout':'', 'send':'', 'recv':'', 'reverse':'', 'aliasPort':'', 'description':'', 'defaultsFrom':''}
     for amon in tcpmons:
         if(amon.name == parent_mon):
             outputDict['interval'] = get_setting_val(amon, "interval")
@@ -22,11 +22,14 @@ def get_tcpmon_setting(mr, parent_mon):
             outputDict['reverse'] = get_setting_val(amon, "reverse")
             destIP, aliasPort = amon.destination.split(":")
             outputDict['aliasPort'] = aliasPort
+            outputDict['description'] = get_setting_val(amon, "description")
+            outputDict['defaultsFrom'] = get_setting_val(amon, "defaultsFrom")
     return outputDict
 
 def get_httpmon_setting(mr, parent_mon):
     httpmons = mr.tm.ltm.monitor.https.get_collection()
-    outputDict = {'interval':'', 'timeout':'', 'send':'', 'recv':'', 'username':'', 'password': '', 'reverse':'', 'aliasPort':''}
+    #outputDict = {'interval':'', 'timeout':'', 'send':'', 'recv':'', 'username':'', 'password': '', 'reverse':'', 'aliasPort':''}
+    outputDict = {'interval':'', 'timeout':'', 'send':'', 'recv':'', 'username':'', 'password': '', 'reverse':'', 'aliasPort':'', 'description':'', 'defaultsFrom':''}
     for amon in httpmons:
         if(amon.name == parent_mon):
             outputDict['interval'] = get_setting_val(amon, "interval")
@@ -38,11 +41,13 @@ def get_httpmon_setting(mr, parent_mon):
             outputDict['reverse'] = get_setting_val(amon, "reverse")
             destIP, aliasPort = amon.destination.split(":")
             outputDict['aliasPort'] = aliasPort
+            outputDict['description'] = get_setting_val(amon, "description")
+            outputDict['defaultsFrom'] = get_setting_val(amon, "defaultsFrom")
     return outputDict
 
 def get_httpsmon_setting(mr, parent_mon):
     httpsmons = mr.tm.ltm.monitor.https_s.get_collection()
-    outputDict = {'interval':'', 'timeout':'', 'send':'', 'recv':'', 'username':'', 'password': '', 'cipherlist':'', 'reverse':'', 'aliasPort':''}
+    outputDict = {'interval':'', 'timeout':'', 'send':'', 'recv':'', 'username':'', 'password': '', 'cipherlist':'', 'reverse':'', 'aliasPort':'', 'description':'', 'defaultsFrom':''}
     for amon in httpsmons:
         if(amon.name == parent_mon):
             outputDict['interval'] = get_setting_val(amon, "interval")
@@ -55,11 +60,13 @@ def get_httpsmon_setting(mr, parent_mon):
             outputDict['reverse'] = get_setting_val(amon, "reverse")
             destIP, aliasPort = amon.destination.split(":")
             outputDict['aliasPort'] = aliasPort
+            outputDict['description'] = get_setting_val(amon, "description")
+            outputDict['defaultsFrom'] = get_setting_val(amon, "defaultsFrom")            
     return outputDict
 
 def get_udpmon_setting(mr, parent_mon):
     udpmons = mr.tm.ltm.monitor.udps.get_collection()
-    outputDict = {'interval':'', 'timeout':'', 'send':'', 'recv':'', 'reverse':'', 'aliasPort':''}
+    outputDict = {'interval':'', 'timeout':'', 'send':'', 'recv':'', 'reverse':'', 'aliasPort':'', 'description':'', 'defaultsFrom':''}
     for amon in udpmons:
         if(amon.name == parent_mon):
             outputDict['interval'] = get_setting_val(amon, "interval")
@@ -69,17 +76,21 @@ def get_udpmon_setting(mr, parent_mon):
             outputDict['reverse'] = get_setting_val(amon, "reverse")
             destIP, aliasPort = amon.destination.split(":")
             outputDict['aliasPort'] = aliasPort
+            outputDict['description'] = get_setting_val(amon, "description")
+            outputDict['defaultsFrom'] = get_setting_val(amon, "defaultsFrom")            
     return outputDict
 
 def get_tcphalfmon_setting(mr, parent_mon):
     tcphalfmons = mr.tm.ltm.monitor.tcp_half_opens.get_collection()
-    outputDict = {'interval':'', 'timeout':'', 'aliasPort':''}
+    outputDict = {'interval':'', 'timeout':'', 'aliasPort':'', 'description':'', 'defaultsFrom':''}
     for amon in tcphalfmons:
         if(amon.name == parent_mon):
             outputDict['interval'] = get_setting_val(amon, "interval")
             outputDict['timeout'] = get_setting_val(amon, "timeout")
             destIP, aliasPort = amon.destination.split(":")
             outputDict['aliasPort'] = aliasPort
+            outputDict['description'] = get_setting_val(amon, "description")
+            outputDict['defaultsFrom'] = get_setting_val(amon, "defaultsFrom")            
     return outputDict
 
 def get_gwicmpmon_setting(mr, parent_mon):
@@ -87,7 +98,7 @@ def get_gwicmpmon_setting(mr, parent_mon):
 
 def get_eavmon_setting(mr, parent_mon):
     evamons = mr.tm.ltm.monitor.externals.get_collection()
-    outputDict = {'interval':'', 'timeout':'', 'args':'', 'run':'', 'aliasPort':''}
+    outputDict = {'interval':'', 'timeout':'', 'args':'', 'run':'', 'aliasPort':'', 'description':'', 'defaultsFrom':''}
     for amon in evamons:
         if(amon.name == parent_mon):
             outputDict['interval'] = get_setting_val(amon, "interval")
@@ -96,6 +107,8 @@ def get_eavmon_setting(mr, parent_mon):
             outputDict['run'] = get_setting_val(amon, "run")
             destIP, aliasPort = amon.destination.split(":")
             outputDict['aliasPort'] = aliasPort
+            outputDict['description'] = get_setting_val(amon, "description")
+            outputDict['defaultsFrom'] = get_setting_val(amon, "defaultsFrom")            
     return outputDict
    
 

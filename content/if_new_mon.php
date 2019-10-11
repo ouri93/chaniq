@@ -18,7 +18,12 @@
     </head>
     <body style="background-color: #ffffff;">
         <form class="inner-form">
-            <h1> Create a new Pool </h1>
+        	<?php
+        	if (GetParentURLParameter('go') == 'new_monitor' )
+        	    echo '<title>Create new Health Monitors</title>';
+        	else
+        	    echo '<title>Modify Health Monitors</title>';
+            ?>
             <fieldset class="row1">
                 <legend>Select a target LTM</legend>
                 <?php
@@ -49,17 +54,43 @@
                     <tbody>
                         <tr>
                             <td>
-                                <label>Monitor Name: </label>
-                                <input type="text" name="m_name" id="m_name" required="required" />
-                            </td>
-                            <td>
-                                <label>Monitor Description: </label>
-                                <input type="text" name="m_desc" id="m_desc" />
-                            </td>
-                            <td>
-                                <label>Env.: </label>
-                                <select name="p_env" id="p_env" required="required"> 
                                 <?php
+                                if (GetParentURLParameter('go') == 'new_monitor' ){
+        	                        echo '<label>Monitor Name: </label>';
+                                    echo '<input type="text" name="m_name" id="m_name" required="required" />';
+                                }
+                                else{
+                                    echo '<label>Monitor Type: </label>';
+                                    echo '<select name="chg_m_type" id="chg_m_type" required="required" />';
+                                    echo '<option selected="selected">Select...</option>';
+                                    echo '<option>HTTP</option>';
+                                    echo '<option>HTTPS</option>';
+                                    echo '<option>TCP</option>';
+                                    echo '<option>TCP Half Open</option>';
+                                    echo '<option>UDP</option>';
+                                }
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                    if (GetParentURLParameter('go') == 'new_monitor' ){
+                                        echo '<label>Monitor Description: </label>';
+                                        echo '<input type="text" name="m_desc" id="m_desc" />';
+                                    }
+                                    else{
+                                        echo '<label>Monitor Name: </label>';
+                                        echo '<select name="select_mon_name" id="select_mon_name" required="required" />';
+                                        echo '<option value="select" selected="selected">Select...</option>';
+                                    }
+                                ?>
+                                
+                            </td>
+                            <td>
+                                <?php
+                                if (GetParentURLParameter('go') == 'new_monitor' ){
+                                    echo '<label>Env.: </label>';
+                                    echo '<select name="p_env" id="p_env" required="required">';
+
                                     $iniarray = parse_ini_section_file();
                     
                                     foreach ($iniarray as $section => $values){
@@ -70,28 +101,41 @@
                                             }
                                         }
                                     }
+                                    echo '</select>';
+                                }
                                 ?>
-                            </select>
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                <label>Monitor Type: </label>
-                                <select name="m_type" id="m_type" required="required" />
-                                	<option selected="selected">Select...</option>
-                                	<option>HTTP</option>
-                                	<option>HTTPS</option>
-                                	<option>TCP</option>
-                                	<option>TCP Half Open</option>
-                                	<!-- <option>ICMP</option>  -->
-                                	<!-- <option>External</option> -->
-                                	<option>UDP</option>
+                                <?php
+                                if (GetParentURLParameter('go') == 'new_monitor' ){
+                                    echo '<label>Monitor Type: </label>';
+                                    echo '<select name="m_type" id="m_type" required="required" />';
+                                    echo '<option selected="selected">Select...</option>';
+                                    echo '<option>HTTP</option>';
+                                    echo '<option>HTTPS</option>';
+                                    echo '<option>TCP</option>';
+                                    echo '<option>TCP Half Open</option>';
+                                    echo '<option>UDP</option>';
+                                }
+                                else {
+                                    echo '<label>Monitor Description: </label>';
+                                    echo '<input type="text" name="m_desc" id="m_desc" />';
+                                }
+                                ?>
                             </td>
                             <td>
-                                <label>Parent Monitor: </label>
-                                <select name="m_type_parent" id="m_type_parent" required="required" />
+                            	<label>Parent Monitor: </label>
+                                <?php
+                                    if (GetParentURLParameter('go') == 'new_monitor' ){
+                                        echo '<select name="m_type_parent" id="m_type_parent" required="required" />';
+                                    }
+                                    else{
+                                        echo '<select name="chg_m_type_parent" id="chg_m_type_parent" required="required" disabled style="background-color: #E6E3E3;" />';
+                                    }
+                                ?>
                             </td>
-    
                         </tr>
                     </tbody>
                 </table>
@@ -109,7 +153,13 @@
                 </fieldset>
                 </p>
             </fieldset>
-            <input id="btn_newMonBuild" type="button" name="deploy_mon" value="Deploy Monitor" />
+            <?php
+                if (GetParentURLParameter('go') == 'new_monitor' )
+                    echo '<input id="btn_newMonBuild" type="button" name="deploy_mon" value="Deploy Monitor" />';       
+                else
+                    echo '<input id="btn_chgMonBuild" type="button" name="change_mon" value="Modify Monitor" />';
+            ?>
+            
             <p></p>
             <fieldset class="row1">        
                 <legend>Evaluation Result and Review</legend>

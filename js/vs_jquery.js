@@ -186,6 +186,21 @@ function loadOptNamesProcessData(response_in, selID) {
 	$('#' + selID).append(strResult);
 }
 
+// Process return data from BIG-IP after deleting a virtual server
+function deleteVsProcess(response_in){
+	var strResult = '';
+	$.each(response_in, function(index) {
+		if(index == 0) 
+			strResult = "<b>" + response_in[index] + "</b><br>";
+		else
+			strResult += response_in[index] + "<br>";
+	});
+	
+	//alert("Return output: " + strResult);
+	$('#newvs_EvalReview').html(strResult);
+}
+
+
 function loadOptNames(ltmIP, loadType, selID){
 	var callingUrl = '';
 	
@@ -216,7 +231,7 @@ function loadOptNames(ltmIP, loadType, selID){
 
 function loadObjNames(ltmIP, objType, selID){
 	var callingUrl = '';
-	alert("loadObjNames called - selID: " + selID + " objType: " + objType);
+	//alert("loadObjNames called - selID: " + selID + " objType: " + objType);
 	callingUrl = 'get_ltmobj_names';
 	
 	ajxOut = $.ajax({
@@ -679,7 +694,7 @@ $(function () {
 	
 	$('#chg_vs_sel_vs').on('change', function() {
 		var vsname_chosen = $('#chg_vs_sel_vs option:selected').val();
-		alert('Chosen VS name: ' + vsname_chosen);
+		//alert('Chosen VS name: ' + vsname_chosen);
 		
 		var nameAndIp = $('#ltmSelBox option:selected').val();
 		var arr = nameAndIp.split(":");
@@ -703,4 +718,44 @@ $(function () {
 		// Load the chosen VS configuration - Descritpion, Dest IP, Service Port, VS Type, TCP Profile, Persistence, iRule, SNAT Pool, Policies, HTTP Profile, Client SSL Profile, Server SSL profile, Pool name
 		
 	});
+	
+	// Event handler for when Delete button is clicked
+	$('#vs_btn_delete').on('click', function(){
+		if($('#chg_vs_sel_vs').val() == 'select'){
+			alert("Please select a virtual server name to delete");
+			return;
+		}
+		
+		var nameAndIp = $('#ltmSelBox option:selected').val();
+		var arr = nameAndIp.split(":");
+		var active_ltm = arr[1];
+		
+		var vs_name = $('#chg_vs_sel_vs').val();
+		var partition = "Common";
+		var vsData = {'PhpFileName':'', 'DevIP':'', 'Vs_name':'', 'Partition':''};
+		
+		vsData['PhpFileName'] = 'del_vs';
+		vsData['DevIP'] = active_ltm;
+		vsData['Vs_name'] = vs_name;
+		vsData['Partition'] = partition;
+		
+    	ajxOut = $.ajax({
+    		url: '/content/del_vs.php',
+    		type: 'POST',
+    		dataType: 'JSON',
+    		data: {'jsonVsData' : JSON.stringify(vsData)},
+    		error: function(jqXHR, textStatus, errorThrown){
+    			alert("Ajax call to delete a virtual server has failed!");
+                console.log('jqXHR:');
+                console.log(jqXHR);
+                console.log('textStatus:');
+                console.log(textStatus);
+                console.log('errorThrown:');
+                console.log(errorThrown);
+    		}
+    	});
+    	ajxOut.done(deleteVsProcess);
+		
+	});
+	
 });
