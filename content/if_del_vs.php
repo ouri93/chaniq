@@ -35,7 +35,7 @@
                     asort($allBigipNames);
                 ?>
                 <p>
-                    <div id='chg_div_ltmchoice' class="chgltmDeviceList">
+                    <div id='del_div_ltmchoice' class="delltmDeviceList">
                     	<?php 
                     	dynamic_select($allBigipNames, "ltmSelBox", "", "Select...");
                     	?>
@@ -46,7 +46,7 @@
 				<legend> Select a Virtual Server</legend>
 				<p>
 					<label> Virtual Server:</label>
-					<select id='chg_vs_sel_vs' name='chg_vs_sel_vs'><option value='select'>Select...</option></select>
+					<select id='del_vs_sel_vs' name='del_vs_sel_vs'><option value='select'>Select...</option></select>
 				</p>
 			</fieldset>            
             

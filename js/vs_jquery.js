@@ -719,9 +719,18 @@ $(function () {
 		
 	});
 	
+	$('#del_div_ltmchoice').on('change', function() {
+		var nameAndIp = $('#ltmSelBox option:selected').val();
+		if (nameAndIp == 'Select...') return;
+		
+		var arr = nameAndIp.split(":");
+		loadObjNames(arr[1], 'VS', 'del_vs_sel_vs');
+
+	});
+	
 	// Event handler for when Delete button is clicked
 	$('#vs_btn_delete').on('click', function(){
-		if($('#chg_vs_sel_vs').val() == 'select'){
+		if($('#del_vs_sel_vs').val() == 'select'){
 			alert("Please select a virtual server name to delete");
 			return;
 		}
@@ -730,17 +739,17 @@ $(function () {
 		var arr = nameAndIp.split(":");
 		var active_ltm = arr[1];
 		
-		var vs_name = $('#chg_vs_sel_vs').val();
+		var vs_name = $('#del_vs_sel_vs').val();
 		var partition = "Common";
 		var vsData = {'PhpFileName':'', 'DevIP':'', 'Vs_name':'', 'Partition':''};
 		
-		vsData['PhpFileName'] = 'del_vs';
+		vsData['PhpFileName'] = 'del_vs_ajax';
 		vsData['DevIP'] = active_ltm;
 		vsData['Vs_name'] = vs_name;
 		vsData['Partition'] = partition;
 		
     	ajxOut = $.ajax({
-    		url: '/content/del_vs.php',
+    		url: '/content/del_vs_ajax.php',
     		type: 'POST',
     		dataType: 'JSON',
     		data: {'jsonVsData' : JSON.stringify(vsData)},
@@ -755,7 +764,8 @@ $(function () {
     		}
     	});
     	ajxOut.done(deleteVsProcess);
-		
+    	// Update Virtual Server list after deletion
+    	loadObjNames(arr[1], 'VS', 'del_vs_sel_vs');
 	});
 	
 });

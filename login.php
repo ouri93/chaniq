@@ -30,7 +30,7 @@ if(isset($_GET['logout'])){
     </head>
     <body>
         <div id="loginbody" style="text-align: center">
-            <img src="./images/bigiq_login_image.png" style="padding: 40px;">
+            <img src="./images/chaniq_login_image.png" style="padding: 40px;">
             <div id="loginpass">
                 <form method="post">
                     <table style="align-self: center">

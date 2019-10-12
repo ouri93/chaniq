@@ -19,7 +19,7 @@
     <body>
         <div id="header">
             <div id="logo">
-                <img src="./images/bigiq_top.png" >
+                <img src="./images/chaniq_top.png" >
             </div>
             <div id="navbar" align="right">
                 <?php
