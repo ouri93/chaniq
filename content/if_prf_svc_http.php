@@ -14,7 +14,14 @@
                  
         <script type="text/javascript" src="/js/prf_jquery.js"></script>
         <?php include('../utility/utility.php'); ?>
-        <title>Create HTTP Service Profile</title>
+        <?php
+        if (GetParentURLParameter('go') == 'new_profile')
+            echo '<title>Create HTTP Service Profile</title>';
+        elseif (GetParentURLParameter('go') == 'chg_profile')
+            echo '<title>Modify HTTP Service Profile</title>';
+        elseif (GetParentURLParameter('go') == 'del_profile')
+            echo '<title>Delete HTTP Service Profile</title>';
+        ?>
     </head>
     <body style="background-color: #ffffff;">
         <form class="inner-form">
@@ -55,13 +62,21 @@
     	            		elseif (GetParentURLParameter('go') == 'chg_profile'){
     	            		    echo "<td width='132px'><label>*Name:</label> </td><td><select id='chg_svc_prf_name_select' required='required'> <option value='none' selected='selected'>None</option></td>";
     	            		}
+    	            		elseif (GetParentURLParameter('go') == 'del_profile'){
+    	            		    echo "<td width='132px'><label>*Partition:</label> </td><td><select id='prf_partition_name_select' required='required'><option value='select' selected='selected'>Select...</option><option value='common' >Common</option></td>"; 
+    	            		    echo "<td width='132px'><label>*Name:</label> </td><td><select id='del_svc_prf_name_select' required='required'> <option value='none' selected='selected'>None</option></td>";
+    	            		    
+    	            		}
     	            		?>
     	            	</tr>
-    	            	<tr> <td width='132px'><label>*Proxy Mode:</label> </td><td><select id='svc_prf_proxymode_select' required='required'><option value='reverse' selected='selected'>Reverse</option><option value='transparent'>Transparent</option><option value='explicit'>Explicit</option></td></tr>
-    	            	<tr id='tr_svc_prf_type' >
-    	            		<td width='132px' ><label>*Parent Profile:</label></td><td><select id='svc_prf_type_select' required='required' ><option id='noDelete' value='select' selected='selected' >Select...</option></td>
-    	            	</tr>
-    			        <!--  Conditional HTML code here  --> 
+    	            	<?php 
+    	            	if (GetParentURLParameter('go') != 'del_profile'){
+        	            	echo "<tr> <td width='132px'><label>*Proxy Mode:</label> </td><td><select id='svc_prf_proxymode_select' required='required'><option value='reverse' selected='selected'>Reverse</option><option value='transparent'>Transparent</option><option value='explicit'>Explicit</option></td></tr>";
+        	            	echo "<tr id='tr_svc_prf_type' >";
+        	            	echo "<td width='132px' ><label>*Parent Profile:</label></td><td><select id='svc_prf_type_select' required='required' ><option id='noDelete' value='select' selected='selected' >Select...</option></td>";
+        	            	echo "</tr>";
+    			        } 
+    			        ?>
             	        </tbody>
                     </table>
                 </p>
@@ -73,6 +88,9 @@
                 	}
                 	elseif (GetParentURLParameter('go') == 'chg_profile'){
                 	    echo '<input id="prf_btn_change" type="button" style="width:130px" name="prf_btn_change" value="Apply Changes" />';
+                	}
+                	elseif (GetParentURLParameter('go') == 'del_profile'){
+                	    echo '<input id="prf_btn_delete" type="button" style="width:130px" name="prf_btn_delete" value="Delete" />';
                 	}
     	            ?>
                 </p>

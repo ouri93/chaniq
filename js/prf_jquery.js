@@ -52,6 +52,56 @@ function getCIDRByMask(strCIDR) {
 	return cidr;
 }
 
+// Retrieve partition names from a given BIG-IP
+function loadPartitionNames(ltmIP, selID){
+	
+	var paramData = {'phpFileName':'get_partition_names', 'DevIP':'' };
+	
+	paramData['DevIP'] = ltmIP;
+
+	ajxOut = $.ajax({
+		url: '/content/get_partition_names.php',
+		type: 'POST',
+		dataType: 'JSON',
+		data: {'jsonData' : JSON.stringify(paramData)},
+		error: function(jqXHR, textStatus, errorThrown){
+			alert("Ajax call to retrieve Partition names (loadPartitionNames) has failed!");
+            console.log('jqXHR:');
+            console.log(jqXHR);
+            console.log('textStatus:');
+            console.log(textStatus);
+            console.log('errorThrown:');
+            console.log(errorThrown);
+		}
+	});
+	ajxOut.done(function (response_in) {
+		var strResult = '';
+		//Reset all options and rebuild default option values
+		$('#' + selID + ' option').each(function(index) {
+			$(this).remove();
+		});
+		
+		$('#' + selID).append("<option value='select' selected='selected'>Select...</option><option value='common' >Common</option>");
+		
+		//var partNames = "Part2:Part3:".split(":");
+		var partNames = response_in.split(":");
+		
+		// Empty array - Return 1
+		var numOfPart = partNames.length; 
+		if (numOfPart <= 1) return;
+		else{
+			var i=0;
+			for (;i < numOfPart-1;i++){
+				strResult += "<option value='" + partNames[i].toLowerCase() + "'>" + partNames[i] + "</option>";
+			}
+			
+			$('#' + selID).append(strResult);	
+		}
+		//alert("Return output: " + strResult);
+		
+	});
+}
+
 // Initialize Profile Key and default value based on the profile type
 // This function determins the supported profile options
 function initPrfOptData(prfOptData, prfType) {
@@ -1188,31 +1238,35 @@ $(function () {
 		var nameAndIp = $('#ltmSelBox option:selected').val();
 		if (nameAndIp == 'Select...') return;
 		
-		var prfType = window.parent.document.getElementById('selectedPrfType').value;
-		if (prfType == 'HTTP')
-			prfType = prfType + ":" + window.parent.document.getElementById('selectedPrfProxyType').value;
-		
 		var arr = nameAndIp.split(":");
 		//alert("Device IP: " + arr[1] + " Profile Type: " + prfType);
 		
-		
-		// Call Ajax to retrieve parent profile names
-		ajxOut = $.ajax({
-			url: '/content/get_profile_names.php',
-			type: 'POST',
-			dataType: 'JSON',
-			data: {method:'get_profile_names', DevIP:arr[1], LoadTypeName:prfType},
-			error: function(jqXHR, textStatus, errorThrown){
-				alert("Ajax call for retrieving profile names has failed!");
-	            console.log('jqXHR:');
-	            console.log(jqXHR);
-	            console.log('textStatus:');
-	            console.log(textStatus);
-	            console.log('errorThrown:');
-	            console.log(errorThrown);
-			}
-		});
-		ajxOut.done(prfNameProcessData);
+		if (GetParentURLParameter('go') == 'new_profile' | GetParentURLParameter('go') == 'chg_profile'){
+			var prfType = window.parent.document.getElementById('selectedPrfType').value;
+			if (prfType == 'HTTP')
+				prfType = prfType + ":" + window.parent.document.getElementById('selectedPrfProxyType').value;
+			
+			// Call Ajax to retrieve parent profile names
+			ajxOut = $.ajax({
+				url: '/content/get_profile_names.php',
+				type: 'POST',
+				dataType: 'JSON',
+				data: {method:'get_profile_names', DevIP:arr[1], LoadTypeName:prfType},
+				error: function(jqXHR, textStatus, errorThrown){
+					alert("Ajax call for retrieving profile names has failed!");
+		            console.log('jqXHR:');
+		            console.log(jqXHR);
+		            console.log('textStatus:');
+		            console.log(textStatus);
+		            console.log('errorThrown:');
+		            console.log(errorThrown);
+				}
+			});
+			ajxOut.done(prfNameProcessData);
+		}
+		else if (GetParentURLParameter('go') == 'del_profile'){
+			loadPartitionNames(arr[1], 'prf_partition_name_select');
+		}
 	});
 	
 	$('#svc_prf_proxymode_select').on('change', function() {

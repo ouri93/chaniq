@@ -215,7 +215,7 @@ function loadOptNames(ltmIP, loadType, selID){
 		dataType: 'JSON',
 		data: {method:callingUrl, DevIP:ltmIP, LoadTypeName:loadType},
 		error: function(jqXHR, textStatus, errorThrown){
-			alert("Ajax call failed!");
+			alert("Ajax call to retrieve object option names (loadOptNames) has failed!");
             console.log('jqXHR:');
             console.log(jqXHR);
             console.log('textStatus:');
@@ -240,7 +240,7 @@ function loadObjNames(ltmIP, objType, selID){
 		dataType: 'JSON',
 		data: {method:callingUrl, DevIP:ltmIP, LoadTypeName:objType},
 		error: function(jqXHR, textStatus, errorThrown){
-			alert("Ajax call failed!");
+			alert("Ajax call to retrieve object names (loadObjNames) failed!");
             console.log('jqXHR:');
             console.log(jqXHR);
             console.log('textStatus:');
@@ -305,7 +305,7 @@ function loadVSConfigProcessData(response_in) {
 
 function loadObjNamesProcessData(response_in, selID) {
 	var strResult = '';
-	alert("loadObjNameProcessData called - selID: " + selID);
+	//alert("loadObjNameProcessData called - selID: " + selID);
 	//Remove existing profile types and then add new ones
 	$('#' + selID + ' option').each(function(index) {
 		if (index != 0) $(this).remove();
@@ -617,7 +617,7 @@ $(function () {
     		async: false,
     		data: {'jsonVsData' : JSON.stringify(vsData)},
     		error: function(jqXHR, textStatus, errorThrown){
-    			alert("Ajax call failed!");
+    			alert("Ajax call to build requested virtual server has failed!");
                 console.log('jqXHR:');
                 console.log(jqXHR);
                 console.log('textStatus:');
