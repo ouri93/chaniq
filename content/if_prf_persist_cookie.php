@@ -13,8 +13,16 @@
         <script> window.jQuery || document.write("<script src='/js/jquery-3.2.1.js'><\/script>"); </script>  
                  
         <script type="text/javascript" src="/js/prf_jquery.js"></script>
-        <?php include('../utility/utility.php'); ?>        
-        <title>Create Cookie Persistence Profile</title>
+        <?php include('../utility/utility.php'); ?>
+        <?php
+        if (GetParentURLParameter('go') == 'new_profile')
+            echo '<title>Create Cookie Persistence Profile</title>';
+        elseif (GetParentURLParameter('go') == 'chg_profile')
+            echo '<title>Change Cookie Persistence Profile</title>';
+        elseif (GetParentURLParameter('go') == 'del_profile')
+            echo '<title>Delete Cookie Persistence Profile</title>';
+        ?>
+        
     </head>
     <body style="background-color: #ffffff;">
         <form class="inner-form">
@@ -53,12 +61,19 @@
     	            		elseif (GetParentURLParameter('go') == 'chg_profile'){
     	            		    echo "<td width='132px'><label>*Name:</label> </td><td><select id='chg_svc_prf_name_select' required='required'> <option value='none' selected='selected'>None</option></td>";
     	            		}
+    	            		elseif (GetParentURLParameter('go') == 'del_profile'){
+    	            		    echo "<td width='132px'><label>*Partition:</label> </td><td><select id='prf_partition_name_select' required='required'><option value='select' selected='selected'>Select...</option><option value='common' >Common</option></td>";
+    	            		    echo "<td width='132px'><label>*Name:</label> </td><td><select id='del_svc_prf_name_select' required='required'> <option value='none' selected='selected'>None</option></td>";
+    	            		}
     	            		?> 
     	            	</tr>
-    	            	<tr id='tr_svc_prf_type' >
-    	            		<td width='132px' ><label>*Parent Profile:</label></td><td><select id='svc_prf_type_select' required='required' ><option id='noDelete' value='select' selected='selected' >Select...</option></select></td>
-    	            	</tr>
-    			        <!--  Conditional HTML code here  --> 
+    	            	<?php 
+    	            	if (GetParentURLParameter('go') != 'del_profile'){
+        	            	echo "<tr id='tr_svc_prf_type' >";
+        	            	echo "<td width='132px' ><label>*Parent Profile:</label></td><td><select id='svc_prf_type_select' required='required' ><option id='noDelete' value='select' selected='selected' >Select...</option></select></td>";
+        	            	echo "</tr>";
+    	            	}
+    	            	?>
             	        </tbody>
                     </table>
                 </p>
@@ -70,6 +85,9 @@
                 	}
                 	elseif (GetParentURLParameter('go') == 'chg_profile'){
                 	    echo '<input id="prf_btn_change" type="button" style="width:130px" name="prf_btn_change" value="Apply Changes" />';
+                	}
+                	elseif (GetParentURLParameter('go') == 'del_profile'){
+                	    echo '<input id="prf_btn_delete" type="button" style="width:130px" name="prf_btn_delete" value="Delete" />';
                 	}
     	            ?>
                 </p>

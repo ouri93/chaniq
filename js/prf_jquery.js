@@ -102,6 +102,50 @@ function loadPartitionNames(ltmIP, selID){
 	});
 }
 
+//Retrieve profile names of a given Profile type from a given BIG-IP
+function loadProfileNames(ltmIP, prfType, selID){
+	
+	ajxOut = $.ajax({
+		url: '/content/get_profile_names.php',
+		type: 'POST',
+		dataType: 'JSON',
+		data: {method:'get_profile_names', DevIP:ltmIP, LoadTypeName:prfType},
+		error: function(jqXHR, textStatus, errorThrown){
+			alert("Ajax call to retrieve Profile names (loadProfileNames) has failed!");
+            console.log('jqXHR:');
+            console.log(jqXHR);
+            console.log('textStatus:');
+            console.log(textStatus);
+            console.log('errorThrown:');
+            console.log(errorThrown);
+		}
+	});
+	ajxOut.done(function (response_in) {
+		var strResult = '';
+		//Reset all options and rebuild default option values
+		$('#' + selID + ' option').each(function(index) {
+			$(this).remove();
+		});
+		
+		var flag=0;
+		// NEED CODE TO FILTER BUILTIN PROFILES
+		$.each(response_in, function(index) {
+			if (response_in[index] == "none"){
+				$('#' + selID).append("<option value='none' selected='selected'>None</option>");
+				flag = 1;
+			}
+			else
+				strResult += "<option value='" + response_in[index] + "'>" + response_in[index] + "</option>";
+		});
+		
+		// From Python get_profiles.py, some profiles add "none" some don't.. No consistencey. This is simple workaround. 
+		if(flag == 0)$('#' + selID).append("<option value='none' selected='selected'>None</option>");
+		
+		$('#' + selID).append(strResult);	
+
+	});
+}
+
 // Initialize Profile Key and default value based on the profile type
 // This function determins the supported profile options
 function initPrfOptData(prfOptData, prfType) {
@@ -1138,11 +1182,7 @@ function setPrfHtml(prfType, response_in){
 function getStrHttpHtml(pxyMode){
 	// Default Page Load action - Load parent profile names
 	var nameAndIp = $('#ltmSelBox option:selected').val();
-	var prfType = window.parent.document.getElementById('selectedPrfType').value;
-	if (prfType == 'HTTP' )
-		prfType = prfType + ":dnsresolver";
 
-	var arr = nameAndIp.split(":");
 	var dnsRzvs = [];
 	// Get the list of DNS Resolver if HTTP proxy mode is 'explicit'. Wait for ajax transaction completed - async: false
 	ajxOut = $.ajax({
@@ -1800,5 +1840,17 @@ $(function () {
 				processBuildProfileData(response_in, prfType);
 			});			
 		}
+	});
+	
+	// Change Event handler when a partition is selected
+	$('#prf_partition_name_select').on('change', function(){
+		if(this.value == 'select') return;
+		
+		var nameAndIp = $('#ltmSelBox option:selected').val();
+		var prfType = window.parent.document.getElementById('selectedPrfType').value;
+		var arr = nameAndIp.split(":");
+		
+		loadProfileNames(arr[1], prfType, 'del_svc_prf_name_select');
+
 	});
 });

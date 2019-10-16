@@ -65,7 +65,6 @@
     	            		elseif (GetParentURLParameter('go') == 'del_profile'){
     	            		    echo "<td width='132px'><label>*Partition:</label> </td><td><select id='prf_partition_name_select' required='required'><option value='select' selected='selected'>Select...</option><option value='common' >Common</option></td>"; 
     	            		    echo "<td width='132px'><label>*Name:</label> </td><td><select id='del_svc_prf_name_select' required='required'> <option value='none' selected='selected'>None</option></td>";
-    	            		    
     	            		}
     	            		?>
     	            	</tr>
