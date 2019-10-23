@@ -80,8 +80,13 @@ function loadPartitionNames(ltmIP, selID){
 		$('#' + selID + ' option').each(function(index) {
 			$(this).remove();
 		});
-		
 		$('#' + selID).append("<option value='select' selected='selected'>Select...</option><option value='common' >Common</option>");
+
+		$('#del_svc_prf_name_select option').each(function(index) {
+			$(this).remove();
+		});
+		$('#del_svc_prf_name_select').append("<option value='none' selected='selected'>None</option>");
+
 		
 		//var partNames = "Part2:Part3:".split(":");
 		var partNames = response_in.split(":");
@@ -128,14 +133,17 @@ function loadProfileNames(ltmIP, prfType, selID){
 		});
 		
 		var flag=0;
-		// NEED CODE TO FILTER BUILTIN PROFILES
+
+		// BIG-IP 12.1.2 Builtin profile list
+		var builtinProfiles = ["http", "http-explicit", "http-transparent", "dns", "cookie", "dest_addr", "hash", "msrdp", "sip_info", "source_addr", "ssl", "universal", "fastL4", "apm-forwarding-fastL4", "apm-forwarding-client-tcp", "apm-forwarding-server-tcp", "tcp", "udp", "clientssl", "serverssl", "oneconnect", "stream"];
 		$.each(response_in, function(index) {
 			if (response_in[index] == "none"){
 				$('#' + selID).append("<option value='none' selected='selected'>None</option>");
 				flag = 1;
 			}
-			else
+			else if (builtinProfiles.includes(response_in[index])== false ){
 				strResult += "<option value='" + response_in[index] + "'>" + response_in[index] + "</option>";
+			}
 		});
 		
 		// From Python get_profiles.py, some profiles add "none" some don't.. No consistencey. This is simple workaround. 
@@ -145,6 +153,38 @@ function loadProfileNames(ltmIP, prfType, selID){
 
 	});
 }
+
+// Delete a given profile name of a given partition
+function deleteProfile(devIP, prfType, partition, prfName){
+	alert("LTM: " + devIP + "\nProfile Type: " + prfType + "\nPartition: " + partition + "\nProfile Name: " + prfName);
+	ajxOut = $.ajax({
+		url: '/content/del_profile_ajax.php',
+		type: 'POST',
+		dataType: 'JSON',
+		data: {method:'del_profile_ajax', DevIP:devIP, LoadTypeName:prfType, Partition:partition, PrfName:prfName},
+		error: function(jqXHR, textStatus, errorThrown){
+			alert("Ajax call to delete a given profile (deleteProfile) has failed!");
+            console.log('jqXHR:');
+            console.log(jqXHR);
+            console.log('textStatus:');
+            console.log(textStatus);
+            console.log('errorThrown:');
+            console.log(errorThrown);
+		}
+	});
+	ajxOut.done(function (response_in){
+		
+		/* Debugging */
+
+		var strResult = '***** Profile deletion result *****<br>';
+		$.each(response_in, function(index) {
+			strResult += response_in[index] + "<br>";
+		});
+		
+		$('#newprf_EvalReview').html(strResult);
+	});
+}
+
 
 // Initialize Profile Key and default value based on the profile type
 // This function determins the supported profile options
@@ -1846,11 +1886,36 @@ $(function () {
 	$('#prf_partition_name_select').on('change', function(){
 		if(this.value == 'select') return;
 		
+		// Reset Profile Name select option to default
+		$('#del_svc_prf_name_select option').each(function(index) {
+			$(this).remove();
+		});
+		$('#del_svc_prf_name_select').append("<option value='none' selected='selected'>None</option>");
+
+		
 		var nameAndIp = $('#ltmSelBox option:selected').val();
 		var prfType = window.parent.document.getElementById('selectedPrfType').value;
 		var arr = nameAndIp.split(":");
 		
 		loadProfileNames(arr[1], prfType, 'del_svc_prf_name_select');
 
+	});
+	
+	// Click event handler when "Delete" buttion is clicked
+	$('#prf_btn_delete').on('click', function(){
+		if ($('#ltmSelBox').val() == 'select' || $('#prf_partition_name_select').val() == 'select' || $('#del_svc_prf_name_select').val() == 'none')
+			alert("Required field is not fed!");
+		
+		// Builtin profile names are not listed from drop-down box
+		var nameAndIp = $('#ltmSelBox option:selected').val();
+		var arr = nameAndIp.split(":");
+		var prfType = window.parent.document.getElementById('selectedPrfType').value;
+		var partition = $('#prf_partition_name_select').val();
+		var prfName = $('#del_svc_prf_name_select').val();
+		
+		deleteProfile(arr[1], prfType, partition, prfName);
+		
+		
+		
 	});
 });
