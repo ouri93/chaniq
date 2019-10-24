@@ -26,6 +26,7 @@ if(isset($_GET['go'])) {
         case "mon_pool": include('content/mon_pool.php');break;
         case "del_vs": include('content/del_vs.php');break;
         case "del_profile": include('content/del_profile.php');break;
+        case "del_pool": include('content/del_pool.php');break;
         case "del_cert": include('content/del_cert.php'); break;
         case "del_irule": include('content/del_irule.php');break;
         case "del_monitor": include('content/del_monitor.php');break;

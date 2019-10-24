@@ -12,15 +12,15 @@
      * @return Array
      *
      */
-    function get_poolNames($active_ltm)
+    function get_poolNames($active_ltm, $partName)
     {
-        $cmd = '/usr/bin/python /var/www/chaniq/py/get_pool_names.py '.$active_ltm;
+        $cmd = '/usr/bin/python /var/www/chaniq/py/get_pool_names.py '.$active_ltm. ' ' .$partName;
         //echo "<br>Command:" .$cmd." <br>";
         error_log(date("y-m-d H:i:s").": get_poolNames() - get_poolNames() called\n", 3, "/var/log/chaniqphp.log");
         exec($cmd, $output);
         
         //echo "<br>Output: " .$output[0];
-        $rtn_out = explode(":", $output['0']);
+        $rtn_out = array_filter(explode(":", $output['0']), 'strlen');
         return $rtn_out;
     }
     
@@ -29,13 +29,14 @@
         {
             //$bigipIP = json_decode($_POST['DevIP']);
             $bigipIP = $_POST['DevIP'];
+            $partName = $_POST['Partition'];
             //error_log(date("y-m-d H:i:s").": get_pool_names() - Device IP sent over POST\n", 3, "/var/log/chaniqphp.log");
-            file_put_contents("/var/log/chaniqphp.log", "get_pool_names() Device IP: " . $bigipIP, FILE_APPEND);
+            file_put_contents("/var/log/chaniqphp.log", "get_pool_names() Device IP: " . $bigipIP . " Partition: " . $partName , FILE_APPEND);
         }
         
         //$echoOut = echoTest();
         //file_put_contents("/var/log/chaniqphp.log", "get_pool_names() EchoTest: " . $echoOut, FILE_APPEND);
-        $poolNames = get_poolNames($bigipIP);
+        $poolNames = get_poolNames($bigipIP, $partName);
 
         foreach ($poolNames as $value) {
             file_put_contents("/var/log/chaniqphp.log", "Pool names: " . $value . "\n", FILE_APPEND);

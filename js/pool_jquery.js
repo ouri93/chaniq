@@ -596,9 +596,16 @@ function poolBuildProcessData(response_in)
 function prfPoolNameProcessData(response_in) {
 	var strResult = '';
 	//Remove existing profile types and then add new ones
-	$('#chg_p_name_select option').each(function(index) {
-		if (index != 0) $(this).remove();
-	});
+	if (GetParentURLParameter('go') == 'chg_pool'){
+		$('#chg_p_name_select option').each(function(index) {
+			if (index != 0) $(this).remove();
+		});
+	}
+	else if (GetParentURLParameter('go') == 'del_pool'){
+		$('#del_p_name_select option').each(function(index) {
+			if (index != 0) $(this).remove();
+		});
+	}
 	
 	$.each(response_in, function(index) {
 		if (response_in[index] != "none"){
@@ -607,7 +614,66 @@ function prfPoolNameProcessData(response_in) {
 	});
 	
 	//alert("Return output: " + strResult);
-	$('#chg_p_name_select').append(strResult);
+	
+	if (GetParentURLParameter('go') == 'chg_pool')
+		$('#chg_p_name_select').append(strResult);
+	else if (GetParentURLParameter('go') == 'del_pool')
+		$('#del_p_name_select').append(strResult);
+}
+
+//Retrieve partition names from a given BIG-IP
+function loadPartitionNames(ltmIP, selID){
+	
+	var paramData = {'phpFileName':'get_partition_names', 'DevIP':'' };
+	
+	paramData['DevIP'] = ltmIP;
+
+	ajxOut = $.ajax({
+		url: '/content/get_partition_names.php',
+		type: 'POST',
+		dataType: 'JSON',
+		data: {'jsonData' : JSON.stringify(paramData)},
+		error: function(jqXHR, textStatus, errorThrown){
+			alert("Ajax call to retrieve Partition names (loadPartitionNames) has failed!");
+            console.log('jqXHR:');
+            console.log(jqXHR);
+            console.log('textStatus:');
+            console.log(textStatus);
+            console.log('errorThrown:');
+            console.log(errorThrown);
+		}
+	});
+	ajxOut.done(function (response_in) {
+		var strResult = '';
+		//Reset all options and rebuild default option values
+		$('#' + selID + ' option').each(function(index) {
+			$(this).remove();
+		});
+		$('#' + selID).append("<option value='select' selected='selected'>Select...</option><option value='Common' >Common</option>");
+
+		$('#del_p_name_select option').each(function(index) {
+			$(this).remove();
+		});
+		$('#del_p_name_select').append("<option value='none' selected='selected'>None</option>");
+
+		
+		//var partNames = "Part2:Part3:".split(":");
+		var partNames = response_in.split(":");
+		
+		// Empty array - Return 1
+		var numOfPart = partNames.length; 
+		if (numOfPart <= 1) return;
+		else{
+			var i=0;
+			for (;i < numOfPart-1;i++){
+				strResult += "<option value='" + partNames[i] + "'>" + partNames[i] + "</option>";
+			}
+			
+			$('#' + selID).append(strResult);	
+		}
+		//alert("Return output: " + strResult);
+		
+	});
 }
 
 //JQueury 
@@ -620,65 +686,69 @@ $(function () {
 		
 		var arr = nameAndIp.split(":");
 		
-		// Call Ajax to retrieve pool names from a given LTM
-		ajxOut = $.ajax({
-			url: '/content/get_pool_names.php',
-			type: 'POST',
-			dataType: 'JSON',
-			data: {method:'get_pool_names', DevIP:arr[1]},
-			error: function(jqXHR, textStatus, errorThrown){
-				alert("Ajax call for retrieving pool names has failed!");
-	            console.log('jqXHR:');
-	            console.log(jqXHR);
-	            console.log('textStatus:');
-	            console.log(textStatus);
-	            console.log('errorThrown:');
-	            console.log(errorThrown);
-			}
-		});
-		ajxOut.done(prfPoolNameProcessData);
-
-    	// Call Ajax to get all available Pool monitors from the device
-    	ajaxOut = $.ajax({
-    		url: '/content/get_pool_monitors.php',
-    		type: 'POST',
-    		dataType: 'JSON',
-    		data: {method: 'get_pool_monitors', DevIP: arr[1], LoadTypeName:'ALL'},
-			error: function(jqXHR, textStatus, errorThrown){
-				alert("Ajax call for Pool monitor retrieval has failed!");
-	            console.log('jqXHR:');
-	            console.log(jqXHR);
-	            console.log('textStatus:');
-	            console.log(textStatus);
-	            console.log('errorThrown:');
-	            console.log(errorThrown);
-			}
-    	});
-    	//ajaxOut = getPoolMonAjax("get_pool_monitors", arr[0], arr[1], "ALL");
-    	ajaxOut.done(PprocessData);
-    	$('#pm_mon').trigger('click');
-    	
-    	
-    	// Call Ajax to get all available Pool monitors from the device
-    	//ajaxOut = getPoolMonAjax("get_pool_monitors", arr[0], arr[1], "ALL");
-    	ajaxOut = $.ajax({
-    		url: '/content/get_pool_monitors.php',
-    		type: 'POST',
-    		dataType: 'JSON',
-    		data: {method: 'get_pool_monitors', DevIP: arr[1], LoadTypeName:'ALL'},
-			error: function(jqXHR, textStatus, errorThrown){
-				alert("Ajax call for Pool Member monitor retrieval has failed!");
-	            console.log('jqXHR:');
-	            console.log(jqXHR);
-	            console.log('textStatus:');
-	            console.log(textStatus);
-	            console.log('errorThrown:');
-	            console.log(errorThrown);
-			}
-    	});    	
-    	ajaxOut.done(PMprocessData);
-    	//$('#pm_td').off('click');
-		
+		if (GetParentURLParameter('go') == 'new_pool' | GetParentURLParameter('go') == 'chg_pool'){
+			// Call Ajax to retrieve pool names from a given LTM
+			ajxOut = $.ajax({
+				url: '/content/get_pool_names.php',
+				type: 'POST',
+				dataType: 'JSON',
+				data: {method:'get_pool_names', DevIP:arr[1], Partition:'Common'},
+				error: function(jqXHR, textStatus, errorThrown){
+					alert("Ajax call for retrieving pool names has failed!");
+		            console.log('jqXHR:');
+		            console.log(jqXHR);
+		            console.log('textStatus:');
+		            console.log(textStatus);
+		            console.log('errorThrown:');
+		            console.log(errorThrown);
+				}
+			});
+			ajxOut.done(prfPoolNameProcessData);
+	
+	    	// Call Ajax to get all available Pool monitors from the device
+	    	ajaxOut = $.ajax({
+	    		url: '/content/get_pool_monitors.php',
+	    		type: 'POST',
+	    		dataType: 'JSON',
+	    		data: {method: 'get_pool_monitors', DevIP: arr[1], LoadTypeName:'ALL'},
+				error: function(jqXHR, textStatus, errorThrown){
+					alert("Ajax call for Pool monitor retrieval has failed!");
+		            console.log('jqXHR:');
+		            console.log(jqXHR);
+		            console.log('textStatus:');
+		            console.log(textStatus);
+		            console.log('errorThrown:');
+		            console.log(errorThrown);
+				}
+	    	});
+	    	//ajaxOut = getPoolMonAjax("get_pool_monitors", arr[0], arr[1], "ALL");
+	    	ajaxOut.done(PprocessData);
+	    	$('#pm_mon').trigger('click');
+	    	
+	    	
+	    	// Call Ajax to get all available Pool monitors from the device
+	    	//ajaxOut = getPoolMonAjax("get_pool_monitors", arr[0], arr[1], "ALL");
+	    	ajaxOut = $.ajax({
+	    		url: '/content/get_pool_monitors.php',
+	    		type: 'POST',
+	    		dataType: 'JSON',
+	    		data: {method: 'get_pool_monitors', DevIP: arr[1], LoadTypeName:'ALL'},
+				error: function(jqXHR, textStatus, errorThrown){
+					alert("Ajax call for Pool Member monitor retrieval has failed!");
+		            console.log('jqXHR:');
+		            console.log(jqXHR);
+		            console.log('textStatus:');
+		            console.log(textStatus);
+		            console.log('errorThrown:');
+		            console.log(errorThrown);
+				}
+	    	});    	
+	    	ajaxOut.done(PMprocessData);
+	    	//$('#pm_td').off('click');
+		}
+		else if (GetParentURLParameter('go') == 'del_pool'){
+			loadPartitionNames(arr[1], 'partition_name_select');
+		}
 	});
 
     /* Ajax Ref: https://www.youtube.com/watch?v=G9jz9mdblgs 
@@ -976,5 +1046,53 @@ $(function () {
     	});
     	ajxOut.done(showPoolChangeResult);
 	});	
+	
+	//Event handler for when Partition selection is made
+	$('#partition_name_select').on('change', function(){
+		
+		// Reset Pool Name select option to default
+		$('#del_p_name_select option').each(function(index) {
+			$(this).remove();
+		});
+		$('#del_p_name_select').append("<option value='none' selected='selected'>None</option>");
 
+		if(this.value == 'select') return;
+		
+		var nameAndIp = $('#ltmSelBox option:selected').val();
+		var arr = nameAndIp.split(":");
+		var partName = this.value;
+		
+		// Load the pool names of a given partition
+		// Call Ajax to retrieve pool names from a given LTM
+		ajxOut = $.ajax({
+			url: '/content/get_pool_names.php',
+			type: 'POST',
+			dataType: 'JSON',
+			data: {method:'get_pool_names', DevIP:arr[1], Partition:partName},
+			error: function(jqXHR, textStatus, errorThrown){
+				alert("Ajax call for retrieving pool names has failed!");
+	            console.log('jqXHR:');
+	            console.log(jqXHR);
+	            console.log('textStatus:');
+	            console.log(textStatus);
+	            console.log('errorThrown:');
+	            console.log(errorThrown);
+			}
+		});
+		ajxOut.done(prfPoolNameProcessData);
+	});
+	
+	//Event handler for when Delete Pool button click event is fired
+	$('#btn_delPool').on('click', function(){
+		
+		if ($('#del_p_name_select').val() == 'none') alert("Please chose a pool name to delete!");
+		
+		// Builtin profile names are not listed from drop-down box
+		var nameAndIp = $('#ltmSelBox option:selected').val();
+		var arr = nameAndIp.split(":");
+		var prfType = window.parent.document.getElementById('selectedPrfType').value;
+		var partition = $('#prf_partition_name_select').val();
+		var prfName = $('#del_svc_prf_name_select').val();
+		
+	});
 });

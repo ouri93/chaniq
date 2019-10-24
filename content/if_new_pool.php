@@ -14,7 +14,15 @@
                  
         <script type="text/javascript" src="/js/pool_jquery.js"></script>
         <?php include('../utility/utility.php'); ?>
-        <title>Create a new Pool</title>
+        <?php
+            if (GetParentURLParameter('go') == 'new_pool')
+                echo '<title>Create a new Pool</title>';
+            elseif (GetParentURLParameter('go') == 'chg_pool')
+                echo '<title>Change Pool configuration</title>';
+            elseif (GetParentURLParameter('go') == 'del_pool')
+                echo '<title>Delete Pools</title>';
+        ?>
+        
     </head>
     <body style="background-color: #ffffff;">
         <form class="inner-form">
@@ -24,6 +32,9 @@
             }
             elseif (GetParentURLParameter('go') == 'chg_pool') {
                 echo "<h1> Change Pool Configuration</h1>";
+            }
+            elseif (GetParentURLParameter('go') == 'del_pool') {
+                echo "<h1> Delete Pools</h1>";
             }
             ?>
             <fieldset class="row1">
@@ -50,7 +61,11 @@
                 </p>
             </fieldset>
             <fieldset class="row1">
-                <legend>Pool Properties</legend>
+            	<?php
+                    if (GetParentURLParameter('go') != 'del_pool') {
+                        echo '<legend>Pool Properties</legend>';
+                    }
+                ?>
                 <p>
                 <table id="poolDataTable" class="form" border="1">
                     <tbody>
@@ -63,6 +78,9 @@
                                 elseif (GetParentURLParameter('go') == 'chg_pool') {
                                     echo "<label>*Pool Name: </label><select name='chg_p_name_select' id='chg_p_name_select' required='required'><option value='none' selected='selected'>None</option></select>";
                                 }
+                                elseif (GetParentURLParameter('go') == 'del_pool') {
+                                    echo "<label>*Partition:</label> </td><td><select id='partition_name_select' required='required'><option value='select' selected='selected'>Select...</option><option value='common' >Common</option>";
+                                }
                                 ?>                            
                             </td>
                                 <?php
@@ -71,8 +89,16 @@
                                     }
                                 ?>
                             <td>
-                                <label>Pool Monitor: </label>
-                                <select name="p_mon" id="p_mon"><option value='none'>None</option></select>
+                            <?php
+                            if (GetParentURLParameter('go') != 'del_pool'){
+                                echo '<label>Pool Monitor: </label>';
+                                echo '<select name="p_mon" id="p_mon"><option value="none">None</option></select>';
+                            }
+                            else {
+                                echo "<label>*Pool Name: </label><select name='del_p_name_select' id='del_p_name_select' required='required'><option value='none' selected='selected'>None</option></select>";
+                            }
+                            ?>
+                                
                             </td>
                             <?php 
                                 if (GetParentURLParameter('go') == 'new_pool'){
@@ -102,6 +128,7 @@
                     </tbody>
                 </table>
                 </p>
+                <?php if (GetParentURLParameter('go') != 'del_pool'){ ?>
                 <p>
                 <fieldset class="row2">
                     <legend>Pool Resources</legend>
@@ -186,24 +213,27 @@
                     </p>
                     <p></p>
                     <input type="button" value="Remove Member" onClick="deleteRow('dataTable')"  /> 
-<!--                     <input type="button" value="Add Member" onClick="addRow('dataTable')" />  -->
- 
+
             		<?php
             		if (GetParentURLParameter('go') == 'new_pool')
                             echo '<input id="add_new_pm" type="button" value="Add Member" />';
-                    else
+                    elseif (GetParentURLParameter('go') == 'chg_pool')
                         echo '<input id="add_editable_new_pm" type="button" value="Add Member" />';
                     ?>
 
                 </fieldset>
                 </p>
+                <?php } ?>
             </fieldset>
             <?php
                 if (GetParentURLParameter('go') == 'new_pool') {
                     echo '<input id="btn_newPoolBuild" type="button" name="deploy_pool" value="Deploy Pool" />';
                 }
-                else {
+                elseif (GetParentURLParameter('go') == 'chg_pool') {
                     echo '<input id="btn_chgPoolConfig" type="button" name="change_pool" value="Apply Changes" />';
+                }
+                elseif (GetParentURLParameter('go') == 'del_pool') {
+                    echo '<input id="btn_delPool" type="button" name="delete_pool" value="Delete Pool" />';
                 }
             ?>
             <p></p>
