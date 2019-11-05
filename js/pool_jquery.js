@@ -440,6 +440,20 @@ function showPoolChangeResult(response_in){
 	
 }
 
+//Display Pool deletion result returned from BIG-IP
+function poolDeleteProcessData(response_in){
+	var strResult = '';
+	
+	$.each(response_in, function(index) {
+		if(index == 0) 
+			strResult = "<b>" + response_in[index] + "</b><br>";
+		else
+			strResult += response_in[index] + "<br>";
+	});
+	
+	$('#newPool_EvalReview').append(strResult);
+	
+}
 
 function isMinNumOfPoolMbr(){
 	minPoolMbr = parseInt($('#vs_poolmbrnum option:selected').val());
@@ -1085,14 +1099,35 @@ $(function () {
 	//Event handler for when Delete Pool button click event is fired
 	$('#btn_delPool').on('click', function(){
 		
-		if ($('#del_p_name_select').val() == 'none') alert("Please chose a pool name to delete!");
+		if ( ($('#del_p_name_select').val() == 'none') || ($('#partition_name_select').val() == 'select')) 
+			alert("Please chose a partition and/or pool name to delete!");
 		
 		// Builtin profile names are not listed from drop-down box
 		var nameAndIp = $('#ltmSelBox option:selected').val();
 		var arr = nameAndIp.split(":");
-		var prfType = window.parent.document.getElementById('selectedPrfType').value;
-		var partition = $('#prf_partition_name_select').val();
-		var prfName = $('#del_svc_prf_name_select').val();
+		var partition = $('#partition_name_select').val();
+		var poolName = $('#del_p_name_select').val();
 		
+		// Call Ajax to delete a given pool from a given LTM
+		var poolData = {'PhpFileName':'del_pool_ajax', 'DevIP':'', 'P_name':'', 'P_part':'' };
+		poolData['DevIP'] = arr[1];
+		poolData['P_name'] = poolName;
+		poolData['P_part'] = partition;
+		ajxOut = $.ajax({
+			url: '/content/del_pool_ajax.php',
+			type: 'POST',
+			dataType: 'JSON',
+			data: {'jsonPoolData' : JSON.stringify(poolData)},
+			error: function(jqXHR, textStatus, errorThrown){
+				alert("Ajax call for deleting a given pool has failed!");
+	            console.log('jqXHR:');
+	            console.log(jqXHR);
+	            console.log('textStatus:');
+	            console.log(textStatus);
+	            console.log('errorThrown:');
+	            console.log(errorThrown);
+			}
+		});
+		ajxOut.done(poolDeleteProcessData);
 	});
 });

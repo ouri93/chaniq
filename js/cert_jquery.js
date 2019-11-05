@@ -9,6 +9,28 @@
  * http://techstream.org
  */
 
+//Read the parent URL parameters and return a query parameter value against a given key
+//e.g. URL: http://www.example.com/?go=chg_profile
+//     GetParentURLParameter('go')
+//     Return: chg_profile
+function GetParentURLParameter(sParam)
+{
+   var parentURL = (window.location != window.parent.location)
+    ? document.referrer
+    : document.location.href;
+
+   var parentQry = parentURL.slice(parentURL.indexOf('?')+1).split('&');
+   //alert("Given URL: " + parentQry);
+   for (var i = 0; i < parentQry.length; i++)
+   {
+       var sParameterName = parentQry[i].split('=');
+       if (sParameterName[0] == sParam)
+       {
+           return sParameterName[1];
+       }
+   }
+}
+
 function addRow(tableID) {
 	var table = document.getElementById(tableID);
 	var rowCount = table.rows.length;
@@ -40,6 +62,49 @@ function deleteRow(tableID) {
 			rowCount--;
 			i--;
 		}
+	}
+}
+
+// Check if there is checked rows at least one
+function hasCheckedRow(tableID) {
+	var table = document.getElementById(tableID);
+	var rowCount = table.rows.length;
+	if (rowCount == 1 && table.rows[1].cells[1].firstChild.value == ""){
+		return "false";
+	}
+	
+	var numOfChecked = 0;
+	for(var i=1; i<rowCount; i++) {
+		var row = table.rows[i];
+		var chkbox = row.cells[0].childNodes[0];
+		if(null != chkbox && true == chkbox.checked)
+			numOfChecked++;
+	}
+	//alert("Number of checked box: " + numOfChecked);
+	if (numOfChecked >= 1) return "true";
+	else return "false";
+}
+
+// Add a new table row to display content information
+function addCertRow(tableID) {
+	var table = document.getElementById(tableID);
+	var rowCount = table.rows.length;
+
+	var row = table.insertRow(rowCount);
+	var colCount = table.rows[1].cells.length;
+	for(var i=0; i<colCount; i++) {
+		var newcell = row.insertCell(i);
+		newcell.innerHTML = table.rows[1].cells[i].innerHTML;
+	}
+}
+
+//Old Table Row cleanup - Delete existing all rows except first row
+function deleteAllRows(tableID) {
+	var table = document.getElementById(tableID);
+	var rowCount = table.rows.length;
+	
+	for(var x=rowCount-1; x>1; x--) {
+		table.deleteRow(x);
 	}
 }
 
@@ -150,6 +215,54 @@ function optEnDis(lbmethod){
 	
 }
 
+// Process certs and keys data returned from BIG-IP
+// response_in array index starts from 1
+function loadCertkeyProcess(response_in){
+	//'name':'', 'commonName':'', 'expiration':'', 'partition':''
+	var numOfCerts = Object.keys(response_in).length;
+	
+	if (numOfCerts == 0) { alert("No certs exist"); return; }
+	$.each(response_in, function(index){
+		var col1 = '#dataTable tbody tr:eq(' + index + ') td:eq(1)';
+		var col2 = '#dataTable tbody tr:eq(' + index + ') td:eq(2)';
+		var col3 = '#dataTable tbody tr:eq(' + index + ') td:eq(3)';
+		var col4 = '#dataTable tbody tr:eq(' + index + ') td:eq(4)';
+
+		// Cert name is retrieved without extension (.crt)
+		//$(col1).children().val((response_in[index].name).split('.')[0]); <= Issue with cert/key names including dot('.')
+		var strSz = (response_in[index].name).length;
+		// Remove last 4 characters which is ".crt"
+		$(col1).children().val((response_in[index].name).substr(0,strSz - 4));
+		$(col2).children().val(response_in[index].commonName);
+		$(col3).children().val(response_in[index].expiration);
+		$(col4).children().val(response_in[index].partition);
+
+		if(numOfCerts.toString() != index ) addCertRow('dataTable');
+		//alert('Name: ' + response_in[index].name + ' CN: ' + response_in[index].commonName + ' Expiration: ' + response_in[index].expiration + ' Partition: ' + response_in[index].partition + '\n');
+	});
+	
+}
+
+// Process the result data of deleting certs and keys from BIG-IP
+function delCertkeyProcess(response_in){
+	//'name':'', 'result':'', 'message':''
+	var numOfCerts = Object.keys(response_in).length;
+	var strResult = '';
+	
+	$.each(response_in, function(index){
+		if (response_in[index].result == "SUCCESS"){
+			strResult = "<b>" + response_in[index].name + " has been deleted successfully</b><br>";
+			strResult += response_in[index].message + "<br>";
+		}
+		else{
+			strResult = "<b>" + response_in[index].name + " deletion has failed</b><br>";
+			strResult += response_in[index].message + "<br>";			
+		}
+	});
+	
+	$('#delCert_EvalReview').append(strResult);
+	
+}
 
 // This Javascript code has been replaced by jQuery
 function p_pglessthan(opt_sel){
@@ -213,14 +326,41 @@ function loadOptNames(ltmIP, loadType, selID){
 $(function () {
 	$('#div_ltmchoice').on('change', function() {
 		var nameAndIp = $('#ltmSelBox option:selected').val();
-		if (nameAndIp == 'Select...') return;
-		
-		//$('body').fadeOut();
+		if (nameAndIp == 'Select...'){
+			// Reset all fields
+			deleteAllRows('dataTable');
+			
+			$('#dataTable tbody tr:eq(1) td:eq(1)').children().val("");
+			$('#dataTable tbody tr:eq(1) td:eq(2)').children().val("");
+			$('#dataTable tbody tr:eq(1) td:eq(3)').children().val("");
+			$('#dataTable tbody tr:eq(1) td:eq(4)').children().val("");
+			return;
+		}
 		
 		var arr = nameAndIp.split(":");
 		
-		//$('body').fadeIn();
-
+		// Only for deleting cert and key
+		if(GetParentURLParameter('go') == 'del_cert'){
+			// Load Certs and Keys from a given BIG-IP
+			var paramData = {'PhpFileName':'load_certkey_ajax', 'DevIP':''};
+			paramData['DevIP'] = arr[1];
+			ajxOut = $.ajax({
+				url: '/content/load_certkey_ajax.php',
+				type: 'POST',
+				dataType: 'JSON',
+				data: {'jsonData' : JSON.stringify(paramData)},
+				error: function(jqXHR, textStatus, errorThrown){
+					alert("Ajax call to load certs and keys has failed!");
+		            console.log('jqXHR:');
+		            console.log(jqXHR);
+		            console.log('textStatus:');
+		            console.log(textStatus);
+		            console.log('errorThrown:');
+		            console.log(errorThrown);
+				}
+			});
+			ajxOut.done(loadCertkeyProcess);
+		}
 	});
 
     $('#cert_import_btn').on('click', function() {
@@ -235,5 +375,55 @@ $(function () {
     	$('#cert_iframe_fieldset').empty();
     	$('#cert_iframe_fieldset').append('<legend>Create Cert/Key Configuration</legend>');
     	$('#cert_iframe_fieldset').append('<iframe src="/content/if_ssl_create.php" scrolling="no" width="700px" height="600" frameborder="0"></iframe>');    	
+    });
+    
+    // Event handler when 'Delete Cert/Key" button is clicked
+    $('#btn_delCertkey').on('click', function(){
+    	if (hasCheckedRow('dataTable') == 'false') {
+    		alert("Please select a cert/certs to delete");
+    		return;
+    	}
+    	//else alert("Moving forward");
+    	
+    	var nameAndIp = $('#ltmSelBox option:selected').val();
+    	var arr = nameAndIp.split(":");
+    	
+    	var paramData = {'PhpFileName':'del_certkey_ajax', 'DevIP':arr[1]};
+    	// certData - Array data of {name1, cn1, exp1, part1, name2, cn2, exp2, part2, ... }
+    	var certData = [];
+    	
+    	var table = document.getElementById('dataTable');
+    	var rowCount = table.rows.length;
+    	
+    	// Selected cert data collection
+    	for(var i=1;i<rowCount;i++){
+    		var row = table.rows[i];
+    		var chkbox = row.cells[0].childNodes[0];
+    		if(null != chkbox && true == chkbox.checked) {
+    			for(colIdx=1;colIdx<=4;colIdx++){
+	    			var col1 = '#dataTable tbody tr:eq(' + i + ') td:eq(' + colIdx + ')';
+	    			certData.push($(col1).children().val())
+    			}
+    		}
+    	}
+    	
+    	// Call ajax to pass the chosen cert info to BIG-IP and delete them from BIG-IP
+		ajxOut = $.ajax({
+			url: '/content/del_certkey_ajax.php',
+			type: 'POST',
+			dataType: 'JSON',
+			data: {'jsonData' : JSON.stringify(paramData), 'certData': JSON.stringify(certData)},
+			error: function(jqXHR, textStatus, errorThrown){
+				alert("Ajax call to delete certs and keys has failed!");
+	            console.log('jqXHR:');
+	            console.log(jqXHR);
+	            console.log('textStatus:');
+	            console.log(textStatus);
+	            console.log('errorThrown:');
+	            console.log(errorThrown);
+			}
+		});
+		ajxOut.done(delCertkeyProcess);
+    	
     });
 });
