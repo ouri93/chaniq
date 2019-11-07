@@ -14,15 +14,27 @@
                  
         <script type="text/javascript" src="/js/mon_jquery.js"></script>
         <?php include('../utility/utility.php'); ?>
-        <title>Create a new Pool</title>
+        <?php
+        if (GetParentURLParameter('go') == 'new_monitor' ){
+            echo '<title>Create a Health Monitor</title>';
+        }
+        else if (GetParentURLParameter('go') == 'chg_monitor' ){
+            echo '<title>Modify a Health Monitor</title>';
+        }
+        else if (GetParentURLParameter('go') == 'del_monitor' ){
+            echo '<title>Delete a Health Monitor</title>';
+        }
+        ?>
     </head>
     <body style="background-color: #ffffff;">
         <form class="inner-form">
         	<?php
         	if (GetParentURLParameter('go') == 'new_monitor' )
         	    echo '<title>Create new Health Monitors</title>';
-        	else
+    	    else if (GetParentURLParameter('go') == 'chg_monitor' )
         	    echo '<title>Modify Health Monitors</title>';
+    	    else if (GetParentURLParameter('go') == 'del_monitor' )
+        	    echo '<title>Delete Health Monitors</title>';
             ?>
             <fieldset class="row1">
                 <legend>Select a target LTM</legend>
@@ -140,24 +152,27 @@
                     </tbody>
                 </table>
                 </p>
+                <?php if (GetParentURLParameter('go') == 'del_monitor') echo '<!--'; ?>
                 <p>
                 <fieldset class="row2">
                     <legend>Monitor Configuration</legend>
                     <p>
                     	<table id="monConfTable" class="form" border="1">
                     		<tbody id="monConfTable_tbody">
-    						<!--  Conditional HTML code here  --> 
                     		</tbody>
                     	</table>
                     </p>
                 </fieldset>
                 </p>
+                <?php if (GetParentURLParameter('go') == 'del_monitor') echo '-->'; ?>
             </fieldset>
             <?php
                 if (GetParentURLParameter('go') == 'new_monitor' )
                     echo '<input id="btn_newMonBuild" type="button" name="deploy_mon" value="Deploy Monitor" />';       
-                else
+                else if (GetParentURLParameter('go') == 'chg_monitor' )
                     echo '<input id="btn_chgMonBuild" type="button" name="change_mon" value="Modify Monitor" />';
+                else if (GetParentURLParameter('go') == 'del_monitor' )
+                    echo '<input id="btn_delMonBuild" type="button" name="delete_mon" value="Delete Monitor" />';
             ?>
             
             <p></p>

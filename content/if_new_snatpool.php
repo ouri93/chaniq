@@ -14,11 +14,26 @@
                  
         <script type="text/javascript" src="/js/snatpool_jquery.js"></script>
         <?php include('../utility/utility.php'); ?>
-        <title>Create a new Snatpool</title>
+        <?php
+        if (GetParentURLParameter('go') == 'new_snatpool' ){
+            echo '<title>Create a new Snatpool</title>';
+        }
+        else if (GetParentURLParameter('go') == 'del_snatpool' ){
+            echo '<title>Delete a Snatpool</title>';
+        }
+        ?>
     </head>
     <body style="background-color: #ffffff;">
         <form class="inner-form">
-            <h1> Create a new Snatpool </h1>
+        <?php
+        if (GetParentURLParameter('go') == 'new_snatpool' ){
+            echo '<h1> Create a new Snatpool </h1>';
+        }
+        else if (GetParentURLParameter('go') == 'del_snatpool' ){
+            echo '<h1> Delete a Snatpool </h1>';
+        }
+        ?>
+            
             <fieldset class="row1">
                 <legend>Select a target LTM</legend>
                 <?php
@@ -43,10 +58,18 @@
                 </p>
             </fieldset>
             <fieldset class="row1">
-                <legend>Snatpool Configuration</legend>
+    	        <?php
+                if (GetParentURLParameter('go') == 'new_snatpool' ){
+                    echo '<legend>Snatpool Configuration</legend>';
+                }
+                else if (GetParentURLParameter('go') == 'del_snatpool' ){
+                    echo '<legend>Delete Snatpools</legend>';
+                }
+                ?>
                 <p>
                 <table class="form" border="1">
                     <tbody id="snatDataTbody" >
+                    	<?php if (GetParentURLParameter('go') != 'new_snatpool') echo '<!--'; ?>
                         <tr>
                             <td> <label>Snatpool Name: </label> </td>
                             <td> <input type="text" name="snat_name" id="snat_name" /></td>
@@ -59,11 +82,40 @@
                         		<p><input type='button' id='snat_edit' value='Edit' style="width:80px; float: left;" />&nbsp;&nbsp;&nbsp;&nbsp;<input type='button' id='snat_del' value='Delete' style="width:80px; float: left;" />&nbsp;&nbsp;</p>
                         	</td> 
                         </tr>
+                        <?php if (GetParentURLParameter('go') != 'new_snatpool') echo '-->'; ?>
+                        
+                        <?php if (GetParentURLParameter('go') != 'del_snatpool') echo '<!--'; ?>
+                    	<tr>
+                            <td>
+                                <label> Select a Snatpool: </label>
+                            </td>
+                            <td>
+                                <select id="select_snatpool_name" >
+                                    <option value="select">Select...</option>
+                                </select>
+                            </td>
+                            <td>
+                                <label> Partition: </label>
+                            </td>
+                            <td>
+                                <select id="select_del_snatpool_part" >
+                                    <option value="Common">Common</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <?php if (GetParentURLParameter('go') != 'del_snatpool') echo '-->'; ?>
                     </tbody>
                 </table>
                 </p>
             </fieldset>
-            <input id="snat_build" type="button" name="snat_build" value="Deploy Snatpool" />
+            <?php
+            if (GetParentURLParameter('go') == 'new_snatpool' ){
+                echo '<input id="snat_build" type="button" name="snat_build" value="Deploy Snatpool" />';
+            }
+            else if (GetParentURLParameter('go') == 'del_snatpool' ){
+                echo '<input id="del_snatpool" type="button" name="del_snatpool" value="Delete Snatpool" />';
+            }
+            ?>
             <p></p>
             <fieldset class="row1">        
                 <legend>Evaluation Result and Review</legend>

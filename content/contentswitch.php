@@ -28,9 +28,9 @@ if(isset($_GET['go'])) {
         case "del_profile": include('content/del_profile.php');break;
         case "del_pool": include('content/del_pool.php');break;
         case "del_cert": include('content/del_cert.php'); break;
-        case "del_irule": include('content/del_irule.php');break;
-        case "del_monitor": include('content/del_monitor.php');break;
-        case "del_snatpool": include('content/del_snatpool.php');break;
+        case "del_irule": include('content/new_irule.php');break;
+        case "del_monitor": include('content/chg_monitor.php');break;
+        case "del_snatpool": include('content/new_snatpool.php');break;
         case "del_policies": include('content/del_policies.php');break;
         case "admin_user": include('admin/admin_user.php');break;
         case "ltmadmin_pass": include('admin/ltmadmin_pass.php');break;

@@ -18,8 +18,12 @@
         if (GetParentURLParameter('go') == 'new_irule' ) {
             echo '<title>Create iRules/Data Groups</title>';    
         }
-        else 
+        else if(GetParentURLParameter('go') == 'chg_irule' ) {
             echo '<title>Change iRules/Data Groups</title>';
+        }
+        else if(GetParentURLParameter('go') == 'del_irule' ) {
+            echo '<title>Delete iRules/Data Groups</title>';
+        }
         ?>
     </head>
     <body style="background-color: #ffffff;">
@@ -28,8 +32,12 @@
         	if (GetParentURLParameter('go') == 'new_irule' ) {
         	   echo '<h1> Create iRules/Data Groups </h1>';
         	}
-        	else
+        	else if(GetParentURLParameter('go') == 'chg_irule' ) {
         	   echo '<h1> Change iRules/Data Groups </h1>';
+        	}
+        	else if(GetParentURLParameter('go') == 'del_irule' ) {
+        	    echo '<h1> Delete iRules/Data Groups </h1>';
+        	}
         	?>
             
             <fieldset class="row1">
@@ -123,6 +131,8 @@
                 </table>
                 </p>
                 <p>
+                <?php
+                if (GetParentURLParameter('go') == 'del_irule' ) { echo "<!--"; } ?>
                 <fieldset class="row2">
                     <legend>Configuration</legend>
                     <p>
@@ -131,18 +141,23 @@
                     		
                     	</thead>
                     	<tbody id="irConfTable_tbody">
-    					<!--  Conditional HTML code here  --> 
                     	</tbody>
                     	</table>
                     </p>
                 </fieldset>
+                <?php if (GetParentURLParameter('go') == 'del_irule' ) { echo "-->"; } ?>
                 </p>
             </fieldset>
             <?php
-            if (GetParentURLParameter('go') == 'new_irule' )
+            if (GetParentURLParameter('go') == 'new_irule' ){
                 echo '<input id="ir_btn_build" type="button" name="ir_btn_build" value="Deploy iRule/DG" />';
-            else
+            }
+            else if (GetParentURLParameter('go') == 'chg_irule' ) {
                 echo '<input id="chg_ir_btn_build" type="button" name="chg_ir_btn_build" value="Change iRule/DG" />';
+            }
+            else if (GetParentURLParameter('go') == 'del_irule' ) {
+                echo '<input id="del_ir_btn_build" type="button" name="del_ir_btn_build" value="Delete iRule/DG" />';
+            }
             ?>
             <p></p>
             <fieldset class="row1">        

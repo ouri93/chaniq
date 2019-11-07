@@ -10,9 +10,7 @@ logging.info("Head of chg_monitor_config() called")
 #def chg_monitor_config(active_ltm, vs_dnsname, vs_port, vs_env, vs_poolmon, pLBMethod):
 def chg_monitor_config(mDevIp, monName, mDesc, mMonType, mMonCode, mParMonType, mInterval, mTimeout, mSend, mRecv, mUsername, mPassword, mReverse, mAliasPort, mCipherlist ):
     
-    logging.info("Here1")
     logging.info("chg_monitor_config.py parms DevIP: " + mDevIp + " VS Name: " + monName + " Mon Code: " + mMonCode + " Interval: " + mInterval + " Send: " + mSend + " Reverse: " + mReverse + " Alias Port: " + mAliasPort + " CipherList: " + mCipherlist) 
-    logging.info("Here2")
     
     mr = ManagementRoot(str(mDevIp), 'admin', 'rlatkdcks')
     
@@ -22,13 +20,10 @@ def chg_monitor_config(mDevIp, monName, mDesc, mMonType, mMonCode, mParMonType, 
     idx += 1
  
     logging.info("Monitor Config Modification process has been initiated.") 
-    logging.info("Here3")
     # Load corresponding Monitor type - 
     try:
         if mMonType == "HTTP":
-            logging.info("Here4")
             loadedMon = mr.tm.ltm.monitor.https.http.load(name=monName, partition='Common')
-            logging.info("Here5")
             loadedMon.update(name=monName, partition='Common', description=mDesc, \
                              interval=int(mInterval), \
                              timeout=int(mTimeout), \
@@ -37,7 +32,6 @@ def chg_monitor_config(mDevIp, monName, mDesc, mMonType, mMonCode, mParMonType, 
                              recv=mRecv, \
                              username=mUsername, \
                              password=mPassword)
-            logging.info("Here6")
         elif mMonType == "HTTPS":
             loadedMon = mr.tm.ltm.monitor.https_s.https.load(name=monName, partition='Common')
             loadedMon.update(name=monName, partition='Common', description=mDesc, interval=int(mInterval), timeout=int(mTimeout), reverse=mReverse, send=mSend, recv=mRecv, username=mUsername, password=mPassword, cipherlist=mCipherlist)

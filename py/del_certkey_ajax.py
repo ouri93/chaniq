@@ -27,7 +27,7 @@ def del_certkey_ajax(DevIp, certData):
     
     for i in range(numOfRows):
         message =""
-        message = message + "Cert/key deletion process has been started\n"
+        message = message + "Cert/key deletion process has been started<br>"
         if i%4 == 0:
             certKeyName = parsed_certData[i]
             certKeyPart = parsed_certData[i+3]
@@ -43,11 +43,11 @@ def del_certkey_ajax(DevIp, certData):
                 loaded_key.delete()
             except Exception as e:
                 logging.info("Error Details: " + str(e))
-                message = message + str(e)
+                message = message + str(e) + "<br>"
                 logging.info("Exception during loading or deleting cert/key Cert/Key Name: " + certKeyName + " Result: FAIL Message: " + message + "\n")
                 dictReturn[key_idx] = {'name':certKeyName, 'result':'FAIL', 'message':message}
                 return json.dumps(dictReturn)
-            message = message + "Cert and Key have been deleted successfully"
+            message = message + "Cert and Key have been deleted successfully<br>"
             logging.info("Deleting cert/key has been completed successfully. Cert/Key Name: " + certKeyName + " Result: SUCCESS Message: " + message + "\n")
             dictReturn[key_idx] = {'name':certKeyName, 'result':'SUCCESS', 'message':message}
             key_idx = key_idx + 1

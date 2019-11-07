@@ -59,7 +59,8 @@ function MonSettingsProcessData(response_in)
 	var monType = '';
 	if (configMode == 'new_monitor')
 		monType = $('#m_type').val();
-	else if(configMode == 'chg_monitor'){
+	//else if(configMode == 'chg_monitor'){
+	else {
 		monType = $('#chg_m_type').val();
 		$('#m_desc').val(response_in['description']);
 		if (response_in['defaultsFrom'] != ''){
@@ -68,8 +69,7 @@ function MonSettingsProcessData(response_in)
 		}
 	}
 	
-	
-	setMonHtml(monType, response_in);
+	if (configMode != 'del_monitor') setMonHtml(monType, response_in);
 }
 
 function getMonSettingsAjax(phpFileName, bigipName, bigipIP, monType, parMonType)
@@ -124,6 +124,20 @@ function buildMonProcessData(response_in) {
 }
 
 function chgMonProcessData(response_in) {
+	var strResult = '';
+	$.each(response_in, function(index) {
+		if(index == 0) 
+			strResult = "<b>" + response_in[index] + "</b><br>";
+		else
+			strResult += response_in[index] + "<br>";
+	});
+	
+	//alert("Return output: " + strResult);
+	$('#newMon_EvalReview').html(strResult);
+}
+
+// Process the return data of deleting Health monitors from BIG-IP
+function delMonProcessData(response_in){
 	var strResult = '';
 	$.each(response_in, function(index) {
 		if(index == 0) 
@@ -298,7 +312,7 @@ function setMonHtml(monType, response_in)
 }
 
 // Process Health monitor names returned from BIG-IP
-function HealthMonNamesProcess(response_in){
+function HealthMonNamesProcess(response_in, monType){
 	/* Debugging - Print out returned health monitor names
 	var strResult = '';
 	$.each(response_in, function(index) {
@@ -311,7 +325,12 @@ function HealthMonNamesProcess(response_in){
 	$('#newMon_EvalReview').html(strResult);
 	*/
 	$.each(response_in, function(index) {
-		$('#select_mon_name').append('<option> ' + response_in[index] + '</option>');
+		var builtins={'HTTP':'http, http_head_f5', 'HTTPS':'https, https_443, https_head_f5', 'ICMP':'icmp', 'INBAND':'inband', 'REAL SERVER':'real_server', 'SNMP DCA':'snmp_dca', 'TCP':'tcp', 'TCP ECHO':'tch_echo', 'TCP Half Open':'tcp_half_open', 'UDP':'udp'};
+		// Remove special character at the end such as whitespace at the beginning or end, newlines
+		var strResponse = (response_in[index]).trim();
+
+		if (builtins[monType].search(strResponse) == -1 )
+   			$('#select_mon_name').append('<option> ' + response_in[index] + '</option>');
 	});
 }
 
@@ -501,7 +520,9 @@ $(function () {
                 console.log(errorThrown);
     		}
     	});
-    	ajaxOut.done(HealthMonNamesProcess);
+    	ajaxOut.done(function(response_in){
+    		HealthMonNamesProcess(response_in, monType);
+    	});
     	
     });
     
@@ -523,12 +544,14 @@ $(function () {
    		var parMonType = this.value;
     	
    		// 1. Build health monitor form according to a given monitor name
-    	// Update html code by Monitor type - HTTP, HTTPS, TCP, UDP, TCP Half Open, ICMP, External    	
-    	var strMonitorHtml = getMonHtml(arr[1], monType);
-       	
-    	$('#monConfTable_tbody').empty();
-    	$('#monConfTable_tbody').append(strMonitorHtml);
-    	
+    	// Update html code by Monitor type - HTTP, HTTPS, TCP, UDP, TCP Half Open, ICMP, External
+   		if (GetParentURLParameter('go') != 'del_monitor'){
+	    	var strMonitorHtml = getMonHtml(arr[1], monType);
+	       	
+	    	$('#monConfTable_tbody').empty();
+	    	$('#monConfTable_tbody').append(strMonitorHtml);
+   		}
+   		
    		// 2. Read health monitor config from BIG-IP and feed the config data to the built form
     	//alert("getMonSettingsAjax - phpFileName: " + phpFileName + " Dev name: " + bigipName + " Dev IP: " + bigipIP + " Mon Type: " + monType + " Parent Monitor: " + parMonType);
     	ajaxOut = getMonSettingsAjax("get_healthmon_settings", arr[0], arr[1], monType, parMonType);
@@ -657,6 +680,40 @@ $(function () {
     	});
     	
     	ajaxOut.done(chgMonProcessData);
+    });
+    
+    // Event handler when Delete Health monitor button clicked.
+    $('#btn_delMonBuild').on('click', function(){
+    	//Dictionary Data fed from the form
+    	var monData = {'phpFileName':'', 'DevIP':'', 'MonName':'', 'MDesc':'', 'MMonType':'', 'MParMonType':''};
+    	var bigipNameAndIP = $('#ltmSelBox').val()
+    	var arr = bigipNameAndIP.split(":");
+    	
+    	monData['phpFileName'] = 'del_monitor_ajax';
+    	monData['DevIP'] = arr[1];
+    	monData['MonName'] = $('#select_mon_name').val();
+    	monData['MDesc'] = $('#m_desc').val();
+    	monData['MMonType'] = $('#chg_m_type').val();
+    	monData['MParMonType'] = $('#chg_m_type_parent').val();
+    	
+    	// ajax call to delete a given health monitor
+    	ajaxOut = $.ajax({
+    		url: '/content/del_monitor_ajax.php',
+    		type: 'POST',
+    		dataType: 'JSON',
+    		data: {'jsonData': JSON.stringify(monData)},
+    		error: function(jqXHR, textStatus, errorThrown){
+    			alert("Ajax call to delete a Health Monitor has failed!");
+                console.log('jqXHR:');
+                console.log(jqXHR);
+                console.log('textStatus:');
+                console.log(textStatus);
+                console.log('errorThrown:');
+                console.log(errorThrown);
+    		}
+    	});
+    	
+    	ajaxOut.done(delMonProcessData);
     });
     
 });

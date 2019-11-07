@@ -36,9 +36,15 @@ function irdgNameLoadingProcess(response_in){
 	$('#select_ir_dg_name').empty();
 	$('#select_ir_dg_name').append('<option value="select" selected="selected">Select...</option>');
 	
+	// Builtin iRule list - BIG-IP 12.1.2
+	var builtins = ['_sys_APM_ExchangeSupport_OA_BasicAuth', '_sys_APM_ExchangeSupport_OA_NtlmAuth', '_sys_APM_ExchangeSupport_helper', 
+		'_sys_APM_ExchangeSupport_main', '_sys_APM_Office365_SAML_BasicAuth', '_sys_APM_activesync', '_sys_auth_krbdelegate', '_sys_auth_ldap', 
+		'_sys_auth_radius', '_sys_auth_ssl_cc_ldap', '_sys_auth_ssl_crldp', '_sys_auth_ssl_ocsp', '_sys_auth_tacacs', '_sys_https_redirect'];
 	$.each(response_in, function(index) {
 		strHtml = '';
-		strHtml = "<option>" + response_in[index] + "</option>";
+		if (builtins.indexOf(response_in[index]) == -1){
+			strHtml = "<option>" + response_in[index] + "</option>";
+		}
 		$('#select_ir_dg_name').append(strHtml);
 	});
 }
@@ -58,7 +64,8 @@ function irdgConfigLoadingProcess(response_in){
 		// Call delegated 'change' event of 'ir_td_dg_type' to build Data Group Type form
 		if (index == 'type'){
 			$('#ir_dg_type_select').find('option[value=' + response_in[index] + ']').attr('selected', true);
-			$('#ir_td_dg_type').trigger('change');
+			if(GetParentURLParameter('go') != 'del_irule')
+				$('#ir_td_dg_type').trigger('change');
 		}
 	});
 	
@@ -95,6 +102,20 @@ function irdgConfigLoadingProcess(response_in){
 
 //Process iRule/Data Group configuration udate result from BIG-IP
 function irdgConfigUpdateProcess(response_in){
+	// Add retrieved iRule or Data Group configuration change result to select_ir_dg_name option list
+	var strResult = '';
+	$.each(response_in, function(index) {
+		if(index == 0) 
+			strResult = "<b>" + response_in[index] + "</b><br>";
+		else
+			strResult += response_in[index] + "<br>";
+	});
+	
+	$('#newIr_EvalReview').html(strResult);
+}
+
+//Process iRule/Data Group deletion result returnning from BIG-IP
+function delIrdgProcess(response_in){
 	// Add retrieved iRule or Data Group configuration change result to select_ir_dg_name option list
 	var strResult = '';
 	$.each(response_in, function(index) {
@@ -298,22 +319,27 @@ $(function () {
     	
     	if (ir_type == "iRule") {
     		$('#ir_td_dg_type').empty();
-    		$('#ir_confTable_thead').empty();
-    		$('#ir_confTable_thead').append("<th style='font-weight:normal' >iRule Code</th>");
-        	$('#irConfTable_tbody').empty();
-    		$('#irConfTable_tbody').append("<tr><td><textarea id='irConfCode' rows='10' cols='90'> </textarea> </td></tr>");
+    		if (GetParentURLParameter('go') != 'del_irule'){
+	    		$('#ir_confTable_thead').empty();
+	    		$('#ir_confTable_thead').append("<th style='font-weight:normal' >iRule Code</th>");
+	        	$('#irConfTable_tbody').empty();
+	    		$('#irConfTable_tbody').append("<tr><td><textarea id='irConfCode' rows='10' cols='90'> </textarea> </td></tr>");
+	   		}
     	}
     	else if (ir_type == "Data Group"){
     		$('#ir_td_dg_type').empty();
-    		$('#ir_confTable_thead').empty();
-    		$('#ir_confTable_thead').append("<th style='font-weight:normal'>Data Group Configuration</th>");
-    		$('#irConfTable_tbody').empty();
+    		if (GetParentURLParameter('go') != 'del_irule'){
+	    		$('#ir_confTable_thead').empty();
+	    		$('#ir_confTable_thead').append("<th style='font-weight:normal'>Data Group Configuration</th>");
+	    		$('#irConfTable_tbody').empty();
+    		}
     		if (GetParentURLParameter('go') == 'new_irule')
     			$('#ir_td_dg_type').append("<label> DG Type: </label><select name='ir_dg_type_select' id='ir_dg_type_select' required='required' ><option selected='selected'>Select...</option><option>Address</option><option>String</option><option>Integer</option></select>");
     		else{
     			$('#ir_td_dg_type').append("<label> DG Type: </label><select name='ir_dg_type_select' id='ir_dg_type_select' disabled style='background-color: #E6E3E3;' required='required' ><option selected='selected'>Select...</option><option value='ip'>Address</option><option value='string'>String</option><option value='integer'>Integer</option></select>");
     			//$('#ir_td_dg_type').append("<label> DG Type: </label><select name='ir_dg_type_select' id='ir_dg_type_select' required='required' ><option selected='selected'>Select...</option><option value='ip'>Address</option><option value='string'>String</option><option value='integer'>Integer</option></select>");
     		}
+    		
     	}
     	
     	// Loading existing iRule or Data Group names
@@ -363,19 +389,23 @@ $(function () {
 	   	if($('#select_ir_dg_name').val() == 'select'){
 	    	if (irType == "iRule") {
 	    		$('#ir_td_dg_type').empty();
-	    		$('#ir_confTable_thead').empty();
-	    		$('#ir_confTable_thead').append("<th style='font-weight:normal' >iRule Code</th>");
-	        	$('#irConfTable_tbody').empty();
-	    		$('#irConfTable_tbody').append("<tr><td><textarea id='irConfCode' rows='10' cols='90'> </textarea> </td></tr>");
+	    		if (GetParentURLParameter('go') != 'del_irule'){
+		    		$('#ir_confTable_thead').empty();
+		    		$('#ir_confTable_thead').append("<th style='font-weight:normal' >iRule Code</th>");
+		        	$('#irConfTable_tbody').empty();
+		    		$('#irConfTable_tbody').append("<tr><td><textarea id='irConfCode' rows='10' cols='90'> </textarea> </td></tr>");
+	    		}
 	    	}
 	    	else if (irType == "Data Group"){
 	    		$('#ir_td_dg_type').empty();
-	    		$('#ir_confTable_thead').empty();
-	    		$('#ir_confTable_thead').append("<th style='font-weight:normal'>Data Group Configuration</th>");
-	    		$('#irConfTable_tbody').empty();
+	    		if (GetParentURLParameter('go') != 'del_irule'){
+		    		$('#ir_confTable_thead').empty();
+		    		$('#ir_confTable_thead').append("<th style='font-weight:normal'>Data Group Configuration</th>");
+		    		$('#irConfTable_tbody').empty();
+	    		}
 	    		if (GetParentURLParameter('go') == 'new_irule')
 	    			$('#ir_td_dg_type').append("<label> DG Type: </label><select name='ir_dg_type_select' id='ir_dg_type_select' required='required' ><option selected='selected'>Select...</option><option>Address</option><option>String</option><option>Integer</option></select>");
-	    		else{
+	    		else if (GetParentURLParameter('go') == 'chg_irule') {
 	    			$('#ir_td_dg_type').append("<label> DG Type: </label><select name='ir_dg_type_select' id='ir_dg_type_select' disabled style='background-color: #E6E3E3;' required='required' ><option selected='selected'>Select...</option><option value='ip'>Address</option><option value='string'>String</option><option value='integer'>Integer</option></select>");
 	    			//$('#ir_td_dg_type').append("<label> DG Type: </label><select name='ir_dg_type_select' id='ir_dg_type_select' required='required' ><option selected='selected'>Select...</option><option value='ip'>Address</option><option value='string'>String</option><option value='integer'>Integer</option></select>");
 	    		}
@@ -407,7 +437,6 @@ $(function () {
     		}
     	});
     	ajaxOut.done(irdgConfigLoadingProcess);
-	   	
    });
    
    // iRule/Data Group modification button click event handler
@@ -467,6 +496,46 @@ $(function () {
 	ajaxOut.done(irdgConfigUpdateProcess);
    	
    	
+   });
+   
+   // Event handler for when 'Delete iRule/DG' button is clicked.
+   $('#del_ir_btn_build').on('click', function(){
+	   	//Dictionary Data fed from the form
+	   	var irData = {'phpFileName':'', 'DevIP':'', 'IrDgName':'', 'IrType':'', 'IrDgType':''};
+	   	var bigipNameAndIP = $('#ltmSelBox option:selected').val();
+	   	var arr = bigipNameAndIP.split(":");
+	   	
+	   	// Data feed to irData
+	   	irData['phpFileName'] = 'del_irdg_ajax';
+	   	irData['DevIP'] = arr[1];
+	   	// 'IrType' - iRule or Data Group
+	   	irData['IrType'] = $('#chg_ir_type').val();
+	   	// 'IrDgName' - Actual iRule or Data Group Name
+	   	irData['IrDgName'] = $('#select_ir_dg_name').val();
+	   	
+	   	if (irData['IrType'] == 'Data Group'){
+		   	// 'IrDgType' - Data Group Data Type ip | string | integer
+		   	irData['IrDgType'] = $('#ir_dg_type_select').val();
+	   	}
+	   	
+	   	//alert("Dev IP: " + irData['DevIP'] + "\niRule/DG: " + irData['IrType'] + "\niRule/DG Name: " + irData['IrDgName'] + "\nData Group Type: " + irData['IrDgType']);
+		// Call Ajax to delete a chosen iRule or Data Group
+		ajaxOut = $.ajax({
+			url: '/content/del_irdg_ajax.php',
+			type: 'POST',
+			dataType: 'JSON',
+			data: {'jsonData': JSON.stringify(irData)},
+			error: function(jqXHR, textStatus, errorThrown){
+				alert("Ajax call to delete iRule or Data Group has failed!");
+	            console.log('jqXHR:');
+	            console.log(jqXHR);
+	            console.log('textStatus:');
+	            console.log(textStatus);
+	            console.log('errorThrown:');
+	            console.log(errorThrown);
+			}
+		});
+		ajaxOut.done(delIrdgProcess);
    });
    
 });

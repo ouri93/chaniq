@@ -65,6 +65,25 @@ function deleteRow(tableID) {
 	}
 }
 
+// Delete a row by name
+function deleteRowByName(tableID, name) {
+	var table = document.getElementById(tableID);
+	var rowCount = table.rows.length;
+	for(var i=1; i<rowCount; i++) {
+		var row = table.rows[i];
+		var chkbox = row.cells[0].childNodes[0];
+		if(null != chkbox && true == chkbox.checked) {
+			var col1 = '#dataTable tbody tr:eq(' + i + ') td:eq(1)';
+			var rowName = $(col1).children().val();
+			if(rowName == name){
+				table.deleteRow(i);
+				rowCount--;
+				i--;
+			}
+		}
+	}
+}
+
 // Check if there is checked rows at least one
 function hasCheckedRow(tableID) {
 	var table = document.getElementById(tableID);
@@ -251,11 +270,12 @@ function delCertkeyProcess(response_in){
 	
 	$.each(response_in, function(index){
 		if (response_in[index].result == "SUCCESS"){
-			strResult = "<b>" + response_in[index].name + " has been deleted successfully</b><br>";
+			strResult += "<b>" + response_in[index].name + " has been deleted successfully</b><br>";
 			strResult += response_in[index].message + "<br>";
+			deleteRowByName('dataTable', response_in[index].name);
 		}
 		else{
-			strResult = "<b>" + response_in[index].name + " deletion has failed</b><br>";
+			strResult += "<b>" + response_in[index].name + " deletion has failed</b><br>";
 			strResult += response_in[index].message + "<br>";			
 		}
 	});
