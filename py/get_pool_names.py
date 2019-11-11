@@ -16,9 +16,9 @@ def get_poolnames(mr, part_name):
 
 def get_pool_names(dev_ip, part_name):
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-    logging.info('Called get_pool_names(): %s %s' % (part_name, dev_ip))
+    logging.info('Called get_pool_names(): %s' % dev_ip)
     
-    mr = ManagementRoot(dev_ip, 'admin', 'rlatkdcks')
+    mr = ManagementRoot(str(dev_ip), 'admin', 'rlatkdcks')
     output = ''
     
     output = get_poolnames(mr, part_name)

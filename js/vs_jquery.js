@@ -208,14 +208,13 @@ function loadOptNames(ltmIP, loadType, selID){
 	else if (loadType == 'ALL') callingUrl = 'get_pool_monitors';
 	else callingUrl = 'get_profile_names';
 
-
 	ajxOut = $.ajax({
 		url: '/content/' + callingUrl + '.php',
 		type: 'POST',
 		dataType: 'JSON',
-		data: {method:callingUrl, DevIP:ltmIP, LoadTypeName:loadType},
+		data: {method:callingUrl, DevIP:ltmIP, LoadTypeName:loadType, Partition:'Common'},
 		error: function(jqXHR, textStatus, errorThrown){
-			alert("Ajax call to retrieve object option names (loadOptNames) has failed!");
+			alert("Ajax call to retrieve object option names (loadOptNames - " + callingUrl + ".php) has failed!");
             console.log('jqXHR:');
             console.log(jqXHR);
             console.log('textStatus:');
@@ -376,8 +375,8 @@ $(function () {
 		loadOptNames(arr[1], 'HTTP', 'vs_httpprf');
 		loadOptNames(arr[1], 'CLIENTSSL', 'vs_clisslprf');
 		loadOptNames(arr[1], 'SERVERSSL', 'vs_srvsslprf');
-		loadOptNames(arr[1], 'ALL', 'vs_poolmon');
-		loadOptNames(arr[1], 'ALL', 'vs_poolmbrmon');
+		//loadOptNames(arr[1], 'ALL', 'vs_poolmon');
+		//loadOptNames(arr[1], 'ALL', 'vs_poolmbrmon');
 		loadOptNames(arr[1], 'POOL', 'vs_pool_chosen');
 
 	});
@@ -686,8 +685,8 @@ $(function () {
 		loadOptNames(arr[1], 'HTTP', 'vs_httpprf');
 		loadOptNames(arr[1], 'CLIENTSSL', 'vs_clisslprf');
 		loadOptNames(arr[1], 'SERVERSSL', 'vs_srvsslprf');
-		loadOptNames(arr[1], 'ALL', 'vs_poolmon');
-		loadOptNames(arr[1], 'ALL', 'vs_poolmbrmon');
+		//loadOptNames(arr[1], 'ALL', 'vs_poolmon');
+		//loadOptNames(arr[1], 'ALL', 'vs_poolmbrmon');
 		
 		loadOptNames(arr[1], 'POOL', 'chg_vs_pool_chosen');
 	});

@@ -22,8 +22,6 @@ if(isset($_GET['go'])) {
         case "chg_irule": include('content/new_irule.php');break;
         case "chg_monitor": include('content/chg_monitor.php');break;
         case "new_monitor": include('content/profile.php');break;
-        case "mon_vs": include('content/mon_vs.php'); break;
-        case "mon_pool": include('content/mon_pool.php');break;
         case "del_vs": include('content/del_vs.php');break;
         case "del_profile": include('content/del_profile.php');break;
         case "del_pool": include('content/del_pool.php');break;
@@ -31,7 +29,7 @@ if(isset($_GET['go'])) {
         case "del_irule": include('content/new_irule.php');break;
         case "del_monitor": include('content/chg_monitor.php');break;
         case "del_snatpool": include('content/new_snatpool.php');break;
-        case "del_policies": include('content/del_policies.php');break;
+        case "del_policies": include('content/del_policy.php');break;
         case "admin_user": include('admin/admin_user.php');break;
         case "ltmadmin_pass": include('admin/ltmadmin_pass.php');break;
         case "about": include('content/about.php'); break;

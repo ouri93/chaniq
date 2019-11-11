@@ -282,7 +282,7 @@ def get_keys(mr):
 
 	return output
 	
-def get_active_profiles(dev_ip, pf_type):
+def get_profiles(dev_ip, pf_type):
 	logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
 	#logging.info('Called get_profiles(): %s %s' % (dev_ip, pf_type))
 	
@@ -357,10 +357,10 @@ def get_active_profiles(dev_ip, pf_type):
 		output = get_keys(mr)
 	
 		
-	logging.info('output in get_active_profiles: %s' % output)
+	logging.info('output in get_profiles: %s' % output)
 	return output
 
 if __name__ == "__main__":
 	#logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
 	#logging.info('main called: param1: ')
-	print get_active_profiles(sys.argv[1], sys.argv[2])
+	print get_profiles(sys.argv[1], sys.argv[2])

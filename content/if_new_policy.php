@@ -124,7 +124,7 @@
             <fieldset class="row1">        
                 <legend>Evaluation Result and Review</legend>
                 <div>
-                    <p id="newSnat_EvalReview">
+                    <p id="newPol_EvalReview">
         			</p>
                 </div>
             </fieldset>        
