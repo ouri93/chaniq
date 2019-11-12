@@ -700,7 +700,11 @@ $(function () {
 		
 		var arr = nameAndIp.split(":");
 		
-		if (GetParentURLParameter('go') == 'new_pool' | GetParentURLParameter('go') == 'chg_pool'){
+		if (GetParentURLParameter('go') == 'del_pool'){
+			loadPartitionNames(arr[1], 'partition_name_select');
+		}
+		//if (GetParentURLParameter('go') == 'new_pool' | GetParentURLParameter('go') == 'chg_pool'){
+		else {
 			// Call Ajax to retrieve pool names from a given LTM
 			ajxOut = $.ajax({
 				url: '/content/get_pool_names.php',
@@ -760,9 +764,7 @@ $(function () {
 	    	ajaxOut.done(PMprocessData);
 	    	//$('#pm_td').off('click');
 		}
-		else if (GetParentURLParameter('go') == 'del_pool'){
-			loadPartitionNames(arr[1], 'partition_name_select');
-		}
+
 	});
 
     /* Ajax Ref: https://www.youtube.com/watch?v=G9jz9mdblgs 

@@ -253,7 +253,7 @@ function loadObjNames(ltmIP, objType, selID){
 	});
 }
 
-function loadVSConfig(ltmIP, vsName){
+function loadVSConfig(ltmIP, vsName, vsPart){
 	var callingUrl = '';
 	callingUrl = 'get_vs_config';
 	
@@ -261,7 +261,7 @@ function loadVSConfig(ltmIP, vsName){
 		url: '/content/' + callingUrl + '.php',
 		type: 'POST',
 		dataType: 'JSON',
-		data: {method:callingUrl, DevIP:ltmIP, VsName:vsName},
+		data: {method:callingUrl, DevIP:ltmIP, VsName:vsName, VsPart:vsPart},
 		error: function(jqXHR, textStatus, errorThrown){
 			alert("Ajax call to VS configuration has failed!");
             console.log('jqXHR:');
@@ -282,24 +282,58 @@ function loadVSConfigProcessData(response_in) {
 
 	//Fill in Virtual Server configuration data with the data given by BIG-IP
 	// ID list: vs_desc, vs_dest, vs_port, vs_type, vs_tcpprofile, vs_persist, vs_irule, vs_snatpool, 
-	//          vs_policy, vs_httpprf, vs_clisslprf, vs_srvsslprf, chg_vs_pool_chosen
-	
-	$('#vs_desc').value('value_from_bigip');
-	$('#vs_dest').value('value_from_bigip');
-	$('#vs_port').value('value_from_bigip');
-	
-	$('#vs_tcpprofile option').filter( function() {
-		return $(this).text() == 'value_from_bigip';
-	}).prop('selected', true);
-
+	//          vs_policy, vs_httpprf, vs_clisslprf, vs_srvsslprf, vs_poolname
 	$.each(response_in, function(index) {
-		if (response_in[index] != "none"){
-			strResult += "<option value='" + response_in[index] + "'>" + response_in[index] + "</option>";
+		var strKey = index;
+		if ( index='vs_name' && response_in[index].search('FAIL') > -1 ){
+			strResult = "<b>Retrieving Virtual Server properties has failed<b><br>";
+			strResult = strResult + response_in[index];
+			$('#newvs_EvalReview').append(strResult);
+			return;
+		}
+		switch(strKey) {
+		case 'vs_desc':
+			$('#vs_desc').val(response_in[strKey]);
+			break;
+		case 'vs_dest':
+			$('#vs_dest').val(response_in[strKey]);
+			break;
+		case 'vs_port':
+			$('#vs_port').val(response_in[strKey]);
+			break;
+		case 'vs_type':
+			$('#vs_type').val(response_in[strKey]);
+			break;
+		case 'vs_tcpprofile':
+			$('#vs_tcpprofile').val(response_in[strKey]);
+			break;			
+		case 'vs_persist':
+			$('#vs_persist').val(response_in[strKey]);
+			break;			
+		case 'vs_irule':
+			$('#vs_irule').val(response_in[strKey]);
+			break;			
+		case 'vs_snatpool':
+			$('#vs_snatpool').val(response_in[strKey]);
+			break;			
+		case 'vs_policy':
+			$('#vs_policy').val(response_in[strKey]);
+			break;			
+		case 'vs_httpprf':
+			$('#vs_httpprf').val(response_in[strKey]);
+			break;			
+		case 'vs_clisslprf':
+			$('#vs_clisslprf').val(response_in[strKey]);
+			break;			
+		case 'vs_srvsslprf':
+			$('#vs_srvsslprf').val(response_in[strKey]);
+			break;			
+		case 'vs_poolname':
+			$('#chg_vs_pool_chosen').val(response_in[strKey]);
+			break;
 		}
 	});
-	
-	//alert("Return output: " + strResult);
-	$('#' + selID).append(strResult);
+
 }
 
 function loadObjNamesProcessData(response_in, selID) {
@@ -699,6 +733,11 @@ $(function () {
 		var arr = nameAndIp.split(":");
 		var active_ltm = arr[1];
 		var vs_dnsname = vsname_chosen;
+
+		// Load a chosen Virtual server configuration from BIG-IP
+		loadVSConfig(active_ltm, vs_dnsname, "Common");
+		
+		/*
 		var vs_dest;
         var vs_port;
         var vs_desc;
@@ -714,6 +753,7 @@ $(function () {
         var vs_sslserver = $('#vs_srvsslprf option:selected').val();
         
         var vs_poolname = $('#vs_pool_chosen option:selected').val();
+        */
 		// Load the chosen VS configuration - Descritpion, Dest IP, Service Port, VS Type, TCP Profile, Persistence, iRule, SNAT Pool, Policies, HTTP Profile, Client SSL Profile, Server SSL profile, Pool name
 		
 	});
@@ -765,6 +805,11 @@ $(function () {
     	ajxOut.done(deleteVsProcess);
     	// Update Virtual Server list after deletion
     	loadObjNames(arr[1], 'VS', 'del_vs_sel_vs');
+	});
+	
+	// Event handler for when 'Modify VS' is clicked to update virtual server configuration
+	$('#btn_vs_modify').on('click', function(){
+		
 	});
 	
 });

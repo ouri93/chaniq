@@ -95,7 +95,7 @@
     		</fieldset>
             
             <p align="right">
-	            <input id="vs_btn_build" type="button" style="width:130px" name="vs_btn_build" value="Build" />
+	            <input id="btn_vs_modify" type="button" style="width:130px" name="btn_vs_modify" value="Update VS" />
             </p>
             <p></p>
             <fieldset class="row1">        
