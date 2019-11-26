@@ -263,7 +263,7 @@ function loadVSConfig(ltmIP, vsName, vsPart){
 		dataType: 'JSON',
 		data: {method:callingUrl, DevIP:ltmIP, VsName:vsName, VsPart:vsPart},
 		error: function(jqXHR, textStatus, errorThrown){
-			alert("Ajax call to VS configuration has failed!");
+			alert("Ajax call to load VS configuration has failed!");
             console.log('jqXHR:');
             console.log(jqXHR);
             console.log('textStatus:');
@@ -729,6 +729,10 @@ $(function () {
 		var vsname_chosen = $('#chg_vs_sel_vs option:selected').val();
 		//alert('Chosen VS name: ' + vsname_chosen);
 		
+		if (vsname_chosen == "select"){
+			return;
+		}
+		
 		var nameAndIp = $('#ltmSelBox option:selected').val();
 		var arr = nameAndIp.split(":");
 		var active_ltm = arr[1];
@@ -809,7 +813,79 @@ $(function () {
 	
 	// Event handler for when 'Modify VS' is clicked to update virtual server configuration
 	$('#btn_vs_modify').on('click', function(){
+		if($('#chg_vs_sel_vs').val() == 'select'){
+			alert("Please choose a Virtual Server to modify");
+			return;
+		}
 		
+		// Gather input values		
+		var nameAndIp = $('#ltmSelBox option:selected').val();
+		var arr = nameAndIp.split(":");
+		var active_ltm = arr[1];
+		var vs_dnsname = $('#chg_vs_sel_vs').val();
+		var vs_dest = $('#vs_dest').val();
+        var vs_port = $('#vs_port').val();
+        var vs_desc = $('#vs_desc').val();
+        var vs_type = $('#vs_type option:selected').val();
+        var vs_tcpprofile = $('#vs_tcpprofile option:selected').val();
+        var vs_persistence = $('#vs_persist option:selected').val();
+        var vs_irule = $('#vs_irule option:selected').val();
+        var vs_snatpool = $('#vs_snatpool option:selected').val();
+        var vs_policy = $('#vs_policy option:selected').val();
+        var vs_httpprofile = $('#vs_httpprf option:selected').val();
+        var vs_sslclient = $('#vs_clisslprf option:selected').val();
+        var vs_sslserver = $('#vs_srvsslprf option:selected').val();
+        var vs_poolname = $('#chg_vs_pool_chosen option:selected').val();
+        
+        // 2. Modify Virtual Server
+    	// active_ltm, vs_dnsname, vs_dest, vs_port, vs_desc, vs_env, vs_tcpprofile, vs_persistence, vs_redirect, vs_type, vs_httpprofile, vs_sslclient, vs_sslserver, vs_irule, vs_snatpool, vs_policy
+    	var vsData = {'PhpFileName':'', 'DevIP':'', 'Vs_name':'', 'Vs_dest':'', 'Vs_port':'', 'Vs_desc':'', 'Vs_tcpprf':'','Vs_persist':'', 'Vs_type':'', 'Vs_httpprf':'', 'Vs_clisslprf':'', 'Vs_srvsslprf':'', 'Vs_irule':'', 'Vs_snatpool':'', 'Vs_policy':'', 'Vs_poolname':''};
+    	vsData['PhpFileName'] = 'chg_vs_ajax';
+    	vsData['DevIP'] = arr[1];
+    	vsData['Vs_name'] = vs_dnsname;
+    	vsData['Vs_dest'] = vs_dest;
+    	vsData['Vs_port'] = vs_port;
+    	vsData['Vs_desc'] = vs_desc;
+    	vsData['Vs_tcpprf'] =vs_tcpprofile;
+    	vsData['Vs_persist'] =vs_persistence;
+    	vsData['Vs_type'] =vs_type;
+    	vsData['Vs_httpprf'] =vs_httpprofile;
+    	vsData['Vs_clisslprf'] = vs_sslclient;
+    	vsData['Vs_srvsslprf'] = vs_sslserver;
+    	vsData['Vs_irule'] = vs_irule;
+    	vsData['Vs_snatpool'] = vs_snatpool;
+    	vsData['Vs_policy'] = vs_policy;
+    	vsData['Vs_poolname'] = vs_poolname;
+    	
+    	ajxOut = $.ajax({
+    		url: '/content/chg_vs_ajax.php',
+    		type: 'POST',
+    		dataType: 'JSON',
+    		async: false,
+    		data: {'jsonVsData' : JSON.stringify(vsData)},
+    		error: function(jqXHR, textStatus, errorThrown){
+    			alert("Ajax call to modify requested virtual server has failed!");
+                console.log('jqXHR:');
+                console.log(jqXHR);
+                console.log('textStatus:');
+                console.log(textStatus);
+                console.log('errorThrown:');
+                console.log(errorThrown);
+    		}
+    	});
+    	ajxOut.done(function (response_in) {
+    		var strResult = '';
+    		$.each(response_in, function(index) {
+    			if(index == 0) 
+    				strResult = "<b>" + response_in[index] + "</b><br>";
+    			else
+    				strResult += response_in[index] + "<br>";
+    		});
+    		
+    		//alert("Return output: " + strResult);
+    		$('#newvs_EvalReview').append(strResult);
+    	});
+    	
 	});
 	
 });

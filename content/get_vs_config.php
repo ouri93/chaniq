@@ -36,7 +36,7 @@
         //$echoOut = echoTest();
         //file_put_contents("/var/log/chaniqphp.log", "get_vs_config() EchoTest: " . $echoOut, FILE_APPEND);
         $vsConfigs = get_vsconfig($bigipIP, $vsname, $vspart);
-
+        file_put_contents("/var/log/chaniqphp.log", "get_vs_config() - Return data from BIG-IP\n", FILE_APPEND);
         //$json = json_encode($vsConfigs);
         echo $vsConfigs;
     }
