@@ -187,16 +187,21 @@ def chg_vs_ajax(dev_ip, vs_name, vs_dest, vs_port, vs_desc, vs_tcpprofile, vs_pe
                 loaded_vs.update()
 
             if loaded_prf_names['pool'] != fieldNames['pool']:
-                loaded_vs.pool = '/Common/%s' % fieldNames['pool']
+                if fieldNames['pool'] == 'none':
+                    loaded_vs.pool = fieldNames['pool']
+                else:
+                    loaded_vs.pool = '/Common/%s' % fieldNames['pool']
                 logger.info("Pool has been updated. Current: " + loaded_prf_names['pool'] + " New: " + fieldNames['pool'])
                 loaded_vs.update()
             
             # Update http profile
             if loaded_prf_names['httpProfile'] !=  fieldNames['httpProfile']:
                 # Update VS profile - Delete and then add
-                loaded_httpprf = loaded_vs.profiles_s.profiles.load(partition='Common', name=loaded_prf_names['httpProfile'])
-                loaded_httpprf.delete()
-                loaded_vs.profiles_s.profiles.create(name=fieldNames['httpProfile'], partition='Common')
+                if loaded_prf_names['httpProfile'] != 'none':
+                    loaded_httpprf = loaded_vs.profiles_s.profiles.load(partition='Common', name=loaded_prf_names['httpProfile'])
+                    loaded_httpprf.delete()
+                if fieldNames['httpProfile'] != 'none':
+                    loaded_vs.profiles_s.profiles.create(name=fieldNames['httpProfile'], partition='Common')
                 loaded_vs.update()
                 #update_httpprf = { 'name':fieldNames['httpProfile']}
                 logger.info("HTTP Profile has been updated. Current: " + loaded_prf_names['httpProfile'] + " New: " + fieldNames['httpProfile'] )
@@ -208,9 +213,11 @@ def chg_vs_ajax(dev_ip, vs_name, vs_dest, vs_port, vs_desc, vs_tcpprofile, vs_pe
             if loaded_prf_names['protocolProfileClient'] !=  fieldNames['protocolProfileClient']:
                 # Update TCP profile - Delete and then add
                 #loaded_tcpprf = loaded_vs.profiles_s.profiles.load(partition='Common', name=loaded_prf_names['protocolProfileClient'], context='clientside')
-                loaded_tcpprf = loaded_vs.profiles_s.profiles.load(partition='Common', name=loaded_prf_names['protocolProfileClient'])
-                loaded_tcpprf.delete()
-                loaded_vs.profiles_s.profiles.create(name=fieldNames['protocolProfileClient'], partition='Common', context='clientside')
+                if loaded_prf_names['protocolProfileClient'] != 'none':
+                    loaded_tcpprf = loaded_vs.profiles_s.profiles.load(partition='Common', name=loaded_prf_names['protocolProfileClient'])
+                    loaded_tcpprf.delete()
+                if fieldNames['protocolProfileClient'] != 'none':
+                    loaded_vs.profiles_s.profiles.create(name=fieldNames['protocolProfileClient'], partition='Common', context='clientside')
                 loaded_vs.update()
                 logger.info("TCP Profile has been updated. Current: " + loaded_prf_names['protocolProfileClient'] + " New: " + fieldNames['protocolProfileClient'])
                 #pprint.pprint(loaded_tcpprf.raw)
@@ -221,9 +228,11 @@ def chg_vs_ajax(dev_ip, vs_name, vs_dest, vs_port, vs_desc, vs_tcpprofile, vs_pe
             if loaded_prf_names['sslProfileClient'] !=  fieldNames['sslProfileClient']:
                 # Update Client SSL profile - Delete and then add
                 #loaded_sslcliprf = loaded_vs.profiles_s.profiles.load(partition='Common', name=loaded_prf_names['sslProfileClient'], context='clientside')
-                loaded_sslcliprf = loaded_vs.profiles_s.profiles.load(partition='Common', name=loaded_prf_names['sslProfileClient'])
-                loaded_sslcliprf.delete()
-                loaded_vs.profiles_s.profiles.create(name=fieldNames['sslProfileClient'], partition='Common', context='clientside')
+                if loaded_prf_names['sslProfileClient'] != 'none':
+                    loaded_sslcliprf = loaded_vs.profiles_s.profiles.load(partition='Common', name=loaded_prf_names['sslProfileClient'])
+                    loaded_sslcliprf.delete()
+                if fieldNames['sslProfileClient'] != 'none':
+                    loaded_vs.profiles_s.profiles.create(name=fieldNames['sslProfileClient'], partition='Common', context='clientside')
                 loaded_vs.update()
                 logger.info("SSL Client Profile has been updated. Current: " + loaded_prf_names['sslProfileClient'] + " New: " + fieldNames['sslProfileClient'] )
                 #pprint.pprint(loaded_sslcliprf.raw)
@@ -234,9 +243,11 @@ def chg_vs_ajax(dev_ip, vs_name, vs_dest, vs_port, vs_desc, vs_tcpprofile, vs_pe
             if loaded_prf_names['sslProfileServer'] !=  fieldNames['sslProfileServer']:
                 # Update Server SSL profile - Delete and then add
                 #loaded_sslsrvprf = loaded_vs.profiles_s.profiles.load(partition='Common', name=loaded_prf_names['sslProfileServer'], context='serverside')
-                loaded_sslsrvprf = loaded_vs.profiles_s.profiles.load(partition='Common', name=loaded_prf_names['sslProfileServer'])
-                loaded_sslsrvprf.delete()
-                loaded_vs.profiles_s.profiles.create(name=fieldNames['sslProfileServer'], partition='Common', context='serverside')
+                if loaded_prf_names['sslProfileServer'] != 'none':
+                    loaded_sslsrvprf = loaded_vs.profiles_s.profiles.load(partition='Common', name=loaded_prf_names['sslProfileServer'])
+                    loaded_sslsrvprf.delete()
+                if fieldNames['sslProfileServer'] != 'none':
+                    loaded_vs.profiles_s.profiles.create(name=fieldNames['sslProfileServer'], partition='Common', context='serverside')
                 loaded_vs.update()
                 logger.info("SSL Server Profile has been updated. Current: " + loaded_prf_names['sslProfileServer'] + " New: " + fieldNames['sslProfileServer'] )
                 #pprint.pprint(loaded_sslsrvprf.raw)
@@ -247,14 +258,22 @@ def chg_vs_ajax(dev_ip, vs_name, vs_dest, vs_port, vs_desc, vs_tcpprofile, vs_pe
             if loaded_prf_names['persistence'] !=  fieldNames['persistence']:
                 # Update Persistence profile - Prep persistence setting and then update
                 logger.info("Persistence has been updated. Current: " + loaded_prf_names['persistence'] + " New: " + fieldNames['persistence'] )
-                loaded_vs.persist = [{'name':fieldNames['persistence'], 'partition':'Common'}]
+                if fieldNames['persistence'] == 'none':
+                    # Assign empty list to remove persistence
+                    loaded_vs.persist = []
+                else:
+                    loaded_vs.persist = [{'name':fieldNames['persistence'], 'partition':'Common'}]
                 loaded_vs.update()
                 
             # Update iRule
             if loaded_prf_names['rules'] !=  fieldNames['rules']:
                 # Update Persistence profile - Prep persistence setting and then update
                 logger.info("iRule has been updated. Current: " + loaded_prf_names['rules'] + " New: " + fieldNames['rules'] )
-                rule_name = '/Common/%s' % fieldNames['rules']
+                if fieldNames['rules'] == 'none':
+                    #rule_name = fieldNames['rules']
+                    rule_name = ''
+                else:
+                    rule_name = '/Common/%s' % fieldNames['rules']
                 loaded_vs.rules = [rule_name]
                 loaded_vs.update()
                 
@@ -262,17 +281,23 @@ def chg_vs_ajax(dev_ip, vs_name, vs_dest, vs_port, vs_desc, vs_tcpprofile, vs_pe
             if loaded_prf_names['policies'] !=  fieldNames['policies']:
                 # Update Policy profile - Delete and then add
                 logger.info("Policy has been updated. Current: " + loaded_prf_names['policies'] + " New: " + fieldNames['policies'] )
-                loaded_pol = loaded_vs.policies_s.policies.load(partition='Common', name=loaded_prf_names['policies'])
-                loaded_pol.delete()
-                loaded_vs.policies_s.policies.create(name=fieldNames['policies'], partition='Common')
+                if loaded_prf_names['policies'] != 'none':
+                    loaded_pol = loaded_vs.policies_s.policies.load(partition='Common', name=loaded_prf_names['policies'])
+                    loaded_pol.delete()
+                if fieldNames['policies'] != 'none':
+                    loaded_vs.policies_s.policies.create(name=fieldNames['policies'], partition='Common')
                 loaded_vs.update()
 
             # Update SNAT Pool            
             if loaded_prf_names['sourceAddressTranslation'] !=  fieldNames['sourceAddressTranslation']:
                 # Update SNAT Pool
                 logger.info("SNAT Pool has been updated. Current: " + loaded_prf_names['sourceAddressTranslation'] + " New: " + fieldNames['sourceAddressTranslation'] )
-                snatpool_name = '/Common/%s' % fieldNames['sourceAddressTranslation']
-                loaded_vs.sourceAddressTranslation = {'pool':snatpool_name, 'type':'snat'}
+                if fieldNames['sourceAddressTranslation'] == 'none':
+                    snatpool_name = fieldNames['sourceAddressTranslation']
+                    loaded_vs.sourceAddressTranslation = {'pool':snatpool_name, 'type':'none'}
+                else:
+                    snatpool_name = '/Common/%s' % fieldNames['sourceAddressTranslation']
+                    loaded_vs.sourceAddressTranslation = {'pool':snatpool_name, 'type':'snat'}
                 loaded_vs.update()                
                 
     except Exception as e:

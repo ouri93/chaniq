@@ -730,6 +730,20 @@ $(function () {
 		//alert('Chosen VS name: ' + vsname_chosen);
 		
 		if (vsname_chosen == "select"){
+			// Set default VS configuration
+			$('#vs_dest').val('');
+	        $('#vs_port').val('');
+	        $('#vs_desc').val('');
+	        $('#vs_type option[value="Standard"]').attr('selected', 'selected');
+	        $('#vs_tcpprofile option[value="none"]').attr('selected', 'selected');
+	        $('#vs_persist option[value="none"]').attr('selected', 'selected');
+	        $('#vs_irule option[value="none"]').attr('selected', 'selected');
+	        $('#vs_snatpool option[value="none"]').attr('selected', 'selected');
+	        $('#vs_policy option[value="none"]').attr('selected', 'selected');
+	        $('#vs_httpprf option[value="none"]').attr('selected', 'selected');
+	        $('#vs_clisslprf option[value="none"]').attr('selected', 'selected');
+	        $('#vs_srvsslprf option[value="none"]').attr('selected', 'selected');
+	        $('#chg_vs_pool_chosen option[value="none"]').attr('selected', 'selected');
 			return;
 		}
 		

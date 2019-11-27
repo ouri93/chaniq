@@ -88,7 +88,7 @@
 				</p>
 				<p>
 					<label> Pool:</label>
-					<select id='chg_vs_pool_chosen' name='chg_vs_pool_chosen'><option value='none' selected='selected'>None</option></select>
+					<select id='chg_vs_pool_chosen' name='chg_vs_pool_chosen'><option value='none'>None</option></select>
 				</p>
 				</fieldset>
                 <p>*: Required field</p>
