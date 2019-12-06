@@ -5,7 +5,16 @@
     if (!isadmin()){
         header('Location: index.php');
     }
-    
+    ?>
+    <form class="register">
+        <fieldset  id='vs_iframe_fieldset' class="row1">
+		<!-- IFrame content here -->
+		<legend>LTM/GTM Admin password Management</legend>
+		<iframe src="/admin/if_adminpw.php" width="720px" height="600" frameborder="0"></iframe>       	
+        </fieldset>
+    </form>
+</div>
+<!--     
     if(isset($_POST['set_pass']) || isset($_POST['mod_pass'])){
         // Process LTM/GTM Admin password set
         $option = isset($_POST['set_module']) ? $_POST['mod_module'] : FALSE;
@@ -47,7 +56,8 @@
     }
     ?>
     <form class="register" method="POST">
-        <h1>Set LTM/GTM admin password Management</h1>
+        <h1>LTM/GTM admin password Management</h1>
+        <p>Admin password set here will be used for all managed BIG-IP devices by CHAN-IQ.</p>
         <fieldset class="admin_pass"> 
             <legend> Set LTM/GTM password</legend>
                 <p>
@@ -95,3 +105,4 @@
                 </p>
             </fieldset>    </form>
 </div>
+ -->

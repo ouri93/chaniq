@@ -1326,14 +1326,16 @@ $(function () {
 			if (prfType == 'HTTP')
 				prfType = prfType + ":" + window.parent.document.getElementById('selectedPrfProxyType').value;
 			
+			// Retrieve DB IP address from INI file
+			
 			// Call Ajax to retrieve parent profile names
 			ajxOut = $.ajax({
 				url: '/content/get_profile_names.php',
 				type: 'POST',
 				dataType: 'JSON',
-				data: {method:'get_profile_names', DevIP:arr[1], LoadTypeName:prfType},
+				data: {method:'get_profile_names', DB_IP:dbIP, PASS1:pass1, PASS2:pass2},
 				error: function(jqXHR, textStatus, errorThrown){
-					alert("Ajax call for retrieving profile names has failed!");
+					alert("Ajax call to save admin password has failed!");
 		            console.log('jqXHR:');
 		            console.log(jqXHR);
 		            console.log('textStatus:');
