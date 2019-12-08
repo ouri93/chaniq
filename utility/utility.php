@@ -35,11 +35,22 @@ function parse_ini_section_file (){
  * Given an ini data name, return the value of the data
  * 
  * @param String $secname Name of INI Section 
- * @param String $inidata Name of INI data 
+ * @param String $inikey Name of INI Key value of a given Section 
  */
-function parse_ini_sec_val ($secname, $inidata){
+function parse_ini_sec_val ($secname, $inikey){
     $iniarray = parse_ini_section_file();
-    return print($iniarray[$secname][$inidata]);
+
+    foreach ($iniarray as $section => $values){
+        $myx = (string)$section; // Conversion Array to string
+        //echo "Section Name: " . $section;
+        if ($myx == $secname ){
+            foreach ($values as $key=>$value){
+                if ($key == $inikey)
+                    return $value;
+            }
+        }
+    }
+    return "Failed to find a value of the given Key of the given Section";
 }
 
 /** 
