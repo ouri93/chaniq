@@ -31,7 +31,7 @@ if(isset($_GET['go'])) {
         case "del_snatpool": include('content/new_snatpool.php');break;
         case "del_policies": include('content/del_policy.php');break;
         case "admin_user": include('admin/admin_user.php');break;
-        case "ltmadmin_pass": include('admin/ltmadmin_pass.php');break;
+        case "admpw_mgmt": include('admin/ltmadmin_pass.php');break;
         case "about": include('content/about.php'); break;
         default: include('content/contentbase.php');
     }

@@ -1,7 +1,6 @@
 <div id="ltmadmin_pass">
     <!-- Admin Content - Visible if the logged-in user has admin role -->
     <?php
-    require 'db/connect.php';
     if (!isadmin()){
         header('Location: index.php');
     }

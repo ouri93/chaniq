@@ -56,7 +56,7 @@
          echo "<h4><a href='#'>Admin</a></h4>";
          echo "<ul>";
          echo "<li><a href='?go=admin_user'>User Management</a></li>";
-         echo "<li><a href='?go=ltmadmin_pass'>LTM/GTM Admin</a></li>";
+         echo "<li><a href='?go=admpw_mgmt'>LTM/GTM Admin</a></li>";
          echo "</ul>";
          echo "</div>";
      }
