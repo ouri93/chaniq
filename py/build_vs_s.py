@@ -3,6 +3,7 @@ import sys
 import logging
 import json
 import build_std_names
+import getpass
 
 logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO, format='%(asctime)s %(levelname)s %(name)s %(message)s')
 logger=logging.getLogger(__name__)
@@ -28,7 +29,9 @@ def check_vsname_conflict(mr, std_poolname):
 
 def build_vs_s(active_ltm, vs_dnsname, vs_dest, vs_port, vs_desc, vs_env, vs_tcpprofile, vs_persistence, vs_redirect, vs_type, vs_httpprofile, vs_sslclient, vs_sslserver, vs_irule, vs_snatpool, vs_policy):
     
-    mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
+    admpass = getpass.getpass('LTM', 'admin')
+    mr = ManagementRoot(str(active_ltm), 'admin', admpass)
+    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     
     idx = 1
     strReturn = {str(idx) : 'VS Creation Report'}

@@ -2,6 +2,7 @@ from f5.bigip import ManagementRoot
 import sys
 import logging
 import json
+import getpass
 
 logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
 logging.info("Head of load_irdg_names() called")
@@ -26,11 +27,13 @@ def check_datagroupname_conflict(mr, std_irname):
     else:
         return False  
 
-def load_irdg_names(irDevIp, irType, irDgPart):
+def load_irdg_names(active_ltm, irType, irDgPart):
     #'DevIP' 'IrType' 'IrDgPart'
-    logging.info("load_irdg_names.py parms\n DevIP: " + irDevIp + "\niRule or Data Group: " + irType +  "\nPartition: " + irDgPart + "\n") 
+    logging.info("load_irdg_names.py parms\n DevIP: " + active_ltm + "\niRule or Data Group: " + irType +  "\nPartition: " + irDgPart + "\n") 
 
-    mr = ManagementRoot(str(irDevIp), 'admin', 'rlatkdcks')
+    admpass = getpass.getpass('LTM', 'admin')
+    mr = ManagementRoot(str(active_ltm), 'admin', admpass)
+    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     
     strReturn = ''
 

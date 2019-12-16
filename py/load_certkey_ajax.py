@@ -3,15 +3,18 @@ import sys
 import logging
 import json
 import traceback
+import getpass
 
 logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
 logging.info("Head of load_certkey_ajax() called")
 
-def load_certkey_ajax(DevIp):
+def load_certkey_ajax(active_ltm):
     #'DevIP' 'IrType' 'IrDgPart'
-    logging.info("load_certkey_ajax.py parms\n DevIP: " + DevIp + "\n") 
+    logging.info("load_certkey_ajax.py parms\n DevIP: " + active_ltm + "\n") 
 
-    mr = ManagementRoot(str(DevIp), 'admin', 'rlatkdcks')
+    admpass = getpass.getpass('LTM', 'admin')
+    mr = ManagementRoot(str(active_ltm), 'admin', admpass)
+    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     
     key_idx = 1
     dictReturn = { key_idx: {'name':'', 'commonName':'', 'expiration':'', 'partition':''}}

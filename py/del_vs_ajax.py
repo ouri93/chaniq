@@ -4,6 +4,7 @@ import sys
 import logging
 import json
 import build_std_names
+import getpass
 
 logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO, format='%(asctime)s %(levelname)s %(name)s %(message)s')
 logger=logging.getLogger(__name__)
@@ -29,7 +30,9 @@ def check_vsname_conflict(mr, std_poolname):
 
 def del_vs_ajax(active_ltm, vs_name, partition):
     
-    mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
+    admpass = getpass.getpass('LTM', 'admin')
+    mr = ManagementRoot(str(active_ltm), 'admin', admpass)
+    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     
     idx = 1
     strReturn = {str(idx) : 'VS Deletion Report'}

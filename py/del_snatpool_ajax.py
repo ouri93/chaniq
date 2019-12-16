@@ -2,13 +2,16 @@ from f5.bigip import ManagementRoot
 import sys
 import logging
 import json
+import getpass
 
 logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO, format='%(asctime)s %(levelname)s %(name)s %(message)s')
 logger=logging.getLogger(__name__)
 
 def del_snatpool_ajax(active_ltm, snatname, snatpart):
     
-    mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
+    admpass = getpass.getpass('LTM', 'admin')
+    mr = ManagementRoot(str(active_ltm), 'admin', admpass)
+    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     
     strReturn = []
     strReturn.append("Snatpool Deletion process has been initiated.")

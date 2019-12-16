@@ -3,16 +3,19 @@ import sys
 import logging
 import json
 import traceback
+import getpass
 
 logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
 logging.info("Head of update_irdg_config() called")
 
 
-def update_irdg_config(irDevIp, irDgName, irType, irCode, irDgType, irDgData):
+def update_irdg_config(active_ltm, irDgName, irType, irCode, irDgType, irDgData):
     #'DevIP' 'IrDgName' 'IrType' 'IrCode' 'IrDgType' 'IrDgData'
-    logging.info("update_irdg_config.py parms\n DevIP: " + irDevIp + "\niRule/Data Group Name: " + irDgName + "\nConfig Type: " + irType + "\niRule Code: " + irCode + "\nDG Type: " + irDgType + "\nDG Data: " + irDgData + "\n") 
+    logging.info("update_irdg_config.py parms\n DevIP: " + active_ltm + "\niRule/Data Group Name: " + irDgName + "\nConfig Type: " + irType + "\niRule Code: " + irCode + "\nDG Type: " + irDgType + "\nDG Data: " + irDgData + "\n") 
 
-    mr = ManagementRoot(str(irDevIp), 'admin', 'rlatkdcks')
+    admpass = getpass.getpass('LTM', 'admin')
+    mr = ManagementRoot(str(active_ltm), 'admin', admpass)
+    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     
     idx = 1
     strReturn = {str(idx) : 'iRule/Data Group Configuration Update Report'}

@@ -3,14 +3,17 @@ import sys
 import logging
 import json
 import traceback
+import getpass
 
 logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
 logging.info("Head of del_pol_ajax() called")
 
-def del_pol_ajax(DevIp, polData, polType):
-    logging.info("del_pol_ajax.py parms\n DevIP: " + DevIp + "\nPolicy Status: " + polType + "\n") 
+def del_pol_ajax(active_ltm, polData, polType):
+    logging.info("del_pol_ajax.py parms\n DevIP: " + active_ltm + "\nPolicy Status: " + polType + "\n") 
 
-    mr = ManagementRoot(str(DevIp), 'admin', 'rlatkdcks')
+    admpass = getpass.getpass('LTM', 'admin')
+    mr = ManagementRoot(str(active_ltm), 'admin', admpass)
+    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     
     key_idx = 1
     dictReturn = { key_idx: {'name':'', 'polType':'', 'result':'', 'message':''}}

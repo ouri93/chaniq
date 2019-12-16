@@ -2,6 +2,7 @@ from f5.bigip import ManagementRoot
 import sys
 import logging
 import json
+import getpass
 
 def check_profileName_conflict(mr, prfName, prfPxyType, prfDftFrom):
     httpPrfNames = mr.tm.ltm.profile.https.get_collection()
@@ -22,9 +23,9 @@ def check_profileName_conflict(mr, prfName, prfPxyType, prfDftFrom):
     else:
         return False  
 		
-def new_httpProfile_build(prfDevIp, prfName, prfDplyOrChg, prfPxyType, prfDftFrom, prfBscAuthRealm, prfFallbackHost, prfFallbackStsCode, prfHdrErase,	prfHdrInsert, prfReqChunking, prfRespChunking, prfInstXFF, prfSrvAgtName):
+def new_httpProfile_build(active_ltm, prfName, prfDplyOrChg, prfPxyType, prfDftFrom, prfBscAuthRealm, prfFallbackHost, prfFallbackStsCode, prfHdrErase,	prfHdrInsert, prfReqChunking, prfRespChunking, prfInstXFF, prfSrvAgtName):
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-    #logging.info('Called get_profiles(): %s %s' % (dev_ip, pf_type))
+    #logging.info('Called get_profiles(): %s %s' % (active_ltm, pf_type))
 	
     # Default value set if no value is given
     if (prfInstXFF == ''):
@@ -32,10 +33,12 @@ def new_httpProfile_build(prfDevIp, prfName, prfDplyOrChg, prfPxyType, prfDftFro
          
          
     #mr = ManagementRoot(prfDevIp, 'admin', 'rlatkdcks')
-    mr = ManagementRoot(str(prfDevIp), 'admin', 'rlatkdcks')
+    admpass = getpass.getpass('LTM', 'admin')
+    mr = ManagementRoot(str(active_ltm), 'admin', admpass)
+    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     output = ''
 
-    logging.info("new_httpProfile_build.py Parms DevIP: " + prfDevIp \
+    logging.info("new_httpProfile_build.py Parms DevIP: " + active_ltm \
                  + " Profile name: " + prfName \
                  + " Defaults-from: " + prfDftFrom \
                  + " Profile Proxy Type: " + prfPxyType \

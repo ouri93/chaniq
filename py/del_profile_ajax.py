@@ -2,6 +2,7 @@ from f5.bigip import ManagementRoot
 import sys
 import logging
 import json
+import getpass
 
 def delete_profile(mr, partition, pf_type, pf_name):
 	
@@ -63,10 +64,12 @@ def delete_profile(mr, partition, pf_type, pf_name):
 	return output
 
 # Data format: {method:'jsonDATA', DevIP:ltmIP, LoadTypeName:prfType, Partition:partition, PrfName:prfName}
-def del_profile_ajax(dev_ip, pf_type, partition, pf_name):
+def del_profile_ajax(active_ltm, pf_type, partition, pf_name):
 	logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
 	
-	mr = ManagementRoot(str(dev_ip), 'admin', 'rlatkdcks')
+	admpass = getpass.getpass('LTM', 'admin')
+	mr = ManagementRoot(str(active_ltm), 'admin', admpass)
+	#mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
 	
 	idx = 1
 	strReturn = {str(idx) : 'Profile Deletion Report'}

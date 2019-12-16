@@ -3,6 +3,7 @@ import sys
 import logging
 import json
 import build_std_names
+import getpass
 
 logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
 logging.info("Head of new_monitor_build() called")
@@ -137,11 +138,13 @@ def check_monname_conflict(mr, std_monname, mMonType):
     return byMonType[mMonType](mr, std_monname)
 
 #def new_monitor_build(active_ltm, vs_dnsname, vs_port, vs_env, vs_poolmon, pLBMethod):
-def new_monitor_build(mDevIp, monName, mDesc, mEnv, mMonType, mMonCode, mParMonType, mInterval, mTimeout, mSend, mRecv, mUsername, mPassword, mReverse, mAliasPort, mCipherlist ):
+def new_monitor_build(active_ltm, monName, mDesc, mEnv, mMonType, mMonCode, mParMonType, mInterval, mTimeout, mSend, mRecv, mUsername, mPassword, mReverse, mAliasPort, mCipherlist ):
     
-    logging.info("new_monitor_build.py parms DevIP: " + mDevIp + " VS Name: " + monName + " Env: " + mEnv + " Mon Code: " + mMonCode + " Interval: " + mInterval + " Send: " + mSend + " Reverse: " + mReverse + " Alias Port: " + mAliasPort + " CipherList: " + mCipherlist) 
+    logging.info("new_monitor_build.py parms DevIP: " + active_ltm + " VS Name: " + monName + " Env: " + mEnv + " Mon Code: " + mMonCode + " Interval: " + mInterval + " Send: " + mSend + " Reverse: " + mReverse + " Alias Port: " + mAliasPort + " CipherList: " + mCipherlist) 
 
-    mr = ManagementRoot(str(mDevIp), 'admin', 'rlatkdcks')
+    admpass = getpass.getpass('LTM', 'admin')
+    mr = ManagementRoot(str(active_ltm), 'admin', admpass)
+    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     
     idx = 1
     strReturn = {str(idx) : 'Monitor Creation Report'}

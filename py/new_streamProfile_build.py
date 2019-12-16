@@ -2,6 +2,7 @@ from f5.bigip import ManagementRoot
 import sys
 import logging
 import json
+import getpass
 
 def check_profileName_conflict(mr, prfName, prfDftFrom):
     strmPrfNames = mr.tm.ltm.profile.streams.get_collection()
@@ -22,14 +23,16 @@ def check_profileName_conflict(mr, prfName, prfDftFrom):
     else:
         return False  
 #  'defaultsFrom', 'source', 'tmTarget'		
-def new_streamProfile_build(prfDevIp, prfName, prfDplyOrChg, defaultsFrom, source, tmTarget):
+def new_streamProfile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, source, tmTarget):
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-    #logging.info('Called get_profiles(): %s %s' % (dev_ip, pf_type))
+    #logging.info('Called get_profiles(): %s %s' % (active_ltm, pf_type))
 	
-    mr = ManagementRoot(str(prfDevIp), 'admin', 'rlatkdcks')
+    admpass = getpass.getpass('LTM', 'admin')
+    mr = ManagementRoot(str(active_ltm), 'admin', admpass)
+    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     output = ''
 
-    logging.info("new_streamProfile_build.py Parms DevIP: " + prfDevIp + " Profile name: " + prfName + " Profile Deploy or Change: " + prfDplyOrChg + " Defaults-from: " + defaultsFrom) 
+    logging.info("new_streamProfile_build.py Parms DevIP: " + active_ltm + " Profile name: " + prfName + " Profile Deploy or Change: " + prfDplyOrChg + " Defaults-from: " + defaultsFrom) 
     idx = 1
     
     if prfDplyOrChg == 'new_profile':

@@ -2,6 +2,7 @@ from f5.bigip import ManagementRoot
 import sys
 import logging
 import json
+import getpass
 
 def check_profileName_conflict(mr, prfName, prfDftFrom):
     f4PrfNames = mr.tm.ltm.profile.fastl4s.get_collection()
@@ -26,14 +27,16 @@ def check_profileName_conflict(mr, prfName, prfDftFrom):
 # 'defaultsFrom', 'resetOnTimeout', 'reassembleFragments', 'idleTimeout',
 # 'tcpHandshakeTimeout', 'tcpTimestampMode', 'tcpWscaleMode', 'looseInitialization',
 # 'looseClose', 'tcpCloseTimeout', 'keepAliveInterval'		
-def new_f4Profile_build(prfDevIp, prfName, prfDplyOrChg, defaultsFrom, resetOnTimeout, reassembleFragments, idleTimeout, tcpHandshakeTimeout, tcpTimestampMode, tcpWscaleMode, looseInitialization, looseClose, tcpCloseTimeout, keepAliveInterval):
+def new_f4Profile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, resetOnTimeout, reassembleFragments, idleTimeout, tcpHandshakeTimeout, tcpTimestampMode, tcpWscaleMode, looseInitialization, looseClose, tcpCloseTimeout, keepAliveInterval):
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-    #logging.info('Called get_profiles(): %s %s' % (dev_ip, pf_type))
+    #logging.info('Called get_profiles(): %s %s' % (active_ltm, pf_type))
 	
-    mr = ManagementRoot(str(prfDevIp), 'admin', 'rlatkdcks')
+    admpass = getpass.getpass('LTM', 'admin')
+    mr = ManagementRoot(str(active_ltm), 'admin', admpass)
+    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     output = ''
 
-    logging.info("new_f4Profile_build.py Parms DevIP: " + prfDevIp + " Profile name: " + prfName + " Profile Deploy or Change: " + prfDplyOrChg + " Defaults-from: " + defaultsFrom) 
+    logging.info("new_f4Profile_build.py Parms DevIP: " + active_ltm + " Profile name: " + prfName + " Profile Deploy or Change: " + prfDplyOrChg + " Defaults-from: " + defaultsFrom) 
 	
     idx = 1
     if prfDplyOrChg == 'new_profile':  

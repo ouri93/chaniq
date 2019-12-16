@@ -3,6 +3,7 @@ import sys
 import logging
 import json
 import build_std_names
+import getpass
 
 logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
 
@@ -27,7 +28,9 @@ def check_poolname_conflict(mr, std_poolname):
 
 def new_pool_build2(active_ltm, vs_dnsname, vs_port, vs_env, vs_poolmon, pool_membername, pool_memberip, pool_memberport, pool_membermon):
     
-    mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
+    admpass = getpass.getpass('LTM', 'admin')
+    mr = ManagementRoot(str(active_ltm), 'admin', admpass)
+    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     
     membernames = pool_membername.split(":")
     memberips = pool_memberip.split(":")

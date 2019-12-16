@@ -2,13 +2,16 @@ from f5.bigip import ManagementRoot
 import logging
 import sys
 import json
+import getpass
 
 logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
 
 # 'PhpFileName':'', 'DevIP':'', 'P_name':'', 'P_part':'' 
 def del_pool_ajax(active_ltm, p_name, p_part):
     
-    mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
+    admpass = getpass.getpass('LTM', 'admin')
+    mr = ManagementRoot(str(active_ltm), 'admin', admpass)
+    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     
     idx = 1
     strReturn = {str(idx) : 'Pool Deletion Report'}

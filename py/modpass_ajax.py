@@ -5,6 +5,8 @@ import mysql.connector
 from mysql.connector import errorcode
 import ConfigParser
 import bcrypt
+from cryptography.fernet import Fernet
+import traceback
 
 
 logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO, format='%(asctime)s %(levelname)s %(name)s %(message)s')
@@ -19,6 +21,59 @@ def get_hashed_password(plain_text_password):
 def validate_password(plain_text_password, hashed_password):
     # Check hashed password. Using bcrypt, the salt is saved into the hash itself
     return bcrypt.checkpw(plain_text_password, hashed_password)
+
+def encrypt_pw(plain_text_password, key):
+    try:
+        cipher_suite = Fernet(key.encode('utf-8'))
+        cipher_pw = cipher_suite.encrypt(plain_text_password)
+    except Exception as e:
+        logging.info("Error in encrypt_pw(). Error details: " + str(e))
+        strReturn[str(idx)] = "Error in encrypt_pw(). Error details: " + str(e)
+        idx += 1
+        return json.dumps(strReturn)
+    return cipher_pw 
+
+def decrypt_pw(encrypted_pw, key):
+    try:
+        cipher_suite = Fernet(key.encode('utf-8'))
+        plain_pw = cipher_suite.decrypt(encrypted_pw.encode('utf-8'))
+    except Exception as e:
+        logging.info("Error in decrypt_pw(). Error details: " + str(e))
+        logging.info(traceback.format_exc())
+        strReturn[str(idx)] = "Error in decrypt_pw(). Error details: " + str(e)
+        idx += 1
+        return json.dumps(strReturn)
+            
+    return plain_pw
+
+def generate_symkey():
+    return Fernet.generate_key()
+
+def retrieve_symkey(dbcon, bigip_type):
+    
+    mycursor = dbcon.cursor()
+    
+    # Validate if the current password is correct
+    if bigip_type == 'LTM':
+        sql = "SELECT enckey FROM bigip_pass WHERE module='LTM' and adminname='admin'"
+    elif bigip_type == 'GTM':
+        sql = "SELECT enckey FROM bigip_pass WHERE module='GTM' and adminname='admin'"
+    
+    mycursor.execute(sql)
+    return mycursor.fetchone()[0]
+
+def retrieve_cipher_pw(dbcon, bigip_type):
+    
+    mycursor = dbcon.cursor()
+    
+    # Validate if the current password is correct
+    if bigip_type == 'LTM':
+        sql = "SELECT pass FROM bigip_pass WHERE module='LTM' and adminname='admin'"
+    elif bigip_type == 'GTM':
+        sql = "SELECT pass FROM bigip_pass WHERE module='GTM' and adminname='admin'"
+    
+    mycursor.execute(sql)
+    return mycursor.fetchone()[0]
 
 def modpass_ajax(db_ip, curpass, newpass, bigip_type):
     
@@ -50,7 +105,35 @@ def modpass_ajax(db_ip, curpass, newpass, bigip_type):
         #logging.info("Try to connection established DB IP: " + db_ip + " Passwd: " + curpass)
         con = mysql.connector.connect(user=username, password=password, database=dbname)
         logging.info("Connection established")
+        mycursor = con.cursor()
         
+        #''' Code using Cryptography lib
+        # Retrieve encryption key from DB
+        enc_key = retrieve_symkey(con, bigip_type)
+        cur_saved_cipher_pw = retrieve_cipher_pw(con, bigip_type)
+        
+        cur_saved_plain_pw = decrypt_pw(cur_saved_cipher_pw, enc_key) 
+        logging.info("Decrypted PW: " + cur_saved_plain_pw + " Provided PW: " + curpass)
+        
+        # Validate a given current password and saved password, if matched, move on updating password
+        if cur_saved_plain_pw == curpass:
+            new_encrypted_pw = encrypt_pw(newpass, enc_key)
+            if bigip_type == 'LTM':
+                sql = "UPDATE bigip_pass SET pass='" + new_encrypted_pw + "' WHERE module='LTM' and adminname='admin'"
+            elif bigip_type == 'GTM':
+                sql = "UPDATE bigip_pass SET pass='" + new_encrypted_pw + "' WHERE module='GTM' and adminname='admin'"
+            logging.info("SQL String: " + sql)
+            mycursor.execute(sql)
+            con.commit()
+        else:
+            logging.info("Typed current password is not correct")
+            strReturn[str(idx)] = "Typed Current password is not correct"
+            idx += 1
+            return json.dumps(strReturn)
+        
+        #'''
+        
+        '''
         # Update hashed password
         mycursor = con.cursor()
         
@@ -80,13 +163,13 @@ def modpass_ajax(db_ip, curpass, newpass, bigip_type):
             strReturn[str(idx)] = "Typed Current password is not correct"
             idx += 1
             return json.dumps(strReturn)
-        
+        '''
     except Exception as e:
         logging.info("Exception during DB Connection or DB Operation: " + str(e))
         strReturn[str(idx)] = 'Exception during DB Connection or DB Operation. Error Details: ' + str(e)
         idx += 1
         return json.dumps(strReturn)    
-    strReturn[str(idx)] = 'Password has been updated successfully'
+    strReturn[str(idx)] = 'Password has been modified successfully'
     idx += 1
         
     return json.dumps(strReturn)

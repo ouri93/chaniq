@@ -3,15 +3,18 @@ import sys
 import logging
 import json
 import traceback
+import getpass
 
 logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
 logging.info("Head of load_irdg_config() called")
 
-def load_irdg_config(irDevIp, irType, irDgName):
+def load_irdg_config(active_ltm, irType, irDgName):
     #'DevIP' 'IrType' 'IrDgPart'
-    logging.info("load_irdg_config.py parms\n DevIP: " + irDevIp + "\niRule or Data Group: " + irType +  "\nName: " + irDgName + "\n") 
+    logging.info("load_irdg_config.py parms\n DevIP: " + active_ltm + "\niRule or Data Group: " + irType +  "\nName: " + irDgName + "\n") 
 
-    mr = ManagementRoot(str(irDevIp), 'admin', 'rlatkdcks')
+    admpass = getpass.getpass('LTM', 'admin')
+    mr = ManagementRoot(str(active_ltm), 'admin', admpass)
+    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     
     dictReturn = {'name':''}
 

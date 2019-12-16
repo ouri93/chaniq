@@ -1333,9 +1333,9 @@ $(function () {
 				url: '/content/get_profile_names.php',
 				type: 'POST',
 				dataType: 'JSON',
-				data: {method:'get_profile_names', DB_IP:dbIP, PASS1:pass1, PASS2:pass2},
+				data: {method:'get_profile_names', DevIP:arr[1], LoadTypeName:prfType},
 				error: function(jqXHR, textStatus, errorThrown){
-					alert("Ajax call to save admin password has failed!");
+					alert("Ajax call to retrieve profile names has failed!");
 		            console.log('jqXHR:');
 		            console.log(jqXHR);
 		            console.log('textStatus:');

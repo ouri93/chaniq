@@ -2,6 +2,7 @@ from f5.bigip import ManagementRoot
 import sys
 import logging
 import json
+import getpass
 
 def get_setting_val(aPrf, attName):
     try:
@@ -131,11 +132,13 @@ def loadHttpSettings(mr, prfName):
         
     return output
     
-def getHttpSettings(dev_ip, proxyType, prfType, prfName, prfMode):
+def getHttpSettings(active_ltm, proxyType, prfType, prfName, prfMode):
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-    logging.info('Called getHttpSettings(): %s %s %s %s %s' % (dev_ip, proxyType, prfType, prfName, prfMode))
+    logging.info('Called getHttpSettings(): %s %s %s %s %s' % (active_ltm, proxyType, prfType, prfName, prfMode))
     
-    mr = ManagementRoot(dev_ip, 'admin', 'rlatkdcks')
+    admpass = getpass.getpass('LTM', 'admin')
+    mr = ManagementRoot(str(active_ltm), 'admin', admpass)
+    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
 
     output = {}
     

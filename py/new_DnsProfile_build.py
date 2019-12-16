@@ -2,6 +2,7 @@ from f5.bigip import ManagementRoot
 import sys
 import logging
 import json
+import getpass
 
 def check_profileName_conflict(mr, prfName, prfDftFrom):
     dnsPrfNames = mr.tm.ltm.profile.dns_s.get_collection()
@@ -22,15 +23,17 @@ def check_profileName_conflict(mr, prfName, prfDftFrom):
     else:
         return False  
 		
-def new_DnsProfile_build(prfDevIp, prfName, prfDplyOrChg, prfDftFrom, prfHwValid, prfHwRespCache, prfDnsExp, prfGtm, prfUnhandledAct, prfUseBind, prfZoneXfr, prfDnsSecurity, prfRecursion):
+def new_DnsProfile_build(active_ltm, prfName, prfDplyOrChg, prfDftFrom, prfHwValid, prfHwRespCache, prfDnsExp, prfGtm, prfUnhandledAct, prfUseBind, prfZoneXfr, prfDnsSecurity, prfRecursion):
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-    #logging.info('Called get_profiles(): %s %s' % (dev_ip, pf_type))
+    #logging.info('Called get_profiles(): %s %s' % (active_ltm, pf_type))
 	
-    mr = ManagementRoot(str(prfDevIp), 'admin', 'rlatkdcks')
+    admpass = getpass.getpass('LTM', 'admin')
+    mr = ManagementRoot(str(active_ltm), 'admin', admpass)
+    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     output = ''
 
 
-    logging.info("new_DnsProfile_build.py Parms \nDevIP: " + prfDevIp + "\nProfile name: " + prfName + "\nProfile Deploy or Change: " + prfDplyOrChg + "\nDefaults-from: " + prfDftFrom) 
+    logging.info("new_DnsProfile_build.py Parms \nDevIP: " + active_ltm + "\nProfile name: " + prfName + "\nProfile Deploy or Change: " + prfDplyOrChg + "\nDefaults-from: " + prfDftFrom) 
 
     idx = 1
     

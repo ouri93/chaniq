@@ -3,16 +3,19 @@ import sys
 import logging
 import json
 import traceback
+import getpass
 
 logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
 logging.info("Head of del_irdg_ajax() called")
 
 
-def del_irdg_ajax(irDevIp, irDgName, irOrDg, dgType):
+def del_irdg_ajax(active_ltm, irDgName, irOrDg, dgType):
     #'DevIP' 'IrDgName' 'IrType' 'IrCode' 'IrDgType' 'IrDgData'
-    logging.info("del_irdg_ajax.py parms\n DevIP: " + irDevIp + "\niRule/Data Group Name: " + irDgName + "\nConfig Type: " + irOrDg + "\nDG Type: " + dgType + "\n") 
+    logging.info("del_irdg_ajax.py parms\n DevIP: " + active_ltm + "\niRule/Data Group Name: " + irDgName + "\nConfig Type: " + irOrDg + "\nDG Type: " + dgType + "\n") 
 
-    mr = ManagementRoot(str(irDevIp), 'admin', 'rlatkdcks')
+    admpass = getpass.getpass('LTM', 'admin')
+    mr = ManagementRoot(str(active_ltm), 'admin', admpass)
+    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     
     idx = 1
     strReturn = {str(idx) : 'iRule/Data Group Deletion Report'}

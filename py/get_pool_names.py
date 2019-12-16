@@ -1,6 +1,7 @@
 from f5.bigip import ManagementRoot
 import sys
 import logging
+import getpass
 
 def get_poolnames(mr, part_name):
     output = ''
@@ -14,11 +15,13 @@ def get_poolnames(mr, part_name):
     logging.info('get_poolnames(): %s' % output)
     return output           
 
-def get_pool_names(dev_ip, part_name):
+def get_pool_names(active_ltm, part_name):
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-    logging.info('Called get_pool_names(): %s' % dev_ip)
+    logging.info('Called get_pool_names(): %s' % active_ltm)
     
-    mr = ManagementRoot(str(dev_ip), 'admin', 'rlatkdcks')
+    admpass = getpass.getpass('LTM', 'admin')
+    mr = ManagementRoot(str(active_ltm), 'admin', admpass)
+    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     output = ''
     
     output = get_poolnames(mr, part_name)

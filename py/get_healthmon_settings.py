@@ -2,6 +2,7 @@ from f5.bigip import ManagementRoot
 import sys
 import logging
 import json
+import getpass
 
 def get_setting_val(aMon, attName):
     try:
@@ -112,11 +113,13 @@ def get_eavmon_setting(mr, parent_mon):
     return outputDict
    
 
-def get_healthmon_setting(dev_ip, mon_type, parent_mon):
+def get_healthmon_setting(active_ltm, mon_type, parent_mon):
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-    logging.info('Called get_healthmonitors(): %s %s %s' % (dev_ip, mon_type, parent_mon))
+    logging.info('Called get_healthmonitors(): %s %s %s' % (active_ltm, mon_type, parent_mon))
     
-    mr = ManagementRoot(dev_ip, 'admin', 'rlatkdcks')
+    admpass = getpass.getpass('LTM', 'admin')
+    mr = ManagementRoot(str(active_ltm), 'admin', admpass)
+    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
 
     output = {}
     '''

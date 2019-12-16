@@ -2,6 +2,7 @@ from f5.bigip import ManagementRoot
 import sys
 import logging
 import json
+import getpass
 
 logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
 
@@ -96,13 +97,15 @@ def get_vsconfig(mr, vs_name, vs_part):
         logging.info( k + ":" + v)
     return output           
 
-def get_vs_config(dev_ip, vs_name, vs_part):
+def get_vs_config(active_ltm, vs_name, vs_part):
     # ID list: vs_desc, vs_dest, vs_port, vs_type, vs_tcpprofile, vs_persist, vs_irule, vs_snatpool, 
     # vs_policy, vs_httpprf, vs_clisslprf, vs_srvsslprf, chg_vs_pool_chosen
-    logging.info('Called get_vs_config(): IP: ' + dev_ip + ' VS name: ' + vs_name + ' VS Partition: ' + vs_part)
+    logging.info('Called get_vs_config(): IP: ' + active_ltm + ' VS name: ' + vs_name + ' VS Partition: ' + vs_part)
     
     try:
-        mr = ManagementRoot(dev_ip, 'admin', 'rlatkdcks')
+        admpass = getpass.getpass('LTM', 'admin')
+        mr = ManagementRoot(str(active_ltm), 'admin', admpass)
+        #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     except Exception as e:
         logging.info("Exception fired during loading mgmt root")
         logging.info("Error Details: " + str(e))

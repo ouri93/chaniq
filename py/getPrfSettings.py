@@ -2,6 +2,7 @@ from f5.bigip import ManagementRoot
 import sys
 import logging
 import json
+import getpass
 
 # Parameters
 #   aPrf - Profile Name
@@ -397,11 +398,13 @@ def getStreamSettings(mr, parPrfName, prfMode):
     logging.info('getStreamSettings(): ' + output)
     return output
 
-def getPrfSettings(dev_ip, prfType, parPrfName, prfMode):
+def getPrfSettings(active_ltm, prfType, parPrfName, prfMode):
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-    logging.info('Called getPrfSettings(): %s %s %s %s' % (dev_ip, prfType, parPrfName, prfMode))
+    logging.info('Called getPrfSettings(): %s %s %s %s' % (active_ltm, prfType, parPrfName, prfMode))
     
-    mr = ManagementRoot(dev_ip, 'admin', 'rlatkdcks')
+    admpass = getpass.getpass('LTM', 'admin')
+    mr = ManagementRoot(str(active_ltm), 'admin', admpass)
+    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
 
     output = {}
     

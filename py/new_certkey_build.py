@@ -5,6 +5,7 @@ import json
 import build_std_names
 import os
 import requests
+import getpass
 
 logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
 logging.info("Head of new_certkey_build() called")
@@ -110,11 +111,13 @@ def _upload(host, creds, fp):
             logging.info("Exception while requests.post processing - Error: " + str(e)) 
         start += current_bytes
 
-def new_certkey_build(certkeyDevIp, certkeyImpType, certkeyImpName, certkeyKeySource, certkeyKeySourceData, certkeySecType, certkeySecTypeData, certkeyPKCSPw):
+def new_certkey_build(active_ltm, certkeyImpType, certkeyImpName, certkeyKeySource, certkeyKeySourceData, certkeySecType, certkeySecTypeData, certkeyPKCSPw):
     
-    logging.info("new_certkey_build.py parms DevIP: " + certkeyDevIp + " Import Type: " + certkeyImpType + "Import name: " + certkeyImpName + " Key Source: " + certkeyKeySource + " Security Type: " + certkeySecType + " Security Data: " + certkeySecTypeData + " PKCS PW: " + certkeyPKCSPw) 
+    logging.info("new_certkey_build.py parms DevIP: " + active_ltm + " Import Type: " + certkeyImpType + "Import name: " + certkeyImpName + " Key Source: " + certkeyKeySource + " Security Type: " + certkeySecType + " Security Data: " + certkeySecTypeData + " PKCS PW: " + certkeyPKCSPw) 
 
-    mr = ManagementRoot(str(certkeyDevIp), 'admin', 'rlatkdcks')
+    admpass = getpass.getpass('LTM', 'admin')
+    mr = ManagementRoot(str(active_ltm), 'admin', admpass)
+    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     
     idx = 1
     strReturn = {str(idx) : 'SSL Cert/Key Creation Report'}

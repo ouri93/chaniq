@@ -2,6 +2,7 @@ from f5.bigip import ManagementRoot
 import sys
 import logging
 import json
+import getpass
 
 def check_profileName_conflict(mr, prfName, prfDftFrom):
     hashPrfNames = mr.tm.ltm.persistence.hashs.get_collection()
@@ -22,14 +23,16 @@ def check_profileName_conflict(mr, prfName, prfDftFrom):
     else:
         return False  
 # defaultsFrom, matchAcrossServices, matchAcrossVirtuals, matchAcrossPools, hashAlgorithm, hashOffset, hashLength, hashStartPattern, hashEndPattern, hashBufferLimit, timeout, rule, overrideConnectionLimit		
-def new_hashProfile_build(prfDevIp, prfName, prfDplyOrChg, defaultsFrom, matchAcrossServices, matchAcrossVirtuals, matchAcrossPools, hashAlgorithm, hashOffset, hashLength, hashStartPattern, hashEndPattern, hashBufferLimit, timeout, rule, overrideConnectionLimit):
+def new_hashProfile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, matchAcrossServices, matchAcrossVirtuals, matchAcrossPools, hashAlgorithm, hashOffset, hashLength, hashStartPattern, hashEndPattern, hashBufferLimit, timeout, rule, overrideConnectionLimit):
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-    #logging.info('Called get_profiles(): %s %s' % (dev_ip, pf_type))
+    #logging.info('Called get_profiles(): %s %s' % (active_ltm, pf_type))
 	
-    mr = ManagementRoot(str(prfDevIp), 'admin', 'rlatkdcks')
+    admpass = getpass.getpass('LTM', 'admin')
+    mr = ManagementRoot(str(active_ltm), 'admin', admpass)
+    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     output = ''
 
-    logging.info("new_hashProfile_build.py Parms \nDevIP: " + prfDevIp + "\nProfile name: " + prfName + "\nProfile Deploy or Change: " + prfDplyOrChg + "\nDefaults-from: " + defaultsFrom + "\n") 
+    logging.info("new_hashProfile_build.py Parms \nDevIP: " + active_ltm + "\nProfile name: " + prfName + "\nProfile Deploy or Change: " + prfDplyOrChg + "\nDefaults-from: " + defaultsFrom + "\n") 
 
     idx = 1
 

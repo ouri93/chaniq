@@ -3,6 +3,7 @@ from f5.bigip.contexts import TransactionContextManager
 import sys
 import logging
 import json
+import getpass
 
 logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO, format='%(asctime)s %(levelname)s %(name)s %(message)s')
 logger=logging.getLogger(__name__)
@@ -113,16 +114,18 @@ def get_vsconfig(mr, vs_name, vs_part, loaded_prf_names):
         
     return loaded_prf_names
 
-def chg_vs_ajax(dev_ip, vs_name, vs_dest, vs_port, vs_desc, vs_tcpprofile, vs_persistence, vs_type, vs_httpprofile, vs_sslclient, vs_sslserver, vs_irule, vs_snatpool, vs_policy, vs_poolname):
+def chg_vs_ajax(active_ltm, vs_name, vs_dest, vs_port, vs_desc, vs_tcpprofile, vs_persistence, vs_type, vs_httpprofile, vs_sslclient, vs_sslserver, vs_irule, vs_snatpool, vs_policy, vs_poolname):
     
     logger.info("chg_vs_ajax Head")
-    mr = ManagementRoot(str(dev_ip), 'admin', 'rlatkdcks')
+    admpass = getpass.getpass('LTM', 'admin')
+    mr = ManagementRoot(str(active_ltm), 'admin', admpass)
+    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
 
     idx = 1
     strReturn = {str(idx) : 'VS Modification Report'}
     idx += 1
     
-    logger.info("Logger - Before VS Modification" + str(dev_ip) + " VS DNS:" + str(vs_name) + " VS DEST:" + str(vs_dest) + " VS PORT:" + str(vs_port) + " VS DESC:" + str(vs_desc) + " VS TCP Prf:" + str(vs_tcpprofile) + " VS Persist:" + str(vs_persistence) + " VS Type:" + str(vs_type) + " VS HTTP Prf:" + str(vs_httpprofile) + " VS Clientssl:" + str(vs_sslclient) + " VS Serverssl:" + str(vs_sslserver) + " VS iRule: " + str(vs_irule) + " VS SNATPOOL: " + str(vs_snatpool) + " VS Policy: " + str(vs_policy) + " VS Pool Name: " + str(vs_poolname))
+    logger.info("Logger - Before VS Modification" + str(active_ltm) + " VS DNS:" + str(vs_name) + " VS DEST:" + str(vs_dest) + " VS PORT:" + str(vs_port) + " VS DESC:" + str(vs_desc) + " VS TCP Prf:" + str(vs_tcpprofile) + " VS Persist:" + str(vs_persistence) + " VS Type:" + str(vs_type) + " VS HTTP Prf:" + str(vs_httpprofile) + " VS Clientssl:" + str(vs_sslclient) + " VS Serverssl:" + str(vs_sslserver) + " VS iRule: " + str(vs_irule) + " VS SNATPOOL: " + str(vs_snatpool) + " VS Policy: " + str(vs_policy) + " VS Pool Name: " + str(vs_poolname))
     logger.info("VS Modification process has been initiated.")
      
     try:

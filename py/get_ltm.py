@@ -2,8 +2,9 @@ from f5.bigip import ManagementRoot
 import sys
 import logging
 import json
+import getpass
 
-def get_active_ltm(dev_name, dev_ip):
+def get_active_ltm(dev_name, active_ltm):
 	#===========================================================================
 	# logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
 	# logging.info('Dev Name: %s' % dev_name)
@@ -12,7 +13,9 @@ def get_active_ltm(dev_name, dev_ip):
 	logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
 	logging.info("get_active_ltm()")
 	
-	mr = ManagementRoot(dev_ip, 'admin', 'rlatkdcks')
+	admpass = getpass.getpass('LTM', 'admin')
+	mr = ManagementRoot(str(active_ltm), 'admin', admpass)
+	#mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
 	fostat = mr.tm.sys.failover.load()
 	if "active" in fostat:
 		return 1

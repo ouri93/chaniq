@@ -1,6 +1,7 @@
 from f5.bigip import ManagementRoot
 import sys
 import logging
+import getpass
 
 
 def get_tcpmonitors(mr):
@@ -82,11 +83,13 @@ def get_allmonitors(mr):
     return output
    
 
-def get_healthmonitors(dev_ip, mon_type):
+def get_healthmonitors(active_ltm, mon_type):
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-    logging.info('Called get_healthmonitors(): %s %s' % (dev_ip, mon_type))
+    logging.info('Called get_healthmonitors(): %s %s' % (active_ltm, mon_type))
     
-    mr = ManagementRoot(dev_ip, 'admin', 'rlatkdcks')
+    admpass = getpass.getpass('LTM', 'admin')
+    mr = ManagementRoot(str(active_ltm), 'admin', admpass)
+    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     output = ''
     '''
     Suppported Health Monitor types

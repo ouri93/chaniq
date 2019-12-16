@@ -2,6 +2,7 @@ from f5.bigip import ManagementRoot
 import logging
 import sys
 import json
+import getpass
 
 logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
 
@@ -9,7 +10,9 @@ logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
 # 'PM_ips' 'PM_ports' 'PM_ratios' 'PM_mons' 'PM_priGroup'
 def chg_pool_build(active_ltm, p_name, p_part, p_mon, p_LB, p_priGroup, p_priLessthan, pm_names, pm_ips, pm_ratios, pm_mons, pm_priGroups):
     
-    mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
+    admpass = getpass.getpass('LTM', 'admin')
+    mr = ManagementRoot(str(active_ltm), 'admin', admpass)
+    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     
     membernames = pm_names.split("|")
     memberips = pm_ips.split("|")

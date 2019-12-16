@@ -3,6 +3,7 @@ import sys
 import logging
 import json
 from f5.bigip.tm.ltm.node import Node
+import getpass
 
 logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
 
@@ -34,7 +35,9 @@ def check_node_conflict(mr, nodeip, nodename):
 def build_nodes(active_ltm, pool_membername, pool_memberip):
     
     global namebit, ipbit
-    mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
+    admpass = getpass.getpass('LTM', 'admin')
+    mr = ManagementRoot(str(active_ltm), 'admin', admpass)
+    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     
     nodenames = json.loads(pool_membername)
     nodeips = json.loads(pool_memberip)

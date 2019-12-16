@@ -3,6 +3,8 @@ import sys
 import logging
 import json
 import build_std_names
+import getpass
+
 
 logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
 
@@ -11,7 +13,9 @@ def get_pool_config(active_ltm, pName, pPartition):
 
     # Return Data Format
     # pool_name|pool_partition|pool_monitor|pool_LB|pool_lessthan@pm_name|pm_ip|pm_port|pm_ratio|pm_mon|pm_pri_group@pm_name|pm_ip|pm_port|pm_ratio|pm_mon|pm_pri_group...
-    mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
+    admpass = getpass.getpass('LTM', 'admin')
+    mr = ManagementRoot(str(active_ltm), 'admin', admpass)
+    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
 
     output = ''
 

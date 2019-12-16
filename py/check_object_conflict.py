@@ -3,6 +3,7 @@ import sys
 import logging
 import json
 import build_std_names
+import getpass
 
 logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
 # Global Varibale idx
@@ -147,7 +148,10 @@ def check_object_conflict(active_ltm, vs_env, vs_dnsname, vs_dest, vs_port, vs_p
 	strReturn = {str(idx):'Object Conflict Report'}
 	global idx
 	idx += 1
-	mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
+	
+	admpass = getpass.getpass('LTM', 'admin')
+	mr = ManagementRoot(str(active_ltm), 'admin', admpass)
+	#mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
 	
 	results = json.loads(vs_poolmembername)
 	for item in results:

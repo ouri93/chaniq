@@ -1,6 +1,7 @@
 from f5.bigip import ManagementRoot
 import sys
 import logging
+import getpass
 
 def get_tcpprofiles(mr):
 	logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.DEBUG, format='%(asctime)s %(levelname)s %(name)s %(message)s')
@@ -282,11 +283,13 @@ def get_keys(mr):
 
 	return output
 	
-def get_profiles(dev_ip, pf_type):
+def get_profiles(active_ltm, pf_type):
 	logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-	#logging.info('Called get_profiles(): %s %s' % (dev_ip, pf_type))
+	#logging.info('Called get_profiles(): %s %s' % (active_ltm, pf_type))
 	
-	mr = ManagementRoot(dev_ip, 'admin', 'rlatkdcks')
+	admpass = getpass.getpass('LTM', 'admin')
+	mr = ManagementRoot(str(active_ltm), 'admin', admpass)
+	#mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
 	output = ''
 	
 	'''

@@ -3,6 +3,7 @@ import sys
 import logging
 import json
 import build_std_names
+import getpass
 
 logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
 logging.info("Head of new_irule_build() called")
@@ -57,10 +58,12 @@ def check_irname_conflict(mr, std_irname, irType, irDgType):
     
     return byIrType[irType](mr, std_irname)
 
-def new_irule_build(irDevIp, irDgName, irEnv, irType, irCode, irDgType, irDgData):
-    logging.info("new_irule_build.py parms\n DevIP: " + irDevIp + "\niRule/Data Group Name: " + irDgName + "\nEnv: " + irEnv + "\nConfig Type: " + irType + "\niRule Code: " + irCode + "\nDG Type: " + irDgType + "\nDG Data: " + irDgData + "\n") 
+def new_irule_build(active_ltm, irDgName, irEnv, irType, irCode, irDgType, irDgData):
+    logging.info("new_irule_build.py parms\n DevIP: " + active_ltm + "\niRule/Data Group Name: " + irDgName + "\nEnv: " + irEnv + "\nConfig Type: " + irType + "\niRule Code: " + irCode + "\nDG Type: " + irDgType + "\nDG Data: " + irDgData + "\n") 
 
-    mr = ManagementRoot(str(irDevIp), 'admin', 'rlatkdcks')
+    admpass = getpass.getpass('LTM', 'admin')
+    mr = ManagementRoot(str(active_ltm), 'admin', admpass)
+    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     
     idx = 1
     strReturn = {str(idx) : 'iRule/Data Group Creation Report'}

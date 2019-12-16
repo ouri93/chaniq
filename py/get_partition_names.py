@@ -2,12 +2,15 @@ from f5.bigip import ManagementRoot
 import sys
 import logging
 import traceback
+import getpass
 
-def get_partition_names(dev_ip):
+def get_partition_names(active_ltm):
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-    logging.info('Called get_partition_names() Dev IP: %s' % (dev_ip))
+    logging.info('Called get_partition_names() Dev IP: %s' % (active_ltm))
     
-    mr = ManagementRoot(str(dev_ip), 'admin', 'rlatkdcks')
+    admpass = getpass.getpass('LTM', 'admin')
+    mr = ManagementRoot(str(active_ltm), 'admin', admpass)
+    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     output = ''
     
     logging.info('get_names() called')
