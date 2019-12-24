@@ -32,7 +32,7 @@ function parse_ini_section_file (){
 }
 
 /** 
- * Given an ini data name, return the value of the data
+ * Given an ini Section and its key name, return a single value of the key
  * 
  * @param String $secname Name of INI Section 
  * @param String $inikey Name of INI Key value of a given Section 
@@ -54,7 +54,7 @@ function parse_ini_sec_val ($secname, $inikey){
 }
 
 /** 
- * Given an ini section name, return all values of the section (Key is not included)
+ * Given an ini section name, return all values of all keys under the section (Key is not included)
  * 
  * @param String $parasecname Name of INI Section name
  * @return Array One dimension array of all values of the section
@@ -78,7 +78,7 @@ function parse_ini_sec_vals ($parmsecname){
 }
 
 /**
- * Given an ini section name, return all keys of the section (Value is not included)
+ * Given an ini section name, return all key names of the section (Value is not included)
  *
  * @param String $parasecname Name of INI Section name
  * @return Array One dimension array of all keys of the section
@@ -100,10 +100,11 @@ function parse_ini_key_vals ($parmsecname){
 }
 
 /** 
- * Given an ini section name, return all keys and values of the section
+ * Given an ini section name and value type [ SUBNET|VALUE }, return all keys and values of the section
  * 
  * @param String $parasecname Name of INI Section name
- * @param String $valtype Constant type name of the Value - SUBNET(used with finding a list of subnets and VIPs), VALUE (used with finding mgmt IP address)
+ * @param String $valtype Constant type name of Values - SUBNET(used with finding a list of subnets and VIPs)
+ *                                                       VALUE (used with finding mgmt IP address)
  *               Format1: Key = val1,val2,...,valn,  Format2: Key = val
  * @return Array Array of all keys and values of the section. Format Key1 => ( key2 =>val1, val2,...)
  *      
@@ -609,6 +610,26 @@ function load_all_bigips() {
      * PRD_DEVICE_GROUP, STG_DEVICE_GROUP, QA_DEVICE_GROUP, DEV_DEVICE_GROUP, STANDALONE_DEVICE_GROUP
      * Retrieve all BIG-IP devices from each device group
      */
+    $num_of_dsc = intval(parse_ini_sec_val("DSC_GROUPS", "number-of-dsc-group"));
+    $num_of_stdalone = intval(parse_ini_sec_val("STANDALONE_GROUPS", "number-of-standalone-group"));
+    if(($num_of_dsc + $num_of_stdalone) == 0) return;
+    
+    $ha_clusters = array();
+    if ($num_of_stdalone == 1) array_push($ha_clusters, "STANDALONE_DEVICES");
+    
+    if($num_of_dsc >= 1){
+        for($i=1;$i<=$num_of_dsc;$i+=1){
+            array_push($ha_clusters, "DSC" . strval($i));
+            //echo "Added Cluster Name: " . $ha_clusters[$i] . " ";
+        }
+    }
+    
+    $rtnDevices = array();
+    foreach ($ha_clusters as $ha_cluster) {
+        $rtnDevices += parse_ini_sec_keyvals($ha_cluster, "VALUE");
+    }
+    
+    /*
     $devGroups = array("PRD_DEVICE_GROUP", "STG_DEVICE_GROUP", "QA_DEVICE_GROUP", "DEV_DEVICE_GROUP", "STANDALONE_DEVICE_GROUP");
     $rtnDevices = array();
     foreach ($devGroups as $devGroup){
@@ -617,6 +638,7 @@ function load_all_bigips() {
             $rtnDevices += parse_ini_sec_keyvals($devClstName, "VALUE");
         }
     }
+    */
     return $rtnDevices;
 }
 
