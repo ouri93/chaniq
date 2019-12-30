@@ -4,6 +4,7 @@ import logging
 import json
 import build_std_names
 import getpass
+import loadStdNames
 
 logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
 logging.info("Head of new_irule_build() called")
@@ -64,13 +65,23 @@ def new_irule_build(active_ltm, irDgName, irEnv, irType, irCode, irDgType, irDgD
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
     #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
-    
+
+    # Check if Standard naming is used
+    useGlobalNaming = loadStdNames.useStdNaming()
+    logging.info("new_irule_build()- Use Standard Global naming : " + useGlobalNaming )
+        
     idx = 1
     strReturn = {str(idx) : 'iRule/Data Group Creation Report'}
     
     idx += 1
- 
-    std_irname = build_std_names.build_std_ir_name(str(irEnv), str(irDgName), str(irType))
+
+    if useGlobalNaming == '1':
+        if irType == 'iRule':
+            std_irname = loadStdNames.get_std_name(active_ltm, 'SHARED', 'IRULE', '', irDgName)
+        elif irType == 'Data Group':
+            std_irname = loadStdNames.get_std_name(active_ltm, 'SHARED', 'DATA_GROUP', '', irDgName)
+        
+    #std_irname = build_std_names.build_std_ir_name(str(irEnv), str(irDgName), str(irType))
     logging.info("iRule/Data Group Creation process has been initiated. iRule/Data Group Name: " + std_irname) 
     
     if check_irname_conflict(mr, std_irname, irType, irDgType):

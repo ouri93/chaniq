@@ -3,6 +3,7 @@ import sys
 import logging
 import json
 import getpass
+import loadStdNames
 
 def check_profileName_conflict(mr, prfName, prfDftFrom):
     srcAffPrfNames = mr.tm.ltm.persistence.source_addrs.get_collection()
@@ -34,11 +35,18 @@ def new_srcAffProfile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, mat
     #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     output = ''
 
+    # Check if Standard naming is used
+    useGlobalNaming = loadStdNames.useStdNaming()
+    logging.info("new_srcAffProfile_build()- Use Standard Global naming : " + useGlobalNaming )
+    
     logging.info("new_srcAffProfile_build.py Parms \nDevIP: " + active_ltm + "\nProfile name: " + prfName + "\nProfile Deploy or Change: " + prfDplyOrChg + "\nDefaults-from: " + defaultsFrom + "\n") 
     idx = 1
 
     if prfDplyOrChg == 'new_profile':
-        
+
+        if useGlobalNaming == '1':
+            prfName = loadStdNames.get_std_name(active_ltm, 'SHARED', 'PROFILE', 'SOURCE_PERSISTENCE', prfName)
+                    
         logging.info("Profile Creation process has been initiated. Source Address Persistence Profile Name: " + prfName)
         
         strReturn = {str(idx) : 'Source Address Persistence Profile Creation Report'}

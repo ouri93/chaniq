@@ -3,6 +3,7 @@ import sys
 import logging
 import json
 import getpass
+import loadStdNames
 
 def check_profileName_conflict(mr, prfName, prfDftFrom):
     ocPrfNames = mr.tm.ltm.profile.one_connects.get_collection()
@@ -33,13 +34,20 @@ def new_ocProfile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, sourceM
     #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     output = ''
 
+    # Check if Standard naming is used
+    useGlobalNaming = loadStdNames.useStdNaming()
+    logging.info("new_ocProfile_build()- Use Standard Global naming : " + useGlobalNaming )
+    
     logging.info("new_ocProfile_build.py Parms DevIP: " + active_ltm + " Profile name: " + prfName + " Profile Deploy or Change: " + prfDplyOrChg + " Defaults-from: " + defaultsFrom) 
 
     idx = 1
     if prfDplyOrChg == 'new_profile':    
         strReturn = {str(idx) : 'OneConnect Profile Creation Report'}
         idx += 1
-    
+
+        if useGlobalNaming == '1':
+            prfName = loadStdNames.get_std_name(active_ltm, 'SHARED', 'PROFILE', 'ONECONNECT', prfName)
+                
         logging.info("Profile Creation process has been initiated. OneConnect Profile Name: " + prfName)
     
         if check_profileName_conflict(mr, prfName, defaultsFrom):

@@ -4,6 +4,7 @@ import logging
 import json
 from f5.bigip.tm.ltm.node import Node
 import getpass
+import loadStdNames
 
 logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
 
@@ -42,6 +43,10 @@ def build_nodes(active_ltm, pool_membername, pool_memberip):
     nodenames = json.loads(pool_membername)
     nodeips = json.loads(pool_memberip)
     
+    # Check if Standard naming is used
+    useGlobalNaming = loadStdNames.useStdNaming()
+    logging.info("build_node()- Use Standard Global naming : " + useGlobalNaming )
+    
     bitmove = 0
     idx = 1
     strReturn = {str(idx) : 'Node Creation Report'}
@@ -51,7 +56,10 @@ def build_nodes(active_ltm, pool_membername, pool_memberip):
     
     for nodeip, nodename,  in zip(nodeips, nodenames):
         logging.info("node IP: " + nodeip + " node name: " + nodename)
-
+        
+        if useGlobalNaming == '1':
+            nodename = loadStdNames.get_std_name(active_ltm, 'LOCAL', 'NODE', '', nodename)
+            logging.info("build_node()- Standard Name created : " + nodename )
         nodes = mr.tm.ltm.nodes.get_collection()
         check_node_conflict(mr, nodeip, nodename)
         

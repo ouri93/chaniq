@@ -3,6 +3,7 @@ import sys
 import logging
 import json
 import getpass
+import loadStdNames
 
 def check_profileName_conflict(mr, prfName, prfDftFrom):
     dnsPrfNames = mr.tm.ltm.profile.dns_s.get_collection()
@@ -32,6 +33,9 @@ def new_DnsProfile_build(active_ltm, prfName, prfDplyOrChg, prfDftFrom, prfHwVal
     #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     output = ''
 
+    # Check if Standard naming is used
+    useGlobalNaming = loadStdNames.useStdNaming()
+    logging.info("new_DnsProfile_build()- Use Standard Global naming : " + useGlobalNaming )
 
     logging.info("new_DnsProfile_build.py Parms \nDevIP: " + active_ltm + "\nProfile name: " + prfName + "\nProfile Deploy or Change: " + prfDplyOrChg + "\nDefaults-from: " + prfDftFrom) 
 
@@ -43,6 +47,9 @@ def new_DnsProfile_build(active_ltm, prfName, prfDplyOrChg, prfDftFrom, prfHwVal
 
         idx += 1
 
+        if useGlobalNaming == '1':
+            prfName = loadStdNames.get_std_name(active_ltm, 'SHARED', 'PROFILE', 'SERVICE_DNS', prfName)    
+            
         logging.info("Profile Creation process has been initiated. Profile Name: " + prfName + "\n")
     
         if check_profileName_conflict(mr, prfName, prfDftFrom):

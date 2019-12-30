@@ -4,6 +4,7 @@ import logging
 import json
 import build_std_names
 import getpass
+import loadStdNames
 
 logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
 logging.info("Head of new_monitor_build() called")
@@ -145,13 +146,27 @@ def new_monitor_build(active_ltm, monName, mDesc, mEnv, mMonType, mMonCode, mPar
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
     #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
-    
+
+    # Check if Standard naming is used
+    useGlobalNaming = loadStdNames.useStdNaming()
+    logging.info("new_monitor_build()- Use Standard Global naming : " + useGlobalNaming )
+        
     idx = 1
     strReturn = {str(idx) : 'Monitor Creation Report'}
     
     idx += 1
- 
-    std_monname = build_std_names.build_std_mon_name(str(mEnv), str(monName))
+
+    if useGlobalNaming == '1':
+        if mMonType == "TCP Half Open":
+            std_monname = loadStdNames.get_std_name(active_ltm, 'SHARED', 'MONITOR', 'TCP_HALF_OPEN', monName)
+        elif mMonType == 'External':
+            std_monname = loadStdNames.get_std_name(active_ltm, 'SHARED', 'MONITOR', 'EXTERNAL', monName)            
+        else:
+            std_monname = loadStdNames.get_std_name(active_ltm, 'SHARED', 'MONITOR', mMonType, monName)
+    else:
+        std_monname = monName                     
+    #std_monname = build_std_names.build_std_mon_name(str(mEnv), str(monName))
+    
     logging.info("Monitor Creation process has been initiated. Pool Name: " + std_monname) 
     
     if check_monname_conflict(mr, std_monname, mMonType):

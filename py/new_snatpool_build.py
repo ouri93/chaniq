@@ -3,6 +3,7 @@ import sys
 import logging
 import json
 import getpass
+import loadStdNames
 
 logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO, format='%(asctime)s %(levelname)s %(name)s %(message)s')
 logger=logging.getLogger(__name__)
@@ -12,11 +13,18 @@ def new_snatpool_build(active_ltm, snat_name, snat_addresses):
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
     #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
-    
+
+    # Check if Standard naming is used
+    useGlobalNaming = loadStdNames.useStdNaming()
+    logging.info("new_snatpool_build()- Use Standard Global naming : " + useGlobalNaming )
+        
     idx = 1
     strReturn = {str(idx) : 'Snatpool Creation Report'}
     idx += 1
-    
+
+    if useGlobalNaming == '1':
+        snat_name = loadStdNames.get_std_name(active_ltm, 'LOCAL', 'SNAT_POOL', '', snat_name)
+                
     logging.info(str(active_ltm) + " Snatpool DNS:" + str(snat_name) + " Snatpool DEST:" + str(snat_addresses))
     logging.info("Snatpool Creation process has been initiated. Snatpool Name: " + snat_name)
      

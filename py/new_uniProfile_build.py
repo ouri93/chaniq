@@ -3,6 +3,7 @@ import sys
 import logging
 import json
 import getpass
+import loadStdNames
 
 def check_profileName_conflict(mr, prfName, prfDftFrom):
     uniPrfNames = mr.tm.ltm.persistence.universals.get_collection()
@@ -33,6 +34,10 @@ def new_uniProfile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, matchA
     #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     output = ''
 
+    # Check if Standard naming is used
+    useGlobalNaming = loadStdNames.useStdNaming()
+    logging.info("new_uniProfile_build()- Use Standard Global naming : " + useGlobalNaming )
+    
     logging.info("new_uniProfile_build.py Parms \nDevIP: " + active_ltm + "\nProfile name: " + prfName + "\nProfile Deploy or Change: " + prfDplyOrChg + "\nDefaults-from: " + defaultsFrom + "\n") 
 	
     idx = 1
@@ -41,7 +46,10 @@ def new_uniProfile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, matchA
         strReturn = {str(idx) : 'Universal Persistence Profile Creation Report'}
     
         idx += 1
-    
+
+        if useGlobalNaming == '1':
+            prfName = loadStdNames.get_std_name(active_ltm, 'SHARED', 'PROFILE', 'UNIVERSAL_PERSISTENCE', prfName)
+                
         logging.info("Profile Creation process has been initiated. Universal Persistence Profile Name: " + prfName)
     
         if check_profileName_conflict(mr, prfName, defaultsFrom):

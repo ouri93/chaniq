@@ -4,6 +4,7 @@ import logging
 import json
 import build_std_names
 import getpass
+import loadStdNames
 
 logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
 
@@ -31,7 +32,11 @@ def new_pool_build2(active_ltm, vs_dnsname, vs_port, vs_env, vs_poolmon, pool_me
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
     #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
-    
+
+    # Check if Standard naming is used
+    useGlobalNaming = loadStdNames.useStdNaming()
+    logging.info("new_pool_build2()- Use Standard Global naming : " + useGlobalNaming )
+        
     membernames = pool_membername.split(":")
     memberips = pool_memberip.split(":")
     memberports = pool_memberport.split(":")
@@ -42,7 +47,12 @@ def new_pool_build2(active_ltm, vs_dnsname, vs_port, vs_env, vs_poolmon, pool_me
     
     idx += 1
 
-    std_poolname = build_std_names.build_std_pool_name(str(vs_env), str(vs_dnsname), str(vs_port))
+    if useGlobalNaming == '1':
+        std_poolname = loadStdNames.get_std_name(active_ltm, 'LOCAL', 'POOL', '', vs_dnsname)
+    else:
+        #std_poolname = build_std_names.build_std_pool_name(str(vs_env), str(vs_dnsname), str(vs_port))
+        std_poolname = str(vs_dnsname)
+        
     logging.info("Pool Creation process has been initiated. Pool Name: " + std_poolname)
         
     if check_poolname_conflict(mr, std_poolname):
@@ -67,6 +77,9 @@ def new_pool_build2(active_ltm, vs_dnsname, vs_port, vs_env, vs_poolmon, pool_me
         for membername, memberip, memberport, membermon in zip(membernames, memberips, memberports, membermons):
             logging.info("Member Name: " + membername + " IP: " + memberip + " port: " + memberport + " mon: " + membermon)
             # Pool member creation issue - Calling Pool creation method too fast??
+            if useGlobalNaming == '1':
+                membername = loadStdNames.get_std_name(active_ltm, 'LOCAL', 'NODE', '', membername)
+                    
             if (str(membermon) == 'inherit'):
                 poolm = mypool_1.members_s.members.create(name=membername+':'+memberport, partition='Common', address=memberip, monitor=vs_poolmon )
                 logging.info("inherit")

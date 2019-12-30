@@ -3,6 +3,7 @@ import sys
 import logging
 import json
 import getpass
+import loadStdNames
 
 def check_profileName_conflict(mr, prfName, prfDftFrom):
     cookiePrfNames = mr.tm.ltm.persistence.cookies.get_collection()
@@ -33,6 +34,10 @@ def new_cookieProfile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, met
     #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     output = ''
 
+    # Check if Standard naming is used
+    useGlobalNaming = loadStdNames.useStdNaming()
+    logging.info("new_cookieProfile_build()- Use Standard Global naming : " + useGlobalNaming )
+    
     logging.info("new_cookieProfile_build.py Parms DevIP: " + active_ltm + " Profile name: " + prfName + " Profile Deploy or Change: " + prfDplyOrChg + " Defaults-from: " + defaultsFrom) 
 
     idx = 1
@@ -41,7 +46,10 @@ def new_cookieProfile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, met
     
         idx += 1
         #logging.info("ProxyType before change: " + prfPxyType)
-    
+
+        if useGlobalNaming == '1':
+            prfName = loadStdNames.get_std_name(active_ltm, 'SHARED', 'PROFILE', 'COOKIE_PERSISTENCE', prfName)    
+                
         logging.info("Profile Creation process has been initiated. Cookie Persistence Profile Name: " + prfName)
     
         if check_profileName_conflict(mr, prfName, defaultsFrom):

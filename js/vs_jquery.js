@@ -362,7 +362,8 @@ function isMinNumOfPoolMbr(){
 }
 
 function isValidInputs(){
-	if (dnsValidation('vs_dnsname') && ipValidation('vs_dest') && portValidation('vs_port') ) {
+	//if (dnsValidation('vs_dnsname') && ipValidation('vs_dest') && portValidation('vs_port') ) {
+	if (ipValidation('vs_dest') && portValidation('vs_port') ) {
 		return true;
 	}
 /*	

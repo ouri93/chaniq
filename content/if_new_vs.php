@@ -54,7 +54,7 @@
                 </p>
                 <p>
                     <label>Description: </label>
-                    <input type="text" id="vs_desc" name="vs_desc" maxlength="128" required="required" />
+                    <input type="text" id="vs_desc" name="vs_desc" maxlength="128" />
                     <label>*Env.: </label>
                     <select id='vs_env' name="vs_env" required="required"> 
                     <?php

@@ -2,6 +2,8 @@ from f5.bigip import ManagementRoot
 import sys
 import logging
 import json
+import getpass
+import loadStdNames
 
 def check_profileName_conflict(mr, prfName, prfDftFrom):
     dstAffPrfNames = mr.tm.ltm.persistence.dest_addrs.get_collection()
@@ -25,10 +27,16 @@ def check_profileName_conflict(mr, prfName, prfDftFrom):
 def new_dstAffProfile_build(prfDevIp, prfName, prfDplyOrChg, defaultsFrom, matchAcrossServices, matchAcrossVirtuals, matchAcrossPools, hashAlgorithm, timeout, mask, overrideConnectionLimit):
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
     #logging.info('Called get_profiles(): %s %s' % (dev_ip, pf_type))
-	
-    mr = ManagementRoot(str(prfDevIp), 'admin', 'rlatkdcks')
+
+    admpass = getpass.getpass('LTM', 'admin')
+    mr = ManagementRoot(str(prfDevIp), 'admin', admpass)
+
     output = ''
 
+    # Check if Standard naming is used
+    useGlobalNaming = loadStdNames.useStdNaming()
+    logging.info("new_dstAffProfile_build()- Use Standard Global naming : " + useGlobalNaming )
+    
     logging.info("new_dstAffProfile_build.py Parms DevIP: " + prfDevIp + " Profile name: " + prfName + " Profile Deploy or Chnage: " + prfDplyOrChg + " Defaults-from: " + defaultsFrom) 
 	
     idx = 1
@@ -37,7 +45,10 @@ def new_dstAffProfile_build(prfDevIp, prfName, prfDplyOrChg, defaultsFrom, match
         strReturn = {str(idx) : 'Destination Address Persistence Profile Creation Report'}
     
         idx += 1
-    
+
+        if useGlobalNaming == '1':
+            prfName = loadStdNames.get_std_name(str(prfDevIp), 'SHARED', 'PROFILE', 'DESTINATION_PERSISTENCE', prfName)
+                
         logging.info("Profile Creation process has been initiated. Destination Address Persistence Profile Name: " + prfName)
     
         if check_profileName_conflict(mr, prfName, prfPara1):

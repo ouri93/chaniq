@@ -5,6 +5,7 @@ import logging
 import json
 import build_std_names
 import getpass
+import loadStdNames
 
 logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO, format='%(asctime)s %(levelname)s %(name)s %(message)s')
 logger=logging.getLogger(__name__)
@@ -33,15 +34,24 @@ def new_vs_build2(active_ltm, vs_dnsname, vs_dest, vs_port, vs_desc, vs_env, vs_
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
     #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
-    
+
+    # Check if Standard naming is used
+    useGlobalNaming = loadStdNames.useStdNaming()
+    logging.info("new_vs_build2()- Use Standard Global naming : " + useGlobalNaming )
+        
     idx = 1
     strReturn = {str(idx) : 'VS Creation Report'}
     idx += 1
     
     logging.info(str(active_ltm) + " VS DNS:" + str(vs_dnsname) + " VS DEST:" + str(vs_dest) + " VS PORT:" + str(vs_port) + " VS DESC:" + str(vs_desc) + " VS Env.:" + str(vs_env) + " VS TCP Prf:" + str(vs_tcpprofile) + " VS Persist:" + str(vs_persistence) + " VS Redirect:" + str(vs_redirect) + " VS Type:" + str(vs_type) + " VS HTTP Prf:" + str(vs_httpprofile) + " VS Clientssl:" + str(vs_sslclient) + " VS Serverssl:" + str(vs_sslserver) + " VS iRule: " + str(vs_irule) + " VS SNATPOOL: " + str(vs_snatpool) + " VS Policy: " + str(vs_policy) + " VS Pool Name: " + str(vs_poolname) )
     logging.info("Before VS Build - Env Name: " + str(vs_env) + " DNS name: " + str(vs_dnsname) + " Port: " + str(vs_port))
-    std_vsname = build_std_names.build_std_vs_name(str(vs_env), str(vs_dnsname), str(vs_port))
-    
+
+    if useGlobalNaming == '1':
+        std_vsname = loadStdNames.get_std_name(active_ltm, 'LOCAL', 'VIRTUAL_SERVER', '', vs_dnsname)
+    else:
+        std_vsname = str(vs_dnsname)
+                
+    #std_vsname = build_std_names.build_std_vs_name(str(vs_env), str(vs_dnsname), str(vs_port))
     #std_poolname = build_std_names.build_std_pool_name(str(vs_env), str(vs_dnsname), str(vs_port))
     
     logging.info("VS Creation process has been initiated. VS Name: " + std_vsname) 

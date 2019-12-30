@@ -3,6 +3,7 @@ import sys
 import logging
 import json
 import getpass
+import loadStdNames
 
 def check_profileName_conflict(mr, prfName, prfPxyType, prfDftFrom):
     httpPrfNames = mr.tm.ltm.profile.https.get_collection()
@@ -38,6 +39,10 @@ def new_httpProfile_build(active_ltm, prfName, prfDplyOrChg, prfPxyType, prfDftF
     #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     output = ''
 
+    # Check if Standard naming is used
+    useGlobalNaming = loadStdNames.useStdNaming()
+    logging.info("new_httpProfile_build()- Use Standard Global naming : " + useGlobalNaming )
+    
     logging.info("new_httpProfile_build.py Parms DevIP: " + active_ltm \
                  + " Profile name: " + prfName \
                  + " Defaults-from: " + prfDftFrom \
@@ -72,7 +77,10 @@ def new_httpProfile_build(active_ltm, prfName, prfDplyOrChg, prfPxyType, prfDftF
             dnsRzvName = tmp[1]
             logging.info("ProxyType: " + prfPxyType + " DNS Resolver name: " + dnsRzvName)
         #std_irname = build_std_names.build_std_ir_name(str(irEnv), str(irVsName), str(irVsPort), str(irType))
-    
+
+        if useGlobalNaming == '1':
+            prfName = loadStdNames.get_std_name(active_ltm, 'SHARED', 'PROFILE', 'SERVICE_HTTP', prfName)
+                
         if check_profileName_conflict(mr, prfName, prfPxyType, prfDftFrom):
             strReturn.update({str(idx) : 'Profile Name conflict'})
             logging.info("Profile name conflict.")

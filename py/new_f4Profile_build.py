@@ -3,6 +3,7 @@ import sys
 import logging
 import json
 import getpass
+import loadStdNames
 
 def check_profileName_conflict(mr, prfName, prfDftFrom):
     f4PrfNames = mr.tm.ltm.profile.fastl4s.get_collection()
@@ -36,6 +37,10 @@ def new_f4Profile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, resetOn
     #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     output = ''
 
+    # Check if Standard naming is used
+    useGlobalNaming = loadStdNames.useStdNaming()
+    logging.info("new_f4Profile_build()- Use Standard Global naming : " + useGlobalNaming )   
+        
     logging.info("new_f4Profile_build.py Parms DevIP: " + active_ltm + " Profile name: " + prfName + " Profile Deploy or Change: " + prfDplyOrChg + " Defaults-from: " + defaultsFrom) 
 	
     idx = 1
@@ -43,6 +48,9 @@ def new_f4Profile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, resetOn
         strReturn = {str(idx) : 'FastL4  Profile Creation Report'}
     
         idx += 1
+        
+        if useGlobalNaming == '1':
+            prfName = loadStdNames.get_std_name(active_ltm, 'SHARED', 'PROFILE', 'FASTL4_PROTOCOL', prfName)     
     
         logging.info("Profile Creation process has been initiated. FastL4  Profile Name: " + prfName)
     

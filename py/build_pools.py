@@ -4,6 +4,7 @@ import logging
 import json
 import build_std_names
 import getpass
+import loadStdNames
 
 logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
 
@@ -37,12 +38,21 @@ def build_pools(active_ltm, vs_dnsname, vs_port, vs_env, vs_poolmon, pool_member
     memberports = json.loads(pool_memberport)
     membermons = json.loads(pool_membermon)
     
+    # Check if Standard naming is used
+    useGlobalNaming = loadStdNames.useStdNaming()
+    logging.info("build_pools()- Use Standard Global naming : " + useGlobalNaming )
+        
     idx = 1
     strReturn = {str(idx) : 'Pool Creation Report'}
     
     idx += 1
- 
-    std_poolname = build_std_names.build_std_pool_name(str(vs_env), str(vs_dnsname), str(vs_port))
+
+    if useGlobalNaming == '1':
+        std_poolname = loadStdNames.get_std_name(active_ltm, 'LOCAL', 'POOL', '', vs_dnsname)
+    else:
+        #std_poolname = build_std_names.build_std_pool_name(str(vs_env), str(vs_dnsname), str(vs_port))
+        std_poolname = str(vs_dnsname)
+
     logging.info("Pool Creation process has been initiated. Pool Name: " + std_poolname) 
     
     if check_poolname_conflict(mr, std_poolname):
@@ -58,6 +68,9 @@ def build_pools(active_ltm, vs_dnsname, vs_port, vs_env, vs_poolmon, pool_member
     for membername, memberip, memberport, membermon in zip(membernames, memberips, memberports, membermons):
         logging.info("Member Name: " + membername + " IP: " + memberip + " port: " + memberport + " mon: " + membermon)
         # Pool member creation issue - Calling Pool creation method too fast??
+        if useGlobalNaming == '1':
+            membername = loadStdNames.get_std_name(active_ltm, 'LOCAL', 'NODE', '', membername)
+                    
         if (str(membermon) == 'Inherit'):
             poolm = mypool_1.members_s.members.create(name=membername+':'+memberport, partition='Common', address=memberip, monitor=vs_poolmon )
             logging.info("Inherit")
