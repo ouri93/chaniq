@@ -5,10 +5,11 @@
         header('Location: index.php');
     }
     ?>
-    <br>
-    <p><b>User Administration</b></p><br><br>
-    <p> CHAN-IQ Local users are managed through PHP MyAdmin SQL Database System.<br></p>
-    <p> To add, delete, or modify local user, please log in PHP MyAdmin page.<br></p>
-    <br>
+    <form class="register">
+        <fieldset  id='vs_iframe_fieldset' class="row1">
+		<!-- IFrame content here -->
+		<legend>CHAN-IQ User Management</legend>
+		<iframe src="/admin/if_usermgmt.php" width="720px" height="600" frameborder="0"></iframe>       	
+        </fieldset>
+    </form>
 </div>
-

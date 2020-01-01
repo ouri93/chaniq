@@ -330,6 +330,11 @@ form.register input[type=password]{
     height: 18px;
 }
 
+form.register input[type=email]{
+    border: 1px solid #E1E1E1;
+    height: 18px;
+}
+
 form.register input[type=button]{
     float: right;
 }
