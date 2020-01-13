@@ -1,9 +1,14 @@
+<?php
+if ($_SESSION['loggedin'] != true){
+    session_unset();
+    session_destroy();
+    header('Location: ../login.php');
+}
+if ($_SESSION['role'] == 'guest'){
+    header('Location: contentbase.php');
+}
+?>
 <div>
-    <?php
-    if (!isadmin()){
-        header('Location: index.php');
-    }
-    ?>
     <form class="register">
         <fieldset  id='vs_iframe_fieldset' class="row1">
 		<!-- IFrame content here -->

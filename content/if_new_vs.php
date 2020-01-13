@@ -1,3 +1,19 @@
+<?php
+session_start();
+file_put_contents("/var/log/chaniqphp.log", "if_new_vs.php UN: " .$_SESSION['username'] . " Role: " . $_SESSION['role'] . " LoggedIn: " . $_SESSION['loggedin'] . "\n", FILE_APPEND);
+if ($_SESSION['loggedin'] != true){
+    session_unset();
+    session_destroy();
+    file_put_contents("/var/log/chaniqphp.log", "if_new_vs.php redirection to login page!!\n", FILE_APPEND);
+    header('Location: ../login.php');
+}
+if ($_SESSION['role'] == 'guest'){
+    header('Location: contentbase.php');
+}
+
+include_once('../utility/utility.php');
+
+?>
 <html>
     <head>
         <meta charset="UTF-8">
@@ -13,7 +29,7 @@
         <script> window.jQuery || document.write("<script src='/js/jquery-3.2.1.js'><\/script>"); </script>  
                  
         <script type="text/javascript" src="/js/vs_jquery.js"></script>
-        <?php include('../utility/utility.php'); ?>
+        
         <title>Create a new Virtual Server</title>
     </head>
     <body style="background-color: #ffffff;">

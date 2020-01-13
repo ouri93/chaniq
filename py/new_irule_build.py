@@ -76,6 +76,7 @@ def new_irule_build(active_ltm, irDgName, irEnv, irType, irCode, irDgType, irDgD
     idx += 1
 
     if useGlobalNaming == '1':
+        logging.info("new_irule_build()- Standard Global naming process starts!" )
         if irType == 'iRule':
             std_irname = loadStdNames.get_std_name(active_ltm, 'SHARED', 'IRULE', '', irDgName)
         elif irType == 'Data Group':

@@ -1,4 +1,15 @@
 <?php
+if ($_SESSION['loggedin'] != true){
+    session_unset();
+    session_destroy();
+    file_put_contents("/var/log/chaniqphp.log", "newuser_ajax.php redirection to login page!!\n", FILE_APPEND);
+    header('Location: ../login.php');
+}
+//Admin Content - Visible if the logged-in user has admin role
+if ($_SESSION['role'] == 'guest'){
+    header('Location: contentbase.php');
+}
+
 include('../utility/utility.php');
 
 //if(isset($_POST)==TRUE && empty($_POST)==FALSE):

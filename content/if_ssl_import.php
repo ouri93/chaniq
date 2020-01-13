@@ -1,3 +1,17 @@
+<?php
+session_start();
+if ($_SESSION['loggedin'] != true){
+    session_unset();
+    session_destroy();
+    header('Location: ../login.php');
+}
+//Admin Content - Visible if the logged-in user has admin role
+if ($_SESSION['role'] == 'guest'){
+    header('Location: contentbase.php');
+}
+include_once('../utility/utility.php');
+
+?>
 <html>
     <head>
         <meta charset="UTF-8">

@@ -1,27 +1,76 @@
 <?php
-session_start();
+
+function check_login($username, $password){
+    if (!($username && $password))
+        return 0;
+    // Call Python to check Username and password
+    $cmd = '/usr/bin/python /var/www/chaniq/py/check_login.py '. escapeshellarg($username) .' '. escapeshellarg($password); 
+    file_put_contents("/var/log/chaniqphp.log", "Python CMD string: " . $cmd . "\n", FILE_APPEND);
+    $output = shell_exec($cmd);
+
+    return $output;
+}
+
+// Given DB Table Name, Colume Name, Username, and Password, return one correspondig value
+function get_one_db_val($table_id, $col_id, $user, $pass){
+    if (!($table_id && $col_id && $user && $pass))
+        return "0";
+    // Call Python to check Username and password
+    $cmd = '/usr/bin/python /var/www/chaniq/py/get_one_db_val.py '. escapeshellarg($table_id) .' '. escapeshellarg($col_id) .' '. escapeshellarg($user) .' '. escapeshellarg($pass);
+    file_put_contents("/var/log/chaniqphp.log", "Python CMD string: " . $cmd . "\n", FILE_APPEND);
+    $output = shell_exec($cmd);
+    
+    return $output;
+}
+
 if(isset($_POST['btnLogin'])){
-    require 'db/connect.php';
-    $username = $_POST['username'];
-    $password = $_POST['password'];
-    $result = mysqli_query($con, 'select un, pw, role from users where un="'.$username.'" and pw="'.$password.'"');
-    // Store the returned DB row object to $role
-    $role = mysqli_fetch_object($result);
-    if(mysqli_num_rows($result)==1){
-        $_SESSION['username'] = $username;
-        $_SESSION['role'] = $role->role;
+    $authOut = check_login($_POST['username'], $_POST['password']);
+
+    if($authOut == 1){
+        if (session_id() != ''){
+            session_unset();
+            session_destroy();
+            file_put_contents("/var/log/chaniqphp.log", "login.php - redirection to login page!!\n", FILE_APPEND);
+            return;
+        }
+        session_start();
+        $_SESSION['username'] = $_POST['username'];
+        
+        # Return string value from DB is in utf-8 format. We need to remove non-printable string for correct string comparison
+        # For this use, preg_replace() - Ref: https://stackoverflow.com/questions/1176904/php-how-to-remove-all-non-printable-characters-in-a-string/28970891
+        $role = preg_replace('/[\x00-\x1F\x7F]/u', '', get_one_db_val('users', 'role', $_POST['username'], $_POST['password']) );
+        
+        $_SESSION['role'] = $role;
+        $_SESSION['loggedin'] = true;
+        $_SESSION['sessID'] = session_id();
+        file_put_contents("/var/log/chaniqphp.log", "login.php - User is authenticated. Redirection to index page!!\n", FILE_APPEND);
         header('Location: index.php');
     }
-    else{
-        session_destroy();
-        echo "Invalid username or passowrd";
+    elseif ($authOut == 'ERR' || $authOut == 0){
+        file_put_contents("/var/log/chaniqphp.log", "Login authen result: " . $authOut . "\n", FILE_APPEND);
+        header('Location: login.php');
     }
+    else {
+        header('Location: login.php');
+    }
+
 }
-if(isset($_GET['logout'])){
-    $_SESSION = array();
-    session_unregister('username');
+
+if(isset($_GET['action'])){
+    session_start();
+    file_put_contents("/var/log/chaniqphp.log", "Session has been deleted through logout()\n", FILE_APPEND);
+    file_put_contents("/var/log/chaniqphp.log", "Session Info before destroy - username: " . $_SESSION['username'] . " Role: " . $_SESSION['role'] .  " Logged-IN: " . $_SESSION['loggedin'] . " Session ID: " . $_SESSION['sessID'] . "\n", FILE_APPEND);
+    # Remove all session variables
+    session_unset();
+    #Now destory the session
+    session_destroy();
+    
+    file_put_contents("/var/log/chaniqphp.log", "login.php - Normal Logout process. Redirection to login page!!\n", FILE_APPEND);
+    header('Location: login.php');
 }
+    
 ?>
+
 <html>
     <head>
         <meta charset="UTF-8">

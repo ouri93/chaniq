@@ -11,11 +11,65 @@ function echoTest() {
  */
 function isadmin(){
     if($_SESSION['role']=='admin'){
+        file_put_contents("/var/log/chaniqphp.log", "utility.php isadmin() Role: " . $_SESSION['role'] . "\n", FILE_APPEND);
         return true;
     }
-    else
+    else{
+        file_put_contents("/var/log/chaniqphp.log", "utility.php isadmin() Role: " . $_SESSION['role'] . "\n", FILE_APPEND);
         return false;
+    }
 }
+
+/**
+ * Determine if the logged-in user has guest role
+ *
+ * @param None
+ * @return Boolean TRUE if logged-in user is guest. Otherwise return FALSE
+ */
+function isguest(){
+    if($_SESSION['role']=='guest'){
+        file_put_contents("/var/log/chaniqphp.log", "utility.php isguest() Role: " . $_SESSION['role'] . "\n", FILE_APPEND);
+        return true;
+    }
+    else{
+        file_put_contents("/var/log/chaniqphp.log", "utility.php isguest() Role: " . $_SESSION['role'] . "\n", FILE_APPEND);
+        return false;
+    }
+}
+
+/**
+ * Return the role of the logged-in user - 'admin' or 'guest'
+ *
+ * @param None
+ * @return 'admin' if the logged-in user is admin. Otherwise return 'guest'
+ */
+function getUserRole(){
+    file_put_contents("/var/log/chaniqphp.log", "utility.php getUserRole() called!!. Role: " . $_SESSION['role'] . "\n", FILE_APPEND);
+    return $_SESSION['role'];
+    /*
+    if($_SESSION['role'] == 'admin'){
+        file_put_contents("/var/log/chaniqphp.log", "utility.php getUserRole() Role: " . $_SESSION['role'] . "\n", FILE_APPEND);
+        return 'admin';
+    }
+    elseif($_SESSION['role'] == 'guest'){
+        file_put_contents("/var/log/chaniqphp.log", "utility.php getUserRole() Role: " . $_SESSION['role'] . "\n", FILE_APPEND);
+        return 'guest';
+    }
+    else return 'undefined';
+    */
+}
+
+/**
+ * Check if a user is logged in
+ *
+ * @param None
+ * @return Boolean TRUE if a user is logged in . Otherwise return FALSE
+ */
+function isLoggedIn(){
+    if($_SESSION['loggedin']=='YES') return true;
+    else return false;
+}
+
 
 /** 
  * Given an ini section name, return whole data of the section

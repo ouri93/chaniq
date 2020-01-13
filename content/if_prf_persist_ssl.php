@@ -1,4 +1,18 @@
-<html>
+<?php
+session_start();
+if ($_SESSION['loggedin'] != true){
+    session_unset();
+    session_destroy();
+    header('Location: ../login.php');
+}
+//Admin Content - Visible if the logged-in user has admin role
+if ($_SESSION['role'] == 'guest'){
+    header('Location: contentbase.php');
+}
+include_once('../utility/utility.php');
+
+?><html>
+
     <head>
         <meta charset="UTF-8">
         <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
@@ -13,7 +27,6 @@
         <script> window.jQuery || document.write("<script src='/js/jquery-3.2.1.js'><\/script>"); </script>  
                  
         <script type="text/javascript" src="/js/prf_jquery.js"></script>
-        <?php include('../utility/utility.php'); ?>
         <?php
         if (GetParentURLParameter('go') == 'new_profile')
             echo '<title>Create SSL Persistence Profile</title>';

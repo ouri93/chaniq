@@ -1,3 +1,12 @@
+<?php
+session_start();
+if ($_SESSION['loggedin'] != true){
+    file_put_contents("/var/log/chaniqphp.log", "header.php - Unauthen user - Redirect to login page\n", FILE_APPEND);
+    session_unset();
+    session_destroy();
+    header('Location: login.php');
+}
+?>
 <html>
     <head>
         <meta charset="UTF-8">
@@ -23,16 +32,8 @@
             </div>
             <div id="navbar" align="right">
                 <?php
-                session_start();
-                //echo 'user session: '.$_SESSION['username'];
-                // If session variable 'username' is emtpry, redirect to login.php
-                if (!isset($_SESSION['username'])){
-                     header('Location: login.php');
-                }
-                else {
                     //echo 'User: '.$_SESSION['username'].'&nbsp;&nbsp;&nbsp;&nbsp;<a href="login.php?action=logout">Logout</a>&nbsp;&nbsp;';
                     echo 'User: '.$_SESSION['username'].' ( '.$_SESSION['role'].' )&nbsp;&nbsp;&nbsp;&nbsp;<a href="login.php?action=logout">Logout</a>&nbsp;&nbsp;';                    
-                }
                 ?>
             </div>
         </div>

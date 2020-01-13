@@ -1,4 +1,13 @@
 <?php
+
+// If not authenticated, redirect to login page
+if ($_SESSION['loggedin'] != true){
+    file_put_contents("/var/log/chaniqphp.log", "contentswitch.php - Un-authenticated user - Redirect to login page\n", FILE_APPEND);
+    session_unset();
+    session_destroy();
+    header('Location: ../login.php');
+}
+
 if(isset($_GET['go'])) {
     switch ($_GET['go']) {
         case "home": include('content/contentbase.php'); break;

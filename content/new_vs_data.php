@@ -1,3 +1,15 @@
+<?php
+session_start();
+if ($_SESSION['loggedin'] != true){
+    session_unset();
+    session_destroy();
+    header('Location: ../login.php');
+}
+//Admin Content - Visible if the logged-in user has admin role
+if ($_SESSION['role'] == 'guest'){
+    header('Location: contentbase.php');
+}
+?>
 <div>
     <form action="index.php?go=new_vs_findltm" class="register" method="POST">
         <h1> Create a new Virtual Server </h1>

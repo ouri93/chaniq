@@ -1,10 +1,15 @@
+<?php
+if ($_SESSION['loggedin'] != true){
+    session_unset();
+    session_destroy();
+    header('Location: ../login.php');
+}
+//Admin Content - Visible if the logged-in user has admin role
+if ($_SESSION['role'] == 'guest'){
+    header('Location: contentbase.php');
+}
+?>
 <div>
-    <!-- Admin Content - Visible if the logged-in user has admin role -->
-    <?php
-    if (!isadmin()){
-        header('Location: index.php');
-    }
-    ?>
     <form action="index.php?go=deploy_pool" class="register" method="POST">
         <h1> Create a new Pool </h1>
         <fieldset class="row1">

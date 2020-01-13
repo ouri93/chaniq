@@ -1,10 +1,14 @@
+<?php
+if ($_SESSION['loggedin'] != true){
+    session_unset();
+    session_destroy();
+    header('Location: ../login.php');
+}
+if ($_SESSION['role'] == 'guest'){
+    header('Location: contentbase.php');
+}
+?>
 <div>
-    <!-- Admin Content - Visible if the logged-in user has admin role -->
-    <?php
-    if (!isadmin()){
-        header('Location: index.php');
-    }
-    ?>
     <form class="register">
         <fieldset  id='pool_iframe_fieldset' class="row1">
 		<!-- IFrame content here -->
