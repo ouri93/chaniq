@@ -6,6 +6,7 @@ import getpass
 import loadStdNames
 
 def check_profileName_conflict(mr, prfName, prfDftFrom):
+    logging.info("In check_profileName_conflict()\n")
     dstAffPrfNames = mr.tm.ltm.persistence.dest_addrs.get_collection()
     logging.info("check_profileName_conflict() STD Name: " + prfName + "\n")
     
@@ -50,8 +51,9 @@ def new_dstAffProfile_build(prfDevIp, prfName, prfDplyOrChg, defaultsFrom, match
             prfName = loadStdNames.get_std_name(str(prfDevIp), 'SHARED', 'PROFILE', 'DESTINATION_PERSISTENCE', prfName)
                 
         logging.info("Profile Creation process has been initiated. Destination Address Persistence Profile Name: " + prfName)
-    
+        prfPara1 = 'Common'
         if check_profileName_conflict(mr, prfName, prfPara1):
+            logging.info("Before check_profileName_conflict() call\n")
             strReturn.update({str(idx) : 'Profile Name conflict'})
             logging.info("Profile name conflict.")
             idx += 1

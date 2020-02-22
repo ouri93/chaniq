@@ -1222,7 +1222,10 @@ function setPrfHtml(prfType, response_in){
 function getStrHttpHtml(pxyMode){
 	// Default Page Load action - Load parent profile names
 	var nameAndIp = $('#ltmSelBox option:selected').val();
+	var arr = nameAndIp.split(":");
+	var prfType = window.parent.document.getElementById('selectedPrfType').value;
 
+	if (pxyMode == 'explicit') prfType = 'HTTP:dnsresolver';
 	var dnsRzvs = [];
 	// Get the list of DNS Resolver if HTTP proxy mode is 'explicit'. Wait for ajax transaction completed - async: false
 	ajxOut = $.ajax({
@@ -1406,7 +1409,7 @@ $(function () {
 		var prfType = window.parent.document.getElementById('selectedPrfType').value;
 		var parPrfName = $('#svc_prf_type_select').val();
 		var prfMode = GetParentURLParameter('go');
-		alert("Proxy Mode: " + pxyMode + "\nProfile Type: " + prfType + "\nParent Profile name: " + parPrfName + "\nProfile Mode: " + prfMode);
+		//alert("Proxy Mode: " + pxyMode + "\nProfile Type: " + prfType + "\nParent Profile name: " + parPrfName + "\nProfile Mode: " + prfMode);
 		var prfOptData = {'phpFileName':'', 'DevIP':'', 'name':''};
 
 		// 1. Build configuration data structure according to the chosen profile name		
@@ -1425,7 +1428,7 @@ $(function () {
 
 			$('#prfConfTable_tbody').append(strHtml);
 			// 3. Load the chosen profile configuration
-			alert("Before ajax call of getHttpSettings.php. Dev IP: " + arr[1] + " Proxy Type: " + pxyMode + " Profile Type: " + prfType + " Parent Profile Name: " + parPrfName + "\n");
+			//alert("Before ajax call of getHttpSettings.php. Dev IP: " + arr[1] + " Proxy Type: " + pxyMode + " Profile Type: " + prfType + " Parent Profile Name: " + parPrfName + "\n");
 			ajaxOut = $.ajax({
 	    		url:'/content/getHttpSettings.php',
 	    		type: 'POST',
@@ -1807,7 +1810,7 @@ $(function () {
 		// prfOptData has been extended with a Query string value of the Parent URL
 		var prfOptData = {'phpFileName':'', 'DevIP':'', 'name':'', 'dplyOrChg':''};
 		
-		alert("prf_btn_change event in prf_jquery.js - Profile Type is: " + prfType + "\n");
+		//alert("prf_btn_change event in prf_jquery.js - Profile Type is: " + prfType + "\n");
 
 		if (prfType == 'HTTP')
 			prfOptData['phpFileName'] = 'new_httpProfile_build';
@@ -1818,7 +1821,7 @@ $(function () {
 		prfOptData['name'] = prfName;
 		prfOptData['dplyOrChg'] = GetParentURLParameter('go');
 		
-		alert("Profile Name: " + prfName + "\nProxy Mode: " + pxyMode + "\nProfile Type: " + prfType + "\nParent Profile name: " + parPrfName + "\nDeploy or Change: " + prfOptData['dplyOrChg'] + "\n");
+		//alert("Profile Name: " + prfName + "\nProxy Mode: " + pxyMode + "\nProfile Type: " + prfType + "\nParent Profile name: " + parPrfName + "\nDeploy or Change: " + prfOptData['dplyOrChg'] + "\n");
 
 		// 1. Build configuration data structure according to the selected profile name		
 		if (prfType == "HTTP") initHttpPrfOptData(prfOptData, prfType, pxyMode);
