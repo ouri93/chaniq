@@ -221,26 +221,56 @@ def chg_vs_ajax(active_ltm, vs_name, vs_dest, vs_port, vs_desc, vs_tcpprofile, v
             #prfRefItems: List variable contains all of Profiles Items such as tcp, http, ssl client, ssl server profiles
             prfRefItems = []
             # ALL profiles under 'profilesReference' should be updated at the same time. So if there is at least 1 profile modified, all profiles must
-            # be modified at the same time
-            if (loaded_prf_names['httpProfile'] !=  fieldNames['httpProfile'] or
-                loaded_prf_names['protocolProfileClient'] !=  fieldNames['protocolProfileClient'] or
-                loaded_prf_names['sslProfileClient'] !=  fieldNames['sslProfileClient'] or
-                loaded_prf_names['sslProfileServer'] !=  fieldNames['sslProfileServer'] or 
-                loaded_prf_names['rules'] !=  fieldNames['rules'] or 
-                loaded_prf_names['policies'] !=  fieldNames['policies']) :
+            # be modified at the same time. Except loaded_prf_names=='none' and fieldNames=='none', all other cases are considered MODIFIED
+            '''
+            if ((loaded_prf_names['httpProfile'] !=  fieldNames['httpProfile'] and loaded_prf_names['httpProfile'] != 'none' and fieldNames['httpProfile'] != 'none') or
+                (loaded_prf_names['protocolProfileClient'] !=  fieldNames['protocolProfileClient'] and loaded_prf_names['protocolProfileClient'] != 'none' and fieldNames['protocolProfileClient'] != 'none') or
+                (loaded_prf_names['sslProfileClient'] !=  fieldNames['sslProfileClient'] and loaded_prf_names['sslProfileClient'] != 'none' and  fieldNames['sslProfileClient'] != 'none' ) or
+                (loaded_prf_names['sslProfileServer'] !=  fieldNames['sslProfileServer'] and loaded_prf_names['sslProfileServer'] != 'none' and fieldNames['sslProfileServer'] != 'none' ) or 
+                (loaded_prf_names['rules'] !=  fieldNames['rules'] and loaded_prf_names['rules'] != 'none' and  fieldNames['rules'] != 'none') or 
+                (loaded_prf_names['policies'] !=  fieldNames['policies'] and loaded_prf_names['policies'] != 'none' and fieldNames['policies'] != 'none')
+               ):
+            '''
+            if  ((loaded_prf_names['httpProfile'] != 'none' and fieldNames['httpProfile'] != 'none') or
+                (loaded_prf_names['protocolProfileClient'] != 'none' and fieldNames['protocolProfileClient'] != 'none') or
+                (loaded_prf_names['sslProfileClient'] != 'none' and  fieldNames['sslProfileClient'] != 'none' ) or
+                (loaded_prf_names['sslProfileServer'] != 'none' and fieldNames['sslProfileServer'] != 'none' ) or
+                (loaded_prf_names['rules'] != 'none' and  fieldNames['rules'] != 'none') or
+                (loaded_prf_names['policies'] != 'none' and fieldNames['policies'] != 'none')):
                 isPrfModified = 1
             # Update http profile
+            if isPrfModified == 1:
+                if loaded_prf_names['httpProfile'] !=  fieldNames['httpProfile']:
+                    if loaded_prf_names['httpProfile'] != 'none' and fieldNames['httpProfile'] == 'none':
+                        loaded_httpprf = loaded_vs.profiles_s.profiles.load(partition='Common', name=loaded_prf_names['httpProfile'])
+                        loaded_httpprf.delete()
+                    elif loaded_prf_names['httpProfile'] == 'none' and fieldNames['httpProfile'] != 'none':
+                        prfRefItems.append({'name':fieldNames['httpProfile'], 'context':'all'})
+                    elif loaded_prf_names['httpProfile'] != 'none' and fieldNames['httpProfile'] != 'none':
+                        prfRefItems.append({'name':fieldNames['httpProfile'], 'context':'all'})
+                else:
+                    if loaded_prf_names['httpProfile'] != 'none' and fieldNames['httpProfile'] != 'none':
+                        prfRefItems.append({'name':fieldNames['httpProfile'], 'context':'all'})
+                logger.info("HTTP Profile has been updated. Current: " + loaded_prf_names['httpProfile'] + " New: " + fieldNames['httpProfile'] )
+            '''    
             if loaded_prf_names['httpProfile'] !=  fieldNames['httpProfile'] or isPrfModified == 1:
                 # Update VS profile - Delete and then add
+                # Case1 - Remove Http profile (HTTP Profile X to None)
                 if loaded_prf_names['httpProfile'] != 'none' and fieldNames['httpProfile'] == 'none':
                     loaded_httpprf = loaded_vs.profiles_s.profiles.load(partition='Common', name=loaded_prf_names['httpProfile'])
                     loaded_httpprf.delete()
-                else:
+                # Case2 - Add new HTTP profile (None to HTTP Profile X)
+                elif loaded_prf_names['httpProfile'] == 'none' and fieldNames['httpProfile'] != 'none':
                     # Newly assigned HTTP profile is not none. Use modify() to simply update HTTP profile
                     #profilesRef = { 'items':[{'name':fieldNames['httpProfile'], 'context':'all'}] }
                     prfRefItems.append({'name':fieldNames['httpProfile'], 'context':'all'})
-
-                logger.info("HTTP Profile has been updated. Current: " + loaded_prf_names['httpProfile'] + " New: " + fieldNames['httpProfile'] )
+                # Case3 - Change existing HTTP Profile to a new HTTP Profile
+                elif loaded_prf_names['httpProfile'] !=  fieldNames['httpProfile'] and loaded_prf_names['httpProfile'] != 'none' and fieldNames['httpProfile'] != 'none':
+                    prfRefItems.append({'name':fieldNames['httpProfile'], 'context':'all'})
+                else:
+                    pass
+            '''
+            
 
             # Update tcp client profile - At this point, tcp server profiel update is not provided.
             if loaded_prf_names['protocolProfileClient'] !=  fieldNames['protocolProfileClient'] or isPrfModified == 1:
@@ -304,6 +334,20 @@ def chg_vs_ajax(active_ltm, vs_name, vs_dest, vs_port, vs_desc, vs_tcpprofile, v
             # Ref with a value: u'rules': [u'/Common/REDIRECT']
             # Ref without a value: 'rules': []
             iRuleItmes = []
+            if isPrfModified == 1:
+                if loaded_prf_names['rules'] !=  fieldNames['rules']:
+                    if loaded_prf_names['rules'] != 'none' and fieldNames['rules'] == 'none':
+                        iRuleItmes = []
+                    elif loaded_prf_names['rules'] == 'none' and fieldNames['rules'] != 'none':
+                        iRuleItmes.append('/Common/%s' % fieldNames['rules'])
+                    elif loaded_prf_names['rules'] != 'none' and fieldNames['rules'] != 'none':
+                        iRuleItmes.append('/Common/%s' % fieldNames['rules'])
+                else:
+                    if loaded_prf_names['rules'] != 'none' and fieldNames['rules'] != 'none':
+                        iRuleItmes.append('/Common/%s' % fieldNames['rules'])
+                modContent['rules'] = iRuleItmes
+                logger.info("iRule has been updated. Current: " + loaded_prf_names['rules'] + " New: " + fieldNames['rules'] )
+            '''
             if loaded_prf_names['rules'] !=  fieldNames['rules'] or isPrfModified == 1:
                 # Update Persistence profile - Prep persistence setting and then update
                 if loaded_prf_names['rules'] != 'none' and fieldNames['rules'] == 'none':
@@ -315,13 +359,25 @@ def chg_vs_ajax(active_ltm, vs_name, vs_dest, vs_port, vs_desc, vs_tcpprofile, v
                     iRuleItmes.append('/Common/%s' % fieldNames['rules'])
                 else:
                     iRuleItmes.append('/Common/%s' % fieldNames['rules'])
-                    
+
                 modContent['rules'] = iRuleItmes
-                
-                logger.info("iRule has been updated. Current: " + loaded_prf_names['rules'] + " New: " + fieldNames['rules'] )
-            
+            '''
+                            
             # Update Policy profile      
             polRefItems = []
+            if isPrfModified == 1:
+                if loaded_prf_names['policies'] !=  fieldNames['policies']:
+                    if loaded_prf_names['policies'] != 'none' and fieldNames['policies'] == 'none':
+                        polRefItems = []
+                    elif loaded_prf_names['policies'] == 'none' and fieldNames['policies'] != 'none':
+                        polRefItems.append({'name':fieldNames['policies'], 'partition':'Common'})
+                    elif loaded_prf_names['policies'] != 'none' and fieldNames['policies'] != 'none':
+                        polRefItems.append({'name':fieldNames['policies'], 'partition':'Common'})
+                else:
+                    if loaded_prf_names['policies'] != 'none' and fieldNames['policies'] != 'none':
+                        polRefItems.append({'name':fieldNames['policies'], 'partition':'Common'})           
+                logger.info("Policy has been updated. Current: " + loaded_prf_names['policies'] + " New: " + fieldNames['policies'] )
+            '''
             if loaded_prf_names['policies'] !=  fieldNames['policies'] or isPrfModified == 1:
                 if loaded_prf_names['policies'] != 'none' and fieldNames['policies'] == 'none':
                     polRefItems = []
@@ -333,7 +389,8 @@ def chg_vs_ajax(active_ltm, vs_name, vs_dest, vs_port, vs_desc, vs_tcpprofile, v
                     # Newly assigned HTTP profile is not none. Use modify() to simply update HTTP profile
                     #profilesRef = { 'items':[{'name':fieldNames['httpProfile'], 'context':'all'}] }
                     polRefItems.append({'name':fieldNames['policies'], 'partition':'Common'})
-                logger.info("Policy has been updated. Current: " + loaded_prf_names['policies'] + " New: " + fieldNames['policies'] )
+            '''
+                
 
             # Update SNAT Pool
             # Ref with no value: u'sourceAddressTranslation': {u'type': u'none'}
@@ -361,6 +418,7 @@ def chg_vs_ajax(active_ltm, vs_name, vs_dest, vs_port, vs_desc, vs_tcpprofile, v
             polRef['items'] = polRefItems
             modContent['profilesReference'] = prfRef
             modContent['policiesReference'] = polRef
+            logger.info("Content to be modified: {0}".format(modContent))
             loaded_vs.modify(**modContent)                
    
     except Exception as e:

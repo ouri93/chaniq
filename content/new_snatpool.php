@@ -8,6 +8,7 @@ if ($_SESSION['loggedin'] != true){
 if ($_SESSION['role'] == 'guest'){
     header('Location: contentbase.php');
 }
+include_once 'utility/utility.php';
 ?>
 <div>
     <form class="register">

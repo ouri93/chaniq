@@ -161,7 +161,7 @@ def new_certkey_build(active_ltm, certkeyImpType, certkeyImpName, certkeyKeySour
     try:
         if certkeyImpType == 'Key':
             filename = certkeyImpName + '.key'
-            _upload(str(certkeyDevIp), ('admin', 'rlatkdcks'), filepath + filename)
+            _upload(str(active_ltm), ('admin', 'H@ll0N3wP@ss'), filepath + filename)
             logging.info("Key file upload completed! - Source File Full path and name: " + filepath + filename)
             '''
             Deprecated method. 
@@ -177,7 +177,7 @@ def new_certkey_build(active_ltm, certkeyImpType, certkeyImpName, certkeyKeySour
             logging.info("Key file upload and install completed")
         elif certkeyImpType == 'Certificate':
             filename = certkeyImpName + '.crt'
-            _upload(str(certkeyDevIp), ('admin', 'rlatkdcks'), filepath + filename)
+            _upload(str(active_ltm), ('admin', 'H@ll0N3wP@ss'), filepath + filename)
             logging.info("Cert file upload completed! Source File Full path and name: " + filepath + filename)
             '''
             param_set = {'from-local-file':localpath+filename, 'name':certkeyImpName}
@@ -187,8 +187,8 @@ def new_certkey_build(active_ltm, certkeyImpType, certkeyImpName, certkeyKeySour
             logging.info("Cert file upload and install completed")
         elif certkeyImpType == 'PKCS 12 (IIS)':
             filename = certkeyImpName
-            _upload(str(certkeyDevIp), ('admin', 'rlatkdcks'), filepath + filename + '.p12')
-            #_upload(str(certkeyDevIp), ('admin', 'rlatkdcks'), filepath + filename + '.crt')
+            _upload(str(active_ltm), ('admin', 'H@ll0N3wP@ss'), filepath + filename + '.p12')
+            #_upload(str(active_ltm), ('admin', 'rlatkdcks'), filepath + filename + '.crt')
             logging.info("PKCS Key and Cert file upload completed! - Source File Full path and name: " + filepath + filename)
             '''
             Deprecated method.
