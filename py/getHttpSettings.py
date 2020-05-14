@@ -62,7 +62,7 @@ def getHttpExpSettings(mr, prfName):
         for aprf in httpPrfs:
             if(aprf.name == prfName):
                 output += 'explicit|'
-                output += '/Common/http|'
+                output += '/Common/http-explicit|'
                 output += get_setting_val(aprf, 'basicAuthRealm') + "|"
                 output += get_setting_val(aprf, 'fallbackHost') + "|"
                 output += get_setting_list_val(aprf, 'fallbackStatusCodes') + "|"
@@ -86,7 +86,7 @@ def getHttpTransSettings(mr, prfName):
         for aprf in httpPrfs:
             if(aprf.name == prfName):
                 output += 'transparent|'
-                output += '/Common/http|'
+                output += '/Common/http-transparent|'
                 output += get_setting_val(aprf, 'basicAuthRealm') + "|"
                 output += get_setting_val(aprf, 'fallbackHost') + "|"
                 output += get_setting_list_val(aprf, 'fallbackStatusCodes') + "|"

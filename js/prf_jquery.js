@@ -640,7 +640,7 @@ function getHttpSettingsProcessData(response_in){
 	
 	// BugID 09152019-1031pm
     // Mode - Change Profile mode
-    // Symptom: When a Parent profile name is changed where a user already chose a Profile name, all other profile settings are successfully loaded. 
+    // Symptom: When a Parent profile name is changed after a user already chose a Profile name, all other profile settings are successfully loaded. 
 	//          However the chosen Parent profile name is changed back to the original parent profile name
 	// Sol: In Profile change mode, if Profile is not in 'initial' state (Parent Profile name is 'select') and the returned parent profile name is not
 	// equal to '', then keep the current parent profile name
@@ -653,19 +653,29 @@ function getHttpSettingsProcessData(response_in){
 		$('#svc_prf_proxymode_select option[value="' + responseArray[0] + '"]').attr('selected', 'selected');
 
 		if (orgParPrfName == 'select') {
+			// resonseArray[1]=='' means that Parent profile is not defined as the chosen HTTP profile is built-in http profile
 			if (responseArray[1] == '') {
 				responseArray[1] = 'select';
 				$('#svc_prf_type_select option[value="' + responseArray[1] + '"]').prop('selected', 'selected');
+				$('#svc_prf_type_select').prop('disabled', true);
+				$('#svc_prf_type_select').css('background-color', 'gray');
 			}
 			else {
+					$('#svc_prf_type_select').prop('disabled', false);
+					$('#svc_prf_type_select').css('background-color', 'white');
 					$('#svc_prf_type_select option[value="' + parPrfName[2] + '"]').prop('selected', 'selected');
 			}
 		}
 		else {
 			if (responseArray[1] == '') {
+				responseArray[1] = 'select';
 				$('#svc_prf_type_select option[value="' + responseArray[1] + '"]').prop('selected', 'selected');
+				$('#svc_prf_type_select').prop('disabled', true);
+				$('#svc_prf_type_select').css('background-color', 'gray');
 			}
 			else{
+				$('#svc_prf_type_select').prop('disabled', false);
+				$('#svc_prf_type_select').css('background-color', 'white');
 				$('#svc_prf_type_select option[value="' + orgParPrfName + '"]').prop('selected', 'selected');	
 			} 
 		}

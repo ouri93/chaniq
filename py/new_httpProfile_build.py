@@ -4,6 +4,8 @@ import logging
 import json
 import getpass
 import loadStdNames
+from __builtin__ import True, False
+from pickle import TRUE
 
 def check_profileName_conflict(mr, prfName, prfPxyType, prfDftFrom):
     httpPrfNames = mr.tm.ltm.profile.https.get_collection()
@@ -22,7 +24,99 @@ def check_profileName_conflict(mr, prfName, prfPxyType, prfDftFrom):
     if (bitout >> 0) & 1:
         return True
     else:
-        return False  
+        return False
+
+#objName: Object Name, PropName: Property Name of an object, propToCom: Property to compare
+#Return true if a given string property of an object is modified. Otherwise return false.
+def isStrPropModified(objName, propName, propToCom):
+    try:
+        if hasattr(objName, propName):
+            if propToCom == '': return True
+            else:
+                if getattr(objName, propName) != propToCom: return True
+                else: return False
+        else:
+            if propToCom != '':
+                return True
+            else: return False
+    except Exception as e:
+        logging.info("isStrPropModified() exception fired: " + str(e))
+
+#objName: Object Name, PropName: Property Name of an object, propToCom: Property to compare
+#Return true if a given List property of an object is modified. Otherwise return false.
+def isListPropModified(objName, propName, propToCom):
+    try:
+        if hasattr(objName, propName):
+            # If List property is empty
+            if not propToCom: return True
+            else:
+                # Sort list for the comparison
+                L1 = getattr(objName, propName)
+                L2 = propToCom
+                L1.sort()
+                L2.sort()
+                if L1 != L2: return True
+                else: return False
+        else:
+            if propToCom:
+                return True
+            else: return False
+    except Exception as e:
+        logging.info("isListPropModified() exception fired: " + str(e))
+        
+def isNeedUpdate(aHttpProf, httpModContent, prfPxyType, prfDftFrom, prfBscAuthRealm, prfFallbackHost, prfFallbackStsCode, prfHdrErase, prfHdrInsert, prfReqChunking, prfRespChunking, prfInstXFF, prfSrvAgtName):
+    cnt = 0
+    # Set HTTP profile values
+    # # Issue Track: #1
+    try:
+        if isStrPropModified(aHttpProf, 'proxyType', prfPxyType):
+            httpModContent['proxyType'] = prfPxyType
+            cnt = cnt + 1
+    except Exception as e:
+        logging.info("Exception:" + str(e))
+    if isStrPropModified(aHttpProf, 'defaultsFrom', prfDftFrom):
+        httpModContent['defaultsFrom'] = prfDftFrom
+        cnt = cnt + 1
+    if isStrPropModified(aHttpProf, 'basicAuthRealm', prfBscAuthRealm):
+        httpModContent['basicAuthRealm'] = prfBscAuthRealm
+        cnt = cnt + 1
+    if isStrPropModified(aHttpProf, 'fallbackHost', prfFallbackHost):
+        httpModContent['fallbackHost'] = prfFallbackHost
+        cnt = cnt + 1
+    
+    new_records = []
+    arrRecords = prfFallbackStsCode.split(' ')
+    for arrRecord in arrRecords:
+        aRecord = arrRecord.split(':')
+        logging.info("FallbackStatus Codes: " + arrRecord)
+        nr = [str(arrRecord)]
+        new_records.extend(nr)
+    
+    if isListPropModified(aHttpProf, 'fallbackStatusCodes', new_records):
+        httpModContent['fallbackStatusCodes'] = arrRecords
+        cnt = cnt + 1
+    
+    if isStrPropModified(aHttpProf, 'headerErase', prfHdrErase):
+        httpModContent['headerErase'] = prfHdrErase
+        cnt = cnt + 1
+    if isStrPropModified(aHttpProf, 'headerInsert', prfHdrInsert):
+        httpModContent['headerInsert'] = prfHdrInsert
+        cnt = cnt + 1
+    if isStrPropModified(aHttpProf, 'requestChunking', prfReqChunking):
+        httpModContent['requestChunking'] = prfReqChunking
+        cnt = cnt + 1
+    if isStrPropModified(aHttpProf, 'responseChunking', prfRespChunking):
+        httpModContent['responseChunking'] = prfRespChunking
+        cnt = cnt + 1
+    if isStrPropModified(aHttpProf, 'insertXforwardedFor', prfInstXFF):
+        httpModContent['insertXforwardedFor'] = prfInstXFF
+        cnt = cnt + 1
+    if isStrPropModified(aHttpProf, 'serverAgentName', prfSrvAgtName):
+        httpModContent['serverAgentName'] = prfSrvAgtName
+        cnt = cnt + 1
+        
+    if cnt > 0: return True
+    else: return False
 		
 def new_httpProfile_build(active_ltm, prfName, prfDplyOrChg, prfPxyType, prfDftFrom, prfBscAuthRealm, prfFallbackHost, prfFallbackStsCode, prfHdrErase,	prfHdrInsert, prfReqChunking, prfRespChunking, prfInstXFF, prfSrvAgtName):
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
@@ -68,11 +162,13 @@ def new_httpProfile_build(active_ltm, prfName, prfDplyOrChg, prfPxyType, prfDftF
     
         idx += 1
         #logging.info("ProxyType before change: " + prfPxyType)
+        #prfPxyType has 'explicit:DNS_Resolver_name' format if HTTP proxy type is 'explicit'
         tmp = prfPxyType.split(":")
         #logging.info("ProxyType after change: tmp[0]: " + tmp[0])
         
         pxyLen = len(tmp)
         prfPxyType = tmp[0]
+        # Only HTTP Explict Proxy type has the length of 2 ('explicit' and 'DNS_Resolver_name')
         if pxyLen == 2:
             dnsRzvName = tmp[1]
             logging.info("ProxyType: " + prfPxyType + " DNS Resolver name: " + dnsRzvName)
@@ -110,6 +206,9 @@ def new_httpProfile_build(active_ltm, prfName, prfDplyOrChg, prfPxyType, prfDftF
             return json.dumps(strReturn)
     # Process to change an existing HTTP profile
     else:
+        # httpModContent dictionary is used with modify(**httpModContent) to update only specified values
+        # Issue Track: #1
+        httpModContent = {}
         logging.info("HTTP profile modification process has been initiated. Profile Name: " + prfName)
         
         idx = 1
@@ -121,7 +220,7 @@ def new_httpProfile_build(active_ltm, prfName, prfDplyOrChg, prfPxyType, prfDftF
         logging.info("ProxyType after change: tmp[0]: " + tmp[0])
 
         try:
-            # Loading profile for a given profile name
+            # Loading profile of a given profile name
             aHttpProf = mr.tm.ltm.profile.https.http.load(name=prfName, partition='Common')
         except Exception as e:
             logging.info("Exception during loading HTTP Profile" + prfName)
@@ -137,13 +236,20 @@ def new_httpProfile_build(active_ltm, prfName, prfDplyOrChg, prfPxyType, prfDftF
 
         if prfPxyType == 'explicit':
             proxyDict = {'dnsResolver': dnsRzvName}
-            aHttpProf.explicitProxy = proxyDict
-      
+            # aHttpProf.explicitProxy = proxyDict - Issue Track: #1
+            httpModContent['explicitProxy'] = proxyDict
+        
+        '''
         # Set HTTP profile values
-        aHttpProf.proxyType = prfPxyType
-        aHttpProf.defaultsFrom = prfDftFrom
-        aHttpProf.basicAuthRealm = prfBscAuthRealm
-        aHttpProf.fallbackHost = prfFallbackHost
+        # # Issue Track: #1
+        #aHttpProf.proxyType = prfPxyType
+        #aHttpProf.defaultsFrom = prfDftFrom
+        #aHttpProf.basicAuthRealm = prfBscAuthRealm
+        #aHttpProf.fallbackHost = prfFallbackHost
+        httpModContent['proxyType'] = prfPxyType
+        httpModContent['defaultsFrom'] = prfDftFrom
+        httpModContent['basicAuthRealm'] = prfBscAuthRealm
+        httpModContent['fallbackHost'] = prfFallbackHost
         
         new_records = []
         arrRecords = prfFallbackStsCode.split(' ')
@@ -152,24 +258,44 @@ def new_httpProfile_build(active_ltm, prfName, prfDplyOrChg, prfPxyType, prfDftF
             logging.info("FallbackStatus Codes: " + arrRecord)
             nr = [str(arrRecord)]
             new_records.extend(nr)
-            
-        aHttpProf.fallbackStatusCodes = arrRecords
-        aHttpProf.headerErase = prfHdrErase
-        aHttpProf.headerInsert = prfHdrInsert
-        aHttpProf.requestChunking = prfReqChunking
-        aHttpProf.responseChunking = prfRespChunking
-        aHttpProf.insertXforwardedFor = prfInstXFF
-        aHttpProf.serverAgentName = prfSrvAgtName
         
-        # Update HTTP profile        
-        try:
-            aHttpProf.update()
-        except Exception as e:
-            logging.info("Exception during updating HTTP Profile modification")
-            strReturn[str(idx)] = "Exception fired! (" + prfName + "): " + str(e)
+        # # Issue Track: #1    
+        #aHttpProf.fallbackStatusCodes = arrRecords
+        #aHttpProf.headerErase = prfHdrErase
+        #aHttpProf.headerInsert = prfHdrInsert
+        #aHttpProf.requestChunking = prfReqChunking
+        #aHttpProf.responseChunking = prfRespChunking
+        #aHttpProf.insertXforwardedFor = prfInstXFF
+        #aHttpProf.serverAgentName = prfSrvAgtName
+
+        httpModContent['fallbackStatusCodes'] = arrRecords
+        httpModContent['headerErase'] = prfHdrErase
+        httpModContent['headerInsert'] = prfHdrInsert
+        httpModContent['requestChunking'] = prfReqChunking
+        httpModContent['responseChunking'] = prfRespChunking
+        httpModContent['insertXforwardedFor'] = prfInstXFF
+        httpModContent['serverAgentName'] = prfSrvAgtName        
+        '''
+
+        # Issue Track: #1
+        # Found which values have been modified
+        if isNeedUpdate(aHttpProf, httpModContent, prfPxyType, prfDftFrom, prfBscAuthRealm, prfFallbackHost, prfFallbackStsCode, prfHdrErase, prfHdrInsert, prfReqChunking, prfRespChunking, prfInstXFF, prfSrvAgtName):    
+                
+            # Update HTTP profile        
+            try:
+                # # Issue Track: #1 
+                #aHttpProf.update()
+                aHttpProf.modify(**httpModContent)
+            except Exception as e:
+                logging.info("Exception during updating HTTP Profile modification")
+                strReturn[str(idx)] = "Exception fired! (" + prfName + "): " + str(e)
+                idx += 1
+                logging.info("HTTP Profile modificaiton creation Exception fired: " + str(e))
+                return json.dumps(strReturn)
+        else:
+            logging.info("No HTTP Profile modification is needed")
+            strReturn[str(idx)] = "No HTTP Profile modification is needed (" + prfName + "): "
             idx += 1
-            logging.info("HTTP Profile modificaiton creation Exception fired: " + str(e))
-            return json.dumps(strReturn)
         
     if prfDplyOrChg == 'new_profile':
         strReturn[str(idx)] = "HTTP Profile (" + prfName + ") has been created"
