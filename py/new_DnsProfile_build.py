@@ -4,6 +4,7 @@ import logging
 import json
 import getpass
 import loadStdNames
+import chaniq_util
 
 def check_profileName_conflict(mr, prfName, prfDftFrom):
     dnsPrfNames = mr.tm.ltm.profile.dns_s.get_collection()
@@ -23,7 +24,45 @@ def check_profileName_conflict(mr, prfName, prfDftFrom):
         return True
     else:
         return False  
-		
+
+def isNeedUpdate(aDnsPrf, dnsModContent, prfDftFrom, prfHwValid, prfHwRespCache, prfDnsExp, prfGtm, prfUnhandledAct, prfUseBind, prfZoneXfr, prfDnsSecurity, prfRecursion):
+    cnt = 0
+    # Set HTTP profile values
+    # # Issue Track: #1
+    if chaniq_util.isStrPropModified(aDnsPrf, 'defaultsFrom', prfDftFrom):
+        dnsModContent['proxyType'] = prfDftFrom
+        cnt = cnt + 1
+    if chaniq_util.isStrPropModified(aDnsPrf, 'enableHardwareQueryValidation', prfHwValid):
+        dnsModContent['enableHardwareQueryValidation'] = prfHwValid
+        cnt = cnt + 1
+    if chaniq_util.isStrPropModified(aDnsPrf, 'enableHardwareResponseCache', prfHwRespCache):
+        dnsModContent['enableHardwareResponseCache'] = prfHwRespCache
+        cnt = cnt + 1
+    if chaniq_util.isStrPropModified(aDnsPrf, 'enableDnsExpress', prfDnsExp):
+        dnsModContent['enableDnsExpress'] = prfDnsExp
+        cnt = cnt + 1
+    if chaniq_util.isStrPropModified(aDnsPrf, 'enableGtm', prfGtm):
+        dnsModContent['enableGtm'] = prfGtm
+        cnt = cnt + 1
+    if chaniq_util.isStrPropModified(aDnsPrf, 'unhandledQueryAction', prfUnhandledAct):
+        dnsModContent['unhandledQueryAction'] = prfUnhandledAct
+        cnt = cnt + 1
+    if chaniq_util.isStrPropModified(aDnsPrf, 'useLocalBind', prfUseBind):
+        dnsModContent['useLocalBind'] = prfUseBind
+        cnt = cnt + 1
+    if chaniq_util.isStrPropModified(aDnsPrf, 'processXfr', prfZoneXfr):
+        dnsModContent['processXfr'] = prfZoneXfr
+        cnt = cnt + 1
+    if chaniq_util.isStrPropModified(aDnsPrf, 'enableDnsFirewall', prfDnsSecurity):
+        dnsModContent['enableDnsFirewall'] = prfDnsSecurity
+        cnt = cnt + 1
+    if chaniq_util.isStrPropModified(aDnsPrf, 'processRd', prfRecursion):
+        dnsModContent['processRd'] = prfRecursion
+        cnt = cnt + 1
+
+    if cnt > 0: return True
+    else: return False
+                		
 def new_DnsProfile_build(active_ltm, prfName, prfDplyOrChg, prfDftFrom, prfHwValid, prfHwRespCache, prfDnsExp, prfGtm, prfUnhandledAct, prfUseBind, prfZoneXfr, prfDnsSecurity, prfRecursion):
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
     #logging.info('Called get_profiles(): %s %s' % (active_ltm, pf_type))
@@ -72,6 +111,7 @@ def new_DnsProfile_build(active_ltm, prfName, prfDplyOrChg, prfDftFrom, prfHwVal
         idx += 1
         logging.info("DNS Profile has been created")
     elif prfDplyOrChg == 'chg_profile':
+        dnsModContent = {}        
         strReturn = {str(idx) : 'DNS Profile Modification Report'}
 
         idx += 1
@@ -89,7 +129,7 @@ def new_DnsProfile_build(active_ltm, prfName, prfDplyOrChg, prfDftFrom, prfHwVal
             return json.dumps(strReturn)
         
         # Save the update DNS profile settings
-        logging.info("I am top")
+        '''
         aDnsPrf.defaultsFrom = prfDftFrom
         aDnsPrf.enableHardwareQueryValidation = prfHwValid
         aDnsPrf.enableHardwareResponseCache = prfHwRespCache
@@ -100,18 +140,26 @@ def new_DnsProfile_build(active_ltm, prfName, prfDplyOrChg, prfDftFrom, prfHwVal
         aDnsPrf.processXfr = prfZoneXfr
         aDnsPrf.enableDnsFirewall = prfDnsSecurity
         aDnsPrf.processRd = prfRecursion
+        '''
         
-        strReturn[str(idx)] = "DNS Profile settings have been saved!"
-        idx += 1
-        
-        try:
-            aDnsPrf.update()
-        except Exception as e:
-            strReturn[str(idx)] = "Exception fired during DNS profile update() (" + prfName + "): " + str(e)
+        if isNeedUpdate(aDnsPrf, dnsModContent, prfDftFrom, prfHwValid, prfHwRespCache, prfDnsExp, prfGtm, prfUnhandledAct, prfUseBind, prfZoneXfr, prfDnsSecurity, prfRecursion):
+
+            strReturn[str(idx)] = "DNS Profile settings have been saved!"
             idx += 1
-            logging.info("DNS Profile creation exception fired: " + str(e))
-            return json.dumps(strReturn)
-  
+            
+            try:
+                #aDnsPrf.update()
+                aDnsPrf.modify(**dnsModContent)
+            except Exception as e:
+                strReturn[str(idx)] = "Exception fired during DNS profile update() (" + prfName + "): " + str(e)
+                idx += 1
+                logging.info("DNS Profile creation exception fired: " + str(e))
+                return json.dumps(strReturn)
+        else:
+            logging.info("No DNS Profile modification is needed")
+            strReturn[str(idx)] = "No DNS Profile modification is needed (" + prfName + "): "
+            idx += 1
+            
     if prfDplyOrChg == 'new_profile': 
         strReturn[str(idx)] = "DNS Profile (" + prfName + ") has been created"
         idx += 1

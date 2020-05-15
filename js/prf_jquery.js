@@ -780,7 +780,7 @@ function processGetProfileData(response_in, prfType){
 
 	}
 
-	alert("Profile Type: " + prfMode + "\nParent Profile name: " + parPrfName + "\nresponseArrya[0] value: " + responseArray[0] );
+	//alert("Profile Type: " + prfMode + "\nParent Profile name: " + parPrfName + "\nresponseArrya[0] value: " + responseArray[0] );
 	if(prfType == 'DNS'){
 		$('#dnsHwPrtoValid option[value="' + responseArray[1] + '"]').attr('selected', 'selected');
 		$('#dnsHwRespCache option[value="' + responseArray[2] + '"]').attr('selected', 'selected');
@@ -1678,7 +1678,7 @@ $(function () {
 		}
 		
 		var pxyMode = $('#svc_prf_proxymode_select').val();
-		alert("Mode: " + prfMode + "\nChosen Profile Info: DevIP: " + arr[1] + "\nChosen or Parent Profile name: " + parPrfName + "\nProfile Type: " + prfType);
+		//alert("Mode: " + prfMode + "\nChosen Profile Info: DevIP: " + arr[1] + "\nChosen or Parent Profile name: " + parPrfName + "\nProfile Type: " + prfType);
 
 		var prfOptData = {'phpFileName':'', 'DevIP':'', 'name':''};
 
@@ -1868,7 +1868,7 @@ $(function () {
 		else {
 			// 2. Retrieve configuration data and save them according to the chosen profile name
 			setPrfOptData(prfOptData, prfType, parPrfName);
-			alert(iterAssArray(prfOptData));
+			//alert(iterAssArray(prfOptData));
 			if( !validateInput(prfOptData)){
 				alert("Profile name is required!");
 				return;

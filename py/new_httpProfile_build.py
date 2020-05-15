@@ -4,6 +4,7 @@ import logging
 import json
 import getpass
 import loadStdNames
+import chaniq_util
 from __builtin__ import True, False
 from pickle import TRUE
 
@@ -26,61 +27,22 @@ def check_profileName_conflict(mr, prfName, prfPxyType, prfDftFrom):
     else:
         return False
 
-#objName: Object Name, PropName: Property Name of an object, propToCom: Property to compare
-#Return true if a given string property of an object is modified. Otherwise return false.
-def isStrPropModified(objName, propName, propToCom):
-    try:
-        if hasattr(objName, propName):
-            if propToCom == '': return True
-            else:
-                if getattr(objName, propName) != propToCom: return True
-                else: return False
-        else:
-            if propToCom != '':
-                return True
-            else: return False
-    except Exception as e:
-        logging.info("isStrPropModified() exception fired: " + str(e))
-
-#objName: Object Name, PropName: Property Name of an object, propToCom: Property to compare
-#Return true if a given List property of an object is modified. Otherwise return false.
-def isListPropModified(objName, propName, propToCom):
-    try:
-        if hasattr(objName, propName):
-            # If List property is empty
-            if not propToCom: return True
-            else:
-                # Sort list for the comparison
-                L1 = getattr(objName, propName)
-                L2 = propToCom
-                L1.sort()
-                L2.sort()
-                if L1 != L2: return True
-                else: return False
-        else:
-            if propToCom:
-                return True
-            else: return False
-    except Exception as e:
-        logging.info("isListPropModified() exception fired: " + str(e))
-        
+# Check if update is needed
+#         
 def isNeedUpdate(aHttpProf, httpModContent, prfPxyType, prfDftFrom, prfBscAuthRealm, prfFallbackHost, prfFallbackStsCode, prfHdrErase, prfHdrInsert, prfReqChunking, prfRespChunking, prfInstXFF, prfSrvAgtName):
     cnt = 0
     # Set HTTP profile values
     # # Issue Track: #1
-    try:
-        if isStrPropModified(aHttpProf, 'proxyType', prfPxyType):
-            httpModContent['proxyType'] = prfPxyType
-            cnt = cnt + 1
-    except Exception as e:
-        logging.info("Exception:" + str(e))
-    if isStrPropModified(aHttpProf, 'defaultsFrom', prfDftFrom):
+    if chaniq_util.isStrPropModified(aHttpProf, 'proxyType', prfPxyType):
+        httpModContent['proxyType'] = prfPxyType
+        cnt = cnt + 1
+    if chaniq_util.isStrPropModified(aHttpProf, 'defaultsFrom', prfDftFrom):
         httpModContent['defaultsFrom'] = prfDftFrom
         cnt = cnt + 1
-    if isStrPropModified(aHttpProf, 'basicAuthRealm', prfBscAuthRealm):
+    if chaniq_util.isStrPropModified(aHttpProf, 'basicAuthRealm', prfBscAuthRealm):
         httpModContent['basicAuthRealm'] = prfBscAuthRealm
         cnt = cnt + 1
-    if isStrPropModified(aHttpProf, 'fallbackHost', prfFallbackHost):
+    if chaniq_util.isStrPropModified(aHttpProf, 'fallbackHost', prfFallbackHost):
         httpModContent['fallbackHost'] = prfFallbackHost
         cnt = cnt + 1
     
@@ -92,26 +54,26 @@ def isNeedUpdate(aHttpProf, httpModContent, prfPxyType, prfDftFrom, prfBscAuthRe
         nr = [str(arrRecord)]
         new_records.extend(nr)
     
-    if isListPropModified(aHttpProf, 'fallbackStatusCodes', new_records):
+    if chaniq_util.isListPropModified(aHttpProf, 'fallbackStatusCodes', new_records):
         httpModContent['fallbackStatusCodes'] = arrRecords
         cnt = cnt + 1
     
-    if isStrPropModified(aHttpProf, 'headerErase', prfHdrErase):
+    if chaniq_util.isStrPropModified(aHttpProf, 'headerErase', prfHdrErase):
         httpModContent['headerErase'] = prfHdrErase
         cnt = cnt + 1
-    if isStrPropModified(aHttpProf, 'headerInsert', prfHdrInsert):
+    if chaniq_util.isStrPropModified(aHttpProf, 'headerInsert', prfHdrInsert):
         httpModContent['headerInsert'] = prfHdrInsert
         cnt = cnt + 1
-    if isStrPropModified(aHttpProf, 'requestChunking', prfReqChunking):
+    if chaniq_util.isStrPropModified(aHttpProf, 'requestChunking', prfReqChunking):
         httpModContent['requestChunking'] = prfReqChunking
         cnt = cnt + 1
-    if isStrPropModified(aHttpProf, 'responseChunking', prfRespChunking):
+    if chaniq_util.isStrPropModified(aHttpProf, 'responseChunking', prfRespChunking):
         httpModContent['responseChunking'] = prfRespChunking
         cnt = cnt + 1
-    if isStrPropModified(aHttpProf, 'insertXforwardedFor', prfInstXFF):
+    if chaniq_util.isStrPropModified(aHttpProf, 'insertXforwardedFor', prfInstXFF):
         httpModContent['insertXforwardedFor'] = prfInstXFF
         cnt = cnt + 1
-    if isStrPropModified(aHttpProf, 'serverAgentName', prfSrvAgtName):
+    if chaniq_util.isStrPropModified(aHttpProf, 'serverAgentName', prfSrvAgtName):
         httpModContent['serverAgentName'] = prfSrvAgtName
         cnt = cnt + 1
         
