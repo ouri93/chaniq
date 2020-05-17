@@ -33,6 +33,24 @@ def isStrPropModified(objName, propName, propToCom):
         logging.info("isStrPropModified() exception - Checking String modification failed: " + str(e))
         return False
 
+#objName: Object Name, PropName: Property Name of an object, propToCom: Property to compare, defPropVal: Integer property default value
+#Return true if a given Integer property of an object is modified. Otherwise return false.
+def isIntPropModified(objName, propName, propToCom, defPropVal):
+    try:
+        if hasattr(objName, propName):
+            if int(propToCom) != defPropVal: return True
+            else:
+                if getattr(objName, propName) != int(propToCom): return True
+                else: return False
+        else:
+            if int(propToCom) != defPropVal:
+                return True
+            else: return False
+    except Exception as e:
+        logging.info("isIntPropModified() exception - Checking String modification failed: " + str(e))
+        return False
+    
+
 #objName: Object Name, PropName: Property Name of an object, propToCom: List to compare
 #Return true if a given List of an object is modified. Otherwise return false.
 def isListPropModified(objName, propName, propToCom):

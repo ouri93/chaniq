@@ -29,21 +29,21 @@ def check_profileName_conflict(mr, prfName, prfPxyType, prfDftFrom):
 
 # Check if update is needed
 #         
-def isNeedUpdate(aHttpProf, httpModContent, prfPxyType, prfDftFrom, prfBscAuthRealm, prfFallbackHost, prfFallbackStsCode, prfHdrErase, prfHdrInsert, prfReqChunking, prfRespChunking, prfInstXFF, prfSrvAgtName):
+def isNeedUpdate(loadedPrf, modContent, prfPxyType, prfDftFrom, prfBscAuthRealm, prfFallbackHost, prfFallbackStsCode, prfHdrErase, prfHdrInsert, prfReqChunking, prfRespChunking, prfInstXFF, prfSrvAgtName):
     cnt = 0
     # Set HTTP profile values
     # # Issue Track: #1
-    if chaniq_util.isStrPropModified(aHttpProf, 'proxyType', prfPxyType):
-        httpModContent['proxyType'] = prfPxyType
+    if chaniq_util.isStrPropModified(loadedPrf, 'proxyType', prfPxyType):
+        modContent['proxyType'] = prfPxyType
         cnt = cnt + 1
-    if chaniq_util.isStrPropModified(aHttpProf, 'defaultsFrom', prfDftFrom):
-        httpModContent['defaultsFrom'] = prfDftFrom
+    if chaniq_util.isStrPropModified(loadedPrf, 'defaultsFrom', prfDftFrom):
+        modContent['defaultsFrom'] = prfDftFrom
         cnt = cnt + 1
-    if chaniq_util.isStrPropModified(aHttpProf, 'basicAuthRealm', prfBscAuthRealm):
-        httpModContent['basicAuthRealm'] = prfBscAuthRealm
+    if chaniq_util.isStrPropModified(loadedPrf, 'basicAuthRealm', prfBscAuthRealm):
+        modContent['basicAuthRealm'] = prfBscAuthRealm
         cnt = cnt + 1
-    if chaniq_util.isStrPropModified(aHttpProf, 'fallbackHost', prfFallbackHost):
-        httpModContent['fallbackHost'] = prfFallbackHost
+    if chaniq_util.isStrPropModified(loadedPrf, 'fallbackHost', prfFallbackHost):
+        modContent['fallbackHost'] = prfFallbackHost
         cnt = cnt + 1
     
     new_records = []
@@ -54,27 +54,27 @@ def isNeedUpdate(aHttpProf, httpModContent, prfPxyType, prfDftFrom, prfBscAuthRe
         nr = [str(arrRecord)]
         new_records.extend(nr)
     
-    if chaniq_util.isListPropModified(aHttpProf, 'fallbackStatusCodes', new_records):
-        httpModContent['fallbackStatusCodes'] = arrRecords
+    if chaniq_util.isListPropModified(loadedPrf, 'fallbackStatusCodes', new_records):
+        modContent['fallbackStatusCodes'] = arrRecords
         cnt = cnt + 1
     
-    if chaniq_util.isStrPropModified(aHttpProf, 'headerErase', prfHdrErase):
-        httpModContent['headerErase'] = prfHdrErase
+    if chaniq_util.isStrPropModified(loadedPrf, 'headerErase', prfHdrErase):
+        modContent['headerErase'] = prfHdrErase
         cnt = cnt + 1
-    if chaniq_util.isStrPropModified(aHttpProf, 'headerInsert', prfHdrInsert):
-        httpModContent['headerInsert'] = prfHdrInsert
+    if chaniq_util.isStrPropModified(loadedPrf, 'headerInsert', prfHdrInsert):
+        modContent['headerInsert'] = prfHdrInsert
         cnt = cnt + 1
-    if chaniq_util.isStrPropModified(aHttpProf, 'requestChunking', prfReqChunking):
-        httpModContent['requestChunking'] = prfReqChunking
+    if chaniq_util.isStrPropModified(loadedPrf, 'requestChunking', prfReqChunking):
+        modContent['requestChunking'] = prfReqChunking
         cnt = cnt + 1
-    if chaniq_util.isStrPropModified(aHttpProf, 'responseChunking', prfRespChunking):
-        httpModContent['responseChunking'] = prfRespChunking
+    if chaniq_util.isStrPropModified(loadedPrf, 'responseChunking', prfRespChunking):
+        modContent['responseChunking'] = prfRespChunking
         cnt = cnt + 1
-    if chaniq_util.isStrPropModified(aHttpProf, 'insertXforwardedFor', prfInstXFF):
-        httpModContent['insertXforwardedFor'] = prfInstXFF
+    if chaniq_util.isStrPropModified(loadedPrf, 'insertXforwardedFor', prfInstXFF):
+        modContent['insertXforwardedFor'] = prfInstXFF
         cnt = cnt + 1
-    if chaniq_util.isStrPropModified(aHttpProf, 'serverAgentName', prfSrvAgtName):
-        httpModContent['serverAgentName'] = prfSrvAgtName
+    if chaniq_util.isStrPropModified(loadedPrf, 'serverAgentName', prfSrvAgtName):
+        modContent['serverAgentName'] = prfSrvAgtName
         cnt = cnt + 1
         
     if cnt > 0: return True
@@ -168,9 +168,9 @@ def new_httpProfile_build(active_ltm, prfName, prfDplyOrChg, prfPxyType, prfDftF
             return json.dumps(strReturn)
     # Process to change an existing HTTP profile
     else:
-        # httpModContent dictionary is used with modify(**httpModContent) to update only specified values
+        # modContent dictionary is used with modify(**modContent) to update only specified values
         # Issue Track: #1
-        httpModContent = {}
+        modContent = {}
         logging.info("HTTP profile modification process has been initiated. Profile Name: " + prfName)
         
         idx = 1
@@ -183,7 +183,7 @@ def new_httpProfile_build(active_ltm, prfName, prfDplyOrChg, prfPxyType, prfDftF
 
         try:
             # Loading profile of a given profile name
-            aHttpProf = mr.tm.ltm.profile.https.http.load(name=prfName, partition='Common')
+            loadedPrf = mr.tm.ltm.profile.https.http.load(name=prfName, partition='Common')
         except Exception as e:
             logging.info("Exception during loading HTTP Profile" + prfName)
             strReturn[str(idx)] = "HTTP Profile Loading Exception fired! (" + prfName + "): " + str(e)
@@ -198,20 +198,20 @@ def new_httpProfile_build(active_ltm, prfName, prfDplyOrChg, prfPxyType, prfDftF
 
         if prfPxyType == 'explicit':
             proxyDict = {'dnsResolver': dnsRzvName}
-            # aHttpProf.explicitProxy = proxyDict - Issue Track: #1
-            httpModContent['explicitProxy'] = proxyDict
+            # loadedPrf.explicitProxy = proxyDict - Issue Track: #1
+            modContent['explicitProxy'] = proxyDict
         
         '''
         # Set HTTP profile values
         # # Issue Track: #1
-        #aHttpProf.proxyType = prfPxyType
-        #aHttpProf.defaultsFrom = prfDftFrom
-        #aHttpProf.basicAuthRealm = prfBscAuthRealm
-        #aHttpProf.fallbackHost = prfFallbackHost
-        httpModContent['proxyType'] = prfPxyType
-        httpModContent['defaultsFrom'] = prfDftFrom
-        httpModContent['basicAuthRealm'] = prfBscAuthRealm
-        httpModContent['fallbackHost'] = prfFallbackHost
+        #loadedPrf.proxyType = prfPxyType
+        #loadedPrf.defaultsFrom = prfDftFrom
+        #loadedPrf.basicAuthRealm = prfBscAuthRealm
+        #loadedPrf.fallbackHost = prfFallbackHost
+        modContent['proxyType'] = prfPxyType
+        modContent['defaultsFrom'] = prfDftFrom
+        modContent['basicAuthRealm'] = prfBscAuthRealm
+        modContent['fallbackHost'] = prfFallbackHost
         
         new_records = []
         arrRecords = prfFallbackStsCode.split(' ')
@@ -222,32 +222,32 @@ def new_httpProfile_build(active_ltm, prfName, prfDplyOrChg, prfPxyType, prfDftF
             new_records.extend(nr)
         
         # # Issue Track: #1    
-        #aHttpProf.fallbackStatusCodes = arrRecords
-        #aHttpProf.headerErase = prfHdrErase
-        #aHttpProf.headerInsert = prfHdrInsert
-        #aHttpProf.requestChunking = prfReqChunking
-        #aHttpProf.responseChunking = prfRespChunking
-        #aHttpProf.insertXforwardedFor = prfInstXFF
-        #aHttpProf.serverAgentName = prfSrvAgtName
+        #loadedPrf.fallbackStatusCodes = arrRecords
+        #loadedPrf.headerErase = prfHdrErase
+        #loadedPrf.headerInsert = prfHdrInsert
+        #loadedPrf.requestChunking = prfReqChunking
+        #loadedPrf.responseChunking = prfRespChunking
+        #loadedPrf.insertXforwardedFor = prfInstXFF
+        #loadedPrf.serverAgentName = prfSrvAgtName
 
-        httpModContent['fallbackStatusCodes'] = arrRecords
-        httpModContent['headerErase'] = prfHdrErase
-        httpModContent['headerInsert'] = prfHdrInsert
-        httpModContent['requestChunking'] = prfReqChunking
-        httpModContent['responseChunking'] = prfRespChunking
-        httpModContent['insertXforwardedFor'] = prfInstXFF
-        httpModContent['serverAgentName'] = prfSrvAgtName        
+        modContent['fallbackStatusCodes'] = arrRecords
+        modContent['headerErase'] = prfHdrErase
+        modContent['headerInsert'] = prfHdrInsert
+        modContent['requestChunking'] = prfReqChunking
+        modContent['responseChunking'] = prfRespChunking
+        modContent['insertXforwardedFor'] = prfInstXFF
+        modContent['serverAgentName'] = prfSrvAgtName        
         '''
 
         # Issue Track: #1
         # Found which values have been modified
-        if isNeedUpdate(aHttpProf, httpModContent, prfPxyType, prfDftFrom, prfBscAuthRealm, prfFallbackHost, prfFallbackStsCode, prfHdrErase, prfHdrInsert, prfReqChunking, prfRespChunking, prfInstXFF, prfSrvAgtName):    
+        if isNeedUpdate(loadedPrf, modContent, prfPxyType, prfDftFrom, prfBscAuthRealm, prfFallbackHost, prfFallbackStsCode, prfHdrErase, prfHdrInsert, prfReqChunking, prfRespChunking, prfInstXFF, prfSrvAgtName):    
                 
             # Update HTTP profile        
             try:
                 # # Issue Track: #1 
-                #aHttpProf.update()
-                aHttpProf.modify(**httpModContent)
+                #loadedPrf.update()
+                loadedPrf.modify(**modContent)
             except Exception as e:
                 logging.info("Exception during updating HTTP Profile modification")
                 strReturn[str(idx)] = "Exception fired! (" + prfName + "): " + str(e)

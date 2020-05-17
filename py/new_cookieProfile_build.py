@@ -25,32 +25,32 @@ def check_profileName_conflict(mr, prfName, prfDftFrom):
     else:
         return False  
 
-def isNeedUpdate(aCookiePrf, ckModContent, defaultsFrom, method, cookieName, httponly, secure, alwaysSend, expiration, overrideConnectionLimit):
+def isNeedUpdate(loadedPrf, modContent, defaultsFrom, method, cookieName, httponly, secure, alwaysSend, expiration, overrideConnectionLimit):
     cnt = 0
     
-    if chaniq_util.isStrPropModified(aCookiePrf, 'defaultsFrom', defaultsFrom):
-        ckModContent['defaultsFrom'] = defaultsFrom
+    if chaniq_util.isStrPropModified(loadedPrf, 'defaultsFrom', defaultsFrom):
+        modContent['defaultsFrom'] = defaultsFrom
         cnt = cnt + 1
-    if chaniq_util.isStrPropModified(aCookiePrf, 'method', method):
-        ckModContent['method'] = method
+    if chaniq_util.isStrPropModified(loadedPrf, 'method', method):
+        modContent['method'] = method
         cnt = cnt + 1
-    if chaniq_util.isStrPropModified(aCookiePrf, 'cookieName', cookieName):
-        ckModContent['cookieName'] = cookieName
+    if chaniq_util.isStrPropModified(loadedPrf, 'cookieName', cookieName):
+        modContent['cookieName'] = cookieName
         cnt = cnt + 1
-    if chaniq_util.isStrPropModified(aCookiePrf, 'httponly', httponly):
-        ckModContent['httponly'] = httponly
+    if chaniq_util.isStrPropModified(loadedPrf, 'httponly', httponly):
+        modContent['httponly'] = httponly
         cnt = cnt + 1
-    if chaniq_util.isStrPropModified(aCookiePrf, 'secure', secure):
-        ckModContent['secure'] = secure
+    if chaniq_util.isStrPropModified(loadedPrf, 'secure', secure):
+        modContent['secure'] = secure
         cnt = cnt + 1
-    if chaniq_util.isStrPropModified(aCookiePrf, 'alwaysSend', alwaysSend):
-        ckModContent['alwaysSend'] = alwaysSend
+    if chaniq_util.isStrPropModified(loadedPrf, 'alwaysSend', alwaysSend):
+        modContent['alwaysSend'] = alwaysSend
         cnt = cnt + 1
-    if chaniq_util.isStrPropModified(aCookiePrf, 'expiration', expiration):
-        ckModContent['expiration'] = expiration
+    if chaniq_util.isStrPropModified(loadedPrf, 'expiration', expiration):
+        modContent['expiration'] = expiration
         cnt = cnt + 1
-    if chaniq_util.isStrPropModified(aCookiePrf, 'overrideConnectionLimit', overrideConnectionLimit):
-        ckModContent['overrideConnectionLimit'] = overrideConnectionLimit
+    if chaniq_util.isStrPropModified(loadedPrf, 'overrideConnectionLimit', overrideConnectionLimit):
+        modContent['overrideConnectionLimit'] = overrideConnectionLimit
         cnt = cnt + 1
             
     if cnt > 0: return True
@@ -101,7 +101,7 @@ def new_cookieProfile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, met
             return json.dumps(strReturn)
     elif prfDplyOrChg == 'chg_profile':
         
-        ckModContent = {}
+        modContent = {}
         
         strReturn = {str(idx) : 'Cookie Persistence Profile Modification Report'}
         idx += 1
@@ -111,7 +111,7 @@ def new_cookieProfile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, met
         
         # Load Cookie profile settings of a given Cookie profile name
         try:
-            aCookiePrf = mr.tm.ltm.persistence.cookies.cookie.load(name=prfName, partition='Common')
+            loadedPrf = mr.tm.ltm.persistence.cookies.cookie.load(name=prfName, partition='Common')
         except Exception as e:
             logging.info("Exception during Cookie Persistence Profile loading")
             strReturn[str(idx)] = "Exception fired during Cookie Profile setting loading! (" + prfName + "): " + str(e)
@@ -120,22 +120,22 @@ def new_cookieProfile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, met
             return json.dumps(strReturn)
         # Save the update Cookie Persistence profile settings
         '''
-        aCookiePrf.defaultsFrom = defaultsFrom
-        aCookiePrf.method = method
-        aCookiePrf.cookieName = cookieName
-        aCookiePrf.httponly = httponly
-        aCookiePrf.secure = secure
-        aCookiePrf.alwaysSend = alwaysSend
-        aCookiePrf.expiration = expiration
-        aCookiePrf.overrideConnectionLimit = overrideConnectionLimit
+        loadedPrf.defaultsFrom = defaultsFrom
+        loadedPrf.method = method
+        loadedPrf.cookieName = cookieName
+        loadedPrf.httponly = httponly
+        loadedPrf.secure = secure
+        loadedPrf.alwaysSend = alwaysSend
+        loadedPrf.expiration = expiration
+        loadedPrf.overrideConnectionLimit = overrideConnectionLimit
         '''
-        if isNeedUpdate(aCookiePrf, ckModContent, defaultsFrom, method, cookieName, httponly, secure, alwaysSend, expiration, overrideConnectionLimit):
+        if isNeedUpdate(loadedPrf, modContent, defaultsFrom, method, cookieName, httponly, secure, alwaysSend, expiration, overrideConnectionLimit):
             strReturn[str(idx)] = "Cookie Profile settings have been saved!"
             idx += 1
             
             try:
-                #aCookiePrf.update()
-                aCookiePrf.modify(**ckModContent)
+                #loadedPrf.update()
+                loadedPrf.modify(**modContent)
             except Exception as e:
                 strReturn[str(idx)] = "Exception fired during Cookie profile update() (" + prfName + "): " + str(e)
                 idx += 1

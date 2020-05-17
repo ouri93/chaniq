@@ -4,6 +4,7 @@ import logging
 import json
 import getpass
 import loadStdNames
+import chaniq_util
 
 def check_profileName_conflict(mr, prfName, prfDftFrom):
     strmPrfNames = mr.tm.ltm.profile.streams.get_collection()
@@ -22,7 +23,24 @@ def check_profileName_conflict(mr, prfName, prfDftFrom):
     if (bitout >> 0) & 1:
         return True
     else:
-        return False  
+        return False
+    
+def isNeedUpdate(loadedPrf, modContent, defaultsFrom, source, tmTarget):
+    cnt = 0    
+
+    if chaniq_util.isStrPropModified(loadedPrf, 'defaultsFrom', defaultsFrom):
+        modContent['defaultsFrom'] = defaultsFrom
+        cnt = cnt + 1 
+    if chaniq_util.isStrPropModified(loadedPrf, 'source', source):
+        modContent['source'] = source
+        cnt = cnt + 1 
+    if chaniq_util.isStrPropModified(loadedPrf, 'tmTarget', tmTarget):
+        modContent['tmTarget'] = tmTarget
+        cnt = cnt + 1 
+
+    if cnt > 0: return True
+    else: return False 
+    
 #  'defaultsFrom', 'source', 'tmTarget'		
 def new_streamProfile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, source, tmTarget):
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
@@ -65,6 +83,9 @@ def new_streamProfile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, sou
             logging.info("Stream Profile creation exception fired: " + str(e))
             return json.dumps(strReturn)
     elif prfDplyOrChg == 'chg_profile':
+        
+        modContent = {}
+        
         strReturn = {str(idx) : 'Stream Profile Modification Report'}
         idx += 1
     
@@ -73,7 +94,7 @@ def new_streamProfile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, sou
         # Load Stream profile settings of a given Stream profile name
         # 'defaultsFrom', 'source', 'tmTarget'
         try:
-            aStrmPrf = mr.tm.ltm.profile.streams.stream.load(name=prfName, partition='Common')
+            loadedPrf = mr.tm.ltm.profile.streams.stream.load(name=prfName, partition='Common')
         except Exception as e:
             logging.info("Exception during Stream Profile loading")
             strReturn[str(idx)] = "Exception fired during Stream Profile setting loading! (" + prfName + "): " + str(e)
@@ -82,20 +103,28 @@ def new_streamProfile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, sou
             return json.dumps(strReturn)
         
         # Save the update Stream profile settings
-        aStrmPrf.defaultsFrom = defaultsFrom
-        aStrmPrf.source = source
-        aStrmPrf.tmTarget = tmTarget
-                
-        strReturn[str(idx)] = "Stream Profile settings have been saved!"
-        idx += 1
+        '''
+        loadedPrf.defaultsFrom = defaultsFrom
+        loadedPrf.source = source
+        loadedPrf.tmTarget = tmTarget
+        '''
         
-        try:
-            aStrmPrf.update()
-        except Exception as e:
-            strReturn[str(idx)] = "Exception fired during Stream profile modification (" + prfName + "): " + str(e)
+        if isNeedUpdate(loadedPrf, modContent, defaultsFrom, source, tmTarget):        
+            strReturn[str(idx)] = "Stream Profile settings have been saved!"
             idx += 1
-            logging.info("Stream Profile modification exception fired: " + str(e))
-            return json.dumps(strReturn)
+            
+            try:
+                #loadedPrf.update()
+                loadedPrf.modify (**modContent)
+            except Exception as e:
+                strReturn[str(idx)] = "Exception fired during Stream profile modification (" + prfName + "): " + str(e)
+                idx += 1
+                logging.info("Stream Profile modification exception fired: " + str(e))
+                return json.dumps(strReturn)
+        else:
+            logging.info("No Stream Profile modification is needed")
+            strReturn[str(idx)] = "No Stream Profile modification is needed (" + prfName + "): "
+            idx += 1                
     if prfDplyOrChg == 'new_profile':
         strReturn[str(idx)] = "Stream Profile (" + prfName + ") has been created"
         idx += 1

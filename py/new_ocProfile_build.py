@@ -4,6 +4,7 @@ import logging
 import json
 import getpass
 import loadStdNames
+import chaniq_util
 
 def check_profileName_conflict(mr, prfName, prfDftFrom):
     ocPrfNames = mr.tm.ltm.profile.one_connects.get_collection()
@@ -23,7 +24,36 @@ def check_profileName_conflict(mr, prfName, prfDftFrom):
         return True
     else:
         return False  
-		
+
+def isNeedUpdate(loadedPrf, modContent, defaultsFrom, sourceMask, maxSize, maxAge, maxReuse, idleTimeoutOverride, limitType):
+    cnt = 0
+    
+    if chaniq_util.isStrPropModified(loadedPrf, 'defaultsFrom', defaultsFrom):
+        modContent['defaultsFrom'] = defaultsFrom
+        cnt = cnt + 1  
+    if chaniq_util.isIntPropModified(loadedPrf, 'maxSize', maxSize, 15000):
+        modContent['maxSize'] = maxSize
+        cnt = cnt + 1 
+    if chaniq_util.isIntPropModified(loadedPrf, 'maxAge', maxAge, 86400):
+        modContent['maxAge'] = maxAge
+        cnt = cnt + 1 
+    if chaniq_util.isIntPropModified(loadedPrf, 'maxSize', maxSize, 1000):
+        modContent['maxSize'] = maxSize
+        cnt = cnt + 1 
+    if chaniq_util.isStrPropModified(loadedPrf, 'sourceMask', sourceMask):
+        modContent['sourceMask'] = sourceMask
+        cnt = cnt + 1 
+    if chaniq_util.isStrPropModified(loadedPrf, 'idleTimeoutOverride', idleTimeoutOverride):
+        modContent['idleTimeoutOverride'] = idleTimeoutOverride
+        cnt = cnt + 1 
+    if chaniq_util.isStrPropModified(loadedPrf, 'limitType', limitType):
+        modContent['limitType'] = limitType
+        cnt = cnt + 1 
+    
+    if cnt > 0: return True
+    else: return False    
+    
+
 #'defaultsFrom', 'sourceMask', 'maxSize', 'maxAge', 'maxReuse', 'idleTimeoutOverride', 'limitType'
 def new_ocProfile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, sourceMask, maxSize, maxAge, maxReuse, idleTimeoutOverride, limitType):
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
@@ -67,6 +97,9 @@ def new_ocProfile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, sourceM
             logging.info("OneConnect Profile creation exception fired: " + str(e))
             return json.dumps(strReturn)
     elif prfDplyOrChg == 'chg_profile':
+        
+        modContent = {}
+        
         strReturn = {str(idx) : 'OneConnect Profile Modification Report'}
         idx += 1
     
@@ -75,7 +108,7 @@ def new_ocProfile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, sourceM
         # Load OneConnect profile settings of a given OneConnect profile name
         # 'defaultsFrom', 'sourceMask', 'maxSize', 'maxAge', 'maxReuse', 'idleTimeoutOverride', 'limitType'
         try:
-            aOCPrf = mr.tm.ltm.profile.one_connects.one_connect.load(name=prfName, partition='Common')
+            loadedPrf = mr.tm.ltm.profile.one_connects.one_connect.load(name=prfName, partition='Common')
         except Exception as e:
             logging.info("Exception during OneConnect Profile loading")
             strReturn[str(idx)] = "Exception fired during OneConnect Profile setting loading! (" + prfName + "): " + str(e)
@@ -84,26 +117,32 @@ def new_ocProfile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, sourceM
             return json.dumps(strReturn)
         
         # Save the update OneConnect profile settings
-        aOCPrf.defaultsFrom = defaultsFrom
-        aOCPrf.sourceMask = sourceMask
-        aOCPrf.maxSize = maxSize
-        aOCPrf.maxAge = maxAge
-        aOCPrf.maxReuse = maxReuse
-        aOCPrf.idleTimeoutOverride = idleTimeoutOverride
-        aOCPrf.limitType = limitType
+        '''
+        loadedPrf.defaultsFrom = defaultsFrom
+        loadedPrf.sourceMask = sourceMask
+        loadedPrf.maxSize = maxSize
+        loadedPrf.maxAge = maxAge
+        loadedPrf.maxReuse = maxReuse
+        loadedPrf.idleTimeoutOverride = idleTimeoutOverride
+        loadedPrf.limitType = limitType
+        '''
 
-                
-        strReturn[str(idx)] = "OneConnect Profile settings have been saved!"
-        idx += 1
-        
-        try:
-            aOCPrf.update()
-        except Exception as e:
-            strReturn[str(idx)] = "Exception fired during OneConnect profile loading (" + prfName + "): " + str(e)
+        if isNeedUpdate(loadedPrf, modContent, defaultsFrom, sourceMask, maxSize, maxAge, maxReuse, idleTimeoutOverride, limitType):
+            strReturn[str(idx)] = "OneConnect Profile settings have been saved!"
             idx += 1
-            logging.info("Exception fired during OneConnect profile loading: " + str(e))
-            return json.dumps(strReturn)
-    
+            
+            try:
+                #loadedPrf.update()
+                loadedPrf.modify(**modContent)
+            except Exception as e:
+                strReturn[str(idx)] = "Exception fired during OneConnect profile loading (" + prfName + "): " + str(e)
+                idx += 1
+                logging.info("Exception fired during OneConnect profile loading: " + str(e))
+                return json.dumps(strReturn)
+        else:
+            logging.info("No OneConnect Profile modification is needed")
+            strReturn[str(idx)] = "No OneConnect Profile modification is needed (" + prfName + "): "
+            idx += 1                  
     if prfDplyOrChg == 'new_profile':
         strReturn[str(idx)] = "OneConnect Profile(" + prfName + ") has been created"
         idx += 1

@@ -4,6 +4,7 @@ import logging
 import json
 import getpass
 import loadStdNames
+import chaniq_util
 
 def check_profileName_conflict(mr, prfName, prfDftFrom):
     f4PrfNames = mr.tm.ltm.profile.fastl4s.get_collection()
@@ -24,6 +25,45 @@ def check_profileName_conflict(mr, prfName, prfDftFrom):
     else:
         return False  
 
+def isNeedUpdate(loadedPrf, modContent, defaultsFrom, resetOnTimeout, reassembleFragments, idleTimeout, tcpHandshakeTimeout, tcpTimestampMode, tcpWscaleMode, looseInitialization, looseClose, tcpCloseTimeout, keepAliveInterval):
+    cnt = 0
+
+    if chaniq_util.isStrPropModified(loadedPrf, 'defaultsFrom', defaultsFrom):
+        modContent['defaultsFrom'] = defaultsFrom
+        cnt = cnt + 1     
+    if chaniq_util.isStrPropModified(loadedPrf, 'resetOnTimeout', resetOnTimeout):
+        modContent['resetOnTimeout'] = resetOnTimeout
+        cnt = cnt + 1  
+    if chaniq_util.isStrPropModified(loadedPrf, 'reassembleFragments', reassembleFragments):
+        modContent['reassembleFragments'] = reassembleFragments
+        cnt = cnt + 1  
+    if chaniq_util.isStrPropModified(loadedPrf, 'idleTimeout', idleTimeout):
+        modContent['idleTimeout'] = idleTimeout
+        cnt = cnt + 1  
+    if chaniq_util.isStrPropModified(loadedPrf, 'tcpHandshakeTimeout', tcpHandshakeTimeout):
+        modContent['tcpHandshakeTimeout'] = tcpHandshakeTimeout
+        cnt = cnt + 1  
+    if chaniq_util.isStrPropModified(loadedPrf, 'tcpTimestampMode', tcpTimestampMode):
+        modContent['tcpTimestampMode'] = tcpTimestampMode
+        cnt = cnt + 1  
+    if chaniq_util.isStrPropModified(loadedPrf, 'tcpWscaleMode', tcpWscaleMode):
+        modContent['tcpWscaleMode'] = tcpWscaleMode
+        cnt = cnt + 1  
+    if chaniq_util.isStrPropModified(loadedPrf, 'looseInitialization', looseInitialization):
+        modContent['looseInitialization'] = looseInitialization
+        cnt = cnt + 1  
+    if chaniq_util.isStrPropModified(loadedPrf, 'looseClose', looseClose):
+        modContent['looseClose'] = looseClose
+        cnt = cnt + 1  
+    if chaniq_util.isStrPropModified(loadedPrf, 'tcpCloseTimeout', tcpCloseTimeout):
+        modContent['tcpCloseTimeout'] = tcpCloseTimeout
+        cnt = cnt + 1  
+    if chaniq_util.isStrPropModified(loadedPrf, 'keepAliveInterval', keepAliveInterval):
+        modContent['keepAliveInterval'] = keepAliveInterval
+        cnt = cnt + 1  
+                
+    if cnt > 0: return True
+    else: return False    
 
 # 'defaultsFrom', 'resetOnTimeout', 'reassembleFragments', 'idleTimeout',
 # 'tcpHandshakeTimeout', 'tcpTimestampMode', 'tcpWscaleMode', 'looseInitialization',
@@ -73,6 +113,9 @@ def new_f4Profile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, resetOn
             logging.info("FastL4  Profile creation exception fired: " + str(e))
             return json.dumps(strReturn)
     elif prfDplyOrChg == 'chg_profile':
+        
+        modContent = {}
+        
         strReturn = {str(idx) : 'FastL4  Profile Modification Report'}
         idx += 1
     
@@ -83,7 +126,7 @@ def new_f4Profile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, resetOn
         # 'tcpHandshakeTimeout', 'tcpTimestampMode', 'tcpWscaleMode', 'looseInitialization',
         # 'looseClose', 'tcpCloseTimeout', 'keepAliveInterval'    
         try:
-            aFl4Prf = mr.tm.ltm.profile.fastl4s.fastl4.load(name=prfName, partition='Common')
+            loadedPrf = mr.tm.ltm.profile.fastl4s.fastl4.load(name=prfName, partition='Common')
         except Exception as e:
             logging.info("Exception during FastL4 Profile loading")
             strReturn[str(idx)] = "Exception fired during FastL4 Profile setting loading! (" + prfName + "): " + str(e)
@@ -92,28 +135,35 @@ def new_f4Profile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, resetOn
             return json.dumps(strReturn)
         
         # Save the update FastL4 profile settings
-        aFl4Prf.defaultsFrom = defaultsFrom
-        aFl4Prf.resetOnTimeout = resetOnTimeout
-        aFl4Prf.reassembleFragments = reassembleFragments
-        aFl4Prf.idleTimeout = idleTimeout
-        aFl4Prf.tcpHandshakeTimeout = tcpHandshakeTimeout
-        aFl4Prf.tcpTimestampMode = tcpTimestampMode
-        aFl4Prf.tcpWscaleMode = tcpWscaleMode
-        aFl4Prf.looseInitialization = looseInitialization
-        aFl4Prf.looseClose = looseClose
-        aFl4Prf.tcpCloseTimeout = tcpCloseTimeout
-        aFl4Prf.keepAliveInterval = keepAliveInterval
-                
-        strReturn[str(idx)] = "FastL4 Profile settings have been saved!"
-        idx += 1
-        
-        try:
-            aFl4Prf.update()
-        except Exception as e:
-            strReturn[str(idx)] = "Exception fired during FastL4 profile update() (" + prfName + "): " + str(e)
+        '''
+        loadedPrf.defaultsFrom = defaultsFrom
+        loadedPrf.resetOnTimeout = resetOnTimeout
+        loadedPrf.reassembleFragments = reassembleFragments
+        loadedPrf.idleTimeout = idleTimeout
+        loadedPrf.tcpHandshakeTimeout = tcpHandshakeTimeout
+        loadedPrf.tcpTimestampMode = tcpTimestampMode
+        loadedPrf.tcpWscaleMode = tcpWscaleMode
+        loadedPrf.looseInitialization = looseInitialization
+        loadedPrf.looseClose = looseClose
+        loadedPrf.tcpCloseTimeout = tcpCloseTimeout
+        loadedPrf.keepAliveInterval = keepAliveInterval
+        '''
+        if isNeedUpdate(loadedPrf, modContent, defaultsFrom, resetOnTimeout, reassembleFragments, idleTimeout, tcpHandshakeTimeout, tcpTimestampMode, tcpWscaleMode, looseInitialization, looseClose, tcpCloseTimeout, keepAliveInterval):        
+            strReturn[str(idx)] = "FastL4 Profile settings have been saved!"
             idx += 1
-            logging.info("FastL4 Profile creation exception fired: " + str(e))
-            return json.dumps(strReturn)
+            
+            try:
+                #loadedPrf.update()
+                loadedPrf.modify(**modContent)
+            except Exception as e:
+                strReturn[str(idx)] = "Exception fired during FastL4 profile update() (" + prfName + "): " + str(e)
+                idx += 1
+                logging.info("FastL4 Profile creation exception fired: " + str(e))
+                return json.dumps(strReturn)
+        else:
+            logging.info("No FastL4 Profile modification is needed")
+            strReturn[str(idx)] = "No FastL4 Profile modification is needed (" + prfName + "): "
+            idx += 1              
     
     if prfDplyOrChg == 'new_profile':
         strReturn[str(idx)] = "FastL4 Profile(" + prfName + ") has been created"

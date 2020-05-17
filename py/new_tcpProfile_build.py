@@ -4,6 +4,7 @@ import logging
 import json
 import getpass
 import loadStdNames
+import chaniq_util
 
 def check_profileName_conflict(mr, prfName, prfDftFrom):
     tcpPrfNames = mr.tm.ltm.profile.tcps.get_collection()
@@ -24,9 +25,49 @@ def check_profileName_conflict(mr, prfName, prfDftFrom):
     else:
         return False  
 
-        #  'defaultsFrom', 'resetOnTimeout', 'proxyBufferHigh', 'proxyBufferLow',
-        #  'receiveWindowSize', 'sendBufferSize', 'ackOnPush', 'nagle', 'initCwnd',
-        #  'slowStart', 'selectiveAcks' 		
+def isNeedUpdate(loadedPrf, modContent, defaultsFrom, resetOnTimeout, proxyBufferHigh, proxyBufferLow, receiveWindowSize, sendBufferSize, ackOnPush, nagle, initCwnd, slowStart, selectiveAcks):
+    cnt = 0
+
+    if chaniq_util.isStrPropModified(loadedPrf, 'defaultsFrom', defaultsFrom):
+        modContent['defaultsFrom'] = defaultsFrom
+        cnt = cnt + 1  
+    if chaniq_util.isIntPropModified(loadedPrf, 'proxyBufferHigh', proxyBufferHigh, 49152):
+        modContent['proxyBufferHigh'] = proxyBufferHigh
+        cnt = cnt + 1  
+    if chaniq_util.isIntPropModified(loadedPrf, 'proxyBufferLow', proxyBufferLow, 32768):
+        modContent['proxyBufferLow'] = proxyBufferLow
+        cnt = cnt + 1  
+    if chaniq_util.isIntPropModified(loadedPrf, 'receiveWindowSize', receiveWindowSize, 65535):
+        modContent['receiveWindowSize'] = receiveWindowSize
+        cnt = cnt + 1  
+    if chaniq_util.isIntPropModified(loadedPrf, 'sendBufferSize', sendBufferSize, 65535):
+        modContent['sendBufferSize'] = sendBufferSize
+        cnt = cnt + 1  
+    if chaniq_util.isIntPropModified(loadedPrf, 'initCwnd', initCwnd, 0):
+        modContent['initCwnd'] = initCwnd
+        cnt = cnt + 1  
+    if chaniq_util.isStrPropModified(loadedPrf, 'resetOnTimeout', resetOnTimeout):
+        modContent['resetOnTimeout'] = resetOnTimeout
+        cnt = cnt + 1 
+    if chaniq_util.isStrPropModified(loadedPrf, 'ackOnPush', ackOnPush):
+        modContent['ackOnPush'] = ackOnPush
+        cnt = cnt + 1  
+    if chaniq_util.isStrPropModified(loadedPrf, 'nagle', nagle):
+        modContent['nagle'] = nagle
+        cnt = cnt + 1  
+    if chaniq_util.isStrPropModified(loadedPrf, 'slowStart', slowStart):
+        modContent['slowStart'] = slowStart
+        cnt = cnt + 1  
+    if chaniq_util.isStrPropModified(loadedPrf, 'selectiveAcks', selectiveAcks):
+        modContent['selectiveAcks'] = selectiveAcks
+        cnt = cnt + 1  
+
+    if cnt > 0: return True
+    else: return False    
+
+#  'defaultsFrom', 'resetOnTimeout', 'proxyBufferHigh', 'proxyBufferLow',
+#  'receiveWindowSize', 'sendBufferSize', 'ackOnPush', 'nagle', 'initCwnd',
+#  'slowStart', 'selectiveAcks' 		
 def new_tcpProfile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, resetOnTimeout, proxyBufferHigh, proxyBufferLow, receiveWindowSize, sendBufferSize, ackOnPush, nagle, initCwnd, slowStart, selectiveAcks):
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
     #logging.info('Called get_profiles(): %s %s' % (active_ltm, pf_type))
@@ -70,6 +111,8 @@ def new_tcpProfile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, resetO
             logging.info("TCP Profile creation exception fired: " + str(e))
             return json.dumps(strReturn)
     elif prfDplyOrChg == 'chg_profile':
+        
+        modContent = {}
         strReturn = {str(idx) : 'TCP Profile Modification Report'}
         idx += 1
     
@@ -80,7 +123,7 @@ def new_tcpProfile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, resetO
         #  'receiveWindowSize', 'sendBufferSize', 'ackOnPush', 'nagle', 'initCwnd',
         #  'slowStart', 'selectiveAcks'   
         try:
-            aTcpPrf = mr.tm.ltm.profile.tcps.tcp.load(name=prfName, partition='Common')
+            loadedPrf = mr.tm.ltm.profile.tcps.tcp.load(name=prfName, partition='Common')
         except Exception as e:
             logging.info("Exception during TCP Profile loading")
             strReturn[str(idx)] = "Exception fired during TCP Profile setting loading! (" + prfName + "): " + str(e)
@@ -89,27 +132,35 @@ def new_tcpProfile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, resetO
             return json.dumps(strReturn)
         
         # Save the update TCP profile settings
-        aTcpPrf.defaultsFrom = defaultsFrom
-        aTcpPrf.resetOnTimeout = resetOnTimeout
-        aTcpPrf.proxyBufferHigh = proxyBufferHigh
-        aTcpPrf.proxyBufferLow = proxyBufferLow
-        aTcpPrf.receiveWindowSize = receiveWindowSize
-        aTcpPrf.sendBufferSize = sendBufferSize
-        aTcpPrf.ackOnPush = ackOnPush
-        aTcpPrf.nagle = nagle
-        aTcpPrf.initCwnd = initCwnd
-        aTcpPrf.slowStart = slowStart
+        '''
+        loadedPrf.defaultsFrom = defaultsFrom
+        loadedPrf.resetOnTimeout = resetOnTimeout
+        loadedPrf.proxyBufferHigh = proxyBufferHigh
+        loadedPrf.proxyBufferLow = proxyBufferLow
+        loadedPrf.receiveWindowSize = receiveWindowSize
+        loadedPrf.sendBufferSize = sendBufferSize
+        loadedPrf.ackOnPush = ackOnPush
+        loadedPrf.nagle = nagle
+        loadedPrf.initCwnd = initCwnd
+        loadedPrf.slowStart = slowStart
+        '''
                 
-        strReturn[str(idx)] = "TCP Profile settings have been saved!"
-        idx += 1
-        
-        try:
-            aTcpPrf.update()
-        except Exception as e:
-            strReturn[str(idx)] = "Exception fired during TCP profile update() (" + prfName + "): " + str(e)
+        if isNeedUpdate(loadedPrf, modContent, defaultsFrom, resetOnTimeout, proxyBufferHigh, proxyBufferLow, receiveWindowSize, sendBufferSize, ackOnPush, nagle, initCwnd, slowStart, selectiveAcks):
+            strReturn[str(idx)] = "TCP Profile settings have been saved!"
             idx += 1
-            logging.info("TCP Profile creation exception fired: " + str(e))
-            return json.dumps(strReturn)
+            
+            try:
+                #loadedPrf.update()
+                loadedPrf.modify(**modContent)
+            except Exception as e:
+                strReturn[str(idx)] = "Exception fired during TCP profile update() (" + prfName + "): " + str(e)
+                idx += 1
+                logging.info("TCP Profile creation exception fired: " + str(e))
+                return json.dumps(strReturn)
+        else:
+            logging.info("No TCP Profile modification is needed")
+            strReturn[str(idx)] = "No TCP Profile modification is needed (" + prfName + "): "
+            idx += 1              
     
     if prfDplyOrChg == 'new_profile':
         strReturn[str(idx)] = "TCP Profile (" + prfName + ") has been created"

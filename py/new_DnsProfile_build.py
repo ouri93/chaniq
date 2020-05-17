@@ -25,39 +25,39 @@ def check_profileName_conflict(mr, prfName, prfDftFrom):
     else:
         return False  
 
-def isNeedUpdate(aDnsPrf, dnsModContent, prfDftFrom, prfHwValid, prfHwRespCache, prfDnsExp, prfGtm, prfUnhandledAct, prfUseBind, prfZoneXfr, prfDnsSecurity, prfRecursion):
+def isNeedUpdate(loadedPrf, modContent, prfDftFrom, prfHwValid, prfHwRespCache, prfDnsExp, prfGtm, prfUnhandledAct, prfUseBind, prfZoneXfr, prfDnsSecurity, prfRecursion):
     cnt = 0
     # Set HTTP profile values
     # # Issue Track: #1
-    if chaniq_util.isStrPropModified(aDnsPrf, 'defaultsFrom', prfDftFrom):
-        dnsModContent['proxyType'] = prfDftFrom
+    if chaniq_util.isStrPropModified(loadedPrf, 'defaultsFrom', prfDftFrom):
+        modContent['proxyType'] = prfDftFrom
         cnt = cnt + 1
-    if chaniq_util.isStrPropModified(aDnsPrf, 'enableHardwareQueryValidation', prfHwValid):
-        dnsModContent['enableHardwareQueryValidation'] = prfHwValid
+    if chaniq_util.isStrPropModified(loadedPrf, 'enableHardwareQueryValidation', prfHwValid):
+        modContent['enableHardwareQueryValidation'] = prfHwValid
         cnt = cnt + 1
-    if chaniq_util.isStrPropModified(aDnsPrf, 'enableHardwareResponseCache', prfHwRespCache):
-        dnsModContent['enableHardwareResponseCache'] = prfHwRespCache
+    if chaniq_util.isStrPropModified(loadedPrf, 'enableHardwareResponseCache', prfHwRespCache):
+        modContent['enableHardwareResponseCache'] = prfHwRespCache
         cnt = cnt + 1
-    if chaniq_util.isStrPropModified(aDnsPrf, 'enableDnsExpress', prfDnsExp):
-        dnsModContent['enableDnsExpress'] = prfDnsExp
+    if chaniq_util.isStrPropModified(loadedPrf, 'enableDnsExpress', prfDnsExp):
+        modContent['enableDnsExpress'] = prfDnsExp
         cnt = cnt + 1
-    if chaniq_util.isStrPropModified(aDnsPrf, 'enableGtm', prfGtm):
-        dnsModContent['enableGtm'] = prfGtm
+    if chaniq_util.isStrPropModified(loadedPrf, 'enableGtm', prfGtm):
+        modContent['enableGtm'] = prfGtm
         cnt = cnt + 1
-    if chaniq_util.isStrPropModified(aDnsPrf, 'unhandledQueryAction', prfUnhandledAct):
-        dnsModContent['unhandledQueryAction'] = prfUnhandledAct
+    if chaniq_util.isStrPropModified(loadedPrf, 'unhandledQueryAction', prfUnhandledAct):
+        modContent['unhandledQueryAction'] = prfUnhandledAct
         cnt = cnt + 1
-    if chaniq_util.isStrPropModified(aDnsPrf, 'useLocalBind', prfUseBind):
-        dnsModContent['useLocalBind'] = prfUseBind
+    if chaniq_util.isStrPropModified(loadedPrf, 'useLocalBind', prfUseBind):
+        modContent['useLocalBind'] = prfUseBind
         cnt = cnt + 1
-    if chaniq_util.isStrPropModified(aDnsPrf, 'processXfr', prfZoneXfr):
-        dnsModContent['processXfr'] = prfZoneXfr
+    if chaniq_util.isStrPropModified(loadedPrf, 'processXfr', prfZoneXfr):
+        modContent['processXfr'] = prfZoneXfr
         cnt = cnt + 1
-    if chaniq_util.isStrPropModified(aDnsPrf, 'enableDnsFirewall', prfDnsSecurity):
-        dnsModContent['enableDnsFirewall'] = prfDnsSecurity
+    if chaniq_util.isStrPropModified(loadedPrf, 'enableDnsFirewall', prfDnsSecurity):
+        modContent['enableDnsFirewall'] = prfDnsSecurity
         cnt = cnt + 1
-    if chaniq_util.isStrPropModified(aDnsPrf, 'processRd', prfRecursion):
-        dnsModContent['processRd'] = prfRecursion
+    if chaniq_util.isStrPropModified(loadedPrf, 'processRd', prfRecursion):
+        modContent['processRd'] = prfRecursion
         cnt = cnt + 1
 
     if cnt > 0: return True
@@ -111,7 +111,7 @@ def new_DnsProfile_build(active_ltm, prfName, prfDplyOrChg, prfDftFrom, prfHwVal
         idx += 1
         logging.info("DNS Profile has been created")
     elif prfDplyOrChg == 'chg_profile':
-        dnsModContent = {}        
+        modContent = {}        
         strReturn = {str(idx) : 'DNS Profile Modification Report'}
 
         idx += 1
@@ -120,7 +120,7 @@ def new_DnsProfile_build(active_ltm, prfName, prfDplyOrChg, prfDftFrom, prfHwVal
         
         # Load DNS profile settings of a given DNS profile name
         try:
-            aDnsPrf = mr.tm.ltm.profile.dns_s.dns.load(name=prfName, partition='Common')
+            loadedPrf = mr.tm.ltm.profile.dns_s.dns.load(name=prfName, partition='Common')
         except Exception as e:
             logging.info("Exception during DNS Profile loading")
             strReturn[str(idx)] = "Exception fired during DNS Profile setting loading! (" + prfName + "): " + str(e)
@@ -130,26 +130,26 @@ def new_DnsProfile_build(active_ltm, prfName, prfDplyOrChg, prfDftFrom, prfHwVal
         
         # Save the update DNS profile settings
         '''
-        aDnsPrf.defaultsFrom = prfDftFrom
-        aDnsPrf.enableHardwareQueryValidation = prfHwValid
-        aDnsPrf.enableHardwareResponseCache = prfHwRespCache
-        aDnsPrf.enableDnsExpress = prfDnsExp
-        aDnsPrf.enableGtm = prfGtm
-        aDnsPrf.unhandledQueryAction = prfUnhandledAct
-        aDnsPrf.useLocalBind = prfUseBind
-        aDnsPrf.processXfr = prfZoneXfr
-        aDnsPrf.enableDnsFirewall = prfDnsSecurity
-        aDnsPrf.processRd = prfRecursion
+        loadedPrf.defaultsFrom = prfDftFrom
+        loadedPrf.enableHardwareQueryValidation = prfHwValid
+        loadedPrf.enableHardwareResponseCache = prfHwRespCache
+        loadedPrf.enableDnsExpress = prfDnsExp
+        loadedPrf.enableGtm = prfGtm
+        loadedPrf.unhandledQueryAction = prfUnhandledAct
+        loadedPrf.useLocalBind = prfUseBind
+        loadedPrf.processXfr = prfZoneXfr
+        loadedPrf.enableDnsFirewall = prfDnsSecurity
+        loadedPrf.processRd = prfRecursion
         '''
         
-        if isNeedUpdate(aDnsPrf, dnsModContent, prfDftFrom, prfHwValid, prfHwRespCache, prfDnsExp, prfGtm, prfUnhandledAct, prfUseBind, prfZoneXfr, prfDnsSecurity, prfRecursion):
+        if isNeedUpdate(loadedPrf, modContent, prfDftFrom, prfHwValid, prfHwRespCache, prfDnsExp, prfGtm, prfUnhandledAct, prfUseBind, prfZoneXfr, prfDnsSecurity, prfRecursion):
 
             strReturn[str(idx)] = "DNS Profile settings have been saved!"
             idx += 1
             
             try:
-                #aDnsPrf.update()
-                aDnsPrf.modify(**dnsModContent)
+                #loadedPrf.update()
+                loadedPrf.modify(**modContent)
             except Exception as e:
                 strReturn[str(idx)] = "Exception fired during DNS profile update() (" + prfName + "): " + str(e)
                 idx += 1

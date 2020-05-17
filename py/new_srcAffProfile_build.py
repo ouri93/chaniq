@@ -4,6 +4,7 @@ import logging
 import json
 import getpass
 import loadStdNames
+import chaniq_util
 
 def check_profileName_conflict(mr, prfName, prfDftFrom):
     srcAffPrfNames = mr.tm.ltm.persistence.source_addrs.get_collection()
@@ -24,6 +25,40 @@ def check_profileName_conflict(mr, prfName, prfDftFrom):
     else:
         return False  
     
+def isNeedUpdate(loadedPrf, modContent, defaultsFrom, matchAcrossServices, matchAcrossVirtuals, matchAcrossPools, hashAlgorithm, timeout, mask, mapProxies, overrideConnectionLimit):
+    cnt = 0
+
+    if chaniq_util.isStrPropModified(loadedPrf, 'defaultsFrom', defaultsFrom):
+        modContent['defaultsFrom'] = defaultsFrom
+        cnt = cnt + 1
+    if chaniq_util.isStrPropModified(loadedPrf, 'matchAcrossServices', matchAcrossServices):
+        modContent['matchAcrossServices'] = matchAcrossServices
+        cnt = cnt + 1 
+    if chaniq_util.isStrPropModified(loadedPrf, 'matchAcrossVirtuals', matchAcrossVirtuals):
+        modContent['matchAcrossVirtuals'] = matchAcrossVirtuals
+        cnt = cnt + 1 
+    if chaniq_util.isStrPropModified(loadedPrf, 'matchAcrossPools', matchAcrossPools):
+        modContent['matchAcrossPools'] = matchAcrossPools
+        cnt = cnt + 1 
+    if chaniq_util.isStrPropModified(loadedPrf, 'hashAlgorithm', hashAlgorithm):
+        modContent['hashAlgorithm'] = hashAlgorithm
+        cnt = cnt + 1 
+    if chaniq_util.isStrPropModified(loadedPrf, 'timeout', timeout):
+        modContent['timeout'] = timeout
+        cnt = cnt + 1 
+    if chaniq_util.isStrPropModified(loadedPrf, 'mask', mask):
+        modContent['mask'] = mask
+        cnt = cnt + 1
+    if chaniq_util.isStrPropModified(loadedPrf, 'mapProxies', mapProxies):
+        modContent['mapProxies'] = mapProxies
+        cnt = cnt + 1  
+    if chaniq_util.isStrPropModified(loadedPrf, 'overrideConnectionLimit', overrideConnectionLimit):
+        modContent['overrideConnectionLimit'] = overrideConnectionLimit
+        cnt = cnt + 1     
+        
+    if cnt > 0: return True
+    else: return False
+        
 # 'defaultsFrom', 'matchAcrossServices', 'matchAcrossVirtuals', 'matchAcrossPools','hashAlgorithm', 
 # 'timeout', 'mask', 'mapProxies', 'overrideConnectionLimit'		
 def new_srcAffProfile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, matchAcrossServices, matchAcrossVirtuals, matchAcrossPools, hashAlgorithm, timeout, mask, mapProxies, overrideConnectionLimit):
@@ -70,6 +105,9 @@ def new_srcAffProfile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, mat
             logging.info("Source Address Persistence Profile creation exception fired: " + str(e))
             return json.dumps(strReturn)
     elif prfDplyOrChg == 'chg_profile':
+        
+        modContent = {}
+        
         strReturn = {str(idx) : 'Source Address Persistence Profile Modification Report'}
         idx += 1
 
@@ -77,7 +115,7 @@ def new_srcAffProfile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, mat
             
         # Load Source Affinity profile settings of a given Source Affinity profile name
         try:
-            aSrcAffPrf = mr.tm.ltm.persistence.source_addrs.source_addr.load(name=prfName, partition='Common')
+            loadedPrf = mr.tm.ltm.persistence.source_addrs.source_addr.load(name=prfName, partition='Common')
         except Exception as e:
             logging.info("Exception during Source Affinity Profile loading")
             strReturn[str(idx)] = "Exception fired during Source Affinity Profile setting loading! (" + prfName + "): " + str(e)
@@ -86,27 +124,35 @@ def new_srcAffProfile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, mat
             return json.dumps(strReturn)
         
         # Save the update DNS profile settings
-        aSrcAffPrf.defaultsFrom = defaultsFrom
-        aSrcAffPrf.matchAcrossServices = matchAcrossServices
-        aSrcAffPrf.matchAcrossVirtuals = matchAcrossVirtuals
-        aSrcAffPrf.matchAcrossPools = matchAcrossPools
-        aSrcAffPrf.hashAlgorithm = hashAlgorithm
-        aSrcAffPrf.timeout = timeout
-        aSrcAffPrf.mask = mask
-        aSrcAffPrf.mapProxies = mapProxies
-        aSrcAffPrf.overrideConnectionLimit = overrideConnectionLimit
+        '''
+        loadedPrf.defaultsFrom = defaultsFrom
+        loadedPrf.matchAcrossServices = matchAcrossServices
+        loadedPrf.matchAcrossVirtuals = matchAcrossVirtuals
+        loadedPrf.matchAcrossPools = matchAcrossPools
+        loadedPrf.hashAlgorithm = hashAlgorithm
+        loadedPrf.timeout = timeout
+        loadedPrf.mask = mask
+        loadedPrf.mapProxies = mapProxies
+        loadedPrf.overrideConnectionLimit = overrideConnectionLimit
+        '''
         
-        strReturn[str(idx)] = "Source Affinity Profile settings have been saved!"
-        idx += 1
-        
-        try:
-            aSrcAffPrf.update()
-        except Exception as e:
-            strReturn[str(idx)] = "Exception fired during Source Affinity profile update() (" + prfName + "): " + str(e)
+        if isNeedUpdate(loadedPrf, modContent, defaultsFrom, matchAcrossServices, matchAcrossVirtuals, matchAcrossPools, hashAlgorithm, timeout, mask, mapProxies, overrideConnectionLimit):
+            strReturn[str(idx)] = "Source Affinity Profile settings have been saved!"
             idx += 1
-            logging.info("Source Affinity Profile creation exception fired: " + str(e))
-            return json.dumps(strReturn)
-    
+            
+            try:
+                #loadedPrf.update()
+                loadedPrf.modify(**modContent)
+            except Exception as e:
+                strReturn[str(idx)] = "Exception fired during Source Affinity profile update() (" + prfName + "): " + str(e)
+                idx += 1
+                logging.info("Source Affinity Profile creation exception fired: " + str(e))
+                return json.dumps(strReturn)
+        else:
+            logging.info("No Source Address Persistence Profile modification is needed")
+            strReturn[str(idx)] = "No Source Address Persistence Profile modification is needed (" + prfName + "): "
+            idx += 1  
+                        
     if prfDplyOrChg == 'new_profile':      
         strReturn[str(idx)] = "Source Address Persistence Profile (" + prfName + ") has been created"
         idx += 1

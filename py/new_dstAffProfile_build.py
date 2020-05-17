@@ -4,6 +4,7 @@ import logging
 import json
 import getpass
 import loadStdNames
+import chaniq_util
 
 def check_profileName_conflict(mr, prfName, prfDftFrom):
     logging.info("In check_profileName_conflict()\n")
@@ -24,7 +25,37 @@ def check_profileName_conflict(mr, prfName, prfDftFrom):
         return True
     else:
         return False  
-		
+def isNeedUpdate(loadedPrf, modContent, defaultsFrom, matchAcrossServices, matchAcrossVirtuals, matchAcrossPools, hashAlgorithm, timeout, mask, overrideConnectionLimit):
+    cnt = 0
+
+    if chaniq_util.isStrPropModified(loadedPrf, 'defaultsFrom', defaultsFrom):
+        modContent['defaultsFrom'] = defaultsFrom
+        cnt = cnt + 1
+    if chaniq_util.isStrPropModified(loadedPrf, 'matchAcrossServices', matchAcrossServices):
+        modContent['matchAcrossServices'] = matchAcrossServices
+        cnt = cnt + 1 
+    if chaniq_util.isStrPropModified(loadedPrf, 'matchAcrossVirtuals', matchAcrossVirtuals):
+        modContent['matchAcrossVirtuals'] = matchAcrossVirtuals
+        cnt = cnt + 1 
+    if chaniq_util.isStrPropModified(loadedPrf, 'matchAcrossPools', matchAcrossPools):
+        modContent['matchAcrossPools'] = matchAcrossPools
+        cnt = cnt + 1 
+    if chaniq_util.isStrPropModified(loadedPrf, 'hashAlgorithm', hashAlgorithm):
+        modContent['hashAlgorithm'] = hashAlgorithm
+        cnt = cnt + 1 
+    if chaniq_util.isStrPropModified(loadedPrf, 'timeout', timeout):
+        modContent['timeout'] = timeout
+        cnt = cnt + 1 
+    if chaniq_util.isStrPropModified(loadedPrf, 'mask', mask):
+        modContent['mask'] = mask
+        cnt = cnt + 1 
+    if chaniq_util.isStrPropModified(loadedPrf, 'overrideConnectionLimit', overrideConnectionLimit):
+        modContent['overrideConnectionLimit'] = overrideConnectionLimit
+        cnt = cnt + 1     
+        
+    if cnt > 0: return True
+    else: return False
+        		
 def new_dstAffProfile_build(prfDevIp, prfName, prfDplyOrChg, defaultsFrom, matchAcrossServices, matchAcrossVirtuals, matchAcrossPools, hashAlgorithm, timeout, mask, overrideConnectionLimit):
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
     #logging.info('Called get_profiles(): %s %s' % (dev_ip, pf_type))
@@ -71,6 +102,9 @@ def new_dstAffProfile_build(prfDevIp, prfName, prfDplyOrChg, defaultsFrom, match
             logging.info("Destination Address Persistence Profile creation exception fired: " + str(e))
             return json.dumps(strReturn)
     elif prfDplyOrChg == 'chg_profile':
+        
+        modContent = {}
+                
         strReturn = {str(idx) : 'Destination Address Persistence Profile Modification Report'}
     
         idx += 1
@@ -79,7 +113,7 @@ def new_dstAffProfile_build(prfDevIp, prfName, prfDplyOrChg, defaultsFrom, match
         
         # Load Destination Affinity profile settings of a given Destination Affinity profile name
         try:
-            aDstAffPrf = mr.tm.ltm.persistence.dest_addrs.dest_addr.load(name=prfName, partition='Common')
+            loadedPrf = mr.tm.ltm.persistence.dest_addrs.dest_addr.load(name=prfName, partition='Common')
         except Exception as e:
             logging.info("Exception during Destination Affinity Profile loading")
             strReturn[str(idx)] = "Exception fired during Destination Affinity Profile setting loading! (" + prfName + "): " + str(e)
@@ -87,26 +121,33 @@ def new_dstAffProfile_build(prfDevIp, prfName, prfDplyOrChg, defaultsFrom, match
             logging.info("Exception fired during Destination Affinity Profile setting loading! ( " + str(e) + ")")
             return json.dumps(strReturn)
         # Save the update DNS profile settings
-        aDstAffPrf.defaultsFrom = defaultsFrom
-        aDstAffPrf.matchAcrossServices = matchAcrossServices
-        aDstAffPrf.matchAcrossVirtuals = matchAcrossVirtuals
-        aDstAffPrf.matchAcrossPools = matchAcrossPools
-        aDstAffPrf.hashAlgorithm = hashAlgorithm
-        aDstAffPrf.timeout = timeout
-        aDstAffPrf.mask = mask
-        aDstAffPrf.overrideConnectionLimit = overrideConnectionLimit
+        '''
+        loadedPrf.defaultsFrom = defaultsFrom
+        loadedPrf.matchAcrossServices = matchAcrossServices
+        loadedPrf.matchAcrossVirtuals = matchAcrossVirtuals
+        loadedPrf.matchAcrossPools = matchAcrossPools
+        loadedPrf.hashAlgorithm = hashAlgorithm
+        loadedPrf.timeout = timeout
+        loadedPrf.mask = mask
+        loadedPrf.overrideConnectionLimit = overrideConnectionLimit
+        '''
         
-        strReturn[str(idx)] = "Destination Affinity Profile settings have been saved!"
-        idx += 1
-        
-        try:
-            aDstAffPrf.update()
-        except Exception as e:
-            strReturn[str(idx)] = "Exception fired during Destination Affinity profile update() (" + prfName + "): " + str(e)
+        if isNeedUpdate(loadedPrf, modContent, defaultsFrom, matchAcrossServices, matchAcrossVirtuals, matchAcrossPools, hashAlgorithm, timeout, mask, overrideConnectionLimit):
+            strReturn[str(idx)] = "Destination Affinity Profile settings have been saved!"
             idx += 1
-            logging.info("Destination Affinity Profile creation exception fired: " + str(e))
-            return json.dumps(strReturn)
-    
+            
+            try:
+                #loadedPrf.update()]
+                loadedPrf.modify(**modContent)
+            except Exception as e:
+                strReturn[str(idx)] = "Exception fired during Destination Affinity profile update() (" + prfName + "): " + str(e)
+                idx += 1
+                logging.info("Destination Affinity Profile creation exception fired: " + str(e))
+                return json.dumps(strReturn)
+        else:
+            logging.info("No Destination Address Persistence Profile modification is needed")
+            strReturn[str(idx)] = "No No Destination Address Persistence Profile modification is needed (" + prfName + "): "
+            idx += 1            
     if prfDplyOrChg == 'new_profile':     
         strReturn[str(idx)] = "Destination Address Persistence Profile(" + prfName + ") has been created"
         idx += 1

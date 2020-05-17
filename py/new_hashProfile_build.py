@@ -4,6 +4,7 @@ import logging
 import json
 import getpass
 import loadStdNames
+import chaniq_util
 
 def check_profileName_conflict(mr, prfName, prfDftFrom):
     hashPrfNames = mr.tm.ltm.persistence.hashs.get_collection()
@@ -23,6 +24,52 @@ def check_profileName_conflict(mr, prfName, prfDftFrom):
         return True
     else:
         return False  
+def isNeedUpdate(loadedPrf, modContent, defaultsFrom, matchAcrossServices, matchAcrossVirtuals, matchAcrossPools, hashAlgorithm, hashOffset, hashLength, hashStartPattern, hashEndPattern, hashBufferLimit, timeout, rule, overrideConnectionLimit):
+    cnt = 0
+
+    if chaniq_util.isStrPropModified(loadedPrf, 'defaultsFrom', defaultsFrom):
+        modContent['defaultsFrom'] = defaultsFrom
+        cnt = cnt + 1
+    if chaniq_util.isStrPropModified(loadedPrf, 'matchAcrossServices', matchAcrossServices):
+        modContent['matchAcrossServices'] = matchAcrossServices
+        cnt = cnt + 1 
+    if chaniq_util.isStrPropModified(loadedPrf, 'matchAcrossVirtuals', matchAcrossVirtuals):
+        modContent['matchAcrossVirtuals'] = matchAcrossVirtuals
+        cnt = cnt + 1 
+    if chaniq_util.isStrPropModified(loadedPrf, 'matchAcrossPools', matchAcrossPools):
+        modContent['matchAcrossPools'] = matchAcrossPools
+        cnt = cnt + 1 
+    if chaniq_util.isStrPropModified(loadedPrf, 'hashAlgorithm', hashAlgorithm):
+        modContent['hashAlgorithm'] = hashAlgorithm
+        cnt = cnt + 1 
+    if chaniq_util.isIntPropModified(loadedPrf, 'hashOffset', hashOffset, 0):
+        modContent['hashOffset'] = int(hashOffset)
+        cnt = cnt + 1 
+    if chaniq_util.isIntPropModified(loadedPrf, 'hashLength', hashLength, 0):
+        modContent['hashLength'] = int(hashLength)
+        cnt = cnt + 1 
+    if chaniq_util.isStrPropModified(loadedPrf, 'hashStartPattern', hashStartPattern):
+        modContent['hashStartPattern'] = hashStartPattern
+        cnt = cnt + 1 
+    if chaniq_util.isStrPropModified(loadedPrf, 'hashEndPattern', hashEndPattern):
+        modContent['hashEndPattern'] = hashEndPattern
+        cnt = cnt + 1 
+    if chaniq_util.isIntPropModified(loadedPrf, 'hashBufferLimit', hashBufferLimit, 0):
+        modContent['hashBufferLimit'] = int(hashBufferLimit)
+        cnt = cnt + 1 
+    if chaniq_util.isStrPropModified(loadedPrf, 'timeout', timeout):
+        modContent['timeout'] = timeout
+        cnt = cnt + 1 
+    if chaniq_util.isStrPropModified(loadedPrf, 'rule', rule):
+        modContent['rule'] = rule
+        cnt = cnt + 1  
+    if chaniq_util.isStrPropModified(loadedPrf, 'overrideConnectionLimit', overrideConnectionLimit):
+        modContent['overrideConnectionLimit'] = overrideConnectionLimit
+        cnt = cnt + 1 
+                                                                                          
+    if cnt > 0: return True
+    else: return False      
+
 # defaultsFrom, matchAcrossServices, matchAcrossVirtuals, matchAcrossPools, hashAlgorithm, hashOffset, hashLength, hashStartPattern, hashEndPattern, hashBufferLimit, timeout, rule, overrideConnectionLimit		
 def new_hashProfile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, matchAcrossServices, matchAcrossVirtuals, matchAcrossPools, hashAlgorithm, hashOffset, hashLength, hashStartPattern, hashEndPattern, hashBufferLimit, timeout, rule, overrideConnectionLimit):
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
@@ -66,6 +113,9 @@ def new_hashProfile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, match
             logging.info("Hash Persistence Profile creation exception fired: " + str(e))
             return json.dumps(strReturn)
     if prfDplyOrChg == 'chg_profile':
+        
+        modContent = {}
+        
         strReturn = {str(idx) : 'Hash Persistence Profile Modification Report'}
         idx += 1
     
@@ -73,7 +123,7 @@ def new_hashProfile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, match
 
         # Load Hash Persistence profile settings of a given Hash profile name
         try:
-            aHashPrf = mr.tm.ltm.persistence.hashs.hash.load(name=prfName, partition='Common')
+            loadedPrf = mr.tm.ltm.persistence.hashs.hash.load(name=prfName, partition='Common')
         except Exception as e:
             logging.info("Exception during Hash Persistence Profile loading")
             strReturn[str(idx)] = "Exception fired during Hash Persistence Profile setting loading! (" + prfName + "): " + str(e)
@@ -84,31 +134,39 @@ def new_hashProfile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, match
         # defaultsFrom, matchAcrossServices, matchAcrossVirtuals, matchAcrossPools, hashAlgorithm, hashOffset, hashLength, 
         # hashStartPattern, hashEndPattern, hashBufferLimit, timeout, rule, overrideConnectionLimit
         # Save the update DNS profile settings
-        aHashPrf.defaultsFrom = defaultsFrom
-        aHashPrf.matchAcrossServices = matchAcrossServices
-        aHashPrf.matchAcrossVirtuals = matchAcrossVirtuals
-        aHashPrf.matchAcrossPools = matchAcrossPools
-        aHashPrf.hashAlgorithm = hashAlgorithm
-        aHashPrf.hashOffset = hashOffset
-        aHashPrf.hashLength = hashLength
-        aHashPrf.hashStartPattern = hashStartPattern
-        aHashPrf.hashEndPattern = hashEndPattern
-        aHashPrf.hashBufferLimit = hashBufferLimit
-        aHashPrf.timeout = timeout
-        aHashPrf.rule = rule
-        aHashPrf.overrideConnectionLimit = overrideConnectionLimit
-        
-        strReturn[str(idx)] = "Hash Persistence Profile settings have been saved!"
-        idx += 1
-        
-        try:
-            aHashPrf.update()
-        except Exception as e:
-            strReturn[str(idx)] = "Exception fired during Hash Persistence profile update() (" + prfName + "): " + str(e)
+        '''
+        loadedPrf.defaultsFrom = defaultsFrom
+        loadedPrf.matchAcrossServices = matchAcrossServices
+        loadedPrf.matchAcrossVirtuals = matchAcrossVirtuals
+        loadedPrf.matchAcrossPools = matchAcrossPools
+        loadedPrf.hashAlgorithm = hashAlgorithm
+        loadedPrf.hashOffset = hashOffset
+        loadedPrf.hashLength = hashLength
+        loadedPrf.hashStartPattern = hashStartPattern
+        loadedPrf.hashEndPattern = hashEndPattern
+        loadedPrf.hashBufferLimit = hashBufferLimit
+        loadedPrf.timeout = timeout
+        loadedPrf.rule = rule
+        loadedPrf.overrideConnectionLimit = overrideConnectionLimit
+        '''
+
+        if isNeedUpdate(loadedPrf, modContent, defaultsFrom, matchAcrossServices, matchAcrossVirtuals, matchAcrossPools, hashAlgorithm, hashOffset, hashLength, hashStartPattern, hashEndPattern, hashBufferLimit, timeout, rule, overrideConnectionLimit):        
+            strReturn[str(idx)] = "Hash Persistence Profile settings have been saved!"
             idx += 1
-            logging.info("Hash Persistence Profile creation exception fired: " + str(e))
-            return json.dumps(strReturn)
-        
+            
+            try:
+                #loadedPrf.update()
+                loadedPrf.modify(**modContent)
+            except Exception as e:
+                strReturn[str(idx)] = "Exception fired during Hash Persistence profile update() (" + prfName + "): " + str(e)
+                idx += 1
+                logging.info("Hash Persistence Profile creation exception fired: " + str(e))
+                return json.dumps(strReturn)
+        else:
+            logging.info("No Hash Persistence Profile modification is needed")
+            strReturn[str(idx)] = "No Hash Persistence Profile modification is needed (" + prfName + "): "
+            idx += 1
+            
     if prfDplyOrChg == 'new_profile':
         strReturn[str(idx)] = "Hash Persistence Profile (" + prfName + ") has been created"
         idx += 1

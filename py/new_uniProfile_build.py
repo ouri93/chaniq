@@ -4,6 +4,7 @@ import logging
 import json
 import getpass
 import loadStdNames
+import chaniq_util
 
 def check_profileName_conflict(mr, prfName, prfDftFrom):
     uniPrfNames = mr.tm.ltm.persistence.universals.get_collection()
@@ -23,6 +24,36 @@ def check_profileName_conflict(mr, prfName, prfDftFrom):
         return True
     else:
         return False  
+
+def isNeedUpdate(loadedPrf, modContent, defaultsFrom, matchAcrossServices, matchAcrossVirtuals, matchAcrossPools, timeout, rule, overrideConnectionLimit):
+    cnt = 0
+
+    if chaniq_util.isStrPropModified(loadedPrf, 'defaultsFrom', defaultsFrom):
+        modContent['defaultsFrom'] = defaultsFrom
+        cnt = cnt + 1
+    if chaniq_util.isStrPropModified(loadedPrf, 'matchAcrossServices', matchAcrossServices):
+        modContent['matchAcrossServices'] = matchAcrossServices
+        cnt = cnt + 1 
+    if chaniq_util.isStrPropModified(loadedPrf, 'matchAcrossVirtuals', matchAcrossVirtuals):
+        modContent['matchAcrossVirtuals'] = matchAcrossVirtuals
+        cnt = cnt + 1 
+    if chaniq_util.isStrPropModified(loadedPrf, 'matchAcrossPools', matchAcrossPools):
+        modContent['matchAcrossPools'] = matchAcrossPools
+        cnt = cnt + 1 
+    if chaniq_util.isStrPropModified(loadedPrf, 'timeout', timeout):
+        modContent['timeout'] = timeout
+        cnt = cnt + 1 
+    if chaniq_util.isStrPropModified(loadedPrf, 'rule', rule):
+        modContent['rule'] = rule
+        cnt = cnt + 1  
+    if chaniq_util.isStrPropModified(loadedPrf, 'overrideConnectionLimit', overrideConnectionLimit):
+        modContent['overrideConnectionLimit'] = overrideConnectionLimit
+        cnt = cnt + 1 
+                                                                                          
+    if cnt > 0: return True
+    else: return False 
+    
+    
 
 # 'defaultsFrom', 'matchAcrossServices', 'matchAcrossVirtuals', 'matchAcrossPools','timeout', 'rule', 'overrideConnectionLimit'		
 def new_uniProfile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, matchAcrossServices, matchAcrossVirtuals, matchAcrossPools, timeout, rule, overrideConnectionLimit):
@@ -68,6 +99,9 @@ def new_uniProfile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, matchA
             logging.info("Universal Persistence Profile creation exception fired: " + str(e))
             return json.dumps(strReturn)
     elif prfDplyOrChg == 'chg_profile':
+        
+        modContent = {}
+        
         strReturn = {str(idx) : 'Universal Persistence Profile Modification Report'}
         idx += 1
     
@@ -76,7 +110,7 @@ def new_uniProfile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, matchA
         # Load Universal Persistence profile settings of a given Universal Persistence profile name
         # 'defaultsFrom', 'matchAcrossServices', 'matchAcrossVirtuals', 'matchAcrossPools','timeout', 'rule', 'overrideConnectionLimit'
         try:
-            aUnivPrf = mr.tm.ltm.persistence.universals.universal.load(name=prfName, partition='Common')
+            loadedPrf = mr.tm.ltm.persistence.universals.universal.load(name=prfName, partition='Common')
         except Exception as e:
             logging.info("Exception during Universal Persistence Profile loading")
             strReturn[str(idx)] = "Exception fired during Universal Persistence Profile setting loading! (" + prfName + "): " + str(e)
@@ -85,24 +119,32 @@ def new_uniProfile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, matchA
             return json.dumps(strReturn)
         
         # 'defaultsFrom', 'matchAcrossServices', 'matchAcrossVirtuals', 'matchAcrossPools', 'timeout', 'overrideConnectionLimit'
-        aUnivPrf.defaultsFrom = defaultsFrom
-        aUnivPrf.matchAcrossServices = matchAcrossServices
-        aUnivPrf.matchAcrossVirtuals = matchAcrossVirtuals
-        aUnivPrf.matchAcrossPools = matchAcrossPools
-        aUnivPrf.timeout = timeout
-        aUnivPrf.rule = rule
-        aUnivPrf.overrideConnectionLimit = overrideConnectionLimit
+        '''
+        loadedPrf.defaultsFrom = defaultsFrom
+        loadedPrf.matchAcrossServices = matchAcrossServices
+        loadedPrf.matchAcrossVirtuals = matchAcrossVirtuals
+        loadedPrf.matchAcrossPools = matchAcrossPools
+        loadedPrf.timeout = timeout
+        loadedPrf.rule = rule
+        loadedPrf.overrideConnectionLimit = overrideConnectionLimit
+        '''
         
-        strReturn[str(idx)] = "Universal Persistence Profile settings have been saved!"
-        idx += 1
-
-        try:
-            aUnivPrf.update()
-        except Exception as e:
-            strReturn[str(idx)] = "Exception fired during Universal Persistence profile update() (" + prfName + "): " + str(e)
+        if isNeedUpdate(loadedPrf, modContent, defaultsFrom, matchAcrossServices, matchAcrossVirtuals, matchAcrossPools, timeout, rule, overrideConnectionLimit):
+            strReturn[str(idx)] = "Universal Persistence Profile settings have been saved!"
             idx += 1
-            logging.info("Universal Persistence Profile creation exception fired: " + str(e))
-            return json.dumps(strReturn)
+    
+            try:
+                #loadedPrf.update()
+                loadedPrf.modify(**modContent)
+            except Exception as e:
+                strReturn[str(idx)] = "Exception fired during Universal Persistence profile update() (" + prfName + "): " + str(e)
+                idx += 1
+                logging.info("Universal Persistence Profile creation exception fired: " + str(e))
+                return json.dumps(strReturn)
+        else:
+            logging.info("No Universal Persistence Profile modification is needed")
+            strReturn[str(idx)] = "No SSLUniversalPersistence Profile modification is needed (" + prfName + "): "
+            idx += 1             
         
     if prfDplyOrChg == 'new_profile':  
         strReturn[str(idx)] = "Universal Persistence Profile (" + prfName + ") has been created"
