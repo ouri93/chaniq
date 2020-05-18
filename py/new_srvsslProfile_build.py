@@ -4,6 +4,7 @@ import logging
 import json
 import getpass
 import loadStdNames
+import chaniq_util
 
 def check_profileName_conflict(mr, prfName, prfDftFrom):
     srvsslPrfNames = mr.tm.ltm.profile.server_ssls.get_collection()
@@ -23,11 +24,62 @@ def check_profileName_conflict(mr, prfName, prfDftFrom):
         return True
     else:
         return False  
+
+def isNeedUpdate(loadedPrf, modContent, defaultsFrom, cert, key, chain, ciphers, proxySsl, proxySslPassthrough, renegotiation, renegotiatePeriod, renegotiateSize, secureRenegotiation, serverName, sniDefault, sniRequire):
+    cnt = 0
+
+    # certKeyChain = [{ "name":"", "cert":"", "key":"", "chain":""}, ]
+    if chaniq_util.isStrPropModified(loadedPrf, 'defaultsFrom', defaultsFrom):
+        modContent['defaultsFrom'] = defaultsFrom
+        cnt = cnt + 1
+    if chaniq_util.isStrPropModified(loadedPrf, 'cert', cert):
+        modContent['cert'] = cert
+        cnt = cnt + 1
+    if chaniq_util.isStrPropModified(loadedPrf, 'key', key):
+        modContent['key'] = key
+        cnt = cnt + 1
+    if chaniq_util.isStrPropModified(loadedPrf, 'chain', chain):
+        modContent['chain'] = chain
+        cnt = cnt + 1
+    if chaniq_util.isStrPropModified(loadedPrf, 'ciphers', ciphers):
+        modContent['ciphers'] = ciphers
+        cnt = cnt + 1
+    if chaniq_util.isStrPropModified(loadedPrf, 'proxySsl', proxySsl):
+        modContent['proxySsl'] = proxySsl
+        cnt = cnt + 1
+    if chaniq_util.isStrPropModified(loadedPrf, 'proxySslPassthrough', proxySslPassthrough):
+        modContent['proxySslPassthrough'] = proxySslPassthrough
+        cnt = cnt + 1
+    if chaniq_util.isStrPropModified(loadedPrf, 'renegotiation', renegotiation):
+        modContent['renegotiation'] = renegotiation
+        cnt = cnt + 1
+    if chaniq_util.isStrPropModified(loadedPrf, 'renegotiatePeriod', renegotiatePeriod):
+        modContent['renegotiatePeriod'] = renegotiatePeriod
+        cnt = cnt + 1
+    if chaniq_util.isStrPropModified(loadedPrf, 'renegotiateSize', renegotiateSize):
+        modContent['renegotiateSize'] = renegotiateSize
+        cnt = cnt + 1
+    if chaniq_util.isStrPropModified(loadedPrf, 'secureRenegotiation', secureRenegotiation):
+        modContent['secureRenegotiation'] = secureRenegotiation
+        cnt = cnt + 1
+    if chaniq_util.isStrPropModified(loadedPrf, 'serverName', serverName):
+        modContent['serverName'] = serverName
+        cnt = cnt + 1
+    if chaniq_util.isStrPropModified(loadedPrf, 'sniDefault', sniDefault):
+        modContent['sniDefault'] = sniDefault
+        cnt = cnt + 1
+    if chaniq_util.isStrPropModified(loadedPrf, 'sniRequire', sniRequire):
+        modContent['sniRequire'] = sniRequire
+        cnt = cnt + 1
+
+    if cnt > 0: return True
+    else: return False
+    
 		
 def new_srvsslProfile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, cert, key, chain, ciphers, proxySsl, proxySslPassthrough, renegotiation, renegotiatePeriod, renegotiateSize, secureRenegotiation, serverName, sniDefault, sniRequire):
     logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
     #logging.info('Called get_profiles(): %s %s' % (dev_ip, pf_type))
-	
+    
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
     #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
@@ -68,6 +120,9 @@ def new_srvsslProfile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, cer
             logging.info("ServerSSL Profile creation exception fired: " + str(e))
             return json.dumps(strReturn)
     elif prfDplyOrChg == 'chg_profile':
+        
+        modContent = {}
+        
         strReturn = {str(idx) : 'ServerSSL Profile Modification Report'}
         idx += 1
     
@@ -79,7 +134,7 @@ def new_srvsslProfile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, cer
         #  'renegotiateSize', 'secureRenegotiation', 'serverName', 'sniDefault',
         ## 'sniRequire'  
         try:
-            aSrvsslPrf = mr.tm.ltm.profile.server_ssls.server_ssl.load(name=prfName, partition='Common')
+            loadedPrf = mr.tm.ltm.profile.server_ssls.server_ssl.load(name=prfName, partition='Common')
         except Exception as e:
             logging.info("Exception during Server SSL Profile loading")
             strReturn[str(idx)] = "Exception fired during Server SSL Profile setting loading! (" + prfName + "): " + str(e)
@@ -88,33 +143,40 @@ def new_srvsslProfile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, cer
             return json.dumps(strReturn)
         
         # Save the update Server SSL profile settings
-        aSrvsslPrf.defaultsFrom = defaultsFrom
-        aSrvsslPrf.cert = cert
-        aSrvsslPrf.key = key
-        aSrvsslPrf.chain = chain
-        aSrvsslPrf.ciphers = ciphers
-        aSrvsslPrf.proxySsl = proxySsl
-        aSrvsslPrf.proxySslPassthrough = proxySslPassthrough
-        aSrvsslPrf.renegotiation = renegotiation
-        aSrvsslPrf.renegotiatePeriod = renegotiatePeriod
-        aSrvsslPrf.renegotiateSize = renegotiateSize
-        aSrvsslPrf.renegotiateMaxRecordDelay = renegotiateMaxRecordDelay
-        aSrvsslPrf.secureRenegotiation = secureRenegotiation
-        aSrvsslPrf.serverName = serverName
-        aSrvsslPrf.sniDefault = sniDefault
-        aSrvsslPrf.sniRequire = sniRequire        
-                
-        strReturn[str(idx)] = "Server SSL Profile settings have been saved!"
-        idx += 1
+        '''
+        loadedPrf.defaultsFrom = defaultsFrom
+        loadedPrf.cert = cert
+        loadedPrf.key = key
+        loadedPrf.chain = chain
+        loadedPrf.ciphers = ciphers
+        loadedPrf.proxySsl = proxySsl
+        loadedPrf.proxySslPassthrough = proxySslPassthrough
+        loadedPrf.renegotiation = renegotiation
+        loadedPrf.renegotiatePeriod = renegotiatePeriod
+        loadedPrf.renegotiateSize = renegotiateSize
+        loadedPrf.renegotiateMaxRecordDelay = renegotiateMaxRecordDelay
+        loadedPrf.secureRenegotiation = secureRenegotiation
+        loadedPrf.serverName = serverName
+        loadedPrf.sniDefault = sniDefault
+        loadedPrf.sniRequire = sniRequire
+        '''        
         
-        try:
-            aSrvsslPrf.update()
-        except Exception as e:
-            strReturn[str(idx)] = "Exception fired during Server SSL profile update() (" + prfName + "): " + str(e)
+        if isNeedUpdate(loadedPrf, modContent, defaultsFrom, cert, key, chain, ciphers, proxySsl, proxySslPassthrough, renegotiation, renegotiatePeriod, renegotiateSize, secureRenegotiation, serverName, sniDefault, sniRequire):
+            strReturn[str(idx)] = "Server SSL Profile settings have been saved!"
             idx += 1
-            logging.info("Server SSL Profile Modification exception fired: " + str(e))
-            return json.dumps(strReturn)
-        
+            
+            try:
+                #loadedPrf.update()
+                loadedPrf.modify(**modContent)
+            except Exception as e:
+                strReturn[str(idx)] = "Exception fired during Server SSL profile update() (" + prfName + "): " + str(e)
+                idx += 1
+                logging.info("Server SSL Profile Modification exception fired: " + str(e))
+                return json.dumps(strReturn)
+        else:
+            logging.info("No Server SSL Profile modification is needed")
+            strReturn[str(idx)] = "No Server SSL Profile modification is needed (" + prfName + "): "
+            idx += 1             
     if prfDplyOrChg == 'new_profile':        
         strReturn[str(idx)] = "ServerSSL Profile (" + prfName + ") has been created"
         idx += 1

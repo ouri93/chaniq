@@ -25,18 +25,52 @@ def check_profileName_conflict(mr, prfName, prfDftFrom):
     else:
         return False  
 
-def isNeedUpdate(loadedPrf, modContent, defaultsFrom, cert, key, chain, ciphers, proxySsl, proxySslPassthrough, renegotiation, renegotiatePeriod, renegotiateSize, renegotiateMaxRecordDelay, secureRenegotiation, maxRenegotiationsPerMinute, serverName, sniDefault, sniRequire):
+def isNeedUpdate(loadedPrf, modContent, defaultsFrom, certKeyChain, ciphers, proxySsl, proxySslPassthrough, renegotiation, renegotiatePeriod, renegotiateSize, renegotiateMaxRecordDelay, secureRenegotiation, maxRenegotiationsPerMinute, serverName, sniDefault, sniRequire):
     cnt = 0
+
     # maxRenegotiationsPerMinute = 5, certKeyChain = [{ "name":"", "cert":"", "key":"", "chain":""}, ]
     if chaniq_util.isStrPropModified(loadedPrf, 'defaultsFrom', defaultsFrom):
         modContent['defaultsFrom'] = defaultsFrom
         cnt = cnt + 1 
-    if chaniq_util.isStrPropModified(loadedPrf, 'source', source):
-        modContent['source'] = source
-        cnt = cnt + 1 
-    if chaniq_util.isStrPropModified(loadedPrf, 'tmTarget', tmTarget):
-        modContent['tmTarget'] = tmTarget
-        cnt = cnt + 1 
+    if chaniq_util.isIntPropModified(loadedPrf, 'maxRenegotiationsPerMinute', maxRenegotiationsPerMinute, 5):
+        modContent['maxRenegotiationsPerMinute'] = maxRenegotiationsPerMinute
+        cnt = cnt + 1
+    if chaniq_util.isListPropModified(loadedPrf, 'certKeyChain', certKeyChain):
+        modContent['certKeyChain'] = certKeyChain
+        cnt = cnt + 1
+    if chaniq_util.isStrPropModified(loadedPrf, 'ciphers', ciphers):
+        modContent['ciphers'] = ciphers
+        cnt = cnt + 1
+    if chaniq_util.isStrPropModified(loadedPrf, 'proxySsl', proxySsl):
+        modContent['proxySsl'] = proxySsl
+        cnt = cnt + 1
+    if chaniq_util.isStrPropModified(loadedPrf, 'proxySslPassthrough', proxySslPassthrough):
+        modContent['proxySslPassthrough'] = proxySslPassthrough
+        cnt = cnt + 1
+    if chaniq_util.isStrPropModified(loadedPrf, 'renegotiation', renegotiation):
+        modContent['renegotiation'] = renegotiation
+        cnt = cnt + 1
+    if chaniq_util.isStrPropModified(loadedPrf, 'renegotiatePeriod', renegotiatePeriod):
+        modContent['renegotiatePeriod'] = renegotiatePeriod
+        cnt = cnt + 1
+    if chaniq_util.isStrPropModified(loadedPrf, 'renegotiateSize', renegotiateSize):
+        modContent['renegotiateSize'] = renegotiateSize
+        cnt = cnt + 1
+    if chaniq_util.isStrPropModified(loadedPrf, 'renegotiateMaxRecordDelay', renegotiateMaxRecordDelay):
+        modContent['renegotiateMaxRecordDelay'] = renegotiateMaxRecordDelay
+        cnt = cnt + 1
+    if chaniq_util.isStrPropModified(loadedPrf, 'secureRenegotiation', secureRenegotiation):
+        modContent['secureRenegotiation'] = secureRenegotiation
+        cnt = cnt + 1
+    if chaniq_util.isStrPropModified(loadedPrf, 'serverName', serverName):
+        modContent['serverName'] = serverName
+        cnt = cnt + 1
+    if chaniq_util.isStrPropModified(loadedPrf, 'sniDefault', sniDefault):
+        modContent['sniDefault'] = sniDefault
+        cnt = cnt + 1
+    if chaniq_util.isStrPropModified(loadedPrf, 'sniRequire', sniRequire):
+        modContent['sniRequire'] = sniRequire
+        cnt = cnt + 1
 
     if cnt > 0: return True
     else: return False 
@@ -126,8 +160,9 @@ def new_clisslProfile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, cer
         loadedPrf.sniDefault = sniDefault
         loadedPrf.sniRequire = sniRequire
         '''        
-
-        if isNeedUpdate(loadedPrf, modContent, defaultsFrom, cert, key, chain, ciphers, proxySsl, proxySslPassthrough, renegotiation, renegotiatePeriod, renegotiateSize, renegotiateMaxRecordDelay, secureRenegotiation, maxRenegotiationsPerMinute, serverName, sniDefault, sniRequire):
+        certKeyChain = [{ "name":"default", "cert":cert, "key":key, "chain":chain}]
+        
+        if isNeedUpdate(loadedPrf, modContent, defaultsFrom, certKeyChain, ciphers, proxySsl, proxySslPassthrough, renegotiation, renegotiatePeriod, renegotiateSize, renegotiateMaxRecordDelay, secureRenegotiation, maxRenegotiationsPerMinute, serverName, sniDefault, sniRequire):
             strReturn[str(idx)] = "Client SSL Profile settings have been saved!"
             idx += 1
             

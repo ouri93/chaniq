@@ -19,14 +19,21 @@ def loadConfigPath(iniType):
 #objName: Object Name, PropName: Property Name of an object, propToCom: Property to compare
 #Return true if a given string property of an object is modified. Otherwise return false.
 def isStrPropModified(objName, propName, propToCom):
+    #logging.info("PropName: " + propName + " GUI Val: " + propToCom)
     try:
         if hasattr(objName, propName):
-            if propToCom == '': return True
+            logging.info("Loaded PropName: " + getattr(objName, propName))
+            if propToCom.rstrip('\r\n') == '' and propToCom.rstrip('\r\n') == 'none':
+                #logging.info("Has attribute and GUI val is none:" + propToCom) 
+                return True
             else:
-                if getattr(objName, propName) != propToCom: return True
+                if getattr(objName, propName) != propToCom.rstrip('\r\n'):
+                    #logging.info("Has attribute and GUI val is not matching with a loaded val:" + propToCom) 
+                    return True
                 else: return False
         else:
-            if propToCom != '':
+            if propToCom.rstrip('\r\n') != '' and propToCom.rstrip('\r\n') != 'none':
+                #logging.info("No attribute and GUI val is not none:" + propToCom)
                 return True
             else: return False
     except Exception as e:

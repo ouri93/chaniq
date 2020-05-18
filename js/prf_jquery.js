@@ -581,16 +581,35 @@ function iruleNameProcessData(response_in) {
 	$('#persistIRule').append(strResult);
 }
 
-function certNameProcessData(response_in) {
+function certNameProcessData(response_in, prfType) {
 	var strResult = '';
 	//Remove existing profile types and then add new ones
+	var certPropName = '';
+	var keychainPropName = '';
+	
+	if (prfType == 'CLIENTSSL'){
+		certPropName = 'clisslCert';
+		keychainPropName = 'clisslKeyChain'
+	}
+	else if (prfType = 'SERVERSSL' ){
+		certPropName = 'srvsslCert';
+		keychainPropName = 'srvsslChain'
+	}
+	
+	$('#' + certPropName + ' option').each(function(index) {
+		if (index != 0) $(this).remove();
+	});
+	$('#' + keychainPropName + ' option').each(function(index) {
+		if (index != 0) $(this).remove();
+	});
+	/*
 	$('#clisslCert option').each(function(index) {
 		if (index != 0) $(this).remove();
 	});
 	$('#clisslKeyChain option').each(function(index) {
 		if (index != 0) $(this).remove();
 	});
-	
+	*/
 	
 	$.each(response_in, function(index) {
 		if (response_in[index] != "none"){
@@ -598,18 +617,34 @@ function certNameProcessData(response_in) {
 		}
 	});
 	
+
 	//alert("Return output: " + strResult);
-	$('#clisslCert').append(strResult);
-	$('#clisslKeyChain').append(strResult);
+	$('#' + certPropName).append(strResult);
+	$('#' + keychainPropName).append(strResult);
 }
 
-function keyNameProcessData(response_in) {
+function keyNameProcessData(response_in, prfType) {
 	var strResult = '';
+	
+	var keyPropName = '';
+	
+	if (prfType == 'CLIENTSSL'){
+		keyPropName = 'clisslKey';
+	}
+	else if (prfType = 'SERVERSSL' ){
+		keyPropName = 'srvsslKey';
+	}	
 	//Remove existing profile types and then add new ones
-	$('#clisslKey option').each(function(index) {
+	$('#' + keyPropName + ' option').each(function(index) {
 		if (index != 0) $(this).remove();
 	});
 	
+	/*
+	$('#clisslKey option').each(function(index) {
+		if (index != 0) $(this).remove();
+	});
+	*/
+	
 	$.each(response_in, function(index) {
 		if (response_in[index] != "none"){
 			strResult += "<option value='" + response_in[index] + "'>" + response_in[index] + "</option>";
@@ -617,7 +652,8 @@ function keyNameProcessData(response_in) {
 	});
 	
 	//alert("Return output: " + strResult);
-	$('#clisslKey').append(strResult);
+	//$('#clisslKey').append(strResult);
+	$('#' + keyPropName).append(strResult);
 }
 
 function getHttpSettingsProcessData(response_in){
@@ -1500,7 +1536,10 @@ $(function () {
 			            console.log(errorThrown);
 					}
 				});
-				ajxOut.done(certNameProcessData);
+				//ajxOut.done(certNameProcessData);
+				ajxOut.done(function (response_in){
+					certNameProcessData(response_in, prfType);
+				});
 				
 				ajxOut2 = $.ajax({
 					url: '/content/get_profile_names.php',
@@ -1518,7 +1557,10 @@ $(function () {
 			            console.log(errorThrown);
 					}
 				});
-				ajxOut2.done(keyNameProcessData);
+				//ajxOut2.done(keyNameProcessData);
+				ajxOut2.done(function (response_in) {
+					keyNameProcessData(response_in, prfType);
+				});
 			}
 			
 			// 3. Load the chosen profile configuration
@@ -1759,7 +1801,10 @@ $(function () {
 			            console.log(errorThrown);
 					}
 				});
-				ajxOut.done(certNameProcessData);
+				//ajxOut.done(certNameProcessData);
+				ajxOut.done(function (response_in){
+					certNameProcessData(response_in, prfType);
+				});
 				
 				ajxOut2 = $.ajax({
 					url: '/content/get_profile_names.php',
@@ -1777,7 +1822,10 @@ $(function () {
 			            console.log(errorThrown);
 					}
 				});
-				ajxOut2.done(keyNameProcessData);
+				//ajxOut2.done(keyNameProcessData);
+				ajxOut2.done(function (response_in){
+					keyNameProcessData (response_in, prfType);
+				});
 			}
 			
 			// 3. Load the chosen profile configuration
