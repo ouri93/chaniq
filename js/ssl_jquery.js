@@ -193,23 +193,34 @@ $(function () {
     	sslImpData['sslImpType'] = impType;
     	sslImpData['sslImpName'] = $('#crtConfName').val();
     	
+    	// Set Cert/Key/PKCS12 Source type - UPLOAD, PASTE
+    	// Cert/Key Paste option is chosen
     	if ( (impType == "Key" || impType == "Certificate") && $('#crtConfPasteText').prop('checked') ){
     		sslImpData['sslKeySource'] = 'PASTE';
     		sslImpData['sslKeySourceData'] = $('#crtPasteTextarea').val();
     		uploadStatus = 'Success';
     	}
+    	// Cert/Key Upload option is chosen
+    	else if ( (impType == "Key" || impType == "Certificate") && $('#crtConfUploadFile').prop('checked') ){ 
+    		sslImpData['sslKeySource'] = 'UPLOAD';
+    		uploadStatus = 'Success';
+    	}
+    	// PKCS12 option is chosen - UPLOAD
     	else{
     		sslImpData['sslKeySource'] = 'UPLOAD';
     	}
     	
+    	// Set Cert/Key Securty Type - Key Security: Normal / Password
     	if ( impType == "Key" || impType == "PKCS 12 (IIS)" )
     		sslImpData['sslSecType'] = secType;
     	else
     		sslImpData['sslSecType'] = '';
     	
+    	// Set Password if Key Security type is 'Password'
     	if ( (impType == "Key" || impType == "PKCS 12 (IIS)") && (secType == "Password") )
     		sslImpData['sslSecTypeData'] = $('#crtSecTypePw').val();
     	
+    	// PKCS12 only - Set PKCS12 export password
     	if ( impType == "PKCS 12 (IIS)" )
     		sslImpData['sslPKCSPw'] = $('#crtConfPKCSPw').val();
     	

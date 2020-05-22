@@ -23,7 +23,7 @@ def check_keyname_conflict(mr, certkeyImpName):
 
     #logging.info("bitout value: " + str(bitout) + "\n")    
 
-    # If Poolname conflicts, return True. Otherwise return False
+    # If Key name conflicts, return True. Otherwise return False
     if (bitout >> 0) & 1:
         return True
     else:
@@ -43,7 +43,7 @@ def check_certname_conflict(mr, certkeyImpName):
 
     #logging.info("bitout value: " + str(bitout) + "\n")    
 
-    # If Poolname conflicts, return True. Otherwise return False
+    # If Cert name conflicts, return True. Otherwise return False
     if (bitout >> 0) & 1:
         return True
     else:
@@ -141,6 +141,11 @@ def new_certkey_build(active_ltm, certkeyImpType, certkeyImpName, certkeyKeySour
                 f= open(certfilename, "w+")
                 f.write(certkeyKeySourceData)
                 f.close()
+            else:
+                logging.info("Unsupported Cert/Key Source Type: " + certkeyImpType)
+                strReturn[str(idx)] = "Unsupported Cert/Key Source Type: " + certkeyImpType
+                idx += 1
+                return json.dumps(strReturn)
         except Exception as e:
             logging.info("File Creation Exception fired: " + str(e))
             strReturn[str(idx)] = "Exception fired during cert/key file creation!: " + str(e)
@@ -159,55 +164,85 @@ def new_certkey_build(active_ltm, certkeyImpType, certkeyImpName, certkeyKeySour
     localpath = 'file:/var/config/rest/downloads/'
     filename = ''
     try:
+        # Known issue with Password encrypted private Key - https://support.f5.com/csp/article/K46145454
+        # Solution: Upgrade to BIG-IP 13.1.0 or later
         if certkeyImpType == 'Key':
             filename = certkeyImpName + '.key'
-            _upload(str(active_ltm), ('admin', 'H@ll0N3wP@ss'), filepath + filename)
-            logging.info("Key file upload completed! - Source File Full path and name: " + filepath + filename)
+            _upload(str(active_ltm), ('admin', admpass), filepath + filename)
+            logging.info("Key file upload completed! - Source File Full path: " + filepath +  " name: " + filename)
             '''
-            Deprecated method. 
+            Ref1: https://devcentral.f5.com/s/feed/0D51T00006j1piKSAQ
+            Ref2: https://programtalk.com/python-examples-amp/f5.bigip.contexts.TransactionContextManager/
+            param_set = {'from-local-file': '/var/config/rest/downloads/keyfile.key', 'name':Your_key_name}
+            Using bigi.tm.sys.crypto.keys.exec_cmd('install', **param_set) is a deprecated method.
+            
+            Use sys.file.ssl_keys.ssl_key and sys.file.ssl_certs.ssl_cert instead. 
             Use bigip.tm.sys.file.ssl_keys.ssl_key.create(name='name', sourcePath='file:sourcepath')
             Use bigip.tm.sys.file.ssl_certs.ssl_cert.create(name='name', sourcePath='file:sourcepath')
-            param_set = {'from-local-file':localpath+filename, 'name':certkeyImpName}
-            mr.tm.sys.crypto.keys.exec_cmd('install', **param_set)
             '''
-            if certkeySecType == 'password':
-                key = mr.tm.sys.file.ssl_keys.ssl_key.create(name=certkeyImpName, partition='Common', sourcePath=localpath+filename, securityType='password', passphrase=certkeySecTypeData)
-            elif certkeySecType == 'normal':
-                key = mr.tm.sys.file.ssl_keys.ssl_key.create(name=certkeyImpName, partition='Common', sourcePath=localpath+filename)
+            if not check_certname_conflict(mr, certkeyImpName):
+                # Create a new key
+                if certkeySecType == 'Password':
+                    key = mr.tm.sys.file.ssl_keys.ssl_key.create(name=certkeyImpName, partition='Common', sourcePath=localpath+filename, securityType='password', passphrase=certkeySecTypeData)
+                elif certkeySecType == 'Normal':
+                    key = mr.tm.sys.file.ssl_keys.ssl_key.create(name=certkeyImpName, partition='Common', sourcePath=localpath+filename)
+                else:
+                    logging.info("Unsupported Key Security Type - Provided Security Type: " + certkeySecType)
+                    strReturn[str(idx)] = "Unsupported Key Security Type - Provided Security Type: " + certkeySecType 
+                    idx += 1 
+                    
+            else:
+                # To install cert and key, a key must be imported first
+                logging.info("To install the both of cert and key, a key must be imported first")
+                strReturn[str(idx)] = "To install the both of cert and key, a key must be imported first"
+                idx += 1                
             logging.info("Key file upload and install completed")
         elif certkeyImpType == 'Certificate':
             filename = certkeyImpName + '.crt'
-            _upload(str(active_ltm), ('admin', 'H@ll0N3wP@ss'), filepath + filename)
-            logging.info("Cert file upload completed! Source File Full path and name: " + filepath + filename)
-            '''
-            param_set = {'from-local-file':localpath+filename, 'name':certkeyImpName}
-            mr.tm.sys.crypto.certs.exec_cmd('install', **param_set)
-            '''
-            cert = mr.tm.sys.file.ssl_certs.ssl_cert.create(name=certkeyImpName, partition='Common', sourcePath=localpath+filename)
+            
+            _upload(str(active_ltm), ('admin', admpass), filepath + filename)
+            logging.info("Cert file upload completed! Source File Full path and name: " + filepath +  " name: " + filename)
+            
+            if not check_keyname_conflict(mr, certkeyImpName):
+                # Import cert if there is no existing key using the same name
+                cert = mr.tm.sys.file.ssl_certs.ssl_cert.create(name=certkeyImpName, partition='Common', sourcePath=localpath+filename)
+            else:
+                # If existing Key using same name exists a cert will be imported into the key with the same name
+                loadedKey = mr.tm.sys.file.ssl_keys.ssl_key.load(name=certkeyImpName, partition='Common')
+                cert = mr.tm.sys.file.ssl_certs.ssl_cert.create(name=certkeyImpName, partition='Common', sourcePath=localpath+filename)
+                loadedKey.update()
+            
             logging.info("Cert file upload and install completed")
         elif certkeyImpType == 'PKCS 12 (IIS)':
+            logging.info("Uploading and installing PKCS 12 Cert and Key")
             filename = certkeyImpName
-            _upload(str(active_ltm), ('admin', 'H@ll0N3wP@ss'), filepath + filename + '.p12')
+            _upload(str(active_ltm), ('admin', admpass), filepath + filename + '.pfx')
             #_upload(str(active_ltm), ('admin', 'rlatkdcks'), filepath + filename + '.crt')
-            logging.info("PKCS Key and Cert file upload completed! - Source File Full path and name: " + filepath + filename)
+            logging.info("PKCS Key and Cert file upload completed! - Source File Full path and name: " + filepath +  " name: " + filename)
             '''
             Deprecated method.
-            certparam_set = {'from-local-file':localpath+filename+'.p12', 'name':certkeyImpName}
-            keyparam_set = {'from-local-file':localpath+filename+'.p12', 'name':certkeyImpName}
+            certparam_set = {'from-local-file':localpath+filename+'.pfx', 'name':certkeyImpName}
+            keyparam_set = {'from-local-file':localpath+filename+'.pfx', 'name':certkeyImpName}
             
-            #param_set2 = {'from-local-file':localpath+filename+'.p12', 'name':certkeyImpName}
+            #param_set2 = {'from-local-file':localpath+filename+'.pfx', 'name':certkeyImpName}
             mr.tm.sys.crypto.keys.exec_cmd('install', **keyparam_set)
             mr.tm.sys.crypto.certs.exec_cmd('install', **certparam_set)
             '''
             '''
             Need to extract key and cert from pkcs12, then import them.
             '''
-            if certkeySecType == 'password':
-                key = mr.tm.sys.file.ssl_keys.ssl_key.create(name=certkeyImpName, partition='Common', sourcePath=localpath+filename+'.p12', password=certkeyPKCSPw, passphrase=certkeySecTypeData)
-            elif certkeySecType == 'normal':
-                key = mr.tm.sys.file.ssl_keys.ssl_key.create(name=certkeyImpName, partition='Common', sourcePath=localpath+filename+'.p12', password=certkeyPKCSPw)
-                
-            cert = mr.tm.sys.file.ssl_certs.ssl_cert.create(name=certkeyImpName, partition='Common', sourcePath=localpath+filename + '.p12')
+            if certkeySecType == 'Password':
+                key = mr.tm.sys.file.ssl_keys.ssl_key.create(name=certkeyImpName, partition='Common', sourcePath=localpath+filename+'.pfx', password=certkeyPKCSPw, passphrase=certkeySecTypeData)
+                logging.info("PKCS12 Key with Passphrase has been installed")
+            elif certkeySecType == 'Normal':
+                key = mr.tm.sys.file.ssl_keys.ssl_key.create(name=certkeyImpName, partition='Common', sourcePath=localpath+filename+'.pfx', password=certkeyPKCSPw)
+                logging.info("PKCS12 Key has been installed")
+            else:
+                logging.info("Unsupported Key Security Type - Provided Security Type: " + certkeySecType)
+                strReturn[str(idx)] = "Unsupported Key Security Type - Provided Security Type: " + certkeySecType 
+                idx += 1
+            cert = mr.tm.sys.file.ssl_certs.ssl_cert.create(name=certkeyImpName, partition='Common', sourcePath=localpath+filename + '.pfx')
+            logging.info("PKCS12 Key has been installed")
             
             logging.info("PKCS Cert and Key file upload and install have been completed") 
             
