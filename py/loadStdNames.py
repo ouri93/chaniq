@@ -41,7 +41,7 @@ def useStdNaming():
 
 def get_std_name(dev_ip, obj_type, obj_id, obj_subtype, desc):
     
-    stdNameIniFile = chaniq_util.loadConfigPath('STD_NAME_INI_PATH') + 'StandardNaming.ini'
+    stdNameIniFile = chaniq_util.loadIniConfigVal('CONFIG_PATH_INFO','STD_NAME_INI_PATH') + 'StandardNaming.ini'
     logging.info('INI full path returned: ' + stdNameIniFile)
     # Read DB name, DB Admin name and Password
     config = ConfigParser.ConfigParser()

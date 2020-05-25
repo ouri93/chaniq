@@ -23,7 +23,7 @@ def validate_password(plain_text_password, hashed_password):
 def check_login(un, userPass):
     
     # Read ini path info
-    stdNameIniFile = chaniq_util.loadConfigPath('DB_INI_PATH') + 'db.ini'
+    stdNameIniFile = chaniq_util.loadIniConfigVal('CONFIG_PATH_INFO','DB_INI_PATH') + 'db.ini'
     logging.info("check_login() Config File Path:" + stdNameIniFile)
     # Read DB name, DB Admin name and Password
     config = ConfigParser.ConfigParser()

@@ -6,13 +6,14 @@ import build_std_names
 import os
 import requests
 import getpass
+import chaniq_util
 
 logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
 logging.info("Head of new_certkey_build() called")
 
 def check_keyname_conflict(mr, certkeyImpName):
     keynames = mr.tm.sys.file.ssl_keys.get_collection()
-    logging.info("check_keyname_conflict() Key Name: " + certkeyImpName + "\n")
+    logging.info("check_keyname_conflict() Key Name: " + certkeyImpName + ".key\n")
     
     bitout = 0
     
@@ -32,7 +33,7 @@ def check_keyname_conflict(mr, certkeyImpName):
 # Only support Internal Data Group
 def check_certname_conflict(mr, certkeyImpName):
     certnames = mr.tm.sys.file.ssl_certs.get_collection()
-    logging.info("check_certname_conflict() Cert Name: " + certkeyImpName + "\n")
+    logging.info("check_certname_conflict() Cert Name: " + certkeyImpName + ".crt\n")
     
     bitout = 0
     
@@ -71,6 +72,7 @@ def check_certkeyname_conflict(mr, certkeyImpType, certkeyImpName):
 def _upload(host, creds, fp):
  
     logging.info("_upload called!")
+    logging.info("Host: " + str(host) + " Filename: " + fp + "\n")
     chunk_size = 512 * 1024
     headers = {
         'Content-Type': 'application/octet-stream'
@@ -110,6 +112,7 @@ def _upload(host, creds, fp):
         except Exception as e:
             logging.info("Exception while requests.post processing - Error: " + str(e)) 
         start += current_bytes
+    logging.info("_upload() is completed")
 
 def new_certkey_build(active_ltm, certkeyImpType, certkeyImpName, certkeyKeySource, certkeyKeySourceData, certkeySecType, certkeySecTypeData, certkeyPKCSPw):
     
@@ -159,92 +162,124 @@ def new_certkey_build(active_ltm, certkeyImpType, certkeyImpName, certkeyKeySour
         return json.dumps(strReturn)
     logging.info("No Cert/Key name conflict. Now creating a Cert/Key")
     
+    # f5LocalPath variable is used to specify F5 side cert/key download folder. 
+    # If Python SDK version is 2.3.2, we use exec_cmd command to install cert or key. Otherwise, create() method is used.
+    pySdkVer = str(chaniq_util.loadIniConfigVal('PYTHON_SDK_INFO', 'SDK_VER'))
+    logging.info("Loaded Python SDK Version: " + pySdkVer)
+    f5LocalPath = 'file:/var/config/rest/downloads/'
+    if pySdkVer == '2.3.2':
+        f5LocalPath = '/var/config/rest/downloads/'
+    
     # Upload Cert/Key file to F5 BIG-IP
-    filepath = '/var/www/chaniq/log/tmp/'
-    localpath = 'file:/var/config/rest/downloads/'
-    filename = ''
+    chanIQFilePath = '/var/www/chaniq/log/tmp/'
+
     try:
         # Known issue with Password encrypted private Key - https://support.f5.com/csp/article/K46145454
         # Solution: Upgrade to BIG-IP 13.1.0 or later
+        
+        if pySdkVer == '2.3.2':
+            keyParam_set = {'from-local-file': f5LocalPath+certkeyImpName+'.key', 'name':certkeyImpName}
+            certParam_set = {'from-local-file': f5LocalPath+certkeyImpName+'.crt', 'name':certkeyImpName}
+        
         if certkeyImpType == 'Key':
-            filename = certkeyImpName + '.key'
-            _upload(str(active_ltm), ('admin', admpass), filepath + filename)
-            logging.info("Key file upload completed! - Source File Full path: " + filepath +  " name: " + filename)
+            _upload(str(active_ltm), ('admin', admpass), chanIQFilePath + certkeyImpName + '.key')
+
+            logging.info("Key file upload completed! - Source File Full path: " + chanIQFilePath +  " name: " + certkeyImpName + '.key')
             '''
             Ref1: https://devcentral.f5.com/s/feed/0D51T00006j1piKSAQ
             Ref2: https://programtalk.com/python-examples-amp/f5.bigip.contexts.TransactionContextManager/
+            
+            If Python SDK version is 2.3.2, use exec_cmd(), use create() to install cert and key
             param_set = {'from-local-file': '/var/config/rest/downloads/keyfile.key', 'name':Your_key_name}
             Using bigi.tm.sys.crypto.keys.exec_cmd('install', **param_set) is a deprecated method.
             
+            If Python SDK version is newer than 2.3.2, use create() to install cert and key
             Use sys.file.ssl_keys.ssl_key and sys.file.ssl_certs.ssl_cert instead. 
             Use bigip.tm.sys.file.ssl_keys.ssl_key.create(name='name', sourcePath='file:sourcepath')
             Use bigip.tm.sys.file.ssl_certs.ssl_cert.create(name='name', sourcePath='file:sourcepath')
             '''
-            if not check_certname_conflict(mr, certkeyImpName):
-                # Create a new key
-                if certkeySecType == 'Password':
-                    key = mr.tm.sys.file.ssl_keys.ssl_key.create(name=certkeyImpName, partition='Common', sourcePath=localpath+filename, securityType='password', passphrase=certkeySecTypeData)
-                elif certkeySecType == 'Normal':
-                    key = mr.tm.sys.file.ssl_keys.ssl_key.create(name=certkeyImpName, partition='Common', sourcePath=localpath+filename)
-                else:
-                    logging.info("Unsupported Key Security Type - Provided Security Type: " + certkeySecType)
-                    strReturn[str(idx)] = "Unsupported Key Security Type - Provided Security Type: " + certkeySecType 
-                    idx += 1 
-                    
-            else:
-                # To install cert and key, a key must be imported first
+            # To install cert and key, a key must be imported first
+            # If you try to import a key where a cert having the same name exists but same name key doesn't exist, return with error message
+            if check_certname_conflict(mr, certkeyImpName):
                 logging.info("To install the both of cert and key, a key must be imported first")
                 strReturn[str(idx)] = "To install the both of cert and key, a key must be imported first"
-                idx += 1                
+                idx += 1
+                return json.dumps(strReturn)
+            # Create a new key
+            if certkeySecType == 'Password':
+                if pySdkVer == '2.3.2':
+                    keyParam_set['securityType'] = 'password'
+                    keyParam_set['passphrase'] = certkeySecTypeData
+                    key = mr.tm.sys.crypto.keys.exec_cmd('install', **keyParam_set)
+                else:
+                    logging.info("I am here with password")
+                    key = mr.tm.sys.file.ssl_keys.ssl_key.create(name=certkeyImpName, partition='Common', sourcePath=f5LocalPath+certkeyImpName+'.key', securityType='password', passphrase=certkeySecTypeData)
+            elif certkeySecType == 'Normal':
+                if pySdkVer == '2.3.2':
+                    logging.info("I am here with normal")
+                    key = mr.tm.sys.crypto.keys.exec_cmd('install', **keyParam_set)
+                else:
+                    key = mr.tm.sys.file.ssl_keys.ssl_key.create(name=certkeyImpName, partition='Common', sourcePath=f5LocalPath+certkeyImpName+'key')
+            else:
+                logging.info("Unsupported Key Security Type - Provided Security Type: " + certkeySecType)
+                strReturn[str(idx)] = "Unsupported Key Security Type - Provided Security Type: " + certkeySecType 
+                idx += 1 
+
             logging.info("Key file upload and install completed")
         elif certkeyImpType == 'Certificate':
-            filename = certkeyImpName + '.crt'
+            _upload(str(active_ltm), ('admin', admpass), chanIQFilePath + certkeyImpName + '.crt')
+            logging.info("Cert file upload completed! Source File Full path and name: " + chanIQFilePath +  " name: " + certkeyImpName + '.crt')
             
-            _upload(str(active_ltm), ('admin', admpass), filepath + filename)
-            logging.info("Cert file upload completed! Source File Full path and name: " + filepath +  " name: " + filename)
-            
-            if not check_keyname_conflict(mr, certkeyImpName):
-                # Import cert if there is no existing key using the same name
-                cert = mr.tm.sys.file.ssl_certs.ssl_cert.create(name=certkeyImpName, partition='Common', sourcePath=localpath+filename)
+            if pySdkVer == '2.3.2':
+                cert = mr.tm.sys.crypto.certs.exec_cmd('install', **certParam_set)
             else:
-                # If existing Key using same name exists a cert will be imported into the key with the same name
-                loadedKey = mr.tm.sys.file.ssl_keys.ssl_key.load(name=certkeyImpName, partition='Common')
-                cert = mr.tm.sys.file.ssl_certs.ssl_cert.create(name=certkeyImpName, partition='Common', sourcePath=localpath+filename)
-                loadedKey.update()
+                cert = mr.tm.sys.file.ssl_certs.ssl_cert.create(name=certkeyImpName, partition='Common', sourcePath=f5LocalPath+certkeyImpName + '.crt')
             
             logging.info("Cert file upload and install completed")
         elif certkeyImpType == 'PKCS 12 (IIS)':
             logging.info("Uploading and installing PKCS 12 Cert and Key")
-            filename = certkeyImpName
-            _upload(str(active_ltm), ('admin', admpass), filepath + filename + '.pfx')
-            #_upload(str(active_ltm), ('admin', 'rlatkdcks'), filepath + filename + '.crt')
-            logging.info("PKCS Key and Cert file upload completed! - Source File Full path and name: " + filepath +  " name: " + filename)
+            _upload(str(active_ltm), ('admin', admpass), chanIQFilePath + certkeyImpName + '.pfx')
+            #_upload(str(active_ltm), ('admin', 'rlatkdcks'), chanIQFilePath + certkeyImpName + '.crt')
+            logging.info("PKCS Key and Cert file upload completed! - Source File Full path and name: " + chanIQFilePath +  " name: " + certkeyImpName + '.pfx')
             '''
             Deprecated method.
-            certparam_set = {'from-local-file':localpath+filename+'.pfx', 'name':certkeyImpName}
-            keyparam_set = {'from-local-file':localpath+filename+'.pfx', 'name':certkeyImpName}
+            certparam_set = {'from-local-file':f5LocalPath+certkeyImpName + '.pfx', 'name':certkeyImpName}
+            keyparam_set = {'from-local-file':f5LocalPath+certkeyImpName + '.pfx', 'name':certkeyImpName}
             
-            #param_set2 = {'from-local-file':localpath+filename+'.pfx', 'name':certkeyImpName}
+            #param_set2 = {'from-local-file':f5LocalPath+certkeyImpName + '.pfx', 'name':certkeyImpName}
             mr.tm.sys.crypto.keys.exec_cmd('install', **keyparam_set)
             mr.tm.sys.crypto.certs.exec_cmd('install', **certparam_set)
             '''
             '''
             Need to extract key and cert from pkcs12, then import them.
             '''
+            # Create a new key
             if certkeySecType == 'Password':
-                key = mr.tm.sys.file.ssl_keys.ssl_key.create(name=certkeyImpName, partition='Common', sourcePath=localpath+filename+'.pfx', password=certkeyPKCSPw, passphrase=certkeySecTypeData)
-                logging.info("PKCS12 Key with Passphrase has been installed")
+                if pySdkVer == '2.3.2':
+                    keyParam_set['securityType'] = 'password'
+                    keyParam_set['passphrase'] = certkeySecTypeData
+                    key = mr.tm.sys.crypto.keys.exec_cmd('install', **keyParam_set)
+                else:
+                    key = mr.tm.sys.file.ssl_keys.ssl_key.create(name=certkeyImpName, partition='Common', sourcePath=f5LocalPath+certkeyImpName+'.pfx', securityType='password', passphrase=certkeySecTypeData)
             elif certkeySecType == 'Normal':
-                key = mr.tm.sys.file.ssl_keys.ssl_key.create(name=certkeyImpName, partition='Common', sourcePath=localpath+filename+'.pfx', password=certkeyPKCSPw)
-                logging.info("PKCS12 Key has been installed")
+                if pySdkVer == '2.3.2':
+                    key = mr.tm.sys.crypto.keys.exec_cmd('install', **keyParam_set)
+                else:
+                    key = mr.tm.sys.file.ssl_keys.ssl_key.create(name=certkeyImpName, partition='Common', sourcePath=f5LocalPath+certkeyImpName+'pfx')
             else:
                 logging.info("Unsupported Key Security Type - Provided Security Type: " + certkeySecType)
                 strReturn[str(idx)] = "Unsupported Key Security Type - Provided Security Type: " + certkeySecType 
-                idx += 1
-            cert = mr.tm.sys.file.ssl_certs.ssl_cert.create(name=certkeyImpName, partition='Common', sourcePath=localpath+filename + '.pfx')
-            logging.info("PKCS12 Key has been installed")
+                idx += 1 
+            logging.info("PKCS12 Key file upload and installation has been completed")
             
-            logging.info("PKCS Cert and Key file upload and install have been completed") 
+            # Create a new cert            
+            if pySdkVer == '2.3.2':
+                cert = mr.tm.sys.crypto.certs.exec_cmd('install', **certParam_set)
+            else:
+                cert = mr.tm.sys.file.ssl_certs.ssl_cert.create(name=certkeyImpName, partition='Common', sourcePath=f5LocalPath+certkeyImpName + '.pfx')
+            
+            logging.info("PKCS12 Cert file upload and installation has been completed")
+            logging.info("PKCS Cert and Key file upload and installation have been completed") 
             
     except Exception as e:
         logging.info("File Upload Exception fired: " + str(e))

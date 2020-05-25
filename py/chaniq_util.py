@@ -4,8 +4,8 @@ import logging
 logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO, format='%(asctime)s %(levelname)s %(name)s %(message)s')
 logger=logging.getLogger(__name__)
 
-# Given INI Type, read the ini file path info from main configuration file, chaniq.ini
-def loadConfigPath(iniType):
+''' Given Section name and Key name of chaniq.ini file, return corresponding key value from chaniq.ini file '''
+def loadIniConfigVal(secName, keyVal):
     
     config = ConfigParser.ConfigParser()
     try:
@@ -14,7 +14,7 @@ def loadConfigPath(iniType):
     except Exception as e:
         logging.info("File Read error: " + str(e))
     
-    return config.get('CONFIG_PATH_INFO', iniType)
+    return config.get(secName, keyVal)
 
 #objName: Object Name, PropName: Property Name of an object, propToCom: Property to compare
 #Return true if a given string property of an object is modified. Otherwise return false.

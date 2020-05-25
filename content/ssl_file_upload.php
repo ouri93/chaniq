@@ -54,7 +54,7 @@
             move_uploaded_file($_FILES['file']['tmp_name'], '/var/www/chaniq/log/tmp/' . $sslImpName . '.crt');
         }
         else if ($sslImpType == 'PKCS 12 (IIS)'){
-            move_uploaded_file($_FILES['file']['tmp_name'], '/var/www/chaniq/log/tmp/' . $sslImpName . '.p12');
+            move_uploaded_file($_FILES['file']['tmp_name'], '/var/www/chaniq/log/tmp/' . $sslImpName . '.pfx');
             //move_uploaded_file($_FILES['file']['tmp_name'], '/var/www/chaniq/log/tmp/' . $sslImpName . '.key');
         }
         echo 'Success';

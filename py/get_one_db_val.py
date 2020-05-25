@@ -13,7 +13,7 @@ logger=logging.getLogger(__name__)
 def get_one_db_val(tabId, colId, un, userPass):
     
     # Read ini path info
-    stdNameIniFile = chaniq_util.loadConfigPath('DB_INI_PATH') + 'db.ini'
+    stdNameIniFile = chaniq_util.loadIniConfigVal('CONFIG_PATH_INFO', 'DB_INI_PATH') + 'db.ini'
     logging.info("get_one_db_val() Config File Path:" + stdNameIniFile)
     # Read DB name, DB Admin name and Password
     config = ConfigParser.ConfigParser()
