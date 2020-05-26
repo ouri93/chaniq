@@ -30,7 +30,7 @@ include_once('../utility/utility.php');
         <script type="text/javascript" src="/admin/admin_jquery.js"></script>
     </head>
     <body style="background-color: #ffffff;">
-        <form class="register" method="POST">
+        <form class="register admin" method="POST">
             <h1>CHAN-IQ User Management</h1>
             <p>You can create new CHAN-IQ users and reset CHAN-IQ users' password here.</p>
             <fieldset class="reset_pw"> 

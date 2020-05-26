@@ -15,7 +15,7 @@ if ($_SESSION['role'] == 'guest'){
 		<!-- IFrame content here -->
 		<!-- iFrame for Pool Build -->
 		<legend>Delete Certs and Keys</legend>
-		<iframe src="/content/if_del_cert.php" width="720px" height="600" frameborder="0"></iframe>
+		<iframe src="/content/if_del_cert.php" width="1105px" height="92%" frameborder="0"></iframe>
         </fieldset>
     </form>
 </div>

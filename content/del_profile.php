@@ -10,7 +10,7 @@ if ($_SESSION['role'] == 'guest'){
 }
 ?>
 <div>
-    
+    <?php
     echo "<nav>";
     echo "<ul class='nav'>";
     
@@ -71,7 +71,7 @@ if ($_SESSION['role'] == 'guest'){
 		<!-- IFrame content here -->
 		<!-- Default Page content - HTTP Profile -->
 		<legend>Delete HTTP Profile</legend>
-		<iframe src="/content/if_prf_svc_http.php" width="725px" height="600" frameborder="0"></iframe>       	
+		<iframe src="/content/if_prf_svc_http.php" width="1105px" height="87%" frameborder="0"></iframe>       	
         </fieldset>
     </form>
 </div>

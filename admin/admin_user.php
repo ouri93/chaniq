@@ -14,7 +14,7 @@ if ($_SESSION['role'] == 'guest'){
         <fieldset  id='vs_iframe_fieldset' class="row1">
 		<!-- IFrame content here -->
 		<legend>CHAN-IQ User Management</legend>
-		<iframe src="/admin/if_usermgmt.php" width="720px" height="600" frameborder="0"></iframe>       	
+		<iframe src="/admin/if_usermgmt.php" width="1105px" height="92%" frameborder="0"></iframe>       	
         </fieldset>
     </form>
 </div>

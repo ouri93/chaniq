@@ -710,63 +710,64 @@ $(function () {
     	// Profile Names: HTTP, DNS, Cookie, DestAddrAffinity, SrcAddrAffinity, Hash, SSL, Universal, FastL4, TCP, UDP, CLIENTSSL, SERVERSSL, OneConnect, Stream
     	if (prfSelected == 'HTTP'){
     		$('#prf_iframe_fieldset').append('<legend>HTTP Profile Configuration</legend>');
-    		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_svc_http.php" width="725px" height="600" frameborder="0"></iframe>');
+    		//$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_svc_http.php" width="725px" height="600" frameborder="0"></iframe>');
+    		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_svc_http.php" width="1105px" height="87%" frameborder="0"></iframe>');
     	}
     	else if (prfSelected == 'DNS'){
     		$('#prf_iframe_fieldset').append('<legend>DNS Profile Configuration</legend>');
-    		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_svc_dns.php" width="725px" height="600" frameborder="0"></iframe>');
+    		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_svc_dns.php" width="1105px" height="87%" frameborder="0"></iframe>');
     	}
     	else if (prfSelected == 'Cookie'){
     		$('#prf_iframe_fieldset').append('<legend>Cookie Persistence Profile Configuration</legend>');
-    		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_persist_cookie.php" width="725px" height="600" frameborder="0"></iframe>');
+    		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_persist_cookie.php" width="1105px" height="87%" frameborder="0"></iframe>');
     	}
     	else if (prfSelected == 'DestAddrAffinity'){
     		$('#prf_iframe_fieldset').append('<legend>Destination Address Affinity Persistence Profile Configuration</legend>');
-    		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_persist_dest.php" width="725px" height="600" frameborder="0"></iframe>');
+    		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_persist_dest.php" width="1105px" height="87%" frameborder="0"></iframe>');
     	}
     	else if (prfSelected == 'SrcAddrAffinity'){
     		$('#prf_iframe_fieldset').append('<legend>Source Address Affinity Persistence Profile Configuration</legend>');
-    		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_persist_src.php" width="725px" height="600" frameborder="0"></iframe>');
+    		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_persist_src.php" width="1105px" height="87%" frameborder="0"></iframe>');
     	}
     	else if (prfSelected == 'Hash'){
     		$('#prf_iframe_fieldset').append('<legend>Hash Persistence Profile Configuration</legend>');
-    		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_persist_hash.php" width="725px" height="600" frameborder="0"></iframe>');
+    		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_persist_hash.php" width="1105px" height="87%" frameborder="0"></iframe>');
     	}
     	else if (prfSelected == 'SSL'){
     		$('#prf_iframe_fieldset').append('<legend>SSL Persistence Profile Configuration</legend>');
-    		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_persist_ssl.php" width="725px" height="600" frameborder="0"></iframe>');
+    		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_persist_ssl.php" width="1105px" height="87%" frameborder="0"></iframe>');
     	}
     	else if (prfSelected == 'Universal'){
     		$('#prf_iframe_fieldset').append('<legend>Universal Persistence Profile Configuration</legend>');
-    		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_persist_univ.php" width="725px" height="600" frameborder="0"></iframe>');
+    		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_persist_univ.php" width="1105px" height="87%" frameborder="0"></iframe>');
     	}      	
     	else if (prfSelected == 'FastL4'){
     		$('#prf_iframe_fieldset').append('<legend>FastL4 Profile Configuration</legend>');
-    		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_prot_fastl4.php" width="725px" height="600" frameborder="0"></iframe>');
+    		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_prot_fastl4.php" width="1105px" height="87%" frameborder="0"></iframe>');
     	}
     	else if (prfSelected == 'TCP'){
     		$('#prf_iframe_fieldset').append('<legend>TCP Profile Configuration</legend>');
-    		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_prot_tcp.php" width="725px" height="600" frameborder="0"></iframe>');
+    		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_prot_tcp.php" width="1105px" height="87%" frameborder="0"></iframe>');
     	}
     	else if (prfSelected == 'UDP'){
     		$('#prf_iframe_fieldset').append('<legend>UDP Profile Configuration</legend>');
-    		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_prot_udp.php" width="725px" height="600" frameborder="0"></iframe>');
+    		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_prot_udp.php" width="1105px" height="87%" frameborder="0"></iframe>');
     	}
     	else if (prfSelected == 'CLIENTSSL'){
     		$('#prf_iframe_fieldset').append('<legend>Client SSL Profile Configuration</legend>');
-    		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_ssl_client.php" width="725px" height="600" frameborder="0"></iframe>');
+    		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_ssl_client.php" width="1105px" height="87%" frameborder="0"></iframe>');
     	}
     	else if (prfSelected == 'SERVERSSL'){
     		$('#prf_iframe_fieldset').append('<legend>Server SSL Profile Configuration</legend>');
-    		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_ssl_server.php" width="725px" height="600" frameborder="0"></iframe>');
+    		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_ssl_server.php" width="1105px" height="87%" frameborder="0"></iframe>');
     	}
     	else if (prfSelected == 'OneConnect'){
     		$('#prf_iframe_fieldset').append('<legend>OneConnect Profile Configuration</legend>');
-    		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_other_oneconnect.php" width="725px" height="600" frameborder="0"></iframe>');
+    		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_other_oneconnect.php" width="1105px" height="87%" frameborder="0"></iframe>');
     	}
     	else if (prfSelected == 'Stream'){
     		$('#prf_iframe_fieldset').append('<legend>Stream Profile Configuration</legend>');
-    		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_other_stream.php" width="725px" height="600" frameborder="0"></iframe>');
+    		$('#prf_iframe_fieldset').append('<iframe src="/content/if_prf_other_stream.php" width="1105px" height="87%" frameborder="0"></iframe>');
     	}
     });
 

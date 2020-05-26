@@ -387,14 +387,16 @@ $(function () {
     	//alert("Cert Import button clicked!");
     	$('#cert_iframe_fieldset').empty();
     	$('#cert_iframe_fieldset').append('<legend>Import Cert/Key Configuration</legend>');
-    	$('#cert_iframe_fieldset').append('<iframe src="/content/if_ssl_import.php" scrolling="no" width="700px" height="600" frameborder="0"></iframe>');
+    	//$('#cert_iframe_fieldset').append('<iframe src="/content/if_ssl_import.php" scrolling="no" width="700px" height="600" frameborder="0"></iframe>');
+    	$('#cert_iframe_fieldset').append('<iframe src="/content/if_ssl_import.php" scrolling="no" width="1050px" height="75%" frameborder="0"></iframe>');
     });
 
     $('#cert_create_btn').on('click', function() {
     	//alert("Cert Create button clicked!");
     	$('#cert_iframe_fieldset').empty();
     	$('#cert_iframe_fieldset').append('<legend>Create Cert/Key Configuration</legend>');
-    	$('#cert_iframe_fieldset').append('<iframe src="/content/if_ssl_create.php" scrolling="no" width="700px" height="600" frameborder="0"></iframe>');    	
+    	//$('#cert_iframe_fieldset').append('<iframe src="/content/if_ssl_create.php" scrolling="no" width="700px" height="600" frameborder="0"></iframe>');    	
+    	$('#cert_iframe_fieldset').append('<iframe src="/content/if_ssl_create.php" scrolling="no" width="1050px" height="75%" frameborder="0"></iframe>');
     });
     
     // Event handler when 'Delete Cert/Key" button is clicked

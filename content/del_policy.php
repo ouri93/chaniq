@@ -15,7 +15,7 @@ if ($_SESSION['role'] == 'guest'){
 		<!-- IFrame content here -->
 		<!-- Default Page content - HTTP Profile -->
 		<legend>Policy Configuration</legend>
-	    <iframe src="/content/if_del_policy.php" width="720px" height="600px" frameborder="0" onload="this.contentDocument.body.scrollHeight +'px';" ></iframe>
+	    <iframe src="/content/if_del_policy.php" width="1105px" height="92%" frameborder="0" onload="this.contentDocument.body.scrollHeight +'px';" ></iframe>
         </fieldset>
     </form>
 </div>

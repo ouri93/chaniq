@@ -26,7 +26,7 @@ include_once 'utility/utility.php';
 		    echo '<legend>Delete iRules/Data Groups</legend>';
 		}
 		?>
-		<iframe src="/content/if_new_ir.php" width="720px" height="600" frameborder="0"></iframe>       	
+		<iframe src="/content/if_new_ir.php" width="1105px" height="92%" frameborder="0"></iframe>       	
         </fieldset>
     </form>
 </div>

@@ -16,7 +16,7 @@ if ($_SESSION['role'] == 'guest'){
 		<!-- IFrame content here -->
 		<!-- iFrame for Monitor Build -->
 		<legend>Monitor Configuration</legend>
-		<iframe src="/content/if_new_mon.php" width="720px" height="600" frameborder="0"></iframe>       	
+		<iframe src="/content/if_new_mon.php" width="1105px" height="92%" frameborder="0"></iframe>       	
         </fieldset>
     </form>
 </div>

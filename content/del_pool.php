@@ -15,7 +15,7 @@ if ($_SESSION['role'] == 'guest'){
 		<!-- IFrame content here -->
 		<!-- iFrame for Pool Build -->
 		<legend>Delete Pools</legend>
-		<iframe src="/content/if_new_pool.php" width="720px" height="600" frameborder="0"></iframe>
+		<iframe src="/content/if_new_pool.php" width="1105px" height="92%" frameborder="0"></iframe>
         </fieldset>
     </form>
 </div>

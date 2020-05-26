@@ -206,6 +206,14 @@ form.register{
     padding:5px;
 }
 
+form.register.admin{
+    /* width:730px; */
+    width:1000px;
+    margin: 20px auto 0px auto;
+    background-color:#fff;
+    padding:5px;
+}
+
 form.inner-form{
     /* width:700px; */
     width:1050px;
