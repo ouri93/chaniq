@@ -54,7 +54,8 @@ img.center {
 
 #header {
     background-color: #ffffff;
-    width: 900px;
+    /* width: 900px; */
+    width: 1280px;
     height:80px;
     align-items: center;
     margin: 0px auto 0px auto;
@@ -75,7 +76,8 @@ img.center {
 
 #content {
     background-color: #ffffff;  
-    width: 900px;
+    /*width: 900px;*/
+    width: 1280px;    
     height: 88%;
     margin: 0px auto 0px auto;
     border: 0px solid #000;
@@ -84,15 +86,19 @@ img.center {
 #sidebar {
     background-color: #ffffff;
     width: 150px;
-    height: 88%;
+    /* height: 88%; */
+    height: 100%;
     float: left;
     border: 1px solid #000;    
 }
 
 #maincontent {
     background-color: #ffffff;    
-    width: 745px;
-    height: auto;
+    /* width: 745px; */
+    /* 1128 = 1280 - (150 + 2) where 2 is padding */
+    width: 1126px;
+    /* height: auto; */
+    height: 99.8%;
     float: left;
     border: 1px solid #000;
     }
@@ -169,7 +175,8 @@ img.center {
 /* Footer Styles */
 #footer {
     background-color: #ffffff;
-    width: 900px;
+    /* width: 900px; */
+    width: 1280px;    
     height: 30px;
     margin: 0px auto 0px auto;
     border: 1px solid #000;
@@ -192,14 +199,18 @@ h1 {
 }
 
 form.register{
-    width:730px;
+    /* width:730px; */
+    width:1116px;
     margin: 20px auto 0px auto;
     background-color:#fff;
     padding:5px;
 }
 
 form.inner-form{
-    width:700px;
+    /* width:700px; */
+    width:1050px;
+    /* added on May 25, 2020 */
+    height:91%;
     margin: 20px auto 0px auto;
     background-color:#fff;
     padding:5px;

@@ -14,7 +14,8 @@ if ($_SESSION['role'] == 'guest'){
 		<!-- IFrame content here -->
 		<!-- Default Page content - HTTP Profile -->
 		<legend>Virtual Server Configuration</legend>
-		<iframe src="/content/if_new_vs.php" width="720px" height="600" frameborder="0"></iframe>       	
+		<!--  <iframe src="/content/if_new_vs.php" width="720px" height="600" frameborder="0"></iframe>  -->
+		<iframe src="/content/if_new_vs.php" width="1105px" height="92%" frameborder="0"></iframe>
         </fieldset>
     </form>
 </div>
