@@ -29,12 +29,13 @@ include_once('../utility/utility.php');
         <script type="text/javascript" src="/js/ssl_jquery.js"></script>
         <title>SSL Cert and Key Management</title>
     </head>
-    <body style="background-color: #ffffff;">
+    <body style="background-color: #ffffff;overflow-x:hidden;">
         <form class="inner-form">
             <fieldset class="row1">
                 <p>
                 	<table id="crtConfTable" class="form" border="1">
     	            	<tbody id="crtConfTable_tbody">
+    	            	<tr> <td style='padding:4px; color:#555; font-size:12pt;'><b>Certificate Properties</b></td><td></td></tr>
     	            	<tr id='create_cert_type' >
     	            		<td width='132px' ><label>*Issuer:</label></td><td><select id='create_type_select' required='required' ><option value='select' selected='selected' >Select...</option><option value='Self' >Self</option><option value='Certificate Authority' >Certificate Authority</option></input></td>
     	            	</tr>

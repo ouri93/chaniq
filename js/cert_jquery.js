@@ -396,7 +396,7 @@ $(function () {
     	$('#cert_iframe_fieldset').empty();
     	$('#cert_iframe_fieldset').append('<legend>Create Cert/Key Configuration</legend>');
     	//$('#cert_iframe_fieldset').append('<iframe src="/content/if_ssl_create.php" scrolling="no" width="700px" height="600" frameborder="0"></iframe>');    	
-    	$('#cert_iframe_fieldset').append('<iframe src="/content/if_ssl_create.php" scrolling="no" width="1050px" height="75%" frameborder="0"></iframe>');
+    	$('#cert_iframe_fieldset').append('<iframe src="/content/if_ssl_create.php" scrolling="yes" width="1050px" height="75%" frameborder="0"></iframe>');
     });
     
     // Event handler when 'Delete Cert/Key" button is clicked

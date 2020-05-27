@@ -77,6 +77,7 @@ function getCertCreateHtml(creType){
 		strHtml += "<tr id='r11'><td width='132px' ><label>Challenge Password</label></td><td><input type='password' id='crtCreConfChPW' /></td></tr>";
 		strHtml += "<tr id='r12'><td width='132px' ><label>Confirm Password</label></td><td><input type='password' id='crtCreConfChPW2' /></td></tr>";
 	}
+	strHtml += "<tr> <td style='padding:4px; color:#555; font-size:12pt;'><b> Key Properties</b></td><td></td></tr>";
 	strHtml += "<tr id='r13'><td width='132px' ><label>*Key Type</label></td><td><select id='crtCreConfKeyType' ><option value='RSA' selected='selected'>RSA</option><option value='DSA'>DSA</option><option value='ECDSA' >ECDSA</option></select></td></tr>";
 	strHtml += "<tr id='r14'><td width='132px' ><label>*Size</label></td><td><select id='crtCreConfKeySize' ><option value='512'>512</option><option value='1024'>1024</option><option value='2048' selected='selected' >2048</option><option value='4096' >4096</option></select>&nbsp;bits</td></tr>";
 	return strHtml;
@@ -134,10 +135,10 @@ $(function () {
     	var creType = $('#create_type_select').val();
     	alert("Selected Creation type: " + creType);
     	var strCertCreHtml = getCertCreateHtml(creType);
-    	alert("Created HTML code: " + strCertImpHtml);
+    	alert("Created HTML code: " + strCertCreHtml);
     	
     	$('#crtConfTable_tbody tr').each(function(index) {
-    		if (index != 0) $(this).remove();
+    		if (index != 0 && index != 1) $(this).remove();
     	});
 		
     	$('#crtConfTable_tbody').append(strCertCreHtml);
@@ -293,7 +294,10 @@ $(function () {
     	    	
     });
 
+    // F5 Python SDK 2.3.2 doesn't support CSR creation.
+    // CSR creation is supported from Python SDK 3.0.8 or later
     $('#crt_create_btn_build').on('click', function() {
+    	alert("Current F5 Python SDK Version (2.3.2) does not support CSR creation.\nCRS creation with Python SDK is supported from Python SDK 3.0.8 or later.")
     	
     });
     
