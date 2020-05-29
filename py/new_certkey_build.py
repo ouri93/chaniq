@@ -163,11 +163,11 @@ def new_certkey_build(active_ltm, certkeyImpType, certkeyImpName, certkeyKeySour
     logging.info("No Cert/Key name conflict. Now creating a Cert/Key")
     
     # f5LocalPath variable is used to specify F5 side cert/key download folder. 
-    # If Python SDK version is 2.3.2, we use exec_cmd command to install cert or key. Otherwise, create() method is used.
+    # If Python SDK version is 2.3.3, we use exec_cmd command to install cert or key. Otherwise, create() method is used.
     pySdkVer = str(chaniq_util.loadIniConfigVal('PYTHON_SDK_INFO', 'SDK_VER'))
     logging.info("Loaded Python SDK Version: " + pySdkVer)
     f5LocalPath = 'file:/var/config/rest/downloads/'
-    if pySdkVer == '2.3.2':
+    if pySdkVer == '2.3.3':
         f5LocalPath = '/var/config/rest/downloads/'
     
     # Upload Cert/Key file to F5 BIG-IP
@@ -177,7 +177,7 @@ def new_certkey_build(active_ltm, certkeyImpType, certkeyImpName, certkeyKeySour
         # Known issue with Password encrypted private Key - https://support.f5.com/csp/article/K46145454
         # Solution: Upgrade to BIG-IP 13.1.0 or later
         
-        if pySdkVer == '2.3.2':
+        if pySdkVer == '2.3.3':
             keyParam_set = {'from-local-file': f5LocalPath+certkeyImpName+'.key', 'name':certkeyImpName}
             certParam_set = {'from-local-file': f5LocalPath+certkeyImpName+'.crt', 'name':certkeyImpName}
         
@@ -189,11 +189,11 @@ def new_certkey_build(active_ltm, certkeyImpType, certkeyImpName, certkeyKeySour
             Ref1: https://devcentral.f5.com/s/feed/0D51T00006j1piKSAQ
             Ref2: https://programtalk.com/python-examples-amp/f5.bigip.contexts.TransactionContextManager/
             
-            If Python SDK version is 2.3.2, use exec_cmd(), use create() to install cert and key
+            If Python SDK version is 2.3.3, use exec_cmd(), use create() to install cert and key
             param_set = {'from-local-file': '/var/config/rest/downloads/keyfile.key', 'name':Your_key_name}
             Using bigi.tm.sys.crypto.keys.exec_cmd('install', **param_set) is a deprecated method.
             
-            If Python SDK version is newer than 2.3.2, use create() to install cert and key
+            If Python SDK version is newer than 2.3.3, use create() to install cert and key
             Use sys.file.ssl_keys.ssl_key and sys.file.ssl_certs.ssl_cert instead. 
             Use bigip.tm.sys.file.ssl_keys.ssl_key.create(name='name', sourcePath='file:sourcepath')
             Use bigip.tm.sys.file.ssl_certs.ssl_cert.create(name='name', sourcePath='file:sourcepath')
@@ -207,7 +207,7 @@ def new_certkey_build(active_ltm, certkeyImpType, certkeyImpName, certkeyKeySour
                 return json.dumps(strReturn)
             # Create a new key
             if certkeySecType == 'Password':
-                if pySdkVer == '2.3.2':
+                if pySdkVer == '2.3.3':
                     keyParam_set['securityType'] = 'password'
                     keyParam_set['passphrase'] = certkeySecTypeData
                     key = mr.tm.sys.crypto.keys.exec_cmd('install', **keyParam_set)
@@ -215,7 +215,7 @@ def new_certkey_build(active_ltm, certkeyImpType, certkeyImpName, certkeyKeySour
                     logging.info("I am here with password")
                     key = mr.tm.sys.file.ssl_keys.ssl_key.create(name=certkeyImpName, partition='Common', sourcePath=f5LocalPath+certkeyImpName+'.key', securityType='password', passphrase=certkeySecTypeData)
             elif certkeySecType == 'Normal':
-                if pySdkVer == '2.3.2':
+                if pySdkVer == '2.3.3':
                     logging.info("I am here with normal")
                     key = mr.tm.sys.crypto.keys.exec_cmd('install', **keyParam_set)
                 else:
@@ -230,7 +230,7 @@ def new_certkey_build(active_ltm, certkeyImpType, certkeyImpName, certkeyKeySour
             _upload(str(active_ltm), ('admin', admpass), chanIQFilePath + certkeyImpName + '.crt')
             logging.info("Cert file upload completed! Source File Full path and name: " + chanIQFilePath +  " name: " + certkeyImpName + '.crt')
             
-            if pySdkVer == '2.3.2':
+            if pySdkVer == '2.3.3':
                 cert = mr.tm.sys.crypto.certs.exec_cmd('install', **certParam_set)
             else:
                 cert = mr.tm.sys.file.ssl_certs.ssl_cert.create(name=certkeyImpName, partition='Common', sourcePath=f5LocalPath+certkeyImpName + '.crt')
@@ -239,6 +239,21 @@ def new_certkey_build(active_ltm, certkeyImpType, certkeyImpName, certkeyKeySour
         elif certkeyImpType == 'PKCS 12 (IIS)':
             logging.info("Uploading and installing PKCS 12 Cert and Key")
             _upload(str(active_ltm), ('admin', admpass), chanIQFilePath + certkeyImpName + '.pfx')
+            
+            # Extract cert and key from pfx
+            # openssl covernt pfx to pem, then extract cert and key from PEM.
+            # Extract Cert: openssl pkcs12 -clcerts -nokeys -in /path/to/yourpfx.pfx -out certFromPfx.crt -password pass:"PFX_pass" -passin pass:"PFX_pass"
+            # Extract key: openssl pkcs12 -nocerts -in /path/to/yourpfx.pfx -out keyFromPfx.key -password pass:"PFX_pass" -passin pass:"PFX_pass" -passout pass:
+            # Run bash command => rtstat = mr.tm.util.bash.exec_cmd('run', utilCmdArgs='-c "netstat -rn"')
+            certCmd = "-c '" + "openssl pkcs12 -clcerts -nokeys -in " + f5LocalPath + certkeyImpName + ".pfx -out " + f5LocalPath + certkeyImpName + ".crt -password pass:" + certkeyPKCSPw + " -passin pass:" + certkeyPKCSPw + "'"
+            keyCmd = "-c '" + "openssl pkcs12 -nocerts -in " + f5LocalPath + certkeyImpName + ".pfx -out " + f5LocalPath + certkeyImpName + ".key -password pass:" + certkeyPKCSPw + " -passin pass:" + certkeyPKCSPw + " -passout pass:" + certkeyPKCSPw + "'"
+            keyCmdNoPass = "-c '" + "openssl rsa -in " + f5LocalPath + certkeyImpName + ".key -out " + f5LocalPath + certkeyImpName + ".key -passin pass:" + certkeyPKCSPw + "'"
+            
+            rtKey = mr.tm.util.bash.exec_cmd('run', utilCmdArgs=keyCmd)
+            # Remove Key password
+            rtKeyNoPass = mr.tm.util.bash.exec_cmd('run', utilCmdArgs=keyCmdNoPass)
+            rtCrt = mr.tm.util.bash.exec_cmd('run', utilCmdArgs=certCmd)
+            
             #_upload(str(active_ltm), ('admin', 'rlatkdcks'), chanIQFilePath + certkeyImpName + '.crt')
             logging.info("PKCS Key and Cert file upload completed! - Source File Full path and name: " + chanIQFilePath +  " name: " + certkeyImpName + '.pfx')
             '''
@@ -250,22 +265,20 @@ def new_certkey_build(active_ltm, certkeyImpType, certkeyImpName, certkeyKeySour
             mr.tm.sys.crypto.keys.exec_cmd('install', **keyparam_set)
             mr.tm.sys.crypto.certs.exec_cmd('install', **certparam_set)
             '''
-            '''
-            Need to extract key and cert from pkcs12, then import them.
-            '''
+
             # Create a new key
             if certkeySecType == 'Password':
-                if pySdkVer == '2.3.2':
+                if pySdkVer == '2.3.3':
                     keyParam_set['securityType'] = 'password'
                     keyParam_set['passphrase'] = certkeySecTypeData
                     key = mr.tm.sys.crypto.keys.exec_cmd('install', **keyParam_set)
                 else:
-                    key = mr.tm.sys.file.ssl_keys.ssl_key.create(name=certkeyImpName, partition='Common', sourcePath=f5LocalPath+certkeyImpName+'.pfx', securityType='password', passphrase=certkeySecTypeData)
+                    key = mr.tm.sys.file.ssl_keys.ssl_key.create(name=certkeyImpName, partition='Common', sourcePath=f5LocalPath+certkeyImpName+'.key', securityType='password', passphrase=certkeySecTypeData)
             elif certkeySecType == 'Normal':
-                if pySdkVer == '2.3.2':
+                if pySdkVer == '2.3.3':
                     key = mr.tm.sys.crypto.keys.exec_cmd('install', **keyParam_set)
                 else:
-                    key = mr.tm.sys.file.ssl_keys.ssl_key.create(name=certkeyImpName, partition='Common', sourcePath=f5LocalPath+certkeyImpName+'pfx')
+                    key = mr.tm.sys.file.ssl_keys.ssl_key.create(name=certkeyImpName, partition='Common', sourcePath=f5LocalPath+certkeyImpName+'key')
             else:
                 logging.info("Unsupported Key Security Type - Provided Security Type: " + certkeySecType)
                 strReturn[str(idx)] = "Unsupported Key Security Type - Provided Security Type: " + certkeySecType 
@@ -273,10 +286,10 @@ def new_certkey_build(active_ltm, certkeyImpType, certkeyImpName, certkeyKeySour
             logging.info("PKCS12 Key file upload and installation has been completed")
             
             # Create a new cert            
-            if pySdkVer == '2.3.2':
+            if pySdkVer == '2.3.3':
                 cert = mr.tm.sys.crypto.certs.exec_cmd('install', **certParam_set)
             else:
-                cert = mr.tm.sys.file.ssl_certs.ssl_cert.create(name=certkeyImpName, partition='Common', sourcePath=f5LocalPath+certkeyImpName + '.pfx')
+                cert = mr.tm.sys.file.ssl_certs.ssl_cert.create(name=certkeyImpName, partition='Common', sourcePath=f5LocalPath+certkeyImpName + '.crt')
             
             logging.info("PKCS12 Cert file upload and installation has been completed")
             logging.info("PKCS Cert and Key file upload and installation have been completed") 

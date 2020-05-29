@@ -294,10 +294,10 @@ $(function () {
     	    	
     });
 
-    // F5 Python SDK 2.3.2 doesn't support CSR creation.
+    // F5 Python SDK 2.3.3 doesn't support CSR creation.
     // CSR creation is supported from Python SDK 3.0.8 or later
     $('#crt_create_btn_build').on('click', function() {
-    	alert("Current F5 Python SDK Version (2.3.2) does not support CSR creation.\nCRS creation with Python SDK is supported from Python SDK 3.0.8 or later.")
+    	alert("Current F5 Python SDK Version (2.3.3) does not support CSR creation.\nCRS creation with Python SDK is supported from Python SDK 3.0.8 or later.")
     	
     });
     
