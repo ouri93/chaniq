@@ -78,7 +78,7 @@ function getCertCreateHtml(creType){
 		strHtml += "<tr id='r12'><td width='132px' ><label>Confirm Password</label></td><td><input type='password' id='crtCreConfChPW2' /></td></tr>";
 	}
 	strHtml += "<tr> <td style='padding:4px; color:#555; font-size:12pt;'><b> Key Properties</b></td><td></td></tr>";
-	strHtml += "<tr id='r13'><td width='132px' ><label>*Key Type</label></td><td><select id='crtCreConfKeyType' ><option value='RSA' selected='selected'>RSA</option><option value='DSA'>DSA</option><option value='ECDSA' >ECDSA</option></select></td></tr>";
+	strHtml += "<tr id='r13'><td width='132px' ><label>*Key Type (Only RSA is supported)</label></td><td><select id='crtCreConfKeyType' ><option value='RSA' selected='selected'>RSA</option><option value='DSA'>DSA</option><option value='ECDSA' >ECDSA</option></select></td></tr>";
 	strHtml += "<tr id='r14'><td width='132px' ><label>*Size</label></td><td><select id='crtCreConfKeySize' ><option value='512'>512</option><option value='1024'>1024</option><option value='2048' selected='selected' >2048</option><option value='4096' >4096</option></select>&nbsp;bits</td></tr>";
 	return strHtml;
 }

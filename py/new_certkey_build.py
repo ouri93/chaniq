@@ -212,11 +212,9 @@ def new_certkey_build(active_ltm, certkeyImpType, certkeyImpName, certkeyKeySour
                     keyParam_set['passphrase'] = certkeySecTypeData
                     key = mr.tm.sys.crypto.keys.exec_cmd('install', **keyParam_set)
                 else:
-                    logging.info("I am here with password")
                     key = mr.tm.sys.file.ssl_keys.ssl_key.create(name=certkeyImpName, partition='Common', sourcePath=f5LocalPath+certkeyImpName+'.key', securityType='password', passphrase=certkeySecTypeData)
             elif certkeySecType == 'Normal':
                 if pySdkVer == '2.3.3':
-                    logging.info("I am here with normal")
                     key = mr.tm.sys.crypto.keys.exec_cmd('install', **keyParam_set)
                 else:
                     key = mr.tm.sys.file.ssl_keys.ssl_key.create(name=certkeyImpName, partition='Common', sourcePath=f5LocalPath+certkeyImpName+'key')
