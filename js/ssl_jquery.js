@@ -1,3 +1,18 @@
+function iterAssArray(assArray){
+	var allKeyVal = '< Associate Array Key-Value List >\n\n';
+	$.each(assArray, function(key, value) {
+		allKeyVal += key + ":" + value + "\n";
+	});
+	return allKeyVal;
+}
+
+function iterArray(aArray){
+	var allVals = '< Array Value List >\n\n';
+	$.each(aArray, function(index) {
+		allVals += aArray[index] + "\n";
+	});
+	return allVals;
+}
 /* 
  * Javascript and JQuery for SSL Cert and Key management
  */
@@ -297,7 +312,92 @@ $(function () {
     // F5 Python SDK 2.3.3 doesn't support CSR creation.
     // CSR creation is supported from Python SDK 3.0.8 or later
     $('#crt_create_btn_build').on('click', function() {
-    	alert("Current F5 Python SDK Version (2.3.3) does not support CSR creation.\nCRS creation with Python SDK is supported from Python SDK 3.0.8 or later.")
+    	var issuerType = $('#create_type_select').val();
+
+    	// Required fields check
+    	var sslName = $('#crtCreConfName').val();
+    	var sslCN = $('#crtCreConfCN').val();
+    	if (sslName == '' || sslCN == ''){
+    		alert("Certificate Name and/or Commone Name are required!")
+    		return;
+    	}
+    	var sslSelfLifetime = $('#crtCreConfLifetime').val();
+    	var sslCAChallengePW = $('#crtCreConfChPW').val();
+    	var sslCAConfmPW = $('#crtCreConfChPW2').val();
+    	
+    	if (issuerType == 'Self' && sslSelfLifetime == ''){
+    		alert ("Lifetime can't be empty");
+    		return;
+    	}
+    	if (issuerType == 'Certificate Authority' && ( sslCAChallengePW != sslCAConfmPW )){
+    		alert("Password is not matching");
+    		return;
+    	}
+    	
+    	var sslDvz = $('#crtCreConfDVZ').val();
+    	var sslOG = $('#crtCreConfOG').val();
+    	var sslLoc = $('#crtCreConfLOC').val();
+    	var sslState = $('#crtCreConfState').val();
+    	var sslCountry = $('#crtCreConfCountry').val();
+    	var sslEmail = $('#crtCreConfEmail').val();
+    	var sslSAN = $('#crtCreConfSAN').val();
+    	var sslKeyType = $('#crtCreConfKeyType').val();
+    	var sslKeySize = $('#crtCreConfKeySize').val();
+
+    	var sslCreateData = {'phpFileName':'', 'sslDevIP':'', 'issuerType':'', 'sslName':'', 'sslCN':'', 'sslSelfLifetime':'', 'sslCAChallengePW':'', 'sslDvz':'', 'sslOG':'', 'sslLoc':'', 'sslState':'', 'sslCountry':'', 'sslEmail':'', 'sslSAN':'', 'sslKeyType':'', 'sslKeySize':'' };
+    	//Retrieve the element data of the parent window
+    	var nameAndIp = window.parent.document.getElementById('ltmSelBox').value;
+    	var arr = nameAndIp.split(":");
+    	sslCreateData['phpFileName'] = 'new_ssl_build';
+    	sslCreateData['sslDevIP'] = arr[1];
+    	sslCreateData['issuerType'] = issuerType;
+    	sslCreateData['sslName'] = sslName;
+    	sslCreateData['sslCN'] = sslCN;
+    	if (issuerType == 'Self')
+    		sslCreateData['sslSelfLifetime'] = sslSelfLifetime;
+    	if (issuerType == 'Certificate Authority')
+    		sslCreateData['sslCAChallengePW'] = sslCAChallengePW;
+    	sslCreateData['sslDvz'] = sslDvz;
+    	sslCreateData['sslOG'] = sslOG;
+    	sslCreateData['sslLoc'] = sslLoc;
+    	sslCreateData['sslState'] = sslState;
+    	sslCreateData['sslCountry'] = sslCountry;
+    	sslCreateData['sslEmail'] = sslEmail;
+    	sslCreateData['sslSAN'] = sslSAN;
+    	sslCreateData['sslKeyType'] = sslKeyType;
+    	sslCreateData['sslKeySize'] = sslKeySize; 
+    	
+    	// Print input data
+    	//alert(iterAssArray(sslCreateData));
+
+    	ajxOut = $.ajax({
+    		url: '/content/new_ssl_build.php',
+    		type: 'POST',
+    		dataType: 'JSON',
+    		async: false,
+    		data: {'jsonData' : JSON.stringify(sslCreateData)},
+    		error: function(jqXHR, textStatus, errorThrown){
+    			alert("Ajax call to build requested SSL Cert/Key/CSR has failed!");
+                console.log('jqXHR:');
+                console.log(jqXHR);
+                console.log('textStatus:');
+                console.log(textStatus);
+                console.log('errorThrown:');
+                console.log(errorThrown);
+    		}
+    	});    	
+    	ajxOut.done(function (response_in) {
+    		var strResult = '';
+    		$.each(response_in, function(index) {
+    			if(index == 0) 
+    				strResult = "<b>" + response_in[index] + "</b><br>";
+    			else
+    				strResult += response_in[index] + "<br>";
+    		});
+    		
+    		//alert("Return output: " + strResult);
+    		$('#newcrt_EvalReview').append(strResult);
+    	});  	
     	
     });
     
