@@ -158,9 +158,9 @@ def new_ssl_build(active_ltm, issuerType, sslName, sslCN, sslSelfLifetime, sslCA
     # Create a private key
     strKeyCmd = ""
     if issuerType == 'Certificate Authority' and sslCAChallengePW != '':
-        strKeyCmd =  "-c '" + 'openssl genrsa -out "/var/config/rest/downloads/' + sslName + '.key" -passout pass:' + sslCAChallengePW + " 2048" + "'"
+        strKeyCmd =  "-c '" + 'openssl genrsa -out "/var/config/rest/downloads/' + sslName + '.key" -passout pass:' + sslCAChallengePW + " " + str(sslKeySize) +  "'"
     else:
-        strKeyCmd = "-c '" + 'openssl genrsa -out "/var/config/rest/downloads/' + sslName + '.key" 2048' + "'"
+        strKeyCmd = "-c '" + 'openssl genrsa -out "/var/config/rest/downloads/' + sslName + '.key" ' + str(sslKeySize) + "'"
     logging.info("Key Generation String: " + strKeyCmd)
     mr.tm.util.bash.exec_cmd('run', utilCmdArgs = strKeyCmd)
     # Install the generate private key on F5
@@ -172,20 +172,19 @@ def new_ssl_build(active_ltm, issuerType, sslName, sslCN, sslSelfLifetime, sslCA
         else:
             mr.tm.sys.file.ssl_keys.ssl_key.create(name=sslName, partition='Common', sourcePath=f5LocalPath+sslName+'.key')
     logging.info("Key has been generated successfully")    
-    strReturn = {str(idx) : 'Key has been generated successfully'}
+    strReturn.update({str(idx) : 'Key has been generated and installed successfully'})
     idx += 1
+
+    subj = ""
+    # Build a subj string
+    dicCertProp = {'emailAddress':sslEmail, 'CN':sslCN, 'OU':sslDvz, 'O':sslOG, 'L':sslLoc, 'ST':sslState, 'C':sslCountry.split(":")[1] }
+
+    for k,v in dicCertProp.iteritems():
+        if v != "":
+            subj = subj + "/" + k + "=" + v
 
     # Create a cert using the existing key (Only for Self Signed cert)
     if issuerType == "Self":
-        strCrtCmd = ""
-        subj = ""
-        # Build a subj string
-        dicCertProp = {'emailAddress':sslEmail, 'CN':sslCN, 'OU':sslDvz, 'O':sslOG, 'L':sslLoc, 'ST':sslState, 'C':sslCountry.split(":")[1] }
-
-        for k,v in dicCertProp.iteritems():
-            if v != "":
-                subj = subj + "/" + k + "=" + v
-
         strCrtCmd = "-c '" + 'openssl req -key "/var/config/rest/downloads/' + sslName + '.key" -new -x509 -days ' + str(sslSelfLifetime) + ' -out "/var/config/rest/downloads/' + sslName + '.crt" -subj "' + subj + '"' + "'"
         logging.info("Crt Generation String: " + strCrtCmd)
         mr.tm.util.bash.exec_cmd('run', utilCmdArgs = strCrtCmd)
@@ -197,12 +196,28 @@ def new_ssl_build(active_ltm, issuerType, sslName, sslCN, sslSelfLifetime, sslCA
         else:
             mr.tm.sys.file.ssl_certs.ssl_cert.create(name=sslName, partition='Common', sourcePath=f5LocalPath+sslName+'.crt')
         
-        strReturn = {str(idx) : 'Cert has been generated successfully'}
+        strReturn.update({str(idx) : 'Cert has been generated and installed successfully'})
         idx += 1
 
-    #strCrtCmd = "-c '" + "openssl req -key /var/config/rest/downloads/test0531.key -new -x509 -days 365 -out /var/config/rest/downloads/test0531.crt -subj '/emailAddress=webmaster@example.com/CN=example.com/O=HOME/OU=IT Department/C=UA/ST=Kansas/L=Lenexa'" + "'"
-    #mr.tm.util.bash.exec_cmd('run', utilCmdArgs = strCrtCmd)
-            
+    # Create a CSR using the existing private key
+    strCsrCmd = ""
+    if issuerType == "Certificate Authority":
+        if sslCAChallengePW != '':
+            strCsrCmd = "-c '" + 'openssl req -out "/var/config/rest/downloads/' + sslName + '.csr"  -new -key "/var/config/rest/downloads/' + sslName + '.key" -passin pass: '+ sslCAChallengePW + '-subj "' + subj + '"' + "'" 
+        else:
+            strCsrCmd = "-c '" + 'openssl req -out "/var/config/rest/downloads/' + sslName + '.csr"  -new -key "/var/config/rest/downloads/' + sslName + '.key" -subj "' + subj + '"' + "'"                
+    
+        logging.info("CSR Generation String: " + strCsrCmd)
+        mr.tm.util.bash.exec_cmd('run', utilCmdArgs = strCsrCmd)
+        logging.info("CSR has been generated")
+    
+        # Install the generated CSR on F5 - CSR is created through openssl command but installing the csr on F5 keeps failing.
+        mr.tm.sys.file.ssl_csrs.ssl_csr.create(name=sslName, sourcePath='file:/var/config/rest/downloads/' + sslName + '.csr', subject='CN=www.home.local,L=Lenexa,ST=KS,C=US,emailAddress=admin@home.local')
+        #mr.tm.sys.config.exec_cmd('save')
+        
+        strReturn.update({str(idx) : 'CSR has been generated and installed successfully'})
+        idx += 1
+        
     return json.dumps(strReturn)
 
 
