@@ -2,13 +2,13 @@
 
 <-------------------------------- Width: 1280px -------------------------------------->
 --------------------------------------------------------------------------------------| ^
-|  header.php (Color: #3b46ff)                                                        | |
+|  header.php (Color: #c4d4e3)                                                        | |
 |                                                                                     | | 80px
 |-- DIV: content ---------------------------------------------------------------------| v
 |                   |                                                                 |
 | sidebar.php       |  content/contentswitch.php                                      |
 | (DIV: sidebar)    |  (DIV: maincontent)                                             |
-| (Color: #d8d8d8)  |  - Initially shows default content(content/contentbase.php)     |
+| (Color: #d3e1ea)  |  - Initially shows default content(content/contentbase.php)     |
 |                   |  - According to a chosen menu from a sidebar.php, corresponding |
 |                   |    content will be displayed.                                   |
 |                   |  - Each content from the chosen menu will be displayed within   |

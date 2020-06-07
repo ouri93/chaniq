@@ -54,7 +54,7 @@ img.center {
 }
 
 #header {
-    background-color: #3b46ff;
+    background-color: #c4d4e3;
     /* width: 900px; */
     width: 1280px;
     height:80px;
@@ -67,7 +67,8 @@ img.center {
 #logo {
     float: left;
     margin: 20px auto auto 10px;
-    border: 1px solid #fff;
+    /* border: 1px solid #fff; */
+    border: 0px solid #fff;
 }
 
 #navbar {
@@ -88,7 +89,7 @@ img.center {
 
 #sidebar {
     /* background-color: #ffffff; */
-    background-color: #D8D8D8;
+    background-color: #d3e1ea;
     width: 150px;
     /* height: 88%; */
     height: 100%;
@@ -96,6 +97,40 @@ img.center {
     /* border: 1px solid #000; */
     border: 0px solid #fff;
 }
+
+#baseContent {
+    background-color: #ffffff;  
+    width: 1100px;    
+    height: 98%;
+    margin: 10px auto 10px auto;
+    border: 0px solid #000;
+}
+
+#baseContent h1 {
+    font-weight:1000;
+    color: #888888;
+    font-size:30pt;
+    /* margin and padding-left are inhereted from global h1 */
+    /* margin:5px ;
+    padding-left:15px; */    
+}
+
+#baseContent h2 {
+    font-weight:500;
+    color: #888888;
+    font-size:20pt;
+    padding-left:15px;
+    margin:5px ;
+}
+
+#baseContentBody {
+    font-weight:200;
+    color: #888888;
+    font-size:14pt;
+    padding-left:15px;
+    margin:5px ;
+}
+
 
 #maincontent {
     background-color: #ffffff;
