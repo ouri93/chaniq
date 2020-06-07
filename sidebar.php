@@ -25,7 +25,7 @@ if ($_SESSION['loggedin'] != true){
              echo "<li><a href='?go=new_irule'>iRule</a></li>";
              echo "<li><a href='?go=new_monitor'>Monitor</a></li>";
              echo "<li><a href='?go=new_snatpool'>Snatpool</a></li>";
-             echo "<li><a href='?go=new_policies'>Policies</a></li>";
+             #echo "<li><a href='?go=new_policies'>Policies</a></li>";
              echo "</ul>";
          echo "</div>";
          echo "<div class='menu-item'>";

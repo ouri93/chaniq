@@ -1,13 +1,14 @@
 ** index.php **
 
---------------------------------------------------------------------------------------|
-|  header.php                                                                         |
-|                                                                                     |
-|-- DIV: content ---------------------------------------------------------------------|
+<-------------------------------- Width: 1280px -------------------------------------->
+--------------------------------------------------------------------------------------| ^
+|  header.php (Color: #3b46ff)                                                        | |
+|                                                                                     | | 80px
+|-- DIV: content ---------------------------------------------------------------------| v
 |                   |                                                                 |
 | sidebar.php       |  content/contentswitch.php                                      |
 | (DIV: sidebar)    |  (DIV: maincontent)                                             |
-|                   |  - Initially shows default content(content/contentbase.php)     |
+| (Color: #d8d8d8)  |  - Initially shows default content(content/contentbase.php)     |
 |                   |  - According to a chosen menu from a sidebar.php, corresponding |
 |                   |    content will be displayed.                                   |
 |                   |  - Each content from the chosen menu will be displayed within   |
@@ -16,13 +17,15 @@
 |                   |    content/if_new_vs.php                                        |
 |                   |    ( ** This two files process can be simplied later ** )       |
 |                   |                                                                 |
-|                   |                                                                 |
+|                   |   ( Color: #f5f5f5 )                                            |
 |                   |                                                                 |
 |                   |                                                                 |
 |                   |                                                                 |
 |                   |                                                                 |
 --------------------------------------------------------------------------------------|
-| footer.php                                                                          |
+| footer.php (Color: #e5e5e5)                                                         |
 |                                                                                     |
 |                                                                                     |
 --------------------------------------------------------------------------------------|
+
+Body Background Color: #70615c

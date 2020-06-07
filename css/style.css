@@ -9,7 +9,8 @@ and open the template in the editor.
 */
 
 body {
-    background-color: #f0f0f0;
+    /* background-color: #f0f0f0; */
+    background-color: #70615c;
     margin: 0px;
     padding: 0px;
     font-family: Calibri, Arial, Tahoma;
@@ -53,25 +54,27 @@ img.center {
 }
 
 #header {
-    background-color: #ffffff;
+    background-color: #3b46ff;
     /* width: 900px; */
     width: 1280px;
     height:80px;
     align-items: center;
     margin: 0px auto 0px auto;
-    border: 1px solid #000;
+    /* border: 1px solid #000; */
+    border: 0px solid #fff;
 }
 
 #logo {
     float: left;
     margin: 20px auto auto 10px;
-    border: 1px solid #000;
+    border: 1px solid #fff;
 }
 
 #navbar {
     float: right;
     margin: 40px 10px auto auto;
-    border: 1px solid #000;
+    /* border: 1px solid #fff; */
+    border: 0px solid #fff;
 }
 
 #content {
@@ -84,23 +87,26 @@ img.center {
 }
 
 #sidebar {
-    background-color: #ffffff;
+    /* background-color: #ffffff; */
+    background-color: #D8D8D8;
     width: 150px;
     /* height: 88%; */
     height: 100%;
     float: left;
-    border: 1px solid #000;    
+    /* border: 1px solid #000; */
+    border: 0px solid #fff;
 }
 
 #maincontent {
-    background-color: #ffffff;    
+    background-color: #ffffff;
     /* width: 745px; */
     /* 1128 = 1280 - (150 + 2) where 2 is padding */
     width: 1126px;
     /* height: auto; */
     height: 99.8%;
     float: left;
-    border: 1px solid #000;
+    /* border: 1px solid #000; */
+    border: 1px solid #fff;
     }
 
 /* Sidebar Menu Styles */
@@ -174,12 +180,14 @@ img.center {
 
 /* Footer Styles */
 #footer {
-    background-color: #ffffff;
+    /* background-color: #ffffff; */
+    background-color: #e5e5e5;
     /* width: 900px; */
     width: 1280px;    
     height: 30px;
     margin: 0px auto 0px auto;
-    border: 1px solid #000;
+    /* border: 1px solid #000; */
+    border: 1px solid #fff;
     clear: both;
 }
 
@@ -671,7 +679,8 @@ nav ul {
 }
 .nav > li { 
 	/* Set all li width to 148px */
-	width: 148px;
+	/* width: 148px; */
+	width: 224px;
 	float: left; 
 	border-bottom: 4px #aaa solid; 
 	margin-right: 1px; 

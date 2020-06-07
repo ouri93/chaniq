@@ -26,9 +26,9 @@ if ($_SESSION['loggedin'] != true){
         <title>Chan-IQ - BIG-IP Management System</title>
     </head>
     <body>
-        <div id="header">
+        <div id="header" >
             <div id="logo">
-                <img src="./images/chaniq_top.png" >
+                <a href="index.php"><img src="./images/chaniq_top.png" ></a>
             </div>
             <div id="navbar" align="right">
                 <?php
@@ -37,3 +37,4 @@ if ($_SESSION['loggedin'] != true){
                 ?>
             </div>
         </div>
+        

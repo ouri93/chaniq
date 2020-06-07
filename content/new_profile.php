@@ -13,13 +13,14 @@ if ($_SESSION['role'] == 'guest'){
     <?php
     echo "<nav>";
     echo "<ul class='nav'>";
-    
+
         echo "<li id='li_prf_svc'><a href='#'>Services</a>";
             echo "<ul id='ul_prf_selected'>";
                 echo "<li value='HTTP'><a href='#'>HTTP</a></li>";
                 echo "<li value='DNS'><a href='#'>DNS</a></li>";
             echo "</ul>";
         echo "</li>";
+        
         
         echo "<li id='li_prf_persist'><a href='#'>Persistence</a>";
             echo "<ul id='ul_prf_selected'>";
