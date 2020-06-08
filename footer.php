@@ -6,8 +6,9 @@ if ($_SESSION['loggedin'] != true){
     header('Location: login.php');
 }
 ?>
-    <div id="footer">
-        <p>Footer</p>
+    <div id="footer"><p style="text-align: center;padding-top:5px">
+        Since 2017 | Copyleft(<img src="./images/copyleft.png">) | Email: chaniqhelper at gmail dot com
+        </p>
     </div>
 
     </body>

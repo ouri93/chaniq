@@ -30,7 +30,7 @@ if ($_SESSION['loggedin'] != true){
 		
 		<h2><ul> System Requirements </ul></h2>
 		<div class="baseContentBody">
-			<b>Chan-IQ</b> has been built on Ubuntu 14.04 with LAMP (Linux, Apache, MySQL, and PHP) package. Here are the required packages.<br><br>
+			<b>Chan-IQ</b> has been built on Ubuntu 14.04(Upgraded to 18.04) with LAMP (Linux, Apache, MySQL, and PHP) package. Here are the required packages.<br><br>
 			<ul>
 				<li> F5 Python SDK (2.3.3) </li>
 				<li> Python 2.7 or later </li>
@@ -48,6 +48,21 @@ if ($_SESSION['loggedin'] != true){
 		</div>
 		
 		<h2><ul> Contribution </ul></h2>
+		<div class="baseContentBody">
+			Are you interested in Chan-IQ project and want to join ths project?<br>
+			Thank you very much! Please send your email to <b><i>chaniqhelper at gmai dot com.</i></b><br><br>
+		</div>
+		
 		<h2><ul> License </ul></h2>
+			<div class="baseContentBody">
+			<b>Chan-IQ</b> project follows <a href="https://github.com/ouri93/chaniq/blob/master/LICENSE">GNU General Public Licesne.</a><br><br>
+			</div>
+			
 		<h2><ul> Need help? </ul></h2>
+		
+		<div class="baseContentBody">
+			<b>Chan-IQ</b> project is my personal project and I didn't set any dedicated hours for this project. Whenever I have some extra time, I would
+			update this project without any guaranteed timeline. However if you have any good ideas or need any help, shoot me an email to 
+			<b><i>chaniqhelper at gmai dot com.</i></b><br><br>
+		</div>
 </div>

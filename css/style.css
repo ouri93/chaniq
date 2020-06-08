@@ -235,6 +235,9 @@ img.center {
     /* border: 1px solid #000; */
     border: 1px solid #fff;
     clear: both;
+    font-family: Calibri, Arial, Tahoma;
+    font-size: 15px;
+    font-weight:800;
 }
 
 /* Stylesheet for Virtual server building form */
