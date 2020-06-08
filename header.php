@@ -30,6 +30,8 @@ if ($_SESSION['loggedin'] != true){
                 font-family: Calibri, Arial, Tahoma;
                 font-size: 20px;
                 font-weight: bold;
+                color: #888888;
+                font-weight:1000;
             }
         </style>
     </head>

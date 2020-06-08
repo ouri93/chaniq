@@ -123,12 +123,23 @@ img.center {
     margin:5px ;
 }
 
-#baseContentBody {
+.baseContentBody {
     font-weight:200;
     color: #888888;
     font-size:14pt;
     padding-left:15px;
     margin:5px ;
+}
+
+/* Ref: https://codeburst.io/how-to-create-horizontal-scrolling-containers-d8069651e9c6 */
+.div_vertical_scroll {
+	overflow-x:hidden;
+	overflow-y: scroll;
+	white-space: wrap;
+}
+
+.baseContentBody ul{
+    padding-left:35px;
 }
 
 
