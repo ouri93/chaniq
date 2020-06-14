@@ -298,7 +298,7 @@ $(function () {
     	$.each(irData, function(index) {	
     	    output = output + irData[index] + "\n";
     	});
-    	alert("Data: " + output);
+    	//alert("Data: " + output);
     	
     	
     	ajaxOut = buildIrAjax("new_irule_build", irData);
@@ -419,7 +419,7 @@ $(function () {
 	   	irData['IrType'] = $('#chg_ir_type').val();
 	   	irData['IrDgName'] = this.value;
 	   	
-	   	alert("iRule or Data Group: " + irData['IrType'] + "\nName: " + irData['IrDgName'] );
+	   	//alert("iRule or Data Group: " + irData['IrType'] + "\nName: " + irData['IrDgName'] );
     	// Call Ajax to retrieve iRule or Data Group configuration
     	ajaxOut = $.ajax({
     		url: '/content/load_irdg_config.php',
@@ -475,7 +475,7 @@ $(function () {
    	$.each(irData, function(index) {	
    	    output = output + irData[index] + "\n";
    	});
-   	alert("Configuration Data\n" + output);
+   	//alert("Configuration Data\n" + output);
    	
 	// Call Ajax to update iRule or Data Group configuration
 	ajaxOut = $.ajax({

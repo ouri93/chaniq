@@ -148,9 +148,9 @@ $(function () {
     // SSL Key/Cert creation
     $('#create_cert_type').on('change','#create_type_select', function (e) {
     	var creType = $('#create_type_select').val();
-    	alert("Selected Creation type: " + creType);
+    	//alert("Selected Creation type: " + creType);
     	var strCertCreHtml = getCertCreateHtml(creType);
-    	alert("Created HTML code: " + strCertCreHtml);
+    	//alert("Created HTML code: " + strCertCreHtml);
     	
     	$('#crtConfTable_tbody tr').each(function(index) {
     		if (index != 0 && index != 1) $(this).remove();
@@ -176,7 +176,7 @@ $(function () {
     // File Explorer to search Cert and Key file
     $('#crtConfTable_tbody').on('change', '#crtConfSource', function(){
     	var crtConfFileName = $('#crtConfSource').val();
-    	alert("Chosen file name and path: " + crtConfFileName);
+    	//alert("Chosen file name and path: " + crtConfFileName);
     	    	
     });
     $('#crtConfTable_tbody').on('change', '#crtSecType', function(){
@@ -240,7 +240,7 @@ $(function () {
     	if ( impType == "PKCS 12 (IIS)" )
     		sslImpData['sslPKCSPw'] = $('#crtConfPKCSPw').val();
     	
-    	alert("Device IP: " + sslImpData['sslDevIP'] + "Import Type: " + sslImpData['sslImpType'] + "SSL Name: " + sslImpData['sslImpName'] + " Key Source: " + sslImpData['sslKeySource']+ " Key SourceData: " + sslImpData['sslKeySourceData'] + " Secu Type: " + sslImpData['sslSecType']+ " Secu Data: " + sslImpData['sslSecTypeData']+ " PKCS Only PW: " + sslImpData['sslPKCSPw']);
+    	//alert("Device IP: " + sslImpData['sslDevIP'] + "Import Type: " + sslImpData['sslImpType'] + "SSL Name: " + sslImpData['sslImpName'] + " Key Source: " + sslImpData['sslKeySource']+ " Key SourceData: " + sslImpData['sslKeySourceData'] + " Secu Type: " + sslImpData['sslSecType']+ " Secu Data: " + sslImpData['sslSecTypeData']+ " PKCS Only PW: " + sslImpData['sslPKCSPw']);
     	
     	
     	// Upload a file to the Web Server (/var/www/chaniq/log/tmp) crtConfSource

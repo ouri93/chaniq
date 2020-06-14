@@ -84,7 +84,7 @@ def resetuserpw_ajax(db_ip, un, role, newpass):
     password = config.get('DB_ADMIN', 'PW')
     
     #config.close()
-    logging.info("DB name: " + dbname + " username: " + username + " password: " + password)
+    #logging.info("DB name: " + dbname + " username: " + username + " password: " + password)
     
     try:
         #logging.info("Try to connection established DB IP: " + db_ip + " Passwd: " + newpass)
@@ -92,7 +92,7 @@ def resetuserpw_ajax(db_ip, un, role, newpass):
         logging.info("Connection established")
 
         hashed_pass = get_hashed_password(newpass)
-        logging.info("Hashed Pass: " + hashed_pass)
+        #logging.info("Hashed Pass: " + hashed_pass)
         
         # Update hashed password
         mycursor = con.cursor()

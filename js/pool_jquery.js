@@ -289,7 +289,7 @@ function loadOptNames(ltmIP, loadType, selID){
 
 function loadObjNames(ltmIP, objType, selID){
 	var callingUrl = '';
-	alert("loadObjNames called - selID: " + selID + " objType: " + objType);
+	//alert("loadObjNames called - selID: " + selID + " objType: " + objType);
 	callingUrl = 'get_ltmobj_names';
 	
 	ajxOut = $.ajax({
@@ -314,7 +314,7 @@ function loadObjNames(ltmIP, objType, selID){
 
 function loadObjNamesProcessData(response_in, selID) {
 	var strResult = '';
-	alert("loadObjNameProcessData called - selID: " + selID);
+	//alert("loadObjNameProcessData called - selID: " + selID);
 	//Remove existing profile types and then add new ones
 	$('#' + selID + ' option').each(function(index) {
 		if (index != 0) $(this).remove();
@@ -347,7 +347,7 @@ function poolConfigProcessData(response_in) {
 		var pmSettings = new Array(numOfPoolMembers);
 		for (i=0; i<numOfPoolMembers;i++){
 			pmSettings[i] = responseArray[i+1].split("|");
-			alert(iterArray(pmSettings[i]));
+			//alert(iterArray(pmSettings[i]));
 			strResult += (i+1) + "th Pool member configuration: " + pmSettings[i] + "<br>";	
 		} 
 		

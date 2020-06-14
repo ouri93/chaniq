@@ -22,11 +22,9 @@ To see all properties of a virtual server, use 'requests_params={'params': 'expa
 see all subcollections and their properties
 '''
 def get_vsconfig(mr, vs_name, vs_part):
-    logging.info("Here -1")
     output = {'vs_name':'', 'vs_desc':'', 'vs_dest':'', 'vs_port':'', 'vs_type':'', 'vs_tcpprofile':'none', 'vs_persist':'none', 'vs_irule':'none',\
                'vs_snatpool':'none', 'vs_policy':'none', 'vs_httpprf':'none', 'vs_clisslprf':'none', 'vs_srvsslprf':'none', 'vs_poolname':'none'}
-    
-    logging.info("Here0")
+
     output['vs_name'] = vs_name
     try:
         loaded_vs = mr.tm.ltm.virtuals.virtual.load(name=vs_name, partition=vs_part, requests_params={'params': 'expandSubcollections=true'} )

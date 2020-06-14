@@ -249,7 +249,7 @@ $(function () {
     		if(index != (len-1))
     			snatRecords += ':';
     	});
-    	alert("Snat Addresses: " + snatRecords);
+    	//alert("Snat Addresses: " + snatRecords);
 		
         // 1. Build Snatpool
     	var snatData = {'PhpFileName':'', 'DevIP':'', 'Snat_name':'', 'Snat_members':''};

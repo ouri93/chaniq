@@ -84,7 +84,7 @@ def resetpass_ajax(db_ip, pass1, bigip_type):
     password = config.get('DB_ADMIN', 'PW')
     
     #config.close()
-    logging.info("DB name: " + dbname + " username: " + username + " password: " + password)
+    #logging.info("DB name: " + dbname + " username: " + username + " password: " + password)
     
     try:
         #logging.info("Try to connection established DB IP: " + db_ip + " Passwd: " + pass1)
@@ -94,7 +94,7 @@ def resetpass_ajax(db_ip, pass1, bigip_type):
         #generate Symetric key and encrypt password
         enc_key = generate_symkey()
         encrypted_pw = encrypt_pw(pass1, enc_key)
-        logging.info("Generated Key: " + enc_key)
+        #logging.info("Generated Key: " + enc_key)
         # Save the encrypted password to DB
         mycursor = con.cursor()
         if bigip_type == 'LTM':

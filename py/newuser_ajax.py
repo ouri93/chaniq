@@ -84,7 +84,7 @@ def newuser_ajax(db_ip, un, userrole, pass1):
     password = config.get('DB_ADMIN', 'PW')
     
     #config.close()
-    logging.info("DB name: " + dbname + " username: " + username + " password: " + password)
+    #logging.info("DB name: " + dbname + " username: " + username + " password: " + password)
     
     try:
         #logging.info("Try to connection established DB IP: " + db_ip + " Passwd: " + pass1)
@@ -93,7 +93,7 @@ def newuser_ajax(db_ip, un, userrole, pass1):
 
         #Create hashed password
         hashed_pass = get_hashed_password(pass1)
-        logging.info("Hashed PW: " + hashed_pass)
+        #logging.info("Hashed PW: " + hashed_pass)
         # Insert the new user with the hashed password into DB
         mycursor = con.cursor()
         sql = "INSERT INTO users(un,pw,role) VALUES('" + un + "', '" + hashed_pass + "', '" + userrole + "')"

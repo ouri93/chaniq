@@ -34,7 +34,7 @@ def get_one_db_val(tabId, colId, un, userPass):
         logging.info("DB info reading failed: " + str(e))
     #config.close()
     
-    logging.info("DB name: " + dbname + " username: " + username + " password: " + password)
+    #logging.info("DB name: " + dbname + " username: " + username + " password: " + password)
     
     try:
         #logging.info("Try to connection established DB IP: " + db_ip + " Passwd: " + userPass)
@@ -53,7 +53,7 @@ def get_one_db_val(tabId, colId, un, userPass):
             strMyresult = ''.join(myresult)
         else:
             strMyresult = ''
-        logging.info("User entered PW: " + userPass + " returned sql result: " + strMyresult)
+        #logging.info("User entered PW: " + userPass + " returned sql result: " + strMyresult)
 
         return strMyresult
 

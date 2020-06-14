@@ -661,7 +661,7 @@ $(function () {
     	$.each(monData, function(index) {	
     	    output = output + monData[index] + "\n";
     	});
-    	alert("Data: " + output);
+    	//alert("Data: " + output);
     	
     	ajaxOut = $.ajax({
     		url: '/content/chg_monitor_config.php',

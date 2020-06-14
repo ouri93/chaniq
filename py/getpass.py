@@ -70,7 +70,7 @@ def getpass(bigip_type, un):
         cur_saved_cipher_pw = retrieve_cipher_pw(con, bigip_type, un)
         
         cur_saved_plain_pw = decrypt_pw(cur_saved_cipher_pw, enc_key) 
-        logging.info("Decrypted PW: " + cur_saved_plain_pw)
+        #logging.info("Decrypted PW: " + cur_saved_plain_pw)
 
     except Exception as e:
         logging.info("Exception during DB connection: " + str(e))

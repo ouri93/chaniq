@@ -156,7 +156,7 @@ function loadProfileNames(ltmIP, prfType, selID){
 
 // Delete a given profile name of a given partition
 function deleteProfile(devIP, prfType, partition, prfName){
-	alert("LTM: " + devIP + "\nProfile Type: " + prfType + "\nPartition: " + partition + "\nProfile Name: " + prfName);
+	//alert("LTM: " + devIP + "\nProfile Type: " + prfType + "\nPartition: " + partition + "\nProfile Name: " + prfName);
 	ajxOut = $.ajax({
 		url: '/content/del_profile_ajax.php',
 		type: 'POST',
@@ -1443,7 +1443,7 @@ $(function () {
 		if (GetParentURLParameter('go')=='chg_profile'){
 			if (this.value == $('#chg_svc_prf_name_select').val()){
 				// Update needed - If a current profile name and chosen parent profile name is same, revert the parent profile name back to original name 
-				alert("Chosen profile name and Parent profile name can't be same!\nChosen Profile Name: " + $('#chg_svc_prf_name_select').val() + "\nParent Profile Name: " + this.value);
+				//alert("Chosen profile name and Parent profile name can't be same!\nChosen Profile Name: " + $('#chg_svc_prf_name_select').val() + "\nParent Profile Name: " + this.value);
 				return;
 			}
 		}
@@ -1624,7 +1624,7 @@ $(function () {
 		var prfOptData = {'phpFileName':'', 'DevIP':'', 'name':'', 'dplyOrChg':''};
 		
 		
-		alert("prf_btn_build event in prf_jquery.js - Profile Type is: " + prfType + "\n");
+		//alert("prf_btn_build event in prf_jquery.js - Profile Type is: " + prfType + "\n");
 
 		if (prfType == 'HTTP')
 			prfOptData['phpFileName'] = 'new_httpProfile_build';
@@ -1670,7 +1670,7 @@ $(function () {
 		else {
 			// 2. Retrieve configuration data and save them according to the chosen profile name
 			setPrfOptData(prfOptData, prfType, parPrfName);
-			alert(iterAssArray(prfOptData));
+			//alert(iterAssArray(prfOptData));
 			if( !validateInput(prfOptData)){
 				alert("Profile name is required!");
 				return;

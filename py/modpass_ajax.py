@@ -99,7 +99,7 @@ def modpass_ajax(db_ip, curpass, newpass, bigip_type):
     password = config.get('DB_ADMIN', 'PW')
     
     #config.close()
-    logging.info("DB name: " + dbname + " username: " + username + " password: " + password)
+    #logging.info("DB name: " + dbname + " username: " + username + " password: " + password)
     
     try:
         #logging.info("Try to connection established DB IP: " + db_ip + " Passwd: " + curpass)
@@ -113,7 +113,7 @@ def modpass_ajax(db_ip, curpass, newpass, bigip_type):
         cur_saved_cipher_pw = retrieve_cipher_pw(con, bigip_type)
         
         cur_saved_plain_pw = decrypt_pw(cur_saved_cipher_pw, enc_key) 
-        logging.info("Decrypted PW: " + cur_saved_plain_pw + " Provided PW: " + curpass)
+        #logging.info("Decrypted PW: " + cur_saved_plain_pw + " Provided PW: " + curpass)
         
         # Validate a given current password and saved password, if matched, move on updating password
         if cur_saved_plain_pw == curpass:

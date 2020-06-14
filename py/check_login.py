@@ -44,7 +44,7 @@ def check_login(un, userPass):
         logging.info("DB info reading failed: " + str(e))
     #config.close()
     
-    logging.info("DB name: " + dbname + " username: " + username + " password: " + password)
+    #logging.info("DB name: " + dbname + " username: " + username + " password: " + password)
     
     try:
         #logging.info("Try to connection established DB IP: " + db_ip + " Passwd: " + userPass)
@@ -64,7 +64,7 @@ def check_login(un, userPass):
         else:
             strMyresult = ''
             
-        logging.info("User entered PW: " + userPass + " returned sql result: " + strMyresult)
+        #logging.info("User entered PW: " + userPass + " returned sql result: " + strMyresult)
         if myresult:
             if(validate_password(userPass, strMyresult)):
                 return '1'
