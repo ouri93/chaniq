@@ -1,4 +1,7 @@
-<?php include('header.php'); ?>
+<?php 
+include('header.php');
+require_once(__DIR__ . '/utility/chaniqLogger.php');
+?>
 
 <div id="content">
     <div id="sidebar">

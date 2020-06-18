@@ -1,4 +1,6 @@
 <?php
+require_once(__DIR__ . '/../utility/chaniqLogger.php');
+
 if ($_SESSION['loggedin'] != true){
     session_unset();
     session_destroy();

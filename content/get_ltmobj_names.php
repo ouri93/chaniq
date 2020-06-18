@@ -1,10 +1,13 @@
 <?php
+require_once(__DIR__ . '/../utility/chaniqLogger.php');
     session_start();
-    file_put_contents("/var/log/chaniqphp.log", "get_ltmobj_names.php UN: " .$_SESSION['username'] . " Role: " . $_SESSION['role'] . " LoggedIn: " . $_SESSION['loggedin'] . "\n", FILE_APPEND);
+    #file_put_contents("/var/log/chaniqphp.log", "get_ltmobj_names.php UN: " .$_SESSION['username'] . " Role: " . $_SESSION['role'] . " LoggedIn: " . $_SESSION['loggedin'] . "\n", FILE_APPEND);
+    $logger->info("get_ltmobj_names.php UN: " .$_SESSION['username'] . " Role: " . $_SESSION['role'] . " LoggedIn: " . $_SESSION['loggedin']);
     if ($_SESSION['loggedin'] != true){
         session_unset();
         session_destroy();
-        file_put_contents("/var/log/chaniqphp.log", "get_ltmobj_names.php redirection to login page!!\n", FILE_APPEND);
+        #file_put_contents("/var/log/chaniqphp.log", "get_ltmobj_names.php redirection to login page!!\n", FILE_APPEND);
+        $logger->info("get_ltmobj_names.php redirection to login page!!");
         header('Location: ../login.php');
     }
     //Admin Content - Visible if the logged-in user has admin role
@@ -12,10 +15,11 @@
         header('Location: contentbase.php');
     }
 
-    error_log(date("y-m-d H:i:s").": get_ltmobj_names() - callBack function php has been called\n", 3, "/var/log/chaniqphp.log");
+    #error_log(date("y-m-d H:i:s").": get_ltmobj_names() - callBack function php has been called\n", 3, "/var/log/chaniqphp.log");
+    $logger->info("get_ltmobj_names() - callBack function php has been called");
     
     // Call get_ltmobj_names() by echo statement
-    echo $_POST['method']();
+    echo $_POST['method']($logger);
     
     /**
      * Given the name of active LTM, get the list of health monitors of the active ltm
@@ -27,11 +31,12 @@
      * @return Array
      *
      */
-    function get_names($active_ltm, $objType)
+    function get_names($active_ltm, $objType, $logger)
     {
         $cmd = '/usr/bin/python /var/www/chaniq/py/get_ltmobj_names.py '.$active_ltm.' ' . escapeshellarg($objType);
         //echo "<br>Command:" .$cmd." <br>";
-        error_log(date("y-m-d H:i:s").": get_ltmobj_names() - get_names() called. Dev IP: " . $active_ltm . " Profile Type: " . $objType . "\n", 3, "/var/log/chaniqphp.log");
+        #error_log(date("y-m-d H:i:s").": get_ltmobj_names() - get_names() called. Dev IP: " . $active_ltm . " Profile Type: " . $objType . "\n", 3, "/var/log/chaniqphp.log");
+        $logger->info("get_ltmobj_names() - get_names() called. Dev IP: " . $active_ltm . " Profile Type: " . $objType);
         exec($cmd, $output);
         
         //echo "<br>Output: " .$output[0];
@@ -39,20 +44,22 @@
         return $rtn_out;
     }
     
-    function get_ltmobj_names() {
+    function get_ltmobj_names($logger) {
         if(isset($_POST['DevIP']))
         {
             $bigipIP = $_POST['DevIP'];
             $objType = $_POST['LoadTypeName'];
-            file_put_contents("/var/log/chaniqphp.log", "get_ltmobj_names() Device IP: " . $bigipIP."\n", FILE_APPEND);
+            #file_put_contents("/var/log/chaniqphp.log", "get_ltmobj_names() Device IP: " . $bigipIP."\n", FILE_APPEND);
+            $logger->info("get_ltmobj_names() Device IP: " . $bigipIP);
         }
         
         //$echoOut = echoTest();
         //file_put_contents("/var/log/chaniqphp.log", "get_ltmobj_names(): " . $echoOut, FILE_APPEND);
-        $objNames = get_names($bigipIP, $objType);
+        $objNames = get_names($bigipIP, $objType, $logger);
 
         foreach ($objNames as $value) {
-            file_put_contents("/var/log/chaniqphp.log", "Object name: " . $value . "\n", FILE_APPEND);
+            #file_put_contents("/var/log/chaniqphp.log", "Object name: " . $value . "\n", FILE_APPEND);
+            $logger->info("Object name: " . $value);
         }
         $json = json_encode($objNames);
         echo $json;

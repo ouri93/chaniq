@@ -1,10 +1,14 @@
 <?php
+require_once(__DIR__ . '/../utility/chaniqLogger.php');
+
     session_start();
-    file_put_contents("/var/log/chaniqphp.log", "chg_monitor_config.php UN: " .$_SESSION['username'] . " Role: " . $_SESSION['role'] . " LoggedIn: " . $_SESSION['loggedin'] . "\n", FILE_APPEND);
+    #file_put_contents("/var/log/chaniqphp.log", "chg_monitor_config.php UN: " .$_SESSION['username'] . " Role: " . $_SESSION['role'] . " LoggedIn: " . $_SESSION['loggedin'] . "\n", FILE_APPEND);
+    $logger->info("chg_monitor_config.php UN: " .$_SESSION['username'] . " Role: " . $_SESSION['role'] . " LoggedIn: " . $_SESSION['loggedin']);
     if ($_SESSION['loggedin'] != true){
         session_unset();
         session_destroy();
-        file_put_contents("/var/log/chaniqphp.log", "chg_monitor_config.php redirection to login page!!\n", FILE_APPEND);
+        #file_put_contents("/var/log/chaniqphp.log", "chg_monitor_config.php redirection to login page!!\n", FILE_APPEND);
+        $logger->info("chg_monitor_config.php redirection to login page!!");
         header('Location: ../login.php');
     }
     if ($_SESSION['role'] == 'guest'){
@@ -14,16 +18,18 @@
     //if(isset($_POST)==TRUE && empty($_POST)==FALSE):
     // If you put variables to save data from POST, it wont work. I moved the part under chg_monitor_config()
 
-    error_log(date("y-m-d H:i:s").": chg_monitor_config.php() - callBack function php has been called\n", 3, "/var/log/chaniqphp.log");
+    #error_log(date("y-m-d H:i:s").": chg_monitor_config.php() - callBack function php has been called\n", 3, "/var/log/chaniqphp.log");
+    $logger->info("chg_monitor_config.php() - callBack function php has been called");
     //file_put_contents("/var/log/chaniqphp.log", "POST param phpFileName: " . $phpFileName . " devIP: " .$devIp ."VS name: ". $pVsName . "VsPort: " . $pVsPort . "Pool Mon: " . $pMon , FILE_APPEND);
     
     // Call chg_monitor_config() by echo statement
     if (isset($_POST['jsonMonData'])){
         $monData = json_decode($_POST['jsonMonData']);
-        file_put_contents("/var/log/chaniqphp.log", "chg_monitor_config() phpFile: " . $monData->phpFileName ."\n", FILE_APPEND);
+        #file_put_contents("/var/log/chaniqphp.log", "chg_monitor_config() phpFile: " . $monData->phpFileName ."\n", FILE_APPEND);
+        $logger->info("chg_monitor_config() phpFile: " . $monData->phpFileName);
         
         // Call the fuction chg_monitor_config()
-        echo ($monData->phpFileName)($monData);
+        echo ($monData->phpFileName)($monData, $logger);
     }
     else{
 
@@ -31,8 +37,9 @@
     }
     
     
-    function chg_monitor_config($monData) {
-        file_put_contents("/var/log/chaniqphp.log", "chg_monitor_config() called\n", FILE_APPEND);
+    function chg_monitor_config($monData, $logger) {
+        #file_put_contents("/var/log/chaniqphp.log", "chg_monitor_config() called\n", FILE_APPEND);
+        $logger->info("chg_monitor_config() called");
 
         $phpFileName = $monData->phpFileName;
         $mDevIp = $monData->DevIP;
@@ -59,7 +66,8 @@
         $cmd = '/usr/bin/python /var/www/chaniq/py/chg_monitor_config.py '. escapeshellarg($mDevIp) .' '. escapeshellarg($monName) .' '. escapeshellarg($mDesc) .' '. escapeshellarg($mMonType) .' '. $mMonCode .' '. escapeshellarg($mParMonType) .' '. escapeshellarg($mInterval) .' '. escapeshellarg($mTimeout) .' '. escapeshellarg($mSend) .' '. escapeshellarg($mRecv) .' '. escapeshellarg($mUsername) .' '. escapeshellarg($mPassword) .' '. escapeshellarg($mReverse) .' '. escapeshellarg($mAliasPort) .' '. escapeshellarg($mCipherlist);
         
         $output = shell_exec($cmd);
-        error_log(date("y-m-d H:i:s").": After python call -chg_monitor_config.php() chg_monitor_config() function called!\n", 3, "/var/log/chaniqphp.log");
+        #error_log(date("y-m-d H:i:s").": After python call -chg_monitor_config.php() chg_monitor_config() function called!\n", 3, "/var/log/chaniqphp.log");
+        $logger->info("After python call -chg_monitor_config.php() chg_monitor_config() function called!");
         
         $outputdata = json_decode($output, true);
         ksort($outputdata);
@@ -67,12 +75,14 @@
         $rtnOutput = [];
         
         foreach ($outputdata as $key => $value){
-            file_put_contents("/var/log/chaniqphp.log", "shell_exec() Return - Key: " . $key . " Value: " . $value ."\n" , FILE_APPEND);
+            #file_put_contents("/var/log/chaniqphp.log", "shell_exec() Return - Key: " . $key . " Value: " . $value ."\n" , FILE_APPEND);
+            $logger->info("shell_exec() Return - Key: " . $key . " Value: " . $value);
             array_push($rtnOutput, (string)$value);
         }
         
         foreach ($rtnOutput as $value){
-            file_put_contents("/var/log/chaniqphp.log", "String Returned: " . $value ."\n", FILE_APPEND);
+            #file_put_contents("/var/log/chaniqphp.log", "String Returned: " . $value ."\n", FILE_APPEND);
+            $logger->info("String Returned: " . $value);
         }
         
         $json = json_encode($rtnOutput);

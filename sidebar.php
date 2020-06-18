@@ -1,6 +1,9 @@
 <?php
+require_once(__DIR__ . '/utility/chaniqLogger.php');
+
 if ($_SESSION['loggedin'] != true){
-    file_put_contents("/var/log/chaniqphp.log", "sidebar.php - Unauthen user - Redirect to login page\n", FILE_APPEND);
+    $logger->info("sidebar.php - Unauthen user - Redirect to login page.");
+    #file_put_contents("/var/log/chaniqphp.log", "sidebar.php - Unauthen user - Redirect to login page\n", FILE_APPEND);
     session_unset();
     session_destroy();
     header('Location: login.php');
@@ -69,7 +72,8 @@ if ($_SESSION['loggedin'] != true){
          echo "</div>";
      }
      else{
-         file_put_contents("/var/log/chaniqphp.log", "sidebar.php - Undefined user role - Redirect to login page\n", FILE_APPEND);
+         $logger->info("sidebar.php - Undefined user role - Redirect to login page");
+         #file_put_contents("/var/log/chaniqphp.log", "sidebar.php - Undefined user role - Redirect to login page\n", FILE_APPEND);
          session_unset();
          session_destroy();
          header('Location: login.php');
