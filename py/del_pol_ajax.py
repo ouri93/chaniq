@@ -5,11 +5,13 @@ import json
 import traceback
 import getpass
 
-logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-logging.info("Head of del_pol_ajax() called")
+logging.basicConfig(level=logging.INFO, filename='/var/www/chaniq/log/chaniq-py.log', format='%(asctime)s %(name)s %(levelname)s:%(message)s')
+logger = logging.getLogger(__name__)
+
+logger.info("Head of del_pol_ajax() called")
 
 def del_pol_ajax(active_ltm, polData, polType):
-    logging.info("del_pol_ajax.py parms\n DevIP: " + active_ltm + "\nPolicy Status: " + polType + "\n") 
+    logger.info("del_pol_ajax.py parms\n DevIP: " + active_ltm + "\nPolicy Status: " + polType + "\n") 
 
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
@@ -19,11 +21,11 @@ def del_pol_ajax(active_ltm, polData, polType):
     dictReturn = { key_idx: {'name':'', 'polType':'', 'result':'', 'message':''}}
     message = ''
     
-    #logging.info("Before json_loads: " + polData + "\n")
+    #logger.info("Before json_loads: " + polData + "\n")
     try:
         parsed_polData = json.loads(polData)
     except Exception as e:
-        logging.info("Error Details: " + str(e))
+        logger.info("Error Details: " + str(e))
     
     numOfRows = len(parsed_polData)
     
@@ -33,7 +35,7 @@ def del_pol_ajax(active_ltm, polData, polType):
         if i%2 == 0:
             polName = parsed_polData[i]
             polPart = parsed_polData[i+1]
-            logging.info("Policy Name: " + polName + " Partition: " + polPart + "\n")
+            logger.info("Policy Name: " + polName + " Partition: " + polPart + "\n")
             ##### Delete given Policies ####
             try:
                 if polType == 'draft':
@@ -43,16 +45,16 @@ def del_pol_ajax(active_ltm, polData, polType):
                     loaded_pol = mr.tm.ltm.policys.policy.load(name=polName, partition=polPart)
                     loaded_pol.delete()
             except Exception as e:
-                logging.info("Error Details: " + str(e))
+                logger.info("Error Details: " + str(e))
                 message = message + str(e) + "<br>"
-                logging.info("Exception during deleting policy. Name: " + polName + " Result: FAIL Message: " + message + "\n")
+                logger.info("Exception during deleting policy. Name: " + polName + " Result: FAIL Message: " + message + "\n")
                 if polType == 'draft':
                     dictReturn[key_idx] = {'name':polName, 'polType': 'draft', 'result':'FAIL', 'message':message}
                 elif polType == 'published':
                     dictReturn[key_idx] = {'name':polName, 'polType': 'published','result':'FAIL', 'message':message}
                 return json.dumps(dictReturn)
             message = message + "Policy has been deleted successfully<br>"
-            logging.info("Deleting Policies have been completed successfully. Policy Name: " + polName + " Result: SUCCESS Message: " + message + "\n")
+            logger.info("Deleting Policies have been completed successfully. Policy Name: " + polName + " Result: SUCCESS Message: " + message + "\n")
             if polType=='draft':
                 dictReturn[key_idx] = {'name':polName, 'polType': 'draft', 'result':'SUCCESS', 'message':message}
             elif polType == 'published':

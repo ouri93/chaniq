@@ -4,7 +4,8 @@ import logging
 import json
 import getpass
 
-logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
+logging.basicConfig(level=logging.INFO, filename='/var/www/chaniq/log/chaniq-py.log', format='%(asctime)s %(name)s %(levelname)s:%(message)s')
+logger = logging.getLogger(__name__)
 
 # mixedStr format - "/Common/name_of_object"
 # ith: Array index of returning object
@@ -41,19 +42,19 @@ def get_vsconfig(mr, vs_name, vs_part):
             if p['nameReference']['link'].find('/profile/http') != -1:
                 if p['name'] != '':
                     output['vs_httpprf'] = p['name']
-                    logging.info("Loaded http prf name: " + p['name'])
+                    logger.info("Loaded http prf name: " + p['name'])
             elif p['nameReference']['link'].find('/profile/tcp') != -1 and (p['context'] == 'clientside' or p['context'] == 'all'):
                 if p['name'] != '':
                     output['vs_tcpprofile'] = p['name']
-                    logging.info("Loaded TCP prf name: " + p['name'])
+                    logger.info("Loaded TCP prf name: " + p['name'])
             elif p['nameReference']['link'].find('/profile/client-ssl') != -1 and p['context'] == 'clientside' :
                 if p['name'] != '':
                     output['vs_clisslprf'] = p['name']
-                    logging.info("Loaded client ssl prf name: " + p['name'])
+                    logger.info("Loaded client ssl prf name: " + p['name'])
             elif p['nameReference']['link'].find('/profile/server-ssl') != -1 and p['context'] == 'serverside' :
                 if p['name'] != '':
                     output['vs_srvsslprf'] = p['name']
-                    logging.info("Loaded server ssl prf name: " + p['name'])
+                    logger.info("Loaded server ssl prf name: " + p['name'])
 
         if hasattr(loaded_vs, 'persist'):
             persistNames = loaded_vs.__dict__['persist']
@@ -68,7 +69,7 @@ def get_vsconfig(mr, vs_name, vs_part):
             if hasattr(loaded_vs, 'sourceAddressTranslation') and loaded_vs.__dict__['sourceAddressTranslation']['type'] != 'none':
                 output['vs_snatpool'] = get_ith_name_from_partname_str(loaded_vs.__dict__['sourceAddressTranslation']['pool'], '/', 2)
         except Exception as e:
-            logging.info("Exception on Snatpool. Error: " + str(e))
+            logger.info("Exception on Snatpool. Error: " + str(e))
             
         if hasattr(loaded_vs, 'policiesReference') and len(loaded_vs.policiesReference) > 2:
             polNames = loaded_vs.__dict__['policiesReference']['items']
@@ -79,34 +80,34 @@ def get_vsconfig(mr, vs_name, vs_part):
         if hasattr(loaded_vs, 'pool'):
             output['vs_poolname'] = get_ith_name_from_partname_str(loaded_vs.pool, '/', 2)
     except Exception as e:
-        logging.info("Exception during retrieving virtual server properties")
-        logging.info("Error details: " + str(e))
+        logger.info("Exception during retrieving virtual server properties")
+        logger.info("Error details: " + str(e))
         output['vs_name'] = "FAIL Error message: " + str(e)
         return json.dumps(output)
     
-    logging.info('get_vsconfig() - All Virtual Server properties have been collected successfully\n')
-    logging.info('Print get_vsconfig() Result before return\n')
+    logger.info('get_vsconfig() - All Virtual Server properties have been collected successfully\n')
+    logger.info('Print get_vsconfig() Result before return\n')
     for k, v in output.items():
-        logging.info( k + ":" + v)
+        logger.info( k + ":" + v)
     return output           
 
 def get_vs_config(active_ltm, vs_name, vs_part):
     # ID list: vs_desc, vs_dest, vs_port, vs_type, vs_tcpprofile, vs_persist, vs_irule, vs_snatpool, 
     # vs_policy, vs_httpprf, vs_clisslprf, vs_srvsslprf, chg_vs_pool_chosen
-    logging.info('Called get_vs_config(): IP: ' + active_ltm + ' VS name: ' + vs_name + ' VS Partition: ' + vs_part)
+    logger.info('Called get_vs_config(): IP: ' + active_ltm + ' VS name: ' + vs_name + ' VS Partition: ' + vs_part)
     
     try:
         admpass = getpass.getpass('LTM', 'admin')
         mr = ManagementRoot(str(active_ltm), 'admin', admpass)
         #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     except Exception as e:
-        logging.info("Exception fired during loading mgmt root")
-        logging.info("Error Details: " + str(e))
+        logger.info("Exception fired during loading mgmt root")
+        logger.info("Error Details: " + str(e))
                   
     output = get_vsconfig(mr, vs_name, vs_part)
-    #logging.info('output in get_active_profiles: %s' % output)
+    #logger.info('output in get_active_profiles: %s' % output)
     return json.dumps(output)
 
 if __name__ == "__main__":
-    logging.info('main called: param1: ')
+    logger.info('main called: param1: ')
     print get_vs_config(sys.argv[1], sys.argv[2], sys.argv[3])

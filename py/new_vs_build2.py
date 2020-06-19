@@ -7,13 +7,13 @@ import build_std_names
 import getpass
 import loadStdNames
 
-logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO, format='%(asctime)s %(levelname)s %(name)s %(message)s')
-logger=logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO, filename='/var/www/chaniq/log/chaniq-py.log', format='%(asctime)s %(name)s %(levelname)s:%(message)s')
+logger = logging.getLogger(__name__)
 
 
 def check_vsname_conflict(mr, std_poolname):
     
-    logging.info("Build_pools - check_poolname_conflict() Pool name: " + std_poolname)
+    logger.info("Build_pools - check_poolname_conflict() Pool name: " + std_poolname)
     
     pools = mr.tm.ltm.pools.get_collection()
 
@@ -37,14 +37,14 @@ def new_vs_build2(active_ltm, vs_dnsname, vs_dest, vs_port, vs_desc, vs_env, vs_
 
     # Check if Standard naming is used
     useGlobalNaming = loadStdNames.useStdNaming()
-    logging.info("new_vs_build2()- Use Standard Global naming : " + useGlobalNaming )
+    logger.info("new_vs_build2()- Use Standard Global naming : " + useGlobalNaming )
         
     idx = 1
     strReturn = {str(idx) : 'VS Creation Report'}
     idx += 1
     
-    logging.info(str(active_ltm) + " VS DNS:" + str(vs_dnsname) + " VS DEST:" + str(vs_dest) + " VS PORT:" + str(vs_port) + " VS DESC:" + str(vs_desc) + " VS Env.:" + str(vs_env) + " VS TCP Prf:" + str(vs_tcpprofile) + " VS Persist:" + str(vs_persistence) + " VS Redirect:" + str(vs_redirect) + " VS Type:" + str(vs_type) + " VS HTTP Prf:" + str(vs_httpprofile) + " VS Clientssl:" + str(vs_sslclient) + " VS Serverssl:" + str(vs_sslserver) + " VS iRule: " + str(vs_irule) + " VS SNATPOOL: " + str(vs_snatpool) + " VS Policy: " + str(vs_policy) + " VS Pool Name: " + str(vs_poolname) )
-    logging.info("Before VS Build - Env Name: " + str(vs_env) + " DNS name: " + str(vs_dnsname) + " Port: " + str(vs_port))
+    logger.info(str(active_ltm) + " VS DNS:" + str(vs_dnsname) + " VS DEST:" + str(vs_dest) + " VS PORT:" + str(vs_port) + " VS DESC:" + str(vs_desc) + " VS Env.:" + str(vs_env) + " VS TCP Prf:" + str(vs_tcpprofile) + " VS Persist:" + str(vs_persistence) + " VS Redirect:" + str(vs_redirect) + " VS Type:" + str(vs_type) + " VS HTTP Prf:" + str(vs_httpprofile) + " VS Clientssl:" + str(vs_sslclient) + " VS Serverssl:" + str(vs_sslserver) + " VS iRule: " + str(vs_irule) + " VS SNATPOOL: " + str(vs_snatpool) + " VS Policy: " + str(vs_policy) + " VS Pool Name: " + str(vs_poolname) )
+    logger.info("Before VS Build - Env Name: " + str(vs_env) + " DNS name: " + str(vs_dnsname) + " Port: " + str(vs_port))
 
     if useGlobalNaming == '1':
         std_vsname = loadStdNames.get_std_name(active_ltm, 'LOCAL', 'VIRTUAL_SERVER', '', vs_dnsname)
@@ -54,13 +54,13 @@ def new_vs_build2(active_ltm, vs_dnsname, vs_dest, vs_port, vs_desc, vs_env, vs_
     #std_vsname = build_std_names.build_std_vs_name(str(vs_env), str(vs_dnsname), str(vs_port))
     #std_poolname = build_std_names.build_std_pool_name(str(vs_env), str(vs_dnsname), str(vs_port))
     
-    logging.info("VS Creation process has been initiated. VS Name: " + std_vsname) 
+    logger.info("VS Creation process has been initiated. VS Name: " + std_vsname) 
     try:    
         fieldNames = {"name":std_vsname, "description":vs_desc, "ip":vs_dest, "port":vs_port, "ipProtocol":"tcp", "pool":vs_poolname, \
         "protocolProfileClient":vs_tcpprofile, "httpProfile":vs_httpprofile, "oneConnectProfile":"none", "sslProfileClient":vs_sslclient, \
         "sslProfileServer":vs_sslserver, "rules":vs_irule, "sourceAddressTranslation":vs_snatpool, "persistence":vs_persistence,  "policies":vs_policy}
         
-        logging.info("Protocol Profile: " + fieldNames["protocolProfileClient"] + " HTTP Profie: " + fieldNames["httpProfile"] + \
+        logger.info("Protocol Profile: " + fieldNames["protocolProfileClient"] + " HTTP Profie: " + fieldNames["httpProfile"] + \
                      " SSL Client Profile: " + fieldNames["sslProfileClient"] + " SSL Server Profile: " + fieldNames["sslProfileServer"] +   \
                      " iRule: " + fieldNames["rules"] +   " Persistence: " + fieldNames["persistence"] +   " Policy: " + fieldNames["policies"])  
 
@@ -136,10 +136,10 @@ def new_vs_build2(active_ltm, vs_dnsname, vs_dest, vs_port, vs_desc, vs_env, vs_
         idx += 1
         
     except Exception as e:
-        logging.info("Exception during Virtual Server creation-update")
+        logger.info("Exception during Virtual Server creation-update")
         strReturn[str(idx)] = "Exception fired!: " + str(e)
         idx += 1
-        logging.info("Virtual Server creation-update exception fired: " + str(e))
+        logger.info("Virtual Server creation-update exception fired: " + str(e))
         return json.dumps(strReturn)
 
     return json.dumps(strReturn)

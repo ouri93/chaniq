@@ -4,7 +4,8 @@ import sys
 import json
 import getpass
 
-logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
+logging.basicConfig(level=logging.INFO, filename='/var/www/chaniq/log/chaniq-py.log', format='%(asctime)s %(name)s %(levelname)s:%(message)s')
+logger = logging.getLogger(__name__)
 
 # 'PhpFileName':'', 'DevIP':'', 'P_name':'', 'P_part':'' 
 def del_pool_ajax(active_ltm, p_name, p_part):
@@ -17,20 +18,20 @@ def del_pool_ajax(active_ltm, p_name, p_part):
     strReturn = {str(idx) : 'Pool Deletion Report'}
     idx += 1
 
-    logging.info("Pool Deletion process has been initiated. Pool Name: " + p_name)
+    logger.info("Pool Deletion process has been initiated. Pool Name: " + p_name)
     
     # Phase zero - Update pool properties
     try:
         p_loaded = mr.tm.ltm.pools.pool.load(partition=p_part, name=p_name)
         p_loaded.delete()
     except Exception as e:
-        logging.info("Exception during Pool deletion process")
+        logger.info("Exception during Pool deletion process")
         strReturn[str(idx)] = "Exception error: " + str(e)
         idx += 1
-        logging.info("Pool deletion exception: " + str(e))
+        logger.info("Pool deletion exception: " + str(e))
         return json.dumps(strReturn)
 
-    logging.info("Pool deletion has been successfully completed.")
+    logger.info("Pool deletion has been successfully completed.")
     strReturn[str(idx)] = "Pool deletion has been successfully completed."
     idx += 1
 

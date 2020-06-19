@@ -5,12 +5,14 @@ import json
 import traceback
 import getpass
 
-logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-logging.info("Head of del_certkey_ajax() called")
+logging.basicConfig(level=logging.INFO, filename='/var/www/chaniq/log/chaniq-py.log', format='%(asctime)s %(name)s %(levelname)s:%(message)s')
+logger = logging.getLogger(__name__)
+
+logger.info("Head of del_certkey_ajax() called")
 
 def del_certkey_ajax(active_ltm, certData):
     #'DevIP' 'IrType' 'IrDgPart'
-    logging.info("del_certkey_ajax.py parms\n DevIP: " + active_ltm + "\n") 
+    logger.info("del_certkey_ajax.py parms\n DevIP: " + active_ltm + "\n") 
 
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
@@ -20,11 +22,11 @@ def del_certkey_ajax(active_ltm, certData):
     dictReturn = { key_idx: {'name':'', 'result':'', 'message':''}}
     message = ''
     
-    #logging.info("Before json_loads: " + certData + "\n")
+    #logger.info("Before json_loads: " + certData + "\n")
     try:
         parsed_certData = json.loads(certData)
     except Exception as e:
-        logging.info("Error Details: " + str(e))
+        logger.info("Error Details: " + str(e))
     
     numOfRows = len(parsed_certData)
     
@@ -36,7 +38,7 @@ def del_certkey_ajax(active_ltm, certData):
             certKeyPart = parsed_certData[i+3]
             certName = certKeyName + ".crt"
             keyName = certKeyName + ".key"
-            logging.info("Cert/Key Name: " + certKeyName + "Partition: " + certKeyPart + "\n")
+            logger.info("Cert/Key Name: " + certKeyName + "Partition: " + certKeyPart + "\n")
             ##### Delete given certs and keys ####
             try:
                 loaded_cert = mr.tm.sys.crypto.certs.cert.load(name=certName, partition=certKeyPart)
@@ -45,20 +47,20 @@ def del_certkey_ajax(active_ltm, certData):
                 loaded_key = mr.tm.sys.crypto.keys.key.load(name=keyName, partition=certKeyPart)
                 loaded_key.delete()
             except Exception as e:
-                logging.info("Error Details: " + str(e))
+                logger.info("Error Details: " + str(e))
                 message = message + str(e) + "<br>"
-                logging.info("Exception during loading or deleting cert/key Cert/Key Name: " + certKeyName + " Result: FAIL Message: " + message + "\n")
+                logger.info("Exception during loading or deleting cert/key Cert/Key Name: " + certKeyName + " Result: FAIL Message: " + message + "\n")
                 dictReturn[key_idx] = {'name':certKeyName, 'result':'FAIL', 'message':message}
                 return json.dumps(dictReturn)
             message = message + "Cert and Key have been deleted successfully<br>"
-            logging.info("Deleting cert/key has been completed successfully. Cert/Key Name: " + certKeyName + " Result: SUCCESS Message: " + message + "\n")
+            logger.info("Deleting cert/key has been completed successfully. Cert/Key Name: " + certKeyName + " Result: SUCCESS Message: " + message + "\n")
             dictReturn[key_idx] = {'name':certKeyName, 'result':'SUCCESS', 'message':message}
             key_idx = key_idx + 1
     '''
     key_idx = 1
     dictReturn = { key_idx: {'name':'', 'result':'', 'message':''}}
 
-    logging.info("Deleting Cert/Key process has been initiated.") 
+    logger.info("Deleting Cert/Key process has been initiated.") 
 
     #Retrieve cert/key configuration
     try:
@@ -72,13 +74,13 @@ def del_certkey_ajax(active_ltm, certData):
             dictReturn[key_idx] = {'name' : certkeyName, 'commonName' : certkeyCN, 'expiration' : certkeyExp, 'partition' : certkeyPart }
             key_idx = key_idx + 1
     except Exception as e:
-        logging.info("Cert get_collection Exception")
-        logging.info("Error Details: " + str(e))
-        logging.info(traceback.format_exc())
+        logger.info("Cert get_collection Exception")
+        logger.info("Error Details: " + str(e))
+        logger.info(traceback.format_exc())
         dictReturn[key_idx] = {'name' : "Exception fired", 'commonName' : "Exception fired", 'expiration' : "Exception fired", 'partition' : "Exception fired" }
         return json.dumps(dictReturn)
             
-    logging.info("Cert information has been collected successfully")
+    logger.info("Cert information has been collected successfully")
     '''
     return json.dumps(dictReturn)
 

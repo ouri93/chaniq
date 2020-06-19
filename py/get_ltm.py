@@ -4,14 +4,11 @@ import logging
 import json
 import getpass
 
+logging.basicConfig(level=logging.INFO, filename='/var/www/chaniq/log/chaniq-py.log', format='%(asctime)s %(name)s %(levelname)s:%(message)s')
+logger = logging.getLogger(__name__)
+
 def get_active_ltm(dev_name, active_ltm):
-	#===========================================================================
-	# logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-	# logging.info('Dev Name: %s' % dev_name)
-	# logging.info('Dev IP: %s' % dev_ip)
-	#===========================================================================
-	logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-	logging.info("get_active_ltm()")
+	logger.info("get_active_ltm()")
 	
 	admpass = getpass.getpass('LTM', 'admin')
 	mr = ManagementRoot(str(active_ltm), 'admin', admpass)

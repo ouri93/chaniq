@@ -3,6 +3,9 @@ import sys
 import logging
 import getpass
 
+logging.basicConfig(level=logging.INFO, filename='/var/www/chaniq/log/chaniq-py.log', format='%(asctime)s %(name)s %(levelname)s:%(message)s')
+logger = logging.getLogger(__name__)
+
 def get_poolnames(mr, part_name):
     output = ''
     poolnames = mr.tm.ltm.pools.get_collection()
@@ -12,12 +15,11 @@ def get_poolnames(mr, part_name):
             output = output + ':'
         if apool.partition == part_name:
             output = output + apool.name
-    logging.info('get_poolnames(): %s' % output)
+    logger.info('get_poolnames(): %s' % output)
     return output           
 
 def get_pool_names(active_ltm, part_name):
-    logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-    logging.info('Called get_pool_names(): %s' % active_ltm)
+    logger.info('Called get_pool_names(): %s' % active_ltm)
     
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
@@ -25,10 +27,9 @@ def get_pool_names(active_ltm, part_name):
     output = ''
     
     output = get_poolnames(mr, part_name)
-    #logging.info('output in get_active_profiles: %s' % output)
+    #logger.info('output in get_active_profiles: %s' % output)
     return output
 
 if __name__ == "__main__":
-    #logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-    #logging.info('main called: param1: ')
+    #logger.info('main called: param1: ')
     print get_pool_names(sys.argv[1], sys.argv[2])

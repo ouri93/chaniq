@@ -4,6 +4,9 @@ import logging
 import json
 import getpass
 
+logging.basicConfig(level=logging.INFO, filename='/var/www/chaniq/log/chaniq-py.log', format='%(asctime)s %(name)s %(levelname)s:%(message)s')
+logger = logging.getLogger(__name__)
+
 def get_setting_val(aMon, attName):
     try:
         accessVal = 'aMon' + '.' + attName
@@ -114,8 +117,7 @@ def get_eavmon_setting(mr, parent_mon):
    
 
 def get_healthmon_setting(active_ltm, mon_type, parent_mon):
-    logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-    logging.info('Called get_healthmonitors(): %s %s %s' % (active_ltm, mon_type, parent_mon))
+    logger.info('Called get_healthmonitors(): %s %s %s' % (active_ltm, mon_type, parent_mon))
     
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
@@ -146,11 +148,10 @@ def get_healthmon_setting(active_ltm, mon_type, parent_mon):
     elif mon_type == "External":
         output = get_eavmon_setting(mr, parent_mon)
         
-    logging.info('Chosen Monitor Type: %s Return: %s' % (mon_type, output))
+    logger.info('Chosen Monitor Type: %s Return: %s' % (mon_type, output))
     print json.dumps(output)
 
 if __name__ == "__main__":
-    #logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-    #logging.info('main called: param1: ')
+    #logger.info('main called: param1: ')
     # argv[1] - Device IP, argv[2] - Monitor Type, argv[3] - Parent Monitor Name
     get_healthmon_setting(sys.argv[1], sys.argv[2], sys.argv[3])

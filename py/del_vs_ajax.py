@@ -6,13 +6,13 @@ import json
 import build_std_names
 import getpass
 
-logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO, format='%(asctime)s %(levelname)s %(name)s %(message)s')
-logger=logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO, filename='/var/www/chaniq/log/chaniq-py.log', format='%(asctime)s %(name)s %(levelname)s:%(message)s')
+logger = logging.getLogger(__name__)
 
 
 def check_vsname_conflict(mr, std_poolname):
     
-    logging.info("Build_pools - check_poolname_conflict() Pool name: " + std_poolname)
+    logger.info("Build_pools - check_poolname_conflict() Pool name: " + std_poolname)
     
     pools = mr.tm.ltm.pools.get_collection()
 
@@ -38,18 +38,18 @@ def del_vs_ajax(active_ltm, vs_name, partition):
     strReturn = {str(idx) : 'VS Deletion Report'}
     idx += 1
     
-    logging.info(str(active_ltm) + " VS Name:" + str(vs_name) + " Partition:" + partition )
-    logging.info("Before VS Deletion - VS Name:" + str(vs_name) + " Partition:" + partition)
+    logger.info(str(active_ltm) + " VS Name:" + str(vs_name) + " Partition:" + partition )
+    logger.info("Before VS Deletion - VS Name:" + str(vs_name) + " Partition:" + partition)
     
-    logging.info("VS Deletion process has been initiated. VS Name: " + vs_name) 
+    logger.info("VS Deletion process has been initiated. VS Name: " + vs_name) 
     try:
         loaded_vs = mr.tm.ltm.virtuals.virtual.load(name=vs_name, partition=partition)
         loaded_vs.delete()
     except Exception as e:
-        logging.info("Exception during Virtual Server deletion")
+        logger.info("Exception during Virtual Server deletion")
         strReturn[str(idx)] = "Exception fired!: " + str(e)
         idx += 1
-        logging.info("Virtual Server deletion exception fired: " + str(e))
+        logger.info("Virtual Server deletion exception fired: " + str(e))
         return json.dumps(strReturn)
 
     strReturn[str(idx)] = "VS (" + vs_name + ") has been deleted successfully"

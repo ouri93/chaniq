@@ -4,10 +4,13 @@ import logging
 import json
 import getpass
 
+logging.basicConfig(level=logging.INFO, filename='/var/www/chaniq/log/chaniq-py.log', format='%(asctime)s %(name)s %(levelname)s:%(message)s')
+logger = logging.getLogger(__name__)
+
 def get_setting_val(aPrf, attName):
     try:
         accessVal = 'aPrf' + '.' + attName
-        logging.info('get_setting_val(): ' + accessVal)
+        logger.info('get_setting_val(): ' + accessVal)
         return eval(accessVal)
     except AttributeError:
         return ""
@@ -16,7 +19,7 @@ def get_setting_list_val(aPrf, attName):
     try:
         accessVal = 'aPrf' + '.' + attName
         listVals = eval(accessVal)
-        logging.info('get_setting_list_val(): ' + accessVal)
+        logger.info('get_setting_list_val(): ' + accessVal)
         return ' '.join(listVals)
     except AttributeError:
         return ""
@@ -24,8 +27,8 @@ def get_setting_dict_val(aPrf, fstAttName, sndAttName):
     try:
       accessVal = 'aPrf' + '.' + fstAttName
       prfDict = eval(accessVal)
-      logging.info("explictProxy Values: " + (prfDict.get(sndAttName)).split('/')[2])
-      logging.info('get_setting_dict_val(): ' + accessVal)
+      logger.info("explictProxy Values: " + (prfDict.get(sndAttName)).split('/')[2])
+      logger.info('get_setting_dict_val(): ' + accessVal)
       return (prfDict.get(sndAttName)).split('/')[2]
     except AttributeError:
         return ""
@@ -49,8 +52,8 @@ def getHttpRevSettings(mr, prfName):
                 output += get_setting_val(aprf, 'insertXforwardedFor') + "|"
                 output += get_setting_val(aprf, 'serverAgentName')
     except Exception as e:
-        logging.info("Exception during retrieving profile setting: " + str(e))
-    logging.info('getHttpRevSettings(): ' + output)
+        logger.info("Exception during retrieving profile setting: " + str(e))
+    logger.info('getHttpRevSettings(): ' + output)
     return output
 
 def getHttpExpSettings(mr, prfName):
@@ -74,8 +77,8 @@ def getHttpExpSettings(mr, prfName):
                 output += get_setting_val(aprf, 'serverAgentName') + "|"
                 output += get_setting_dict_val(aprf, 'explicitProxy', 'dnsResolver')
     except Exception as e:
-        logging.info("Exception during retrieving profile setting: " + str(e))
-    logging.info('getHttpExpSettings(): ' + output)
+        logger.info("Exception during retrieving profile setting: " + str(e))
+    logger.info('getHttpExpSettings(): ' + output)
     return output
 
 def getHttpTransSettings(mr, prfName):
@@ -97,8 +100,8 @@ def getHttpTransSettings(mr, prfName):
                 output += get_setting_val(aprf, 'insertXforwardedFor') + "|"
                 output += get_setting_val(aprf, 'serverAgentName')
     except Exception as e:
-        logging.info("Exception during retrieving profile setting: " + str(e))
-    logging.info('getHttpTransSettings(): ' + output)
+        logger.info("Exception during retrieving profile setting: " + str(e))
+    logger.info('getHttpTransSettings(): ' + output)
     return output
 
 # A HTTP profile name is given, load the corresponding HTTP profile configuration
@@ -128,13 +131,12 @@ def loadHttpSettings(mr, prfName):
                 if aHttpPrf.proxyType == 'explicit':
                     output += "|" + get_setting_dict_val(aHttpPrf, 'explicitProxy', 'dnsResolver')
     except Exception as e:
-        logging.info("loadHttpSettings() - Exception during loading HTTP profile setting: " + str(e))
+        logger.info("loadHttpSettings() - Exception during loading HTTP profile setting: " + str(e))
         
     return output
     
 def getHttpSettings(active_ltm, proxyType, prfType, prfName, prfMode):
-    logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-    logging.info('Called getHttpSettings(): %s %s %s %s %s' % (active_ltm, proxyType, prfType, prfName, prfMode))
+    logger.info('Called getHttpSettings(): %s %s %s %s %s' % (active_ltm, proxyType, prfType, prfName, prfMode))
     
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
@@ -150,7 +152,7 @@ def getHttpSettings(active_ltm, proxyType, prfType, prfName, prfMode):
         3. Transparent
         '''
         if proxyType == "reverse" :
-            logging.info('getHttpSettings() reverse Proxy mode')
+            logger.info('getHttpSettings() reverse Proxy mode')
             output = getHttpRevSettings(mr, prfName)
         elif proxyType == "explicit" :
             output = getHttpExpSettings(mr, prfName)
@@ -163,7 +165,6 @@ def getHttpSettings(active_ltm, proxyType, prfType, prfName, prfMode):
     #print json.dumps(output)
 
 if __name__ == "__main__":
-    #logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-    #logging.info('main called: param1: ')
+    #logger.info('main called: param1: ')
     # argv[1] - Device IP, argv[2] - Monitor Type, argv[3] - Parent Monitor Name
     print getHttpSettings(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])

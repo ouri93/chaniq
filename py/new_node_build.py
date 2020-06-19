@@ -6,7 +6,8 @@ from f5.bigip.tm.ltm.node import Node
 import getpass
 import loadStdNames
 
-logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
+logging.basicConfig(level=logging.INFO, filename='/var/www/chaniq/log/chaniq-py.log', format='%(asctime)s %(name)s %(levelname)s:%(message)s')
+logger = logging.getLogger(__name__)
 
 # Module global
 idx = 0
@@ -14,7 +15,7 @@ namebit = 0
 ipbit = 0
 
 def check_node_conflict(mr, nodeip, nodename):
-    logging.info("Build_nodes - check_node_conflict() nodeip: " + str(nodeip) + " Node Name: " + str(nodename))
+    logger.info("Build_nodes - check_node_conflict() nodeip: " + str(nodeip) + " Node Name: " + str(nodename))
     
     nodes = mr.tm.ltm.nodes.get_collection()
     global namebit, ipbit, idx
@@ -23,14 +24,14 @@ def check_node_conflict(mr, nodeip, nodename):
         if node.exists(name=str(nodename)):
             # Set bit - A bit per node name
             namebit = namebit | (1 << idx)
-            logging.info("Name Bit set")
+            logger.info("Name Bit set")
         if node.address == str(nodeip):
             # Set bit - A bit per node IP
             ipbit = ipbit | (1 << idx)
-            logging.info("IP Bit set")
+            logger.info("IP Bit set")
     idx += 1
 
-    logging.info("End of Build_nodes - check_node_conflict() namebit: " + str(namebit) + " ipbit: " + str(ipbit))
+    logger.info("End of Build_nodes - check_node_conflict() namebit: " + str(namebit) + " ipbit: " + str(ipbit))
 
 
 def new_node_build(active_ltm, pool_membername, pool_memberip):
@@ -40,33 +41,33 @@ def new_node_build(active_ltm, pool_membername, pool_memberip):
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
     #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     
-    logging.info("new_node_build called! ")
+    logger.info("new_node_build called! ")
                  
     nodenames = pool_membername.split(':')
     nodeips = pool_memberip.split(':')
     
     # Check if Standard naming is used
     useGlobalNaming = loadStdNames.useStdNaming()
-    logging.info("build_node()- Use Standard Global naming : " + useGlobalNaming )
+    logger.info("build_node()- Use Standard Global naming : " + useGlobalNaming )
         
     bitmove = 0
     idx = 1
     strReturn = {str(idx) : 'Node Creation Report'}
-    logging.info("build_node() : " + str(idx) + "th Node creation")
+    logger.info("build_node() : " + str(idx) + "th Node creation")
     
     idx += 1
     
     for nodeip, nodename,  in zip(nodeips, nodenames):
-        logging.info("node IP: " + nodeip + " node name: " + nodename)
+        logger.info("node IP: " + nodeip + " node name: " + nodename)
         
         if useGlobalNaming == '1':
             nodename = loadStdNames.get_std_name(active_ltm, 'LOCAL', 'NODE', '', nodename)
-            logging.info("build_node()- Standard Name created : " + nodename )
+            logger.info("build_node()- Standard Name created : " + nodename )
             
         nodes = mr.tm.ltm.nodes.get_collection()
         check_node_conflict(mr, nodeip, nodename)
         
-        logging.info("build_node() : namebit: " + str(namebit) + " bitmove:" + str(bitmove) + " ipbit: " + str(ipbit))  
+        logger.info("build_node() : namebit: " + str(namebit) + " bitmove:" + str(bitmove) + " ipbit: " + str(ipbit))  
         
         # No Node name and Node IP conflict - Create a new node with standard name 
         if ( not (namebit >> bitmove) & 1) and not ( (ipbit >> bitmove) & 1):

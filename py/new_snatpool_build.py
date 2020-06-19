@@ -5,8 +5,8 @@ import json
 import getpass
 import loadStdNames
 
-logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO, format='%(asctime)s %(levelname)s %(name)s %(message)s')
-logger=logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO, filename='/var/www/chaniq/log/chaniq-py.log', format='%(asctime)s %(name)s %(levelname)s:%(message)s')
+logger = logging.getLogger(__name__)
 
 def new_snatpool_build(active_ltm, snat_name, snat_addresses):
     
@@ -16,7 +16,7 @@ def new_snatpool_build(active_ltm, snat_name, snat_addresses):
 
     # Check if Standard naming is used
     useGlobalNaming = loadStdNames.useStdNaming()
-    logging.info("new_snatpool_build()- Use Standard Global naming : " + useGlobalNaming )
+    logger.info("new_snatpool_build()- Use Standard Global naming : " + useGlobalNaming )
         
     idx = 1
     strReturn = {str(idx) : 'Snatpool Creation Report'}
@@ -25,8 +25,8 @@ def new_snatpool_build(active_ltm, snat_name, snat_addresses):
     if useGlobalNaming == '1':
         snat_name = loadStdNames.get_std_name(active_ltm, 'LOCAL', 'SNAT_POOL', '', snat_name)
                 
-    logging.info(str(active_ltm) + " Snatpool DNS:" + str(snat_name) + " Snatpool DEST:" + str(snat_addresses))
-    logging.info("Snatpool Creation process has been initiated. Snatpool Name: " + snat_name)
+    logger.info(str(active_ltm) + " Snatpool DNS:" + str(snat_name) + " Snatpool DEST:" + str(snat_addresses))
+    logger.info("Snatpool Creation process has been initiated. Snatpool Name: " + snat_name)
      
     try:
         snat_members=[]
@@ -39,7 +39,7 @@ def new_snatpool_build(active_ltm, snat_name, snat_addresses):
         idx += 1
         
     except Exception as e:
-        logging.info("Exception during Snatpool creation")
+        logger.info("Exception during Snatpool creation")
         strReturn[str(idx)] = "Exception fired!: " + str(e)
         idx += 1
         return json.dumps(strReturn)

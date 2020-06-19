@@ -4,8 +4,8 @@ import logging
 import json
 import getpass
 
-logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO, format='%(asctime)s %(levelname)s %(name)s %(message)s')
-logger=logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO, filename='/var/www/chaniq/log/chaniq-py.log', format='%(asctime)s %(name)s %(levelname)s:%(message)s')
+logger = logging.getLogger(__name__)
 
 def load_snatpool_names(active_ltm):
     
@@ -15,7 +15,7 @@ def load_snatpool_names(active_ltm):
     
     strReturn = []
     
-    logging.info("Snatpool Name loading process has been initiated.")
+    logger.info("Snatpool Name loading process has been initiated.")
     
     try:
         snatp_list = mr.tm.ltm.snatpools.get_collection()
@@ -23,8 +23,8 @@ def load_snatpool_names(active_ltm):
             strReturn.append(aSnat.name)
             strReturn.append(aSnat.partition)
     except Exception as e:
-        logging.info("Exception during collecting Snatpool names")
-        logging.info(str(e))
+        logger.info("Exception during collecting Snatpool names")
+        logger.info(str(e))
         strReturn.append("FAIL")
         strReturn.append(str(e))
         return json.dumps(strReturn)

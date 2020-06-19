@@ -6,16 +6,16 @@ import ConfigParser
 from cryptography.fernet import Fernet
 import traceback
 
-logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO, format='%(asctime)s %(levelname)s %(name)s %(message)s')
-logger=logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO, filename='/var/www/chaniq/log/chaniq-py.log', format='%(asctime)s %(name)s %(levelname)s:%(message)s')
+logger = logging.getLogger(__name__)
 
 def decrypt_pw(encrypted_pw, key):
     try:
         cipher_suite = Fernet(key.encode('utf-8'))
         plain_pw = cipher_suite.decrypt(encrypted_pw.encode('utf-8'))
     except Exception as e:
-        logging.info("Error in decrypt_pw(). Error details: " + str(e))
-        logging.info(traceback.format_exc())
+        logger.info("Error in decrypt_pw(). Error details: " + str(e))
+        logger.info(traceback.format_exc())
         return "Error in decrypt_pw(). Error details: " + str(e)
             
     return plain_pw
@@ -26,7 +26,7 @@ def retrieve_symkey(dbcon, bigip_type, username):
     
     # Validate if the current password is correct
     sql = "SELECT enckey FROM bigip_pass WHERE module='" + bigip_type + "' and adminname='" + username + "'"
-    logging.info("SQL query: " + sql)
+    logger.info("SQL query: " + sql)
 
     mycursor.execute(sql)
     return mycursor.fetchone()[0]
@@ -37,7 +37,7 @@ def retrieve_cipher_pw(dbcon, bigip_type, username):
     
     # Validate if the current password is correct
     sql = "SELECT pass FROM bigip_pass WHERE module='" + bigip_type + "' and adminname='" + username + "'"
-    logging.info("SQL query: " + sql)
+    logger.info("SQL query: " + sql)
     
     mycursor.execute(sql)
     return mycursor.fetchone()[0]
@@ -50,18 +50,18 @@ def getpass(bigip_type, un):
     try:
         config.read('../admin/db.ini')
     except Exception as e:
-        logging.info("File Read error: " + str(e))
+        logger.info("File Read error: " + str(e))
     
     dbname = config.get('DB_ADMIN', 'DB')
     username = config.get('DB_ADMIN', 'UN')
     password = config.get('DB_ADMIN', 'PW')
     
     #config.close()
-    #logging.info("DB name: " + dbname + " username: " + username + " password: " + password)
+    #logger.info("DB name: " + dbname + " username: " + username + " password: " + password)
     
     try:
         con = mysql.connector.connect(user=username, password=password, database=dbname)
-        logging.info("Connection established")
+        logger.info("Connection established")
         mycursor = con.cursor()
         
         #''' Code using Cryptography lib
@@ -70,9 +70,9 @@ def getpass(bigip_type, un):
         cur_saved_cipher_pw = retrieve_cipher_pw(con, bigip_type, un)
         
         cur_saved_plain_pw = decrypt_pw(cur_saved_cipher_pw, enc_key) 
-        #logging.info("Decrypted PW: " + cur_saved_plain_pw)
+        #logger.info("Decrypted PW: " + cur_saved_plain_pw)
 
     except Exception as e:
-        logging.info("Exception during DB connection: " + str(e))
+        logger.info("Exception during DB connection: " + str(e))
   
     return cur_saved_plain_pw

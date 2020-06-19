@@ -6,9 +6,12 @@ import getpass
 import loadStdNames
 import chaniq_util
 
+logging.basicConfig(level=logging.INFO, filename='/var/www/chaniq/log/chaniq-py.log', format='%(asctime)s %(name)s %(levelname)s:%(message)s')
+logger = logging.getLogger(__name__)
+
 def check_profileName_conflict(mr, prfName, prfDftFrom):
     dnsPrfNames = mr.tm.ltm.profile.dns_s.get_collection()
-    logging.info("check_profileName_conflict() STD Name: " + prfName + "\n")
+    logger.info("check_profileName_conflict() STD Name: " + prfName + "\n")
     
     bitout = 0
     
@@ -17,7 +20,7 @@ def check_profileName_conflict(mr, prfName, prfDftFrom):
             bitout = bitout | (1 << 0)
     
 
-    #logging.info("bitout value: " + str(bitout) + "\n")    
+    #logger.info("bitout value: " + str(bitout) + "\n")    
 
     # If Poolname conflicts, return True. Otherwise return False
     if (bitout >> 0) & 1:
@@ -64,8 +67,7 @@ def isNeedUpdate(loadedPrf, modContent, prfDftFrom, prfHwValid, prfHwRespCache, 
     else: return False
                 		
 def new_DnsProfile_build(active_ltm, prfName, prfDplyOrChg, prfDftFrom, prfHwValid, prfHwRespCache, prfDnsExp, prfGtm, prfUnhandledAct, prfUseBind, prfZoneXfr, prfDnsSecurity, prfRecursion):
-    logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-    #logging.info('Called get_profiles(): %s %s' % (active_ltm, pf_type))
+    #logger.info('Called get_profiles(): %s %s' % (active_ltm, pf_type))
 	
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
@@ -74,13 +76,13 @@ def new_DnsProfile_build(active_ltm, prfName, prfDplyOrChg, prfDftFrom, prfHwVal
 
     # Check if Standard naming is used
     useGlobalNaming = loadStdNames.useStdNaming()
-    logging.info("new_DnsProfile_build()- Use Standard Global naming : " + useGlobalNaming )
+    logger.info("new_DnsProfile_build()- Use Standard Global naming : " + useGlobalNaming )
 
-    logging.info("new_DnsProfile_build.py Parms \nDevIP: " + active_ltm + "\nProfile name: " + prfName + "\nProfile Deploy or Change: " + prfDplyOrChg + "\nDefaults-from: " + prfDftFrom) 
+    logger.info("new_DnsProfile_build.py Parms \nDevIP: " + active_ltm + "\nProfile name: " + prfName + "\nProfile Deploy or Change: " + prfDplyOrChg + "\nDefaults-from: " + prfDftFrom) 
 
     idx = 1
     
-    #logging.info("ProxyType before change: " + prfPxyType)
+    #logger.info("ProxyType before change: " + prfPxyType)
     if prfDplyOrChg == 'new_profile':    
         strReturn = {str(idx) : 'DNS Profile Creation Report'}
 
@@ -89,43 +91,43 @@ def new_DnsProfile_build(active_ltm, prfName, prfDplyOrChg, prfDftFrom, prfHwVal
         if useGlobalNaming == '1':
             prfName = loadStdNames.get_std_name(active_ltm, 'SHARED', 'PROFILE', 'SERVICE_DNS', prfName)    
             
-        logging.info("Profile Creation process has been initiated. Profile Name: " + prfName + "\n")
+        logger.info("Profile Creation process has been initiated. Profile Name: " + prfName + "\n")
     
         if check_profileName_conflict(mr, prfName, prfDftFrom):
             strReturn.update({str(idx) : 'Profile Name conflict'})
-            logging.info("Profile name conflict.")
+            logger.info("Profile name conflict.")
             idx += 1
             return json.dumps(strReturn)
-        logging.info("No profile name conflict. Now creating the requested profile")
+        logger.info("No profile name conflict. Now creating the requested profile")
     		
         try:
             mydg = mr.tm.ltm.profile.dns_s.dns.create(name=prfName, partition='Common', defaultsFrom=prfDftFrom, enableHardwareQueryValidation=prfHwValid, enableHardwareResponseCache=prfHwRespCache, enableDnsExpress=prfDnsExp, enableGtm=prfGtm, unhandledQueryAction=prfUnhandledAct , useLocalBind=prfUseBind, processXfr=prfZoneXfr, enableDnsFirewall=prfDnsSecurity, processRd=prfRecursion)
         except Exception as e:
-            logging.info("Exception during DNS Profile creation")
+            logger.info("Exception during DNS Profile creation")
             strReturn[str(idx)] = "Exception fired! (" + prfName + "): " + str(e)
             idx += 1
-            logging.info("DNS Profile creation exception fired: " + str(e))
+            logger.info("DNS Profile creation exception fired: " + str(e))
             return json.dumps(strReturn)
     
         strReturn[str(idx)] = "DNS Profile (" + prfName + ") has been created"
         idx += 1
-        logging.info("DNS Profile has been created")
+        logger.info("DNS Profile has been created")
     elif prfDplyOrChg == 'chg_profile':
         modContent = {}        
         strReturn = {str(idx) : 'DNS Profile Modification Report'}
 
         idx += 1
         
-        logging.info("Profile Modification process has been initiated. Profile Name: " + prfName + "\n")
+        logger.info("Profile Modification process has been initiated. Profile Name: " + prfName + "\n")
         
         # Load DNS profile settings of a given DNS profile name
         try:
             loadedPrf = mr.tm.ltm.profile.dns_s.dns.load(name=prfName, partition='Common')
         except Exception as e:
-            logging.info("Exception during DNS Profile loading")
+            logger.info("Exception during DNS Profile loading")
             strReturn[str(idx)] = "Exception fired during DNS Profile setting loading! (" + prfName + "): " + str(e)
             idx += 1
-            logging.info("Exception fired during DNS Profile setting loading! ( " + str(e) + ")")
+            logger.info("Exception fired during DNS Profile setting loading! ( " + str(e) + ")")
             return json.dumps(strReturn)
         
         # Save the update DNS profile settings
@@ -153,28 +155,27 @@ def new_DnsProfile_build(active_ltm, prfName, prfDplyOrChg, prfDftFrom, prfHwVal
             except Exception as e:
                 strReturn[str(idx)] = "Exception fired during DNS profile update() (" + prfName + "): " + str(e)
                 idx += 1
-                logging.info("DNS Profile creation exception fired: " + str(e))
+                logger.info("DNS Profile creation exception fired: " + str(e))
                 return json.dumps(strReturn)
         else:
-            logging.info("No DNS Profile modification is needed")
+            logger.info("No DNS Profile modification is needed")
             strReturn[str(idx)] = "No DNS Profile modification is needed (" + prfName + "): "
             idx += 1
             
     if prfDplyOrChg == 'new_profile': 
         strReturn[str(idx)] = "DNS Profile (" + prfName + ") has been created"
         idx += 1
-        logging.info("DNS Profile has been created")
+        logger.info("DNS Profile has been created")
     elif prfDplyOrChg == 'chg_profile':
         strReturn[str(idx)] = "DNS Profile modification has been completed"
         idx += 1
-        logging.info("DNS Profile modification has been completed")
+        logger.info("DNS Profile modification has been completed")
         
     for keys, values in strReturn.items():
-        logging.info("Key: " + keys + " Value: " + values)
+        logger.info("Key: " + keys + " Value: " + values)
         
     return json.dumps(strReturn)
 
 if __name__ == "__main__":
-    #logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-    #logging.info('main called: param1: ')
+    #logger.info('main called: param1: ')
     print new_DnsProfile_build(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9], sys.argv[10], sys.argv[11], sys.argv[12], sys.argv[13])

@@ -3,6 +3,8 @@ import sys
 import logging
 import getpass
 
+logging.basicConfig(level=logging.INFO, filename='/var/www/chaniq/log/chaniq-py.log', format='%(asctime)s %(name)s %(levelname)s:%(message)s')
+logger = logging.getLogger(__name__)
 
 def get_tcpmonitors(mr):
     tcpmons = mr.tm.ltm.monitor.tcps.get_collection()
@@ -11,7 +13,7 @@ def get_tcpmonitors(mr):
         if output != '':
             output = output + ':'
         output = output + amon.name
-    #logging.info('output in get_httpprofile: %s' % output)
+    #logger.info('output in get_httpprofile: %s' % output)
     return output
     
 def get_httpmonitors(mr):
@@ -21,7 +23,7 @@ def get_httpmonitors(mr):
         if output != '':
             output = output + ':'
         output = output + amon.name
-    #logging.info('output in get_httpprofile: %s' % output)
+    #logger.info('output in get_httpprofile: %s' % output)
     return output
     
 def get_httpsmonitors(mr):
@@ -31,7 +33,7 @@ def get_httpsmonitors(mr):
         if output != '':
             output = output + ':'
         output = output + amon.name
-    #logging.info('output in get_httpprofile: %s' % output)
+    #logger.info('output in get_httpprofile: %s' % output)
     return output
     
 def get_udpmonitors(mr):
@@ -41,7 +43,7 @@ def get_udpmonitors(mr):
         if output != '':
             output = output + ':'
         output = output + amon.name
-    #logging.info('output in get_httpprofile: %s' % output)
+    #logger.info('output in get_httpprofile: %s' % output)
     return output
     
 def get_tcphalfmonitors(mr):
@@ -51,7 +53,7 @@ def get_tcphalfmonitors(mr):
         if output != '':
             output = output + ':'
         output = output + amon.name
-    #logging.info('output in get_httpprofile: %s' % output)
+    #logger.info('output in get_httpprofile: %s' % output)
     return output
     
 def get_gwicmpmonitors(mr):
@@ -61,7 +63,7 @@ def get_gwicmpmonitors(mr):
         if output != '':
             output = output + ':'
         output = output + amon.name
-    #logging.info('output in get_httpprofile: %s' % output)
+    #logger.info('output in get_httpprofile: %s' % output)
     return output
     
 def get_eavmonitors(mr):
@@ -71,7 +73,7 @@ def get_eavmonitors(mr):
         if output != '':
             output = output + ':'
         output = output + amon.name
-    #logging.info('output in get_httpprofile: %s' % output)
+    #logger.info('output in get_httpprofile: %s' % output)
     return output
 
 def get_allmonitors(mr):
@@ -84,8 +86,8 @@ def get_allmonitors(mr):
    
 
 def get_healthmonitors(active_ltm, mon_type):
-    logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-    logging.info('Called get_healthmonitors(): %s %s' % (active_ltm, mon_type))
+
+    logger.info('Called get_healthmonitors(): %s %s' % (active_ltm, mon_type))
     
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
@@ -117,10 +119,9 @@ def get_healthmonitors(active_ltm, mon_type):
     elif mon_type == "External":
         output = get_eavmonitors(mr)
         
-    #logging.info('output in get_active_profiles: %s' % output)
+    #logger.info('output in get_active_profiles: %s' % output)
     return output
 
 if __name__ == "__main__":
-    #logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-    #logging.info('main called: param1: ')
+    #logger.info('main called: param1: ')
     print get_healthmonitors(sys.argv[1], sys.argv[2])
