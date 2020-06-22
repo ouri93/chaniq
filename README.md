@@ -33,7 +33,7 @@ Are you interested in **Chan-IQ** project and want to join ths project?
 Thank you very much! Please send your email to chaniqhelper at gmail dot com.
 
 ## Disclaimer
-**USE CHAN-IQ AT YOUR OWN RISK**
+**USE CHAN-IQ AT YOUR OWN RISK**<br>
 Chan-IQ is a personal F5 automation project. All content provided on ths application is for educational purpose only. The project owner of this application makes no representations as to the accuracy, completeness, and security of any programming codes in this application. The owner will not be liable for any errors or omissions in this applicaation. The owner will not be liable for any losses, injuries, or damages from the use of this application.
 
 ## License
