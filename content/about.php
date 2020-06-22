@@ -1,5 +1,6 @@
-<p> About content </p>
 <?php
+require_once(__DIR__ . '/../utility/chaniqLogger.php');
+
 if ($_SESSION['loggedin'] != true){
     session_unset();
     session_destroy();
@@ -14,3 +15,6 @@ if ($_SESSION['loggedin'] != true){
  */
 
 ?>
+<div id="baseContent" class="div_vertical_scroll">
+<p> About content </p>
+</div>

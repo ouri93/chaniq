@@ -663,14 +663,14 @@ function getHttpSettingsProcessData(response_in){
 	var prfMode = GetParentURLParameter('go');
 	
 	/* Debugging */
-
+	/*
 	var strResult = 'Debugging Info - Loading Http profile settings';
 	$.each(responseArray, function(index) {
 		strResult += responseArray[index] + "<br>";
 	});
 	
 	$('#newprf_EvalReview').html(strResult);
-
+	*/
 	// String parsing - '/Common/parent_prf_name'
 	var parPrfName = responseArray[1].split("/");
 	
@@ -766,13 +766,13 @@ function processGetProfileData(response_in, prfType){
 	var parPrfName = '';
 	
 	/* Debugging */
-
+	/*
 	var strResult = 'Debugging Info - Loading ' + prfType + ' profile settings\n';
 	$.each(responseArray, function(index) {
 		strResult += responseArray[index] + "<br>";
 	});
 	$('#newprf_EvalReview').html(strResult);
-
+	*/
 	// String parsing - '/Common/parent_prf_name'
 	parPrfName = responseArray[0].split("/");
 
