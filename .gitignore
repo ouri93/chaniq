@@ -4,10 +4,7 @@ testcode
 vendor
 log
 nbproject
-*.ini
 *.pyc
 *.pyo
 *.log
-README.*
-*.md
 composer.*
