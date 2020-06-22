@@ -9,15 +9,18 @@ I named this project/website as **Chan-IQ** due to the partially functional simi
 **Chan-IQ** is provided as a VM. All you need is to download **Chan-IQ** VM and configure the basic system setup.
 You can download Chan-IQ VM here.
 
-## System Requirements
+## System and Software Requirements
 **Chan-IQ** has been built on Ubuntu 14.04(Upgraded to 18.04) with LAMP (Linux, Apache, MySQL, and PHP) package. Here are the required packages.
 
-- F5 Python SDK (2.3.3)
+- Ubuntu 18.04 with 2 vCPU, 2GB RAM, and 60GB disk space
+- F5 Python SDK (2.3.3) and iControl REST (1.3.0)
 - Python 2.7 or later
 - LAMP (Linux, Apache, MySQL, and PHP)
 - PhpMyAdmin
 - Python mysql connector (python -m pip install mysql-connector)
 - Python Cryptography package (pip install cryptography)
+- Python Hash Package (python-bcrypt)
+- Composer(v1.10.7) and Monolog for PHP logging
 
 ## How to up-to-date your code?
 **Chan-IQ** source code is managed through Git and you can download the latested code from Github.
@@ -27,10 +30,14 @@ You can download Chan-IQ VM here.
 
 ## Contribution
 Are you interested in **Chan-IQ** project and want to join ths project?
-Thank you very much! Please send your email to chaniqhelper at gmai dot com.
+Thank you very much! Please send your email to chaniqhelper at gmail dot com.
+
+## Disclaimer
+**USE CHAN-IQ AT YOUR OWN RISK**
+Chan-IQ is a personal F5 automation project. All content provided on ths application is for educational purpose only. The project owner of this application makes no representations as to the accuracy, completeness, and security of any programming codes in this application. The owner will not be liable for any errors or omissions in this applicaation. The owner will not be liable for any losses, injuries, or damages from the use of this application.
 
 ## License
 **Chan-IQ** project follows GNU General Public Licesne.
 
 ## Need help?
-**Chan-IQ** project is my personal project and I didn't set any dedicated hours for this project. Whenever I have some extra time, I would update this project without any guaranteed timeline. However if you have any good ideas or need any help, shoot me an email to chaniqhelper at gmai dot com.# chaniq
+**Chan-IQ** project is my personal project and I don't set any dedicated hours for this project. Whenever I have some extra time, I would update this project without any guaranteed timeline. However if you have any good ideas or need any help, shoot me an email to chaniqhelper at gmail dot com so that I can make **chaniq** better.

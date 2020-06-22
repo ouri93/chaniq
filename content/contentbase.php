@@ -78,6 +78,6 @@ if ($_SESSION['loggedin'] != true){
 		<div class="baseContentBody">
 			<b>Chan-IQ</b> project is my personal project and I don't set any dedicated hours for this project. Whenever I have some extra time, I would
 			update this project without any guaranteed timeline. However if you have any good ideas or need any help, shoot me an email to 
-			<b><i>chaniqhelper at gmail dot com.</i></b> so that I can make <b>Chan-IQ</b> better.<br><br>
+			<b><i>chaniqhelper at gmail dot com </i></b> so that I can make <b>Chan-IQ</b> better.<br><br>
 		</div>
 </div>
