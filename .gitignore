@@ -1,7 +1,13 @@
 # Configuration file #
-config
+doc
+testcode
+vendor
+log
 nbproject
 *.ini
 *.pyc
 *.pyo
 *.log
+README.*
+*.md
+composer.*
