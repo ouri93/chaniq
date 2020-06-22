@@ -1,7 +1,10 @@
 <?php
+require_once(__DIR__ . '/utility/chaniqLogger.php');
+
 session_start();
 if ($_SESSION['loggedin'] != true){
-    file_put_contents("/var/log/chaniqphp.log", "header.php - Unauthen user - Redirect to login page\n", FILE_APPEND);
+    $logger->info("header.php - Unauthen user - Redirect to login page");
+    #file_put_contents("/var/www/chaniq/log/chaniq-php.log", "header.php - Unauthen user - Redirect to login page\n", FILE_APPEND);
     session_unset();
     session_destroy();
     header('Location: login.php');

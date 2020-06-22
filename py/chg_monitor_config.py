@@ -5,13 +5,15 @@ import json
 import traceback
 import getpass
 
-logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-logging.info("Head of chg_monitor_config() called")
+logging.basicConfig(level=logging.INFO, filename='/var/www/chaniq/log/chaniq-py.log', format='%(asctime)s %(name)s %(levelname)s:%(message)s')
+logger = logging.getLogger(__name__)
+
+logger.info("Head of chg_monitor_config() called")
 
 #def chg_monitor_config(active_ltm, vs_dnsname, vs_port, vs_env, vs_poolmon, pLBMethod):
 def chg_monitor_config(active_ltm, monName, mDesc, mMonType, mMonCode, mParMonType, mInterval, mTimeout, mSend, mRecv, mUsername, mPassword, mReverse, mAliasPort, mCipherlist ):
     
-    logging.info("chg_monitor_config.py parms DevIP: " + active_ltm + " VS Name: " + monName + " Mon Code: " + mMonCode + " Interval: " + mInterval + " Send: " + mSend + " Reverse: " + mReverse + " Alias Port: " + mAliasPort + " CipherList: " + mCipherlist) 
+    logger.info("chg_monitor_config.py parms DevIP: " + active_ltm + " VS Name: " + monName + " Mon Code: " + mMonCode + " Interval: " + mInterval + " Send: " + mSend + " Reverse: " + mReverse + " Alias Port: " + mAliasPort + " CipherList: " + mCipherlist) 
 
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
@@ -22,7 +24,7 @@ def chg_monitor_config(active_ltm, monName, mDesc, mMonType, mMonCode, mParMonTy
     
     idx += 1
  
-    logging.info("Monitor Config Modification process has been initiated.") 
+    logger.info("Monitor Config Modification process has been initiated.") 
     # Load corresponding Monitor type - 
     try:
         if mMonType == "HTTP":
@@ -50,21 +52,21 @@ def chg_monitor_config(active_ltm, monName, mDesc, mMonType, mMonCode, mParMonTy
         elif mMonType == "External":    
             pass
     except Exception as e:
-        logging.info("Exception during Monitor Loading or configuration modification process")
+        logger.info("Exception during Monitor Loading or configuration modification process")
         strReturn[str(idx)] = "Exception error: " + str(e)
         idx += 1
-        logging.info("Health Monitor configuration Loading or Modification exception: " + str(e))
-        logging.info("Error Details: " + str(e))
-        logging.info(traceback.format_exc())
+        logger.info("Health Monitor configuration Loading or Modification exception: " + str(e))
+        logger.info("Error Details: " + str(e))
+        logger.info(traceback.format_exc())
         return json.dumps(strReturn)
 
     strReturn[str(idx)] = mMonType + " Monitor configuration(" + monName + ") has been modified successfully."
     idx += 1
-    logging.info("Monitor Configuration has been modified successfully")
+    logger.info("Monitor Configuration has been modified successfully")
                     
     
     for keys, values in strReturn.items():
-        logging.info("Key: " + keys + " Value: " + values)
+        logger.info("Key: " + keys + " Value: " + values)
 
     return json.dumps(strReturn)
 

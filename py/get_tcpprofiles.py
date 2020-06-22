@@ -4,9 +4,11 @@ import logging
 import json
 import getpass
 
+logging.basicConfig(level=logging.INFO, filename='/var/www/chaniq/log/chaniq-py.log', format='%(asctime)s %(name)s %(levelname)s:%(message)s')
+logger = logging.getLogger(__name__)
+
 def get_active_tcpprofiles(active_ltm):
-	logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-	logging.info('Dev IP in get_tcpprofiles: %s' % active_ltm)
+	logger.info('Dev IP in get_tcpprofiles: %s' % active_ltm)
 	
 	admpass = getpass.getpass('LTM', 'admin')
 	mr = ManagementRoot(str(active_ltm), 'admin', admpass)
@@ -17,7 +19,7 @@ def get_active_tcpprofiles(active_ltm):
 	for atcppf in tcppf:
 		if output != '':
 			output = output + ':'
-		logging.info('TCP Profile: %s' % atcppf.name)
+		logger.info('TCP Profile: %s' % atcppf.name)
 		output = output + atcppf.name
 	return output
 		

@@ -11,11 +11,11 @@ function echoTest() {
  */
 function isadmin(){
     if($_SESSION['role']=='admin'){
-        file_put_contents("/var/log/chaniqphp.log", "utility.php isadmin() Role: " . $_SESSION['role'] . "\n", FILE_APPEND);
+        file_put_contents(__DIR__ . "/../log/chaniq-php.log", "utility.php isadmin() Role: " . $_SESSION['role'] . "\n", FILE_APPEND);
         return true;
     }
     else{
-        file_put_contents("/var/log/chaniqphp.log", "utility.php isadmin() Role: " . $_SESSION['role'] . "\n", FILE_APPEND);
+        file_put_contents(__DIR__ . "/../log/chaniq-php.log", "utility.php isadmin() Role: " . $_SESSION['role'] . "\n", FILE_APPEND);
         return false;
     }
 }
@@ -28,11 +28,11 @@ function isadmin(){
  */
 function isguest(){
     if($_SESSION['role']=='guest'){
-        file_put_contents("/var/log/chaniqphp.log", "utility.php isguest() Role: " . $_SESSION['role'] . "\n", FILE_APPEND);
+        file_put_contents(__DIR__ . "/../log/chaniq-php.log", "utility.php isguest() Role: " . $_SESSION['role'] . "\n", FILE_APPEND);
         return true;
     }
     else{
-        file_put_contents("/var/log/chaniqphp.log", "utility.php isguest() Role: " . $_SESSION['role'] . "\n", FILE_APPEND);
+        file_put_contents(__DIR__ . "/../log/chaniq-php.log", "utility.php isguest() Role: " . $_SESSION['role'] . "\n", FILE_APPEND);
         return false;
     }
 }
@@ -44,15 +44,15 @@ function isguest(){
  * @return 'admin' if the logged-in user is admin. Otherwise return 'guest'
  */
 function getUserRole(){
-    file_put_contents("/var/log/chaniqphp.log", "utility.php getUserRole() called!!. Role: " . $_SESSION['role'] . "\n", FILE_APPEND);
+    file_put_contents(__DIR__ . "/../log/chaniq-php.log", "utility.php getUserRole() called!!. Role: " . $_SESSION['role'] . "\n", FILE_APPEND);
     return $_SESSION['role'];
     /*
     if($_SESSION['role'] == 'admin'){
-        file_put_contents("/var/log/chaniqphp.log", "utility.php getUserRole() Role: " . $_SESSION['role'] . "\n", FILE_APPEND);
+        file_put_contents(__DIR__ . "/../log/chaniq-php.log", "utility.php getUserRole() Role: " . $_SESSION['role'] . "\n", FILE_APPEND);
         return 'admin';
     }
     elseif($_SESSION['role'] == 'guest'){
-        file_put_contents("/var/log/chaniqphp.log", "utility.php getUserRole() Role: " . $_SESSION['role'] . "\n", FILE_APPEND);
+        file_put_contents(__DIR__ . "/../log/chaniq-php.log", "utility.php getUserRole() Role: " . $_SESSION['role'] . "\n", FILE_APPEND);
         return 'guest';
     }
     else return 'undefined';
@@ -218,7 +218,7 @@ function find_ini_section($vip, $pool_memberip, $env_name){
             $sec_data = parse_ini_sec_keyvals("STANDALONE_F5_SUBNETS", "SUBNET");
             break;
         default:
-            error_log(date("y-m-d H:i:s").": find_ini_section() - No matching Environment name found\n", 3, "/var/log/chaniqphp.log");
+            error_log(date("y-m-d H:i:s").": find_ini_section() - No matching Environment name found\n", 3, __DIR__ . "/../log/chaniq-php.log");
     }
     
     foreach ($pool_memberip as $pkey => $pval){
@@ -230,7 +230,7 @@ function find_ini_section($vip, $pool_memberip, $env_name){
                 //echo "PRD Count:".$cnt." Given IP:".$pval." vkey: ".$vkey." vvalue: ".$vvalue;
                 //echo "<br></br>";
                 if (cidr_match($pval, $vvalue)) {
-                    error_log(date("y-m-d H:i:s").": find_ini_section() - CIDR-Mathcing found!".$key."\n", 3, "/var/log/chaniqphp.log");
+                    error_log(date("y-m-d H:i:s").": find_ini_section() - CIDR-Mathcing found!".$key."\n", 3, __DIR__ . "/../log/chaniq-php.log");
                     return $section_name = $key;
                 }
                 $cnt++;
@@ -239,7 +239,7 @@ function find_ini_section($vip, $pool_memberip, $env_name){
     }
     
     if (empty($section_name)){
-        error_log( date("y-m-d H:i:s").": find_ini_section() - No Section found from INI\n", 3, "/var/log/chaniqphp.log");
+        error_log( date("y-m-d H:i:s").": find_ini_section() - No Section found from INI\n", 3, __DIR__ . "/../log/chaniq-php.log");
         return $section_name;
     }
     else {
@@ -292,7 +292,7 @@ function find_active_ltm($section_name, $env_name){
     // If Env is "STANDARD", we assume there is only one ltm. Otherwise (PRD, STG, QA, DEV) we assume LTM device is HA pair
     if ($env_name == "STANDALONE"){
         foreach ($device_group_members as $dgkey => $dgval){
-            error_log( date("y-m-d H:i:s").": find_active_ltm() - Key: " .$dgkey. " Value: " .$dgval."\n", 3, "/var/log/chaniqphp.log");
+            error_log( date("y-m-d H:i:s").": find_active_ltm() - Key: " .$dgkey. " Value: " .$dgval."\n", 3, __DIR__ . "/../log/chaniq-php.log");
             return $dgval;
         }
             
@@ -379,7 +379,7 @@ function get_healthmon($active_ltm, $mon_type)
 {
     $cmd = '/usr/bin/python /var/www/chaniq/py/get_healthmon.py '.$active_ltm.' ' .$mon_type;
     //echo "<br>Command:" .$cmd." <br>";
-    error_log(date("y-m-d H:i:s").": get_healthmon() - get_healthmon() called\n", 3, "/var/log/chaniqphp.log");
+    error_log(date("y-m-d H:i:s").": get_healthmon() - get_healthmon() called\n", 3, __DIR__ . "/../log/chaniq-php.log");
     exec($cmd, $output);
     
     //echo "<br>Output: " .$output[0];

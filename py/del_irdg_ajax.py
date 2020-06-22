@@ -5,13 +5,15 @@ import json
 import traceback
 import getpass
 
-logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-logging.info("Head of del_irdg_ajax() called")
+logging.basicConfig(level=logging.INFO, filename='/var/www/chaniq/log/chaniq-py.log', format='%(asctime)s %(name)s %(levelname)s:%(message)s')
+logger = logging.getLogger(__name__)
+
+logger.info("Head of del_irdg_ajax() called")
 
 
 def del_irdg_ajax(active_ltm, irDgName, irOrDg, dgType):
     #'DevIP' 'IrDgName' 'IrType' 'IrCode' 'IrDgType' 'IrDgData'
-    logging.info("del_irdg_ajax.py parms\n DevIP: " + active_ltm + "\niRule/Data Group Name: " + irDgName + "\nConfig Type: " + irOrDg + "\nDG Type: " + dgType + "\n") 
+    logger.info("del_irdg_ajax.py parms\n DevIP: " + active_ltm + "\niRule/Data Group Name: " + irDgName + "\nConfig Type: " + irOrDg + "\nDG Type: " + dgType + "\n") 
 
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
@@ -31,20 +33,20 @@ def del_irdg_ajax(active_ltm, irDgName, irOrDg, dgType):
             loaded_dg = mr.tm.ltm.data_group.internals.internal.load(name=irDgName)
             loaded_dg.delete()
     except Exception as e:
-        logging.info("iRule/Data Group Deletion Exception")
+        logger.info("iRule/Data Group Deletion Exception")
         strReturn[str(idx)] = "iRule/Data Group Deletion Exception fired! (" + irDgName + "): " + str(e)
         idx += 1
-        logging.info("Exception during iRule/Data Group Deletion has been fired: " + str(e))
-        logging.info(traceback.format_exc())
+        logger.info("Exception during iRule/Data Group Deletion has been fired: " + str(e))
+        logger.info(traceback.format_exc())
         return json.dumps(strReturn)
     
     strReturn[str(idx)] = irOrDg + " iRule/Data Group (" + irDgName + ") deletion has been completed successfully"
     idx += 1
-    logging.info("iRule/Data Group deletion has been completed successfully")
+    logger.info("iRule/Data Group deletion has been completed successfully")
                     
     
     for keys, values in strReturn.items():
-        logging.info("Key: " + keys + " Value: " + values)
+        logger.info("Key: " + keys + " Value: " + values)
 
     return json.dumps(strReturn)
 

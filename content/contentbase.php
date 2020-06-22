@@ -1,4 +1,6 @@
 <?php
+require_once(__DIR__ . '/../utility/chaniqLogger.php');
+
 if ($_SESSION['loggedin'] != true){
     session_unset();
     session_destroy();
@@ -28,16 +30,19 @@ if ($_SESSION['loggedin'] != true){
 			You can download <b>Chan-IQ</b> VM <a href="">here.</a><br><br>
 		</div>
 		
-		<h2><ul> System Requirements </ul></h2>
+		<h2><ul> System and Software Requirements </ul></h2>
 		<div class="baseContentBody">
 			<b>Chan-IQ</b> has been built on Ubuntu 14.04(Upgraded to 18.04) with LAMP (Linux, Apache, MySQL, and PHP) package. Here are the required packages.<br><br>
 			<ul>
-				<li> F5 Python SDK (2.3.3) </li>
+				<li> Ubuntu 18.04 with 2 vCPU, 2GB RAM, and 60GB disk space </li>
+				<li> F5 Python SDK (2.3.3) and iControl REST (1.3.0) </li>
 				<li> Python 2.7 or later </li>
 				<li> LAMP (Linux, Apache, MySQL, and PHP) </li>
 				<li> PhpMyAdmin </li>
 				<li> Python mysql connector (python -m pip install mysql-connector) </li>
 				<li> Python Cryptography package (pip install cryptography) </li>
+				<li> Python Hash Package (python-bcrypt)</li>
+				<li> Composer(v1.10.7) and Monolog for PHP logging </li>
 			</ul>
 			<br>
 		</div>
@@ -50,7 +55,17 @@ if ($_SESSION['loggedin'] != true){
 		<h2><ul> Contribution </ul></h2>
 		<div class="baseContentBody">
 			Are you interested in Chan-IQ project and want to join ths project?<br>
-			Thank you very much! Please send your email to <b><i>chaniqhelper at gmai dot com.</i></b><br><br>
+			Thank you very much! Please send your email to <b><i>chaniqhelper at gmail dot com.</i></b><br><br>
+		</div>
+		
+		<h2><ul> Disclaimer </ul></h2>
+		<div class="baseContentBody">
+			<b>USE CHAN-IQ AT YOUR OWN RISK</b><br>
+			Chan-IQ is a personal F5 automation project. All content provided on ths application is for educational purpose only. 
+			The project owner of this application makes no representations as to the accuracy, completeness, and security of any programming codes
+			in this application. The owner will not be liable for any errors or omissions in this applicaation. The owner will not be liable
+			for any losses, injuries, or damages from the use of this application.<br><br>
+			
 		</div>
 		
 		<h2><ul> License </ul></h2>
@@ -61,8 +76,8 @@ if ($_SESSION['loggedin'] != true){
 		<h2><ul> Need help? </ul></h2>
 		
 		<div class="baseContentBody">
-			<b>Chan-IQ</b> project is my personal project and I didn't set any dedicated hours for this project. Whenever I have some extra time, I would
+			<b>Chan-IQ</b> project is my personal project and I don't set any dedicated hours for this project. Whenever I have some extra time, I would
 			update this project without any guaranteed timeline. However if you have any good ideas or need any help, shoot me an email to 
-			<b><i>chaniqhelper at gmai dot com.</i></b><br><br>
+			<b><i>chaniqhelper at gmail dot com </i></b> so that I can make <b>Chan-IQ</b> better.<br><br>
 		</div>
 </div>

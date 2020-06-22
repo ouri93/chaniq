@@ -5,8 +5,8 @@ import json
 import build_std_names
 import getpass
 
-
-logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
+logging.basicConfig(level=logging.INFO, filename='/var/www/chaniq/log/chaniq-py.log', format='%(asctime)s %(name)s %(levelname)s:%(message)s')
+logger = logging.getLogger(__name__)
 
 
 def get_pool_config(active_ltm, pName, pPartition):
@@ -26,16 +26,16 @@ def get_pool_config(active_ltm, pName, pPartition):
     try:
         pLoaded = mr.tm.ltm.pools.pool.load(partition=pPartition, name=pName)
     except Exception as e:
-        logging.info("Exception fired during loading Pool(" + pName + ") configuration")
+        logger.info("Exception fired during loading Pool(" + pName + ") configuration")
         strReturn[str(idx)] = "Exception fired!: " + str(e)
         idx += 1
-        logging.info("Loading Pool configuration exception fired: " + str(e))
+        logger.info("Loading Pool configuration exception fired: " + str(e))
         return json.dumps(strReturn)
     
     try:
         splitMon = (pLoaded.monitor).split('/')[2].strip()
     except Exception as e:
-        logging.info("Pool monitor is not defined:" + str(e))
+        logger.info("Pool monitor is not defined:" + str(e))
         splitMon = 'none'
     # In some reason, BIG-IP system adds a space at the end of pool monitor name. To remove spaces, use strip() method.
     # e.g. "/Common/https ", "/Common/tcp "
@@ -54,13 +54,13 @@ def get_pool_config(active_ltm, pName, pPartition):
                         splitMon = 'default'
                     output += '@' + splitName[0] + "|" + member.address + "|" + splitName[1] + "|" + str(member.ratio) + "|" + splitMon + "|" + str(member.priorityGroup)
     except Exception as e:
-        logging.info("Exception fired during loading Pool members configuration")
+        logger.info("Exception fired during loading Pool members configuration")
         strReturn[str(idx)] = "Exception fired!: " + str(e)
         idx += 1
-        logging.info("Loading Pool members configuration exception fired: " + str(e))
+        logger.info("Loading Pool members configuration exception fired: " + str(e))
         return json.dumps(strReturn)
 
-    logging.info('get_pool_config.py => output in get_pool_config(): %s' % output)
+    logger.info('get_pool_config.py => output in get_pool_config(): %s' % output)
     return output
 
 if __name__ == "__main__":

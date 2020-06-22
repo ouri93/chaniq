@@ -7,9 +7,8 @@ import getpass
 import traceback
 from _ast import Or
 
-logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO, format='%(asctime)s %(levelname)s %(name)s %(message)s')
-logger=logging.getLogger(__name__)
-
+logging.basicConfig(level=logging.INFO, filename='/var/www/chaniq/log/chaniq-py.log', format='%(asctime)s %(name)s %(levelname)s:%(message)s')
+logger = logging.getLogger(__name__)
 
 # Compare two dictionaries
 # Return 'True' if two dictionaries have exactly same keys and values. Otherwise return 'False'
@@ -68,20 +67,20 @@ def get_vsconfig(mr, vs_name, vs_part, loaded_prf_names):
             if p['nameReference']['link'].find('/profile/http') != -1:
                 if p['name'] != '':
                     loaded_prf_names['httpProfile'] = p['name']
-                    logging.info("Loaded http prf name: " + p['name'])
+                    logger.info("Loaded http prf name: " + p['name'])
             elif p['nameReference']['link'].find('/profile/tcp') != -1 and (p['context'] == 'clientside' or p['context'] == 'all') :
                 logger.info("Loading TCP Profile(p['name']: " + p['name'])
                 if p['name'] != '':
                     loaded_prf_names['protocolProfileClient'] = p['name']
-                    logging.info("Loaded tcp prf name: " + p['name'])
+                    logger.info("Loaded tcp prf name: " + p['name'])
             elif p['nameReference']['link'].find('/profile/client-ssl') != -1 and p['context'] == 'clientside' :
                 if p['name'] != '':
                     loaded_prf_names['sslProfileClient'] = p['name']
-                    logging.info("Loaded client ssl prf name: " + p['name'])
+                    logger.info("Loaded client ssl prf name: " + p['name'])
             elif p['nameReference']['link'].find('/profile/server-ssl') != -1 and p['context'] == 'serverside' :
                 if p['name'] != '':
                     loaded_prf_names['sslProfileServer'] = p['name']
-                    logging.info("Loaded server ssl prf name: " + p['name'])
+                    logger.info("Loaded server ssl prf name: " + p['name'])
 
         if hasattr(loaded_vs, 'persist'):
             persistNames = loaded_vs.__dict__['persist']
@@ -424,7 +423,7 @@ def chg_vs_ajax(active_ltm, vs_name, vs_dest, vs_port, vs_desc, vs_tcpprofile, v
     except Exception as e:
         logger.info("Error during updating virtual server properties")
         logger.info("Error Details: " + str(e))
-        logging.info(traceback.format_exc())
+        logger.info(traceback.format_exc())
         strReturn = {str(idx) : 'Error during updating virtual server properties Error Detail: ' + str(e) }
         idx += 1
         return json.dumps(strReturn)

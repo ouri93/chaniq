@@ -5,7 +5,9 @@ import json
 import build_std_names
 import getpass
 
-logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
+logging.basicConfig(level=logging.INFO, filename='/var/www/chaniq/log/chaniq-py.log', format='%(asctime)s %(name)s %(levelname)s:%(message)s')
+logger = logging.getLogger(__name__)
+
 # Global Varibale idx
 idx = 1
 gFoundConflict = False
@@ -48,7 +50,7 @@ def check_vs_conflict(mr, vs_name, vip):
 
 ''' Check node IP and name conflict '''
 def check_node_conflict(mr, nodeip, nodename):
-	#logging.info("check_node_conflict() nodeip: " + nodeip + " Node Name: " + nodename)
+	#logger.info("check_node_conflict() nodeip: " + nodeip + " Node Name: " + nodename)
 	
 	nodes = mr.tm.ltm.nodes.get_collection()
 	#strReturn = ''
@@ -73,7 +75,7 @@ def check_node_conflict(mr, nodeip, nodename):
 	global idx
 	idx += 1
 
-	#logging.info ("idx: " + str(idx) + " value: " + str(strReturn) + "\n")
+	#logger.info ("idx: " + str(idx) + " value: " + str(strReturn) + "\n")
 
 	if (bitout >> 1) & 1:
 		strReturn[str(idx)] = 'Node IP Conflcit(Node IP: ' + str(nodeip) + ')'
@@ -111,7 +113,7 @@ def check_pool_conflict(mr, poolname):
 	global idx
 	idx += 1
 	
-	#logging.info ("Pool check - idx: " + str(idx) + " value: " + str(strReturn) + "\n")
+	#logger.info ("Pool check - idx: " + str(idx) + " value: " + str(strReturn) + "\n")
 	
 	return strReturn
 
@@ -140,10 +142,10 @@ def check_protocol_conflict():
     - Node IP and Name conflict, Pool name conflict, Virtual Server Name and VIP:port conflict
 '''
 def check_object_conflict(active_ltm, vs_env, vs_dnsname, vs_dest, vs_port, vs_poolmembername, pool_memberip, pool_memberport):
-	# logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-	logging.info("check_object_conflict()")
 
-	logging.info("LTM Name: " + active_ltm)
+	logger.info("check_object_conflict()")
+
+	logger.info("LTM Name: " + active_ltm)
 	#strReturn = ''
 	strReturn = {str(idx):'Object Conflict Report'}
 	global idx
@@ -155,30 +157,30 @@ def check_object_conflict(active_ltm, vs_env, vs_dnsname, vs_dest, vs_port, vs_p
 	
 	results = json.loads(vs_poolmembername)
 	for item in results:
-		logging.info("item: " + item)
+		logger.info("item: " + item)
 			
 	# Check Node IP/name conflict
 	nodeips = json.loads(pool_memberip)
 	nodenames = json.loads(vs_poolmembername)
 	for nodeip, nodename in zip(nodeips, nodenames):
-		logging.info("node IP: " + nodeip + "node name: " + nodename)
+		logger.info("node IP: " + nodeip + "node name: " + nodename)
 		#strReturn += check_node_conflict(mr, nodeip, nodename)
 		strReturn.update(check_node_conflict(mr, nodeip, nodename))
 	
-	#logging.info ("strReturn value after node check: " + str(strReturn) + "\n")
+	#logger.info ("strReturn value after node check: " + str(strReturn) + "\n")
 	
 	# Check Pool name conflict
 	poolname = build_std_names.build_std_pool_name(vs_env, vs_dnsname, vs_port)
-	logging.info("Pool name created: " + poolname)
+	logger.info("Pool name created: " + poolname)
 	#strReturn += check_pool_conflict(mr, poolname)
 	strReturn.update(check_pool_conflict(mr, poolname))
 	
-	#logging.info ("strReturn value after pool check: " + str(strReturn) + "\n")
+	#logger.info ("strReturn value after pool check: " + str(strReturn) + "\n")
 	
 	# Check Virtual Server Name and VIP conflict
 	vsname = build_std_names.build_std_vs_name(vs_env, vs_dnsname, vs_port)
 	vip = '/Common/' + vs_dest + ':' + vs_port
-	logging.info("VS name created: " + vsname + "VIP: " + vip + '\n')
+	logger.info("VS name created: " + vsname + "VIP: " + vip + '\n')
 	#strReturn += check_vs_conflict(mr, vsname, vip)
 	strReturn.update(check_vs_conflict(mr, vsname, vip))
 	
@@ -193,7 +195,7 @@ def check_object_conflict(active_ltm, vs_env, vs_dnsname, vs_dest, vs_port, vs_p
 	return json.dumps(strReturn)
 '''	
 	for nodeip in nodeips:
-		logging.info("node IP: " + node)
+		logger.info("node IP: " + node)
 		strReturn += check_node_conflict(active_ltm, nodeip, nodename)
 
 	fostat = mr.tm.sys.failover.load()

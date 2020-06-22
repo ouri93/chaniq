@@ -5,12 +5,14 @@ import json
 import traceback
 import getpass
 
-logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-logging.info("Head of load_certkey_ajax() called")
+logging.basicConfig(level=logging.INFO, filename='/var/www/chaniq/log/chaniq-py.log', format='%(asctime)s %(name)s %(levelname)s:%(message)s')
+logger = logging.getLogger(__name__)
+
+logger.info("Head of load_certkey_ajax() called")
 
 def load_certkey_ajax(active_ltm):
     #'DevIP' 'IrType' 'IrDgPart'
-    logging.info("load_certkey_ajax.py parms\n DevIP: " + active_ltm + "\n") 
+    logger.info("load_certkey_ajax.py parms\n DevIP: " + active_ltm + "\n") 
 
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
@@ -19,7 +21,7 @@ def load_certkey_ajax(active_ltm):
     key_idx = 1
     dictReturn = { key_idx: {'name':'', 'commonName':'', 'expiration':'', 'partition':''}}
 
-    logging.info("Loading Cert/Key process has been initiated.") 
+    logger.info("Loading Cert/Key process has been initiated.") 
 
     #Retrieve cert/key configuration
     try:
@@ -33,13 +35,13 @@ def load_certkey_ajax(active_ltm):
             dictReturn[key_idx] = {'name' : certkeyName, 'commonName' : certkeyCN, 'expiration' : certkeyExp, 'partition' : certkeyPart }
             key_idx = key_idx + 1
     except Exception as e:
-        logging.info("Cert get_collection Exception")
-        logging.info("Error Details: " + str(e))
-        logging.info(traceback.format_exc())
+        logger.info("Cert get_collection Exception")
+        logger.info("Error Details: " + str(e))
+        logger.info(traceback.format_exc())
         dictReturn[key_idx] = {'name' : "Exception fired", 'commonName' : "Exception fired", 'expiration' : "Exception fired", 'partition' : "Exception fired" }
         return json.dumps(dictReturn)
             
-    logging.info("Cert information has been collected successfully")
+    logger.info("Cert information has been collected successfully")
     return json.dumps(dictReturn)
 
 if __name__ == "__main__":

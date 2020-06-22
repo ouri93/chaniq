@@ -5,13 +5,13 @@ import json
 import traceback
 import getpass
 
-logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-logging.info("Head of update_irdg_config() called")
+logging.basicConfig(level=logging.INFO, filename='/var/www/chaniq/log/chaniq-py.log', format='%(asctime)s %(name)s %(levelname)s:%(message)s')
+logger = logging.getLogger(__name__)
 
 
 def update_irdg_config(active_ltm, irDgName, irType, irCode, irDgType, irDgData):
     #'DevIP' 'IrDgName' 'IrType' 'IrCode' 'IrDgType' 'IrDgData'
-    logging.info("update_irdg_config.py parms\n DevIP: " + active_ltm + "\niRule/Data Group Name: " + irDgName + "\nConfig Type: " + irType + "\niRule Code: " + irCode + "\nDG Type: " + irDgType + "\nDG Data: " + irDgData + "\n") 
+    logger.info("update_irdg_config.py parms\n DevIP: " + active_ltm + "\niRule/Data Group Name: " + irDgName + "\nConfig Type: " + irType + "\niRule Code: " + irCode + "\nDG Type: " + irDgType + "\nDG Data: " + irDgData + "\n") 
 
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
@@ -34,7 +34,7 @@ def update_irdg_config(active_ltm, irDgName, irType, irCode, irDgType, irDgData)
             for arrRecord in arrRecords:
                 aRecord = arrRecord.split(':=')
                 if len(aRecord) == 2:
-                    logging.info("name: " + aRecord[0] + " Value: " + aRecord[1])
+                    logger.info("name: " + aRecord[0] + " Value: " + aRecord[1])
                     nr = [{'name':str(aRecord[0]), 'data':str(aRecord[1])}]
                 else:
                     nr = [{'name':str(aRecord[0]), 'data':""}]
@@ -43,20 +43,20 @@ def update_irdg_config(active_ltm, irDgName, irType, irCode, irDgType, irDgData)
             loaded_dg.update(name=irDgName, partition='Common', records=new_records)
 
     except Exception as e:
-        logging.info("iRule/Data Group updating Exception")
+        logger.info("iRule/Data Group updating Exception")
         strReturn[str(idx)] = "iRule/Data Group updating Exception fired! (" + irDgName + "): " + str(e)
         idx += 1
-        logging.info("Exception during iRule/Data Group Configuration update has been fired: " + str(e))
-        logging.info(traceback.format_exc())
+        logger.info("Exception during iRule/Data Group Configuration update has been fired: " + str(e))
+        logger.info(traceback.format_exc())
         return json.dumps(strReturn)
     
     strReturn[str(idx)] = irType + " iRule/Data Group (" + irDgName + ") configuration has been updated"
     idx += 1
-    logging.info("iRule/Data Group configuration has been updated")
+    logger.info("iRule/Data Group configuration has been updated")
                     
     
     for keys, values in strReturn.items():
-        logging.info("Key: " + keys + " Value: " + values)
+        logger.info("Key: " + keys + " Value: " + values)
 
     return json.dumps(strReturn)
 

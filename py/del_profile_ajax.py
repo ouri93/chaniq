@@ -4,10 +4,10 @@ import logging
 import json
 import getpass
 
+logging.basicConfig(level=logging.INFO, filename='/var/www/chaniq/log/chaniq-py.log', format='%(asctime)s %(name)s %(levelname)s:%(message)s')
+logger = logging.getLogger(__name__)
+
 def delete_profile(mr, partition, pf_type, pf_name):
-	
-	logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.DEBUG, format='%(asctime)s %(levelname)s %(name)s %(message)s')
-	logger=logging.getLogger(__name__)
 	
 	output = ''
 	# Load a given profile name to delete - load() method only requires profile name. If a partition information is given, the query fails with
@@ -45,27 +45,26 @@ def delete_profile(mr, partition, pf_type, pf_name):
 		elif pf_type == 'Universal':
 			loaded_prf = mr.tm.ltm.persistence.universals.universal.load(name=pf_name)
 	except Exception as e:
-		logging.info("Exception fired during loading profile(" + pf_name + ")")
+		logger.info("Exception fired during loading profile(" + pf_name + ")")
 		output = "Exception fired!: " + str(e)
-		logging.info("Loading Profile exception fired: " + str(e))
+		logger.info("Loading Profile exception fired: " + str(e))
 		return output
 	output = output + "Profile loading has been completed\n"
 	# Delete a loaded profile
 	try:
 		loaded_prf.delete()
 	except Exception as e:
-		logging.info("Exception fired during deleting profile(" + pf_name + ")")
+		logger.info("Exception fired during deleting profile(" + pf_name + ")")
 		output = output + "Exception fired!: " + str(e)
-		logging.info("Deleting Profile exception fired: " + str(e))
+		logger.info("Deleting Profile exception fired: " + str(e))
 		return output
 	output = output + "Profile deletion has been completed\n"
-	logging.info('Returing output: %s' % output)
+	logger.info('Returing output: %s' % output)
 	
 	return output
 
 # Data format: {method:'jsonDATA', DevIP:ltmIP, LoadTypeName:prfType, Partition:partition, PrfName:prfName}
 def del_profile_ajax(active_ltm, pf_type, partition, pf_name):
-	logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
 	
 	admpass = getpass.getpass('LTM', 'admin')
 	mr = ManagementRoot(str(active_ltm), 'admin', admpass)
@@ -75,8 +74,8 @@ def del_profile_ajax(active_ltm, pf_type, partition, pf_name):
 	strReturn = {str(idx) : 'Profile Deletion Report'}
 	idx += 1
 	
-	logging.info('Profile Types: %s' % pf_type)
-	logging.info('Profile Deletion process has been initiated')
+	logger.info('Profile Types: %s' % pf_type)
+	logger.info('Profile Deletion process has been initiated')
 	strReturn[str(idx)] = 'Profile Deletion process has been initiated'
 	idx += 1
 
@@ -85,13 +84,12 @@ def del_profile_ajax(active_ltm, pf_type, partition, pf_name):
 	#strReturn[str(idx)] = 'Profile loading has been completed.\nProfile deletion has been completed'
 	idx += 1
 	
-	logging.info('Profile Deletion process has been completed')
+	logger.info('Profile Deletion process has been completed')
 	strReturn[str(idx)] = 'Profile Deletion process has been completed'
 	idx += 1
 
 	return json.dumps(strReturn)
 	
 if __name__ == "__main__":
-	#logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-	#logging.info('main called: param1: ')
+	#logger.info('main called: param1: ')
 	print del_profile_ajax(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])

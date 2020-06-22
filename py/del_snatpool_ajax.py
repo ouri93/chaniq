@@ -4,8 +4,8 @@ import logging
 import json
 import getpass
 
-logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO, format='%(asctime)s %(levelname)s %(name)s %(message)s')
-logger=logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO, filename='/var/www/chaniq/log/chaniq-py.log', format='%(asctime)s %(name)s %(levelname)s:%(message)s')
+logger = logging.getLogger(__name__)
 
 def del_snatpool_ajax(active_ltm, snatname, snatpart):
     
@@ -15,21 +15,21 @@ def del_snatpool_ajax(active_ltm, snatname, snatpart):
     
     strReturn = []
     strReturn.append("Snatpool Deletion process has been initiated.")
-    logging.info("Snatpool Deletion process has been initiated.")
-    logging.info("snatname: " + snatname + " snat partition: " + snatpart)
+    logger.info("Snatpool Deletion process has been initiated.")
+    logger.info("snatname: " + snatname + " snat partition: " + snatpart)
     
     try:
         loaded_snatp = mr.tm.ltm.snatpools.snatpool.load(name=snatname, partition=snatpart)
         loaded_snatp.delete()
     except Exception as e:
-        logging.info("Exception during deleting a Snatpool")
-        logging.info(str(e))
+        logger.info("Exception during deleting a Snatpool")
+        logger.info(str(e))
         strReturn.append("FAIL")
         strReturn.append(str(e))
         return json.dumps(strReturn)
     
     strReturn.append("Snatpool deletion has been completed successfully.")
-    logging.info("Snatpool deletion has been completed successfully.")
+    logger.info("Snatpool deletion has been completed successfully.")
     return json.dumps(strReturn)
 
 

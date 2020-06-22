@@ -6,13 +6,13 @@ import build_std_names
 import getpass
 import loadStdNames
 
-logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO, format='%(asctime)s %(levelname)s %(name)s %(message)s')
-logger=logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO, filename='/var/www/chaniq/log/chaniq-py.log', format='%(asctime)s %(name)s %(levelname)s:%(message)s')
+logger = logging.getLogger(__name__)
 
 
 def check_vsname_conflict(mr, std_poolname):
     
-    logging.info("Build_pools - check_poolname_conflict() Pool name: " + std_poolname)
+    logger.info("Build_pools - check_poolname_conflict() Pool name: " + std_poolname)
     
     pools = mr.tm.ltm.pools.get_collection()
 
@@ -36,14 +36,14 @@ def build_vs_s(active_ltm, vs_dnsname, vs_dest, vs_port, vs_desc, vs_env, vs_tcp
 
     # Check if Standard naming is used
     useGlobalNaming = loadStdNames.useStdNaming()
-    logging.info("build_vs_s()- Use Standard Global naming : " + useGlobalNaming )
+    logger.info("build_vs_s()- Use Standard Global naming : " + useGlobalNaming )
         
     idx = 1
     strReturn = {str(idx) : 'VS Creation Report'}
     
     idx += 1
-    logging.info(str(active_ltm) + " " + str(vs_dnsname) + " " + str(vs_dest) + " " + str(vs_port) + " " + str(vs_desc) + " " + str(vs_env) + " " + str(vs_tcpprofile) + " " + str(vs_persistence) + " " + str(vs_redirect) + " " + str(vs_type) + " " + str(vs_httpprofile) + " " + str(vs_sslclient) + " " + str(vs_sslserver) )
-    logging.info("Before VS Build - Env Name: " + str(vs_env) + " DNS name: " + str(vs_dnsname) + " Port: " + str(vs_port))
+    logger.info(str(active_ltm) + " " + str(vs_dnsname) + " " + str(vs_dest) + " " + str(vs_port) + " " + str(vs_desc) + " " + str(vs_env) + " " + str(vs_tcpprofile) + " " + str(vs_persistence) + " " + str(vs_redirect) + " " + str(vs_type) + " " + str(vs_httpprofile) + " " + str(vs_sslclient) + " " + str(vs_sslserver) )
+    logger.info("Before VS Build - Env Name: " + str(vs_env) + " DNS name: " + str(vs_dnsname) + " Port: " + str(vs_port))
     
     if useGlobalNaming == '1':
         std_vsname = loadStdNames.get_std_name(active_ltm, 'LOCAL', 'VIRTUAL_SERVER', '', vs_dnsname)
@@ -54,13 +54,13 @@ def build_vs_s(active_ltm, vs_dnsname, vs_dest, vs_port, vs_desc, vs_env, vs_tcp
     std_vsname = str(vs_dnsname)
     std_poolname = str(vs_dnsname)
     
-    logging.info("VS Creation process has been initiated. VS Name: " + std_vsname) 
+    logger.info("VS Creation process has been initiated. VS Name: " + std_vsname) 
     
     try:
         #Create a VS
         myvs = mr.tm.ltm.virtuals.virtual.create(name=std_vsname, partition='Common', destination='/Common/'+vs_dest+':'+vs_port, \
                 ipProtocol='tcp', pool='/Common/' + std_poolname)
-        logging.info("VS Name: " + std_vsname + " Destination: " + vs_dest + ':' + vs_port + " Pool Name: " + std_poolname)
+        logger.info("VS Name: " + std_vsname + " Destination: " + vs_dest + ':' + vs_port + " Pool Name: " + std_poolname)
         #Load additional profiles
         
         loadedvs = mr.tm.ltm.virtuals.virtual.load(name=std_vsname)

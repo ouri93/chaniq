@@ -6,12 +6,14 @@ import build_std_names
 import getpass
 import loadStdNames
 
-logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-logging.info("Head of new_monitor_build() called")
+logging.basicConfig(level=logging.INFO, filename='/var/www/chaniq/log/chaniq-py.log', format='%(asctime)s %(name)s %(levelname)s:%(message)s')
+logger = logging.getLogger(__name__)
+
+logger.info("Head of new_monitor_build() called")
 
 def check_http_mon_conflict(mr, std_monname):
     httpmons = mr.tm.ltm.monitor.https.get_collection()
-    logging.info("check_http_mon_conflict() STD Name: " + std_monname + "\n")
+    logger.info("check_http_mon_conflict() STD Name: " + std_monname + "\n")
     
     bitout = 0
     
@@ -20,7 +22,7 @@ def check_http_mon_conflict(mr, std_monname):
             bitout = bitout | (1 << 0)
     
 
-    #logging.info("bitout value: " + str(bitout) + "\n")    
+    #logger.info("bitout value: " + str(bitout) + "\n")    
 
     # If Poolname conflicts, return True. Otherwise return False
     if (bitout >> 0) & 1:
@@ -30,7 +32,7 @@ def check_http_mon_conflict(mr, std_monname):
     
 def check_https_mon_conflict(mr, std_monname):
     httpsmons = mr.tm.ltm.monitor.https_s.get_collection()
-    logging.info("check_https_mon_conflict() STD Name: " + std_monname + "\n")
+    logger.info("check_https_mon_conflict() STD Name: " + std_monname + "\n")
     
     bitout = 0
     
@@ -39,7 +41,7 @@ def check_https_mon_conflict(mr, std_monname):
             bitout = bitout | (1 << 0)
     
 
-    #logging.info("bitout value: " + str(bitout) + "\n")    
+    #logger.info("bitout value: " + str(bitout) + "\n")    
 
     # If Poolname conflicts, return True. Otherwise return False
     if (bitout >> 0) & 1:
@@ -49,7 +51,7 @@ def check_https_mon_conflict(mr, std_monname):
 
 def check_tcp_mon_conflict(mr, std_monname):
     tcpmons = mr.tm.ltm.monitor.tcps.get_collection()
-    logging.info("check_tcp_mon_conflict() STD Name: " + std_monname + "\n")
+    logger.info("check_tcp_mon_conflict() STD Name: " + std_monname + "\n")
     
     bitout = 0
     
@@ -58,7 +60,7 @@ def check_tcp_mon_conflict(mr, std_monname):
             bitout = bitout | (1 << 0)
     
 
-    #logging.info("bitout value: " + str(bitout) + "\n")    
+    #logger.info("bitout value: " + str(bitout) + "\n")    
 
     # If Poolname conflicts, return True. Otherwise return False
     if (bitout >> 0) & 1:
@@ -68,7 +70,7 @@ def check_tcp_mon_conflict(mr, std_monname):
 
 def check_udp_mon_conflict(mr, std_monname):
     udpmons = mr.tm.ltm.monitor.udps.get_collection()
-    logging.info("check_udp_mon_conflict() STD Name: " + std_monname + "\n")
+    logger.info("check_udp_mon_conflict() STD Name: " + std_monname + "\n")
     
     bitout = 0
     
@@ -77,7 +79,7 @@ def check_udp_mon_conflict(mr, std_monname):
             bitout = bitout | (1 << 0)
     
 
-    #logging.info("bitout value: " + str(bitout) + "\n")    
+    #logger.info("bitout value: " + str(bitout) + "\n")    
 
     # If Poolname conflicts, return True. Otherwise return False
     if (bitout >> 0) & 1:
@@ -87,7 +89,7 @@ def check_udp_mon_conflict(mr, std_monname):
 
 def check_tcp_halfopen_mon_conflict(mr, std_monname):
     tcphalfmons = mr.tm.ltm.monitor.tcp_half_opens.get_collection()
-    logging.info("check_http_mon_conflict() STD Name: " + std_monname + "\n")
+    logger.info("check_http_mon_conflict() STD Name: " + std_monname + "\n")
     
     bitout = 0
     
@@ -96,7 +98,7 @@ def check_tcp_halfopen_mon_conflict(mr, std_monname):
             bitout = bitout | (1 << 0)
     
 
-    #logging.info("bitout value: " + str(bitout) + "\n")    
+    #logger.info("bitout value: " + str(bitout) + "\n")    
 
     # If Poolname conflicts, return True. Otherwise return False
     if (bitout >> 0) & 1:
@@ -106,7 +108,7 @@ def check_tcp_halfopen_mon_conflict(mr, std_monname):
 
 def check_external_mon_conflict(mr, std_monname):
     extmons = mr.tm.ltm.monitor.externals.get_collection()
-    logging.info("check_http_mon_conflict() STD Name: " + std_monname + "\n")
+    logger.info("check_http_mon_conflict() STD Name: " + std_monname + "\n")
     
     bitout = 0
     
@@ -115,7 +117,7 @@ def check_external_mon_conflict(mr, std_monname):
             bitout = bitout | (1 << 0)
     
 
-    #logging.info("bitout value: " + str(bitout) + "\n")    
+    #logger.info("bitout value: " + str(bitout) + "\n")    
 
     # If Poolname conflicts, return True. Otherwise return False
     if (bitout >> 0) & 1:
@@ -125,7 +127,7 @@ def check_external_mon_conflict(mr, std_monname):
 
 def check_monname_conflict(mr, std_monname, mMonType):
     
-    logging.info("new_monitor_build() - check_monname_conflict() Monitor name: " + std_monname + " Monitor Type: " + mMonType)
+    logger.info("new_monitor_build() - check_monname_conflict() Monitor name: " + std_monname + " Monitor Type: " + mMonType)
     
     byMonType = {
         "HTTP": check_http_mon_conflict,
@@ -141,7 +143,7 @@ def check_monname_conflict(mr, std_monname, mMonType):
 #def new_monitor_build(active_ltm, vs_dnsname, vs_port, vs_env, vs_poolmon, pLBMethod):
 def new_monitor_build(active_ltm, monName, mDesc, mEnv, mMonType, mMonCode, mParMonType, mInterval, mTimeout, mSend, mRecv, mUsername, mPassword, mReverse, mAliasPort, mCipherlist ):
     
-    logging.info("new_monitor_build.py parms DevIP: " + active_ltm + " VS Name: " + monName + " Env: " + mEnv + " Mon Code: " + mMonCode + " Interval: " + mInterval + " Send: " + mSend + " Reverse: " + mReverse + " Alias Port: " + mAliasPort + " CipherList: " + mCipherlist) 
+    logger.info("new_monitor_build.py parms DevIP: " + active_ltm + " VS Name: " + monName + " Env: " + mEnv + " Mon Code: " + mMonCode + " Interval: " + mInterval + " Send: " + mSend + " Reverse: " + mReverse + " Alias Port: " + mAliasPort + " CipherList: " + mCipherlist) 
 
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
@@ -149,7 +151,7 @@ def new_monitor_build(active_ltm, monName, mDesc, mEnv, mMonType, mMonCode, mPar
 
     # Check if Standard naming is used
     useGlobalNaming = loadStdNames.useStdNaming()
-    logging.info("new_monitor_build()- Use Standard Global naming : " + useGlobalNaming )
+    logger.info("new_monitor_build()- Use Standard Global naming : " + useGlobalNaming )
         
     idx = 1
     strReturn = {str(idx) : 'Monitor Creation Report'}
@@ -167,14 +169,14 @@ def new_monitor_build(active_ltm, monName, mDesc, mEnv, mMonType, mMonCode, mPar
         std_monname = monName                     
     #std_monname = build_std_names.build_std_mon_name(str(mEnv), str(monName))
     
-    logging.info("Monitor Creation process has been initiated. Pool Name: " + std_monname) 
+    logger.info("Monitor Creation process has been initiated. Pool Name: " + std_monname) 
     
     if check_monname_conflict(mr, std_monname, mMonType):
         strReturn.update({str(idx) : 'Monitor Name conflict'})
-        logging.info("Monitor name conflict.")
+        logger.info("Monitor name conflict.")
         idx += 1
         return json.dumps(strReturn)
-    logging.info("No Monitor name conflict. Now creating a monitor")
+    logger.info("No Monitor name conflict. Now creating a monitor")
     
     #Create a monitor
     if mMonType == "HTTP":
@@ -192,11 +194,11 @@ def new_monitor_build(active_ltm, monName, mDesc, mEnv, mMonType, mMonCode, mPar
 
     strReturn[str(idx)] = mMonType + " Monitor (" + std_monname + ") has been created"
     idx += 1
-    logging.info("Monitor created")
+    logger.info("Monitor created")
                     
     
     for keys, values in strReturn.items():
-        logging.info("Key: " + keys + " Value: " + values)
+        logger.info("Key: " + keys + " Value: " + values)
 
     return json.dumps(strReturn)
 

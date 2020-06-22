@@ -4,16 +4,18 @@ import logging
 import traceback
 import getpass
 
+logging.basicConfig(level=logging.INFO, filename='/var/www/chaniq/log/chaniq-py.log', format='%(asctime)s %(name)s %(levelname)s:%(message)s')
+logger = logging.getLogger(__name__)
+
 def get_partition_names(active_ltm):
-    logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-    logging.info('Called get_partition_names() Dev IP: %s' % (active_ltm))
+    logger.info('Called get_partition_names() Dev IP: %s' % (active_ltm))
     
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
     #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     output = ''
     
-    logging.info('get_names() called')
+    logger.info('get_names() called')
     '''
     Error with partition_list = mr.tm.auth.partitions.get_collection()
     - With direct Python code, mr.tm.auth.partitions.get_collection() code works well. However in some reason, here it causes below error
@@ -29,14 +31,13 @@ def get_partition_names(active_ltm):
             if not folder.name == "/" and not folder.name =="Drafts" and not folder.name == "Common" and not folder.name.endswith(".app"):
                 output = output + folder.name + ':'
     except Exception as e:
-        logging.info("error during retrieving partition name")
-        logging.info("Error details: " + str(e))
-        logging.info(traceback.format_exc())
-    logging.info('Partition names(): %s' % (output))
+        logger.info("error during retrieving partition name")
+        logger.info("Error details: " + str(e))
+        logger.info(traceback.format_exc())
+    logger.info('Partition names(): %s' % (output))
     
     return output
 
 if __name__ == "__main__":
-    #logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-    #logging.info('main called: param1: ')
+    #logger.info('main called: param1: ')
     print get_partition_names(sys.argv[1])

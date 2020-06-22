@@ -6,12 +6,13 @@ import build_std_names
 import getpass
 import loadStdNames
 
-logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
+logging.basicConfig(level=logging.INFO, filename='/var/www/chaniq/log/chaniq-py.log', format='%(asctime)s %(name)s %(levelname)s:%(message)s')
+logger = logging.getLogger(__name__)
 
 
 def check_poolname_conflict(mr, std_poolname):
     
-    logging.info("Build_pools - check_poolname_conflict() Pool name: " + std_poolname)
+    logger.info("Build_pools - check_poolname_conflict() Pool name: " + std_poolname)
     
     pools = mr.tm.ltm.pools.get_collection()
 
@@ -35,7 +36,7 @@ def new_pool_build2(active_ltm, vs_dnsname, vs_port, vs_env, vs_poolmon, pool_me
 
     # Check if Standard naming is used
     useGlobalNaming = loadStdNames.useStdNaming()
-    logging.info("new_pool_build2()- Use Standard Global naming : " + useGlobalNaming )
+    logger.info("new_pool_build2()- Use Standard Global naming : " + useGlobalNaming )
         
     membernames = pool_membername.split(":")
     memberips = pool_memberip.split(":")
@@ -53,21 +54,21 @@ def new_pool_build2(active_ltm, vs_dnsname, vs_port, vs_env, vs_poolmon, pool_me
         #std_poolname = build_std_names.build_std_pool_name(str(vs_env), str(vs_dnsname), str(vs_port))
         std_poolname = str(vs_dnsname)
         
-    logging.info("Pool Creation process has been initiated. Pool Name: " + std_poolname)
+    logger.info("Pool Creation process has been initiated. Pool Name: " + std_poolname)
         
     if check_poolname_conflict(mr, std_poolname):
         strReturn.update({str(idx) : 'Pool Name conflict'})
         idx += 1
         return json.dumps(strReturn)
-    logging.info("No Pool name conflict. Now creating a pool")
+    logger.info("No Pool name conflict. Now creating a pool")
     #Create a pool
     try:
         mypool = mr.tm.ltm.pools.pool.create(name=std_poolname, partition='Common', loadBalancingMode='least-connections-member', monitor='/Common/'+vs_poolmon)
     except Exception as e:
-        logging.info("Exception during Pool creation")
+        logger.info("Exception during Pool creation")
         strReturn[str(idx)] = "Exception fired!: " + str(e)
         idx += 1
-        logging.info("Pool creation exception fired: " + str(e))
+        logger.info("Pool creation exception fired: " + str(e))
         return json.dumps(strReturn)
     
     try:
@@ -75,26 +76,26 @@ def new_pool_build2(active_ltm, vs_dnsname, vs_port, vs_env, vs_poolmon, pool_me
     
         #for membername, memberip, memberport, membermon in map(None, membernames, memberips, memberports, membermons):
         for membername, memberip, memberport, membermon in zip(membernames, memberips, memberports, membermons):
-            logging.info("Member Name: " + membername + " IP: " + memberip + " port: " + memberport + " mon: " + membermon)
+            logger.info("Member Name: " + membername + " IP: " + memberip + " port: " + memberport + " mon: " + membermon)
             # Pool member creation issue - Calling Pool creation method too fast??
             if useGlobalNaming == '1':
                 membername = loadStdNames.get_std_name(active_ltm, 'LOCAL', 'NODE', '', membername)
                     
             if (str(membermon) == 'inherit'):
                 poolm = mypool_1.members_s.members.create(name=membername+':'+memberport, partition='Common', address=memberip, monitor=vs_poolmon )
-                logging.info("inherit")
+                logger.info("inherit")
             else:
                 poolm = mypool_1.members_s.members.create(name=membername+':'+memberport, partition='Common', address=memberip, monitor=membermon )
-                logging.info("Standard TCP")
+                logger.info("Standard TCP")
                 
-            logging.info("Member Name: " + membername + " IP: " + memberip + " Port: " + memberport + " Monitor: " + membermon + " Pool Monitor: " + vs_poolmon)
+            logger.info("Member Name: " + membername + " IP: " + memberip + " Port: " + memberport + " Monitor: " + membermon + " Pool Monitor: " + vs_poolmon)
             strReturn[str(idx)] = 'Member(' + membername + ' IP:' + memberip + ':' + memberport + ' Monitor: ' + membermon + ') has been created'
             idx += 1
     except Exception as e:
-        logging.info("Exception during Pool creation update")
+        logger.info("Exception during Pool creation update")
         strReturn[str(idx)] = "Exception fired!: " + str(e)
         idx += 1
-        logging.info("Pool creation update exception fired: " + str(e))
+        logger.info("Pool creation update exception fired: " + str(e))
         return json.dumps(strReturn)
     
     strReturn[str(idx)] = "Pool creation(" + std_poolname + ") has been completed"

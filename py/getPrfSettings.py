@@ -4,6 +4,9 @@ import logging
 import json
 import getpass
 
+logging.basicConfig(level=logging.INFO, filename='/var/www/chaniq/log/chaniq-py.log', format='%(asctime)s %(name)s %(levelname)s:%(message)s')
+logger = logging.getLogger(__name__)
+
 # Parameters
 #   aPrf - Profile Name
 #   attName - Attribute name of a profile
@@ -34,8 +37,8 @@ def get_setting_dict_val(aPrf, fstAttName, sndAttName):
     try:
       accessVal = 'aPrf' + '.' + fstAttName
       prfDict = eval(accessVal)
-      logging.info("Dictionary Values: " + (prfDict.get(sndAttName)).split('/')[2])
-      logging.info('get_setting_dict_val(): ' + accessVal)
+      logger.info("Dictionary Values: " + (prfDict.get(sndAttName)).split('/')[2])
+      logger.info('get_setting_dict_val(): ' + accessVal)
       return (prfDict.get(sndAttName)).split('/')[2]
     except AttributeError:
         return ""
@@ -61,8 +64,8 @@ def getDnsPrfSettings(mr, parPrfName, prfMode):
                 output += get_setting_val(aprf, 'enableDnsFirewall') + '|'
                 output += get_setting_val(aprf, 'processRd')
     except Exception as e:
-        logging.info("Exception during retrieving DNS profile setting: " + str(e))
-    logging.info('getDnsPrfSettings(): ' + output)
+        logger.info("Exception during retrieving DNS profile setting: " + str(e))
+    logger.info('getDnsPrfSettings(): ' + output)
     return output
 
 # Only called when the application is in Profile Change mode
@@ -86,8 +89,8 @@ def loadDnsPrfSettings(mr, prfName, prfMode):
                 output += get_setting_val(aprf, 'enableDnsFirewall') + '|'
                 output += get_setting_val(aprf, 'processRd')
     except Exception as e:
-        logging.info("Exception during retrieving DNS profile setting: " + str(e))
-    logging.info('getPrfSettings.py loadDnsPrfSettings(): ' + output)
+        logger.info("Exception during retrieving DNS profile setting: " + str(e))
+    logger.info('getPrfSettings.py loadDnsPrfSettings(): ' + output)
     return output
 
 def getCookiePrfSettings(mr, parPrfName, prfMode):
@@ -107,8 +110,8 @@ def getCookiePrfSettings(mr, parPrfName, prfMode):
                 output += get_setting_val(aprf, 'expiration') + '|'                
                 output += get_setting_val(aprf, 'overrideConnectionLimit')
     except Exception as e:
-        logging.info("Exception during retrieving Cookie Persistence profile setting: " + str(e))
-    logging.info('getCookiePrfSettings(): ' + output)
+        logger.info("Exception during retrieving Cookie Persistence profile setting: " + str(e))
+    logger.info('getCookiePrfSettings(): ' + output)
     return output
 
 def loadCookiePrfSettings(mr, prfName, prfMode):
@@ -128,8 +131,8 @@ def loadCookiePrfSettings(mr, prfName, prfMode):
                 output += get_setting_val(aprf, 'expiration') + '|'                
                 output += get_setting_val(aprf, 'overrideConnectionLimit')
     except Exception as e:
-        logging.info("Exception during retrieving Cookie Persistence profile setting: " + str(e))
-    logging.info('getCookiePrfSettings(): ' + output)
+        logger.info("Exception during retrieving Cookie Persistence profile setting: " + str(e))
+    logger.info('getCookiePrfSettings(): ' + output)
     return output
 
 def getDstAffSettings(mr, parPrfName, prfMode):
@@ -149,8 +152,8 @@ def getDstAffSettings(mr, parPrfName, prfMode):
                 output += get_setting_val(aprf, 'mask') + '|'                
                 output += get_setting_val(aprf, 'overrideConnectionLimit')
     except Exception as e:
-        logging.info("Exception during retrieving Destination Address Persistence profile setting: " + str(e))
-    logging.info('getDstAffSettings(): ' + output)
+        logger.info("Exception during retrieving Destination Address Persistence profile setting: " + str(e))
+    logger.info('getDstAffSettings(): ' + output)
     return output
 
 def getSrcAffSettings(mr, parPrfName, prfMode):
@@ -171,8 +174,8 @@ def getSrcAffSettings(mr, parPrfName, prfMode):
                 output += get_setting_val(aprf, 'mapProxies') + '|'
                 output += get_setting_val(aprf, 'overrideConnectionLimit')
     except Exception as e:
-        logging.info("Exception during retrieving Source Address Persistence profile setting: " + str(e))
-    logging.info('getSrcAffSettings(): ' + output)
+        logger.info("Exception during retrieving Source Address Persistence profile setting: " + str(e))
+    logger.info('getSrcAffSettings(): ' + output)
     return output
 
 def getHashSettings(mr, parPrfName, prfMode):
@@ -197,8 +200,8 @@ def getHashSettings(mr, parPrfName, prfMode):
                 output += get_setting_val(aprf, 'rule') + '|'
                 output += get_setting_val(aprf, 'overrideConnectionLimit')
     except Exception as e:
-        logging.info("Exception during retrieving Hash Persistence profile setting: " + str(e))
-    logging.info('getHashSettings(): ' + output)
+        logger.info("Exception during retrieving Hash Persistence profile setting: " + str(e))
+    logger.info('getHashSettings(): ' + output)
     return output
 
 def getSSLSettings(mr, parPrfName, prfMode):
@@ -216,8 +219,8 @@ def getSSLSettings(mr, parPrfName, prfMode):
                 output += get_setting_val(aprf, 'timeout') + '|'
                 output += get_setting_val(aprf, 'overrideConnectionLimit')
     except Exception as e:
-        logging.info("Exception during retrieving SSL Persistence profile setting: " + str(e))
-    logging.info('getSSLSettings(): ' + output)
+        logger.info("Exception during retrieving SSL Persistence profile setting: " + str(e))
+    logger.info('getSSLSettings(): ' + output)
     return output
 
 def getUniSettings(mr, parPrfName, prfMode):
@@ -236,8 +239,8 @@ def getUniSettings(mr, parPrfName, prfMode):
                 output += get_setting_val(aprf, 'rule') + '|'
                 output += get_setting_val(aprf, 'overrideConnectionLimit')
     except Exception as e:
-        logging.info("Exception during retrieving Universal Persistence profile setting: " + str(e))
-    logging.info('getUniSettings(): ' + output)
+        logger.info("Exception during retrieving Universal Persistence profile setting: " + str(e))
+    logger.info('getUniSettings(): ' + output)
     return output
 
 def getF4Settings(mr, parPrfName, prfMode):
@@ -259,8 +262,8 @@ def getF4Settings(mr, parPrfName, prfMode):
                 output += get_setting_val(aprf, 'tcpCloseTimeout') + '|'
                 output += get_setting_val(aprf, 'keepAliveInterval')
     except Exception as e:
-        logging.info("Exception during retrieving FastL4 profile setting: " + str(e))
-    logging.info('getF4Settings(): ' + output)
+        logger.info("Exception during retrieving FastL4 profile setting: " + str(e))
+    logger.info('getF4Settings(): ' + output)
     return output
 
 def getTcpSettings(mr, parPrfName, prfMode):
@@ -282,8 +285,8 @@ def getTcpSettings(mr, parPrfName, prfMode):
                 output += get_setting_val(aprf, 'slowStart') + '|'
                 output += get_setting_val(aprf, 'selectiveAcks')
     except Exception as e:
-        logging.info("Exception during retrieving TCP profile setting: " + str(e))
-    logging.info('getTcpSettings(): ' + output)
+        logger.info("Exception during retrieving TCP profile setting: " + str(e))
+    logger.info('getTcpSettings(): ' + output)
     return output
 
 def getUdpSettings(mr, parPrfName, prfMode):
@@ -305,8 +308,8 @@ def getUdpSettings(mr, parPrfName, prfMode):
                 output += str(get_setting_val(aprf, 'ipTtlV6')) + '|'
                 output += get_setting_val(aprf, 'ipDfMode')
     except Exception as e:
-        logging.info("Exception during retrieving UDP profile setting: " + str(e))
-    logging.info('getUdpSettings(): ' + output)
+        logger.info("Exception during retrieving UDP profile setting: " + str(e))
+    logger.info('getUdpSettings(): ' + output)
     return output
 
 def getClisslSettings(mr, parPrfName, prfMode):
@@ -333,8 +336,8 @@ def getClisslSettings(mr, parPrfName, prfMode):
                 output += get_setting_val(aprf, 'sniDefault') + '|'
                 output += get_setting_val(aprf, 'sniRequire')
     except Exception as e:
-        logging.info("Exception during retrieving Client SSL profile setting: " + str(e))
-    logging.info('getClisslSettings(): ' + output)
+        logger.info("Exception during retrieving Client SSL profile setting: " + str(e))
+    logger.info('getClisslSettings(): ' + output)
     return output
 
 def getSrvsslSettings(mr, parPrfName, prfMode):
@@ -359,8 +362,8 @@ def getSrvsslSettings(mr, parPrfName, prfMode):
                 output += get_setting_val(aprf, 'sniDefault') + '|'
                 output += get_setting_val(aprf, 'sniRequire')
     except Exception as e:
-        logging.info("Exception during retrieving Server SSL profile setting: " + str(e))
-    logging.info('getSrvsslSettings(): ' + output)
+        logger.info("Exception during retrieving Server SSL profile setting: " + str(e))
+    logger.info('getSrvsslSettings(): ' + output)
     return output
 
 def getOCSettings(mr, parPrfName, prfMode):
@@ -378,8 +381,8 @@ def getOCSettings(mr, parPrfName, prfMode):
                 output += get_setting_val(aprf, 'idleTimeoutOverride') + '|'
                 output += get_setting_val(aprf, 'limitType')
     except Exception as e:
-        logging.info("Exception during retrieving OneConnect Persistence profile setting: " + str(e))
-    logging.info('getOCSettings(): ' + output)
+        logger.info("Exception during retrieving OneConnect Persistence profile setting: " + str(e))
+    logger.info('getOCSettings(): ' + output)
     return output
 
 
@@ -394,13 +397,12 @@ def getStreamSettings(mr, parPrfName, prfMode):
                 output += get_setting_val(aprf, 'source') + '|'
                 output += get_setting_val(aprf, 'tmTarget')
     except Exception as e:
-        logging.info("Exception during retrieving Stream Persistence profile setting: " + str(e))
-    logging.info('getStreamSettings(): ' + output)
+        logger.info("Exception during retrieving Stream Persistence profile setting: " + str(e))
+    logger.info('getStreamSettings(): ' + output)
     return output
 
 def getPrfSettings(active_ltm, prfType, parPrfName, prfMode):
-    logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-    logging.info('Called getPrfSettings(): %s %s %s %s' % (active_ltm, prfType, parPrfName, prfMode))
+    logger.info('Called getPrfSettings(): %s %s %s %s' % (active_ltm, prfType, parPrfName, prfMode))
     
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
@@ -408,7 +410,7 @@ def getPrfSettings(active_ltm, prfType, parPrfName, prfMode):
 
     output = {}
     
-    logging.info('getPrfSettings.py getPrfSettings() - Loading ' + prfType + ' Profile Settings\n')
+    logger.info('getPrfSettings.py getPrfSettings() - Loading ' + prfType + ' Profile Settings\n')
     if prfType == "DNS" :
         output = getDnsPrfSettings(mr, parPrfName, prfMode)
     elif prfType == "Cookie":

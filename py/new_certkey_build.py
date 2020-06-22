@@ -8,12 +8,14 @@ import requests
 import getpass
 import chaniq_util
 
-logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-logging.info("Head of new_certkey_build() called")
+logging.basicConfig(level=logging.INFO, filename='/var/www/chaniq/log/chaniq-py.log', format='%(asctime)s %(name)s %(levelname)s:%(message)s')
+logger = logging.getLogger(__name__)
+
+logger.info("Head of new_certkey_build() called")
 
 def check_keyname_conflict(mr, certkeyImpName):
     keynames = mr.tm.sys.file.ssl_keys.get_collection()
-    logging.info("check_keyname_conflict() Key Name: " + certkeyImpName + ".key\n")
+    logger.info("check_keyname_conflict() Key Name: " + certkeyImpName + ".key\n")
     
     bitout = 0
     
@@ -22,7 +24,7 @@ def check_keyname_conflict(mr, certkeyImpName):
             bitout = bitout | (1 << 0)
     
 
-    #logging.info("bitout value: " + str(bitout) + "\n")    
+    #logger.info("bitout value: " + str(bitout) + "\n")    
 
     # If Key name conflicts, return True. Otherwise return False
     if (bitout >> 0) & 1:
@@ -33,7 +35,7 @@ def check_keyname_conflict(mr, certkeyImpName):
 # Only support Internal Data Group
 def check_certname_conflict(mr, certkeyImpName):
     certnames = mr.tm.sys.file.ssl_certs.get_collection()
-    logging.info("check_certname_conflict() Cert Name: " + certkeyImpName + ".crt\n")
+    logger.info("check_certname_conflict() Cert Name: " + certkeyImpName + ".crt\n")
     
     bitout = 0
     
@@ -42,7 +44,7 @@ def check_certname_conflict(mr, certkeyImpName):
             bitout = bitout | (1 << 0)
     
 
-    #logging.info("bitout value: " + str(bitout) + "\n")    
+    #logger.info("bitout value: " + str(bitout) + "\n")    
 
     # If Cert name conflicts, return True. Otherwise return False
     if (bitout >> 0) & 1:
@@ -59,7 +61,7 @@ def check_pkcsname_conflict(mr, certkeyImpName):
 
 def check_certkeyname_conflict(mr, certkeyImpType, certkeyImpName):
     
-    logging.info("new_certkey_build() - check_certkeyname_conflict() Import Type: " + certkeyImpType + " Cert/Key Name: " + certkeyImpName)
+    logger.info("new_certkey_build() - check_certkeyname_conflict() Import Type: " + certkeyImpType + " Cert/Key Name: " + certkeyImpName)
     
     byImpKeyType = {
         "Key": check_keyname_conflict,
@@ -71,8 +73,8 @@ def check_certkeyname_conflict(mr, certkeyImpType, certkeyImpName):
 
 def _upload(host, creds, fp):
  
-    logging.info("_upload called!")
-    logging.info("Host: " + str(host) + " Filename: " + fp + "\n")
+    logger.info("_upload called!")
+    logger.info("Host: " + str(host) + " Filename: " + fp + "\n")
     chunk_size = 512 * 1024
     headers = {
         'Content-Type': 'application/octet-stream'
@@ -84,7 +86,7 @@ def _upload(host, creds, fp):
     else:
         uri = 'https://%s/mgmt/shared/file-transfer/uploads/%s' % (host, filename)
  
-    logging.info("_upload URI: " + uri)
+    logger.info("_upload URI: " + uri)
     requests.packages.urllib3.disable_warnings()
     size = os.path.getsize(fp)
  
@@ -110,13 +112,13 @@ def _upload(host, creds, fp):
                           headers=headers,
                           verify=False)
         except Exception as e:
-            logging.info("Exception while requests.post processing - Error: " + str(e)) 
+            logger.info("Exception while requests.post processing - Error: " + str(e)) 
         start += current_bytes
-    logging.info("_upload() is completed")
+    logger.info("_upload() is completed")
 
 def new_certkey_build(active_ltm, certkeyImpType, certkeyImpName, certkeyKeySource, certkeyKeySourceData, certkeySecType, certkeySecTypeData, certkeyPKCSPw):
     
-    logging.info("new_certkey_build.py parms DevIP: " + active_ltm + " Import Type: " + certkeyImpType + "Import name: " + certkeyImpName + " Key Source: " + certkeyKeySource + " Security Type: " + certkeySecType + " Security Data: " + certkeySecTypeData + " PKCS PW: " + certkeyPKCSPw) 
+    logger.info("new_certkey_build.py parms DevIP: " + active_ltm + " Import Type: " + certkeyImpType + "Import name: " + certkeyImpName + " Key Source: " + certkeyKeySource + " Security Type: " + certkeySecType + " Security Data: " + certkeySecTypeData + " PKCS PW: " + certkeyPKCSPw) 
 
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
@@ -145,27 +147,27 @@ def new_certkey_build(active_ltm, certkeyImpType, certkeyImpName, certkeyKeySour
                 f.write(certkeyKeySourceData)
                 f.close()
             else:
-                logging.info("Unsupported Cert/Key Source Type: " + certkeyImpType)
+                logger.info("Unsupported Cert/Key Source Type: " + certkeyImpType)
                 strReturn[str(idx)] = "Unsupported Cert/Key Source Type: " + certkeyImpType
                 idx += 1
                 return json.dumps(strReturn)
         except Exception as e:
-            logging.info("File Creation Exception fired: " + str(e))
+            logger.info("File Creation Exception fired: " + str(e))
             strReturn[str(idx)] = "Exception fired during cert/key file creation!: " + str(e)
             idx += 1
             return json.dumps(strReturn)
     
     if check_certkeyname_conflict(mr, certkeyImpType, certkeyImpName):
         strReturn.update({str(idx) : 'Cert/Key Name conflict'})
-        logging.info("Cert/Key Name conflict.")
+        logger.info("Cert/Key Name conflict.")
         idx += 1
         return json.dumps(strReturn)
-    logging.info("No Cert/Key name conflict. Now creating a Cert/Key")
+    logger.info("No Cert/Key name conflict. Now creating a Cert/Key")
     
     # f5LocalPath variable is used to specify F5 side cert/key download folder. 
     # If Python SDK version is 2.3.3, we use exec_cmd command to install cert or key. Otherwise, create() method is used.
     pySdkVer = str(chaniq_util.loadIniConfigVal('PYTHON_SDK_INFO', 'SDK_VER'))
-    logging.info("Loaded Python SDK Version: " + pySdkVer)
+    logger.info("Loaded Python SDK Version: " + pySdkVer)
     f5LocalPath = 'file:/var/config/rest/downloads/'
     if pySdkVer == '2.3.3':
         f5LocalPath = '/var/config/rest/downloads/'
@@ -184,7 +186,7 @@ def new_certkey_build(active_ltm, certkeyImpType, certkeyImpName, certkeyKeySour
         if certkeyImpType == 'Key':
             _upload(str(active_ltm), ('admin', admpass), chanIQFilePath + certkeyImpName + '.key')
 
-            logging.info("Key file upload completed! - Source File Full path: " + chanIQFilePath +  " name: " + certkeyImpName + '.key')
+            logger.info("Key file upload completed! - Source File Full path: " + chanIQFilePath +  " name: " + certkeyImpName + '.key')
             '''
             Ref1: https://devcentral.f5.com/s/feed/0D51T00006j1piKSAQ
             Ref2: https://programtalk.com/python-examples-amp/f5.bigip.contexts.TransactionContextManager/
@@ -201,7 +203,7 @@ def new_certkey_build(active_ltm, certkeyImpType, certkeyImpName, certkeyKeySour
             # To install cert and key, a key must be imported first
             # If you try to import a key where a cert having the same name exists but same name key doesn't exist, return with error message
             if check_certname_conflict(mr, certkeyImpName):
-                logging.info("To install the both of cert and key, a key must be imported first")
+                logger.info("To install the both of cert and key, a key must be imported first")
                 strReturn[str(idx)] = "To install the both of cert and key, a key must be imported first"
                 idx += 1
                 return json.dumps(strReturn)
@@ -219,23 +221,23 @@ def new_certkey_build(active_ltm, certkeyImpType, certkeyImpName, certkeyKeySour
                 else:
                     key = mr.tm.sys.file.ssl_keys.ssl_key.create(name=certkeyImpName, partition='Common', sourcePath=f5LocalPath+certkeyImpName+'key')
             else:
-                logging.info("Unsupported Key Security Type - Provided Security Type: " + certkeySecType)
+                logger.info("Unsupported Key Security Type - Provided Security Type: " + certkeySecType)
                 strReturn[str(idx)] = "Unsupported Key Security Type - Provided Security Type: " + certkeySecType 
                 idx += 1 
 
-            logging.info("Key file upload and install completed")
+            logger.info("Key file upload and install completed")
         elif certkeyImpType == 'Certificate':
             _upload(str(active_ltm), ('admin', admpass), chanIQFilePath + certkeyImpName + '.crt')
-            logging.info("Cert file upload completed! Source File Full path and name: " + chanIQFilePath +  " name: " + certkeyImpName + '.crt')
+            logger.info("Cert file upload completed! Source File Full path and name: " + chanIQFilePath +  " name: " + certkeyImpName + '.crt')
             
             if pySdkVer == '2.3.3':
                 cert = mr.tm.sys.crypto.certs.exec_cmd('install', **certParam_set)
             else:
                 cert = mr.tm.sys.file.ssl_certs.ssl_cert.create(name=certkeyImpName, partition='Common', sourcePath=f5LocalPath+certkeyImpName + '.crt')
             
-            logging.info("Cert file upload and install completed")
+            logger.info("Cert file upload and install completed")
         elif certkeyImpType == 'PKCS 12 (IIS)':
-            logging.info("Uploading and installing PKCS 12 Cert and Key")
+            logger.info("Uploading and installing PKCS 12 Cert and Key")
             _upload(str(active_ltm), ('admin', admpass), chanIQFilePath + certkeyImpName + '.pfx')
             
             # Extract cert and key from pfx
@@ -253,7 +255,7 @@ def new_certkey_build(active_ltm, certkeyImpType, certkeyImpName, certkeyKeySour
             rtCrt = mr.tm.util.bash.exec_cmd('run', utilCmdArgs=certCmd)
             
             #_upload(str(active_ltm), ('admin', 'rlatkdcks'), chanIQFilePath + certkeyImpName + '.crt')
-            logging.info("PKCS Key and Cert file upload completed! - Source File Full path and name: " + chanIQFilePath +  " name: " + certkeyImpName + '.pfx')
+            logger.info("PKCS Key and Cert file upload completed! - Source File Full path and name: " + chanIQFilePath +  " name: " + certkeyImpName + '.pfx')
             '''
             Deprecated method.
             certparam_set = {'from-local-file':f5LocalPath+certkeyImpName + '.pfx', 'name':certkeyImpName}
@@ -278,10 +280,10 @@ def new_certkey_build(active_ltm, certkeyImpType, certkeyImpName, certkeyKeySour
                 else:
                     key = mr.tm.sys.file.ssl_keys.ssl_key.create(name=certkeyImpName, partition='Common', sourcePath=f5LocalPath+certkeyImpName+'key')
             else:
-                logging.info("Unsupported Key Security Type - Provided Security Type: " + certkeySecType)
+                logger.info("Unsupported Key Security Type - Provided Security Type: " + certkeySecType)
                 strReturn[str(idx)] = "Unsupported Key Security Type - Provided Security Type: " + certkeySecType 
                 idx += 1 
-            logging.info("PKCS12 Key file upload and installation has been completed")
+            logger.info("PKCS12 Key file upload and installation has been completed")
             
             # Create a new cert            
             if pySdkVer == '2.3.3':
@@ -289,23 +291,23 @@ def new_certkey_build(active_ltm, certkeyImpType, certkeyImpName, certkeyKeySour
             else:
                 cert = mr.tm.sys.file.ssl_certs.ssl_cert.create(name=certkeyImpName, partition='Common', sourcePath=f5LocalPath+certkeyImpName + '.crt')
             
-            logging.info("PKCS12 Cert file upload and installation has been completed")
-            logging.info("PKCS Cert and Key file upload and installation have been completed") 
+            logger.info("PKCS12 Cert file upload and installation has been completed")
+            logger.info("PKCS Cert and Key file upload and installation have been completed") 
             
     except Exception as e:
-        logging.info("File Upload Exception fired: " + str(e))
+        logger.info("File Upload Exception fired: " + str(e))
         strReturn[str(idx)] = "Exception fired during cert/key upload or install! (" + certkeyImpName + "): " + str(e)
         idx += 1
-        logging.info("Cert/Key upload or install exception: " + str(e))
+        logger.info("Cert/Key upload or install exception: " + str(e))
         return json.dumps(strReturn)
     
     strReturn[str(idx)] = certkeyImpType + " (" + certkeyImpName + ") has been successfully created"
     idx += 1
-    logging.info("Cert/Key has been created")
+    logger.info("Cert/Key has been created")
                     
     
     for keys, values in strReturn.items():
-        logging.info("Key: " + keys + " Value: " + values)
+        logger.info("Key: " + keys + " Value: " + values)
 
     return json.dumps(strReturn)
 

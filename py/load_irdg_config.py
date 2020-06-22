@@ -5,12 +5,14 @@ import json
 import traceback
 import getpass
 
-logging.basicConfig(filename='/var/log/chaniq-py.log', level=logging.INFO)
-logging.info("Head of load_irdg_config() called")
+logging.basicConfig(level=logging.INFO, filename='/var/www/chaniq/log/chaniq-py.log', format='%(asctime)s %(name)s %(levelname)s:%(message)s')
+logger = logging.getLogger(__name__)
+
+logger.info("Head of load_irdg_config() called")
 
 def load_irdg_config(active_ltm, irType, irDgName):
     #'DevIP' 'IrType' 'IrDgPart'
-    logging.info("load_irdg_config.py parms\n DevIP: " + active_ltm + "\niRule or Data Group: " + irType +  "\nName: " + irDgName + "\n") 
+    logger.info("load_irdg_config.py parms\n DevIP: " + active_ltm + "\niRule or Data Group: " + irType +  "\nName: " + irDgName + "\n") 
 
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
@@ -18,7 +20,7 @@ def load_irdg_config(active_ltm, irType, irDgName):
     
     dictReturn = {'name':''}
 
-    logging.info("iRule/Data Group Modification process has been initiated.") 
+    logger.info("iRule/Data Group Modification process has been initiated.") 
 
     #Load a iRule/Data Group configuration
     try:
@@ -39,25 +41,25 @@ def load_irdg_config(active_ltm, irType, irDgName):
                     # 'records' value is a list with dictinary type value. e.g records = [{'data': 'HTTPS', 'name': 'HTTP'}, {'data': 'World', 'name': 'Hello'}]
                     dictReturn["records"]= aDG.records
     except Exception as e:
-        logging.info("iRule/Data Group Exception - Retrieving iRule/Data Group configuration")
-        logging.info("Error Details: " + str(e))
-        logging.info(traceback.format_exc())
+        logger.info("iRule/Data Group Exception - Retrieving iRule/Data Group configuration")
+        logger.info("Error Details: " + str(e))
+        logger.info(traceback.format_exc())
         return json.dumps(dictReturn)
     
-    logging.info("Name retrieving for iRule/Data Group has been completed")
+    logger.info("Name retrieving for iRule/Data Group has been completed")
     return json.dumps(dictReturn)
 '''
     if irType == "iRule":
         for keys,values in dictReturn.items():
-            logging.info("Retrieved Key name: " + keys + "Retrieved Value: " + values)
+            logger.info("Retrieved Key name: " + keys + "Retrieved Value: " + values)
      
     if irType == "Data Group":
         for keys,values in dictReturn.items():
             try:
-                logging.info("Retrieved Key name: " + keys + "Retrieved Value: " + values)
+                logger.info("Retrieved Key name: " + keys + "Retrieved Value: " + values)
             except Exception as e:
-                logging.info("Error Details: " + str(e))
-                logging.info(traceback.format_exc())
+                logger.info("Error Details: " + str(e))
+                logger.info(traceback.format_exc())
 '''        
 
 if __name__ == "__main__":

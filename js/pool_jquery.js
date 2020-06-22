@@ -334,15 +334,16 @@ function loadObjNamesProcessData(response_in, selID) {
 function poolConfigProcessData(response_in) {
 	// pool_name|pool_partition|pool_monitor|pool_LB|pool_lessthan@pm_name|pm_ip|pm_port|pm_ratio|pm_mon|pm_pri_group@pm_name|pm_ip|pm_port|pm_ratio|pm_mon|pm_pri_group...
 	var responseArray = response_in.split('@');
-	var strResult = "<b>" + 'Debugging for loading Pool configuration' + "</b><br>";
+	//var strResult = "<b>" + 'Debugging for loading Pool configuration' + "</b><br>";
 
 	//alert ("Length of array: " + responseArray.length);
 	var numOfPoolMembers = responseArray.length - 1;
 
-	strResult += "Pool configuration: " + responseArray[0] + "<br>";
+	//strResult += "Pool configuration: " + responseArray[0] + "<br>";
 
 	var pPrpt = responseArray[0].split('|');
 	
+	/*
 	if (numOfPoolMembers != 0){
 		var pmSettings = new Array(numOfPoolMembers);
 		for (i=0; i<numOfPoolMembers;i++){
@@ -351,7 +352,8 @@ function poolConfigProcessData(response_in) {
 			strResult += (i+1) + "th Pool member configuration: " + pmSettings[i] + "<br>";	
 		} 
 		
-	}				
+	}
+	*/				
 			
 	// Update Pool properties
 	// Pool ID: chg_p_name_select, partition, p_mon, p_lbmethod, p_prigroup, p_lessthan
@@ -413,16 +415,7 @@ function poolConfigProcessData(response_in) {
 		$('#dataTable tbody tr:eq(1) td:eq(6)').children().val("0");
 	}
 	
-	//strResult += responseArray[0] + "  " + responseArray[1] + "  " + responseArray[2]; 
-/*
-	$.each(response_in, function(index) {
-		if(index == 0) 
-			strResult = "<b>" + response_in[index] + "</b><br>";
-		else
-			strResult += response_in[index] + "<br>";
-	});
-*/	
-	$('#newPool_EvalReview').html(strResult);	
+	//$('#newPool_EvalReview').html(strResult);	
 }
 
 // Display Pool modification result returned from Python
