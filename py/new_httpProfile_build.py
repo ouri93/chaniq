@@ -90,11 +90,8 @@ def new_httpProfile_build(active_ltm, prfName, prfDplyOrChg, prfPxyType, prfDftF
     if (prfInstXFF == ''):
          prfInstXFF='disabled'
          
-         
-    #mr = ManagementRoot(prfDevIp, 'admin', 'rlatkdcks')
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
-    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     output = ''
 
     # Check if Standard naming is used

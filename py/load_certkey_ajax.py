@@ -16,7 +16,6 @@ def load_certkey_ajax(active_ltm):
 
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
-    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     
     key_idx = 1
     dictReturn = { key_idx: {'name':'', 'commonName':'', 'expiration':'', 'partition':''}}

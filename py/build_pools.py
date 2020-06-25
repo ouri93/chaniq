@@ -32,7 +32,6 @@ def build_pools(active_ltm, vs_dnsname, vs_port, vs_env, vs_poolmon, pool_member
     
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
-    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')    
     
     membernames = json.loads(pool_membername)
     memberips = json.loads(pool_memberip)

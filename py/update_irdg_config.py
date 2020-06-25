@@ -15,7 +15,6 @@ def update_irdg_config(active_ltm, irDgName, irType, irCode, irDgType, irDgData)
 
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
-    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     
     idx = 1
     strReturn = {str(idx) : 'iRule/Data Group Configuration Update Report'}

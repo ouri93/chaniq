@@ -23,7 +23,6 @@ def get_pool_names(active_ltm, part_name):
     
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
-    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     output = ''
     
     output = get_poolnames(mr, part_name)

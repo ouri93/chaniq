@@ -288,7 +288,6 @@ def get_profiles(active_ltm, pf_type):
 	
 	admpass = getpass.getpass('LTM', 'admin')
 	mr = ManagementRoot(str(active_ltm), 'admin', admpass)
-	#mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
 	output = ''
 	
 	'''

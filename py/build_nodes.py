@@ -39,7 +39,6 @@ def build_nodes(active_ltm, pool_membername, pool_memberip):
     global namebit, ipbit
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
-    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     
     nodenames = json.loads(pool_membername)
     nodeips = json.loads(pool_memberip)

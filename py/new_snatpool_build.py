@@ -12,7 +12,6 @@ def new_snatpool_build(active_ltm, snat_name, snat_addresses):
     
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
-    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
 
     # Check if Standard naming is used
     useGlobalNaming = loadStdNames.useStdNaming()

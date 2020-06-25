@@ -15,7 +15,6 @@ def del_pol_ajax(active_ltm, polData, polType):
 
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
-    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     
     key_idx = 1
     dictReturn = { key_idx: {'name':'', 'polType':'', 'result':'', 'message':''}}

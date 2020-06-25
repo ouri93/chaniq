@@ -91,7 +91,6 @@ def get_healthmonitor_names(active_ltm, mon_type, mon_part):
     
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
-    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     output = ''
     '''
     Suppported Health Monitor types

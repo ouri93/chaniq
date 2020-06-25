@@ -76,7 +76,6 @@ def new_tcpProfile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, resetO
 	
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
-    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     output = ''
 
     # Check if Standard naming is used

@@ -99,7 +99,6 @@ def get_vs_config(active_ltm, vs_name, vs_part):
     try:
         admpass = getpass.getpass('LTM', 'admin')
         mr = ManagementRoot(str(active_ltm), 'admin', admpass)
-        #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     except Exception as e:
         logger.info("Exception fired during loading mgmt root")
         logger.info("Error Details: " + str(e))

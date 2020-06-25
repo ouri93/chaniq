@@ -32,7 +32,6 @@ def new_pool_build2(active_ltm, vs_dnsname, vs_port, vs_env, vs_poolmon, pool_me
     
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
-    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
 
     # Check if Standard naming is used
     useGlobalNaming = loadStdNames.useStdNaming()

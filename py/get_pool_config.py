@@ -15,7 +15,6 @@ def get_pool_config(active_ltm, pName, pPartition):
     # pool_name|pool_partition|pool_monitor|pool_LB|pool_lessthan@pm_name|pm_ip|pm_port|pm_ratio|pm_mon|pm_pri_group@pm_name|pm_ip|pm_port|pm_ratio|pm_mon|pm_pri_group...
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
-    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
 
     output = ''
 

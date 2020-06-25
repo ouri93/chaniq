@@ -16,7 +16,6 @@ def load_irdg_config(active_ltm, irType, irDgName):
 
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
-    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     
     dictReturn = {'name':''}
 

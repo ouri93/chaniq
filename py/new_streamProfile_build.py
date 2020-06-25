@@ -50,7 +50,6 @@ def new_streamProfile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, sou
 	
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
-    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     output = ''
 
     # Check if Standard naming is used

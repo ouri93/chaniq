@@ -12,7 +12,6 @@ def get_active_tcpprofiles(active_ltm):
 	
 	admpass = getpass.getpass('LTM', 'admin')
 	mr = ManagementRoot(str(active_ltm), 'admin', admpass)
-	#mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
 	tcppf =mr.tm.ltm.profile.tcps.get_collection()
 	output = ''
 

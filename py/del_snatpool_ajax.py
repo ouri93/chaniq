@@ -11,7 +11,6 @@ def del_snatpool_ajax(active_ltm, snatname, snatpart):
     
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
-    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     
     strReturn = []
     strReturn.append("Snatpool Deletion process has been initiated.")

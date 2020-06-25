@@ -17,7 +17,6 @@ def del_monitor_ajax(active_ltm, monName, mDesc, mMonType, mParMonType):
     
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
-    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     
     idx = 1
     strReturn = {str(idx) : 'Monitor Deletion Report'}

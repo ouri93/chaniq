@@ -16,7 +16,6 @@ def del_certkey_ajax(active_ltm, certData):
 
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
-    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     
     key_idx = 1
     dictReturn = { key_idx: {'name':'', 'result':'', 'message':''}}

@@ -125,7 +125,6 @@ def chg_vs_ajax(active_ltm, vs_name, vs_dest, vs_port, vs_desc, vs_tcpprofile, v
     logger.info("chg_vs_ajax Head")
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
-    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
 
     idx = 1
     strReturn = {str(idx) : 'VS Modification Report'}

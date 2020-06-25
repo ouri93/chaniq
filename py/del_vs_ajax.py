@@ -32,7 +32,6 @@ def del_vs_ajax(active_ltm, vs_name, partition):
     
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
-    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     
     idx = 1
     strReturn = {str(idx) : 'VS Deletion Report'}

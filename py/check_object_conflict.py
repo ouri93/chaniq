@@ -153,7 +153,6 @@ def check_object_conflict(active_ltm, vs_env, vs_dnsname, vs_dest, vs_port, vs_p
 	
 	admpass = getpass.getpass('LTM', 'admin')
 	mr = ManagementRoot(str(active_ltm), 'admin', admpass)
-	#mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
 	
 	results = json.loads(vs_poolmembername)
 	for item in results:

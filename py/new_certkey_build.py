@@ -122,7 +122,6 @@ def new_certkey_build(active_ltm, certkeyImpType, certkeyImpName, certkeyKeySour
 
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
-    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     
     idx = 1
     strReturn = {str(idx) : 'SSL Cert/Key Creation Report'}
@@ -254,7 +253,6 @@ def new_certkey_build(active_ltm, certkeyImpType, certkeyImpName, certkeyKeySour
             rtKeyNoPass = mr.tm.util.bash.exec_cmd('run', utilCmdArgs=keyCmdNoPass)
             rtCrt = mr.tm.util.bash.exec_cmd('run', utilCmdArgs=certCmd)
             
-            #_upload(str(active_ltm), ('admin', 'rlatkdcks'), chanIQFilePath + certkeyImpName + '.crt')
             logger.info("PKCS Key and Cert file upload completed! - Source File Full path and name: " + chanIQFilePath +  " name: " + certkeyImpName + '.pfx')
             '''
             Deprecated method.

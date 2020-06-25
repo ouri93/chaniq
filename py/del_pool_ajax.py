@@ -12,7 +12,6 @@ def del_pool_ajax(active_ltm, p_name, p_part):
     
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
-    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     
     idx = 1
     strReturn = {str(idx) : 'Pool Deletion Report'}

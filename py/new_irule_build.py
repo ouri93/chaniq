@@ -66,7 +66,6 @@ def new_irule_build(active_ltm, irDgName, irEnv, irType, irCode, irDgType, irDgD
 
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
-    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
 
     # Check if Standard naming is used
     useGlobalNaming = loadStdNames.useStdNaming()

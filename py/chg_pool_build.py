@@ -13,7 +13,6 @@ def chg_pool_build(active_ltm, p_name, p_part, p_mon, p_LB, p_priGroup, p_priLes
     
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
-    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     
     membernames = pm_names.split("|")
     memberips = pm_ips.split("|")

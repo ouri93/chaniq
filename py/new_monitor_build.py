@@ -147,7 +147,6 @@ def new_monitor_build(active_ltm, monName, mDesc, mEnv, mMonType, mMonCode, mPar
 
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
-    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
 
     # Check if Standard naming is used
     useGlobalNaming = loadStdNames.useStdNaming()

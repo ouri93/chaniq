@@ -121,7 +121,6 @@ def get_healthmon_setting(active_ltm, mon_type, parent_mon):
     
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
-    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
 
     output = {}
     '''

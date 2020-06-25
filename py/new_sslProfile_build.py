@@ -60,7 +60,6 @@ def new_sslProfile_build(active_ltm, prfName, prfDplyOrChg, defaultsFrom, matchA
 	
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
-    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     output = ''
 
     # Check if Standard naming is used

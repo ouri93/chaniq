@@ -39,7 +39,6 @@ def new_node_build(active_ltm, pool_membername, pool_memberip):
     global namebit, ipbit
     admpass = getpass.getpass('LTM', 'admin')
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
-    #mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
     
     logger.info("new_node_build called! ")
                  

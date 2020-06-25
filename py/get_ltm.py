@@ -12,7 +12,6 @@ def get_active_ltm(dev_name, active_ltm):
 	
 	admpass = getpass.getpass('LTM', 'admin')
 	mr = ManagementRoot(str(active_ltm), 'admin', admpass)
-	#mr = ManagementRoot(str(active_ltm), 'admin', 'rlatkdcks')
 	fostat = mr.tm.sys.failover.load()
 	if "active" in fostat:
 		return 1
