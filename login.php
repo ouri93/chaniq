@@ -6,7 +6,7 @@ function check_login($username, $password, $logger){
         return 0;
     // Call Python to check Username and password
 
-    $cmd = '/usr/bin/python /var/www/chaniq/py/check_login.py '. escapeshellarg($username) .' '. escapeshellarg($password); 
+    $cmd = '/usr/bin/python2 /var/www/chaniq/py/check_login.py '. escapeshellarg($username) .' '. escapeshellarg($password); 
     #file_put_contents(__DIR__ . "/log/chaniq-php.log", "Python CMD string: " . $cmd . "\n", FILE_APPEND);
     $logger->info("Python CMD string: " . $cmd);
     $output = shell_exec($cmd);
@@ -19,7 +19,7 @@ function get_one_db_val($table_id, $col_id, $user, $pass, $logger){
     if (!($table_id && $col_id && $user && $pass))
         return "0";
     // Call Python to check Username and password
-    $cmd = '/usr/bin/python /var/www/chaniq/py/get_one_db_val.py '. escapeshellarg($table_id) .' '. escapeshellarg($col_id) .' '. escapeshellarg($user) .' '. escapeshellarg($pass);
+    $cmd = '/usr/bin/python2 /var/www/chaniq/py/get_one_db_val.py '. escapeshellarg($table_id) .' '. escapeshellarg($col_id) .' '. escapeshellarg($user) .' '. escapeshellarg($pass);
     #file_put_contents(__DIR__ . "/log/chaniq-php.log", "Python CMD string: " . $cmd . "\n", FILE_APPEND);
     $logger->info("Python CMD string: " . $cmd);
     $output = shell_exec($cmd);
