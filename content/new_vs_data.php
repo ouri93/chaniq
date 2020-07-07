@@ -88,7 +88,7 @@ if ($_SESSION['role'] == 'guest'){
     //$active_ltm = find_active_ltm($section_name);
     //$dgval = find_active_ltm($section_name);
     //echo "IP address: " .$dgval;
-    //$output = exec("/usr/bin/python /var/www/chaniq/utility/get_ltm.py $dgval");
+    //$output = exec("/usr/bin/python2 /var/www/chaniq/utility/get_ltm.py $dgval");
     //echo "Found Active LTM: " . $output;
     ?>
 </div>

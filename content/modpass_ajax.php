@@ -48,7 +48,7 @@ function modpass_ajax($passData, $logger) {
     #file_put_contents("/var/log/chaniqphp.log", "modpass_ajax() DB IP: " . $db_ip . "\n", FILE_APPEND);
     $logger->info("modpass_ajax() DB IP: " . $db_ip);
     
-    $cmd = '/usr/bin/python /var/www/chaniq/py/modpass_ajax.py ' . escapeshellarg($db_ip) .' '. escapeshellarg($curpass) .' '. escapeshellarg($newpass) .' '. escapeshellarg($bigip_type);
+    $cmd = '/usr/bin/python2 /var/www/chaniq/py/modpass_ajax.py ' . escapeshellarg($db_ip) .' '. escapeshellarg($curpass) .' '. escapeshellarg($newpass) .' '. escapeshellarg($bigip_type);
     
         
     $output = shell_exec($cmd);

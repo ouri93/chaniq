@@ -34,7 +34,7 @@ require_once(__DIR__ . '/../utility/chaniqLogger.php');
             $logger->info("get_healthmon_settings() Device IP: " . $bigipIP . " Mon Type: " . $monType . " Parent Mon: " . $parMonType);
         }
 
-        $cmd = '/usr/bin/python /var/www/chaniq/py/get_healthmon_settings.py '. $bigipIP . ' ' . escapeshellarg($monType) . ' ' . escapeshellarg($parMonType);
+        $cmd = '/usr/bin/python2 /var/www/chaniq/py/get_healthmon_settings.py '. $bigipIP . ' ' . escapeshellarg($monType) . ' ' . escapeshellarg($parMonType);
         //echo "<br>Command:" .$cmd." <br>";
         #error_log(date("y-m-d H:i:s").": get_healthmon_settings() - get_healthmon_settings() called\n", 3, "/var/log/chaniqphp.log");
         $logger->info("get_healthmon_settings() - get_healthmon_settings() called");

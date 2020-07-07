@@ -37,7 +37,7 @@ require_once(__DIR__ . '/../utility/chaniqLogger.php');
      */
     function get_names($active_ltm, $prfType, $logger)
     {
-        $cmd = '/usr/bin/python /var/www/chaniq/py/get_profiles.py '.$active_ltm.' ' . escapeshellarg($prfType);
+        $cmd = '/usr/bin/python2 /var/www/chaniq/py/get_profiles.py '.$active_ltm.' ' . escapeshellarg($prfType);
         //echo "<br>Command:" .$cmd." <br>";
         #error_log(date("y-m-d H:i:s").": get_profile_names() - get_names() called. Dev IP: " . $active_ltm . " Profile Type: " . $prfType . "\n", 3, "/var/log/chaniqphp.log");
         $logger->info("get_profile_names() - get_names() called. Dev IP: " . $active_ltm . " Profile Type: " . $prfType);

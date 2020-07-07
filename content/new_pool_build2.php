@@ -49,7 +49,7 @@ function new_pool_build2($poolData, $logger) {
     #file_put_contents("/var/log/chaniqphp.log", "new_pool_build2() Device IP: " . $poolDevIp . " Pool Name: " .$poolName. " Pool Port: " .$poolPort. " Pool Env: " .$poolEnv. " Pool Mon: " .$poolMon.  " Node names: " .$poolMbrNames. " Node IPs: " .$poolMbrIps. " Node Ports: " .$poolMbrPorts. " Node Mons: " .$poolMbrMons."\n", FILE_APPEND);
     $logger->info("new_pool_build2() Device IP: " . $poolDevIp . " Pool Name: " .$poolName. " Pool Port: " .$poolPort. " Pool Env: " .$poolEnv. " Pool Mon: " .$poolMon.  " Node names: " .$poolMbrNames. " Node IPs: " .$poolMbrIps. " Node Ports: " .$poolMbrPorts. " Node Mons: " .$poolMbrMons);
     
-    $cmd = '/usr/bin/python /var/www/chaniq/py/new_pool_build2.py '. escapeshellarg($poolDevIp) .' '. escapeshellarg($poolName) .' '. escapeshellarg($poolPort) .' '. escapeshellarg($poolEnv) .' '. escapeshellarg($poolMon) .' '. escapeshellarg($poolMbrNames) .' '. escapeshellarg($poolMbrIps).' '. escapeshellarg($poolMbrPorts) .' '. escapeshellarg($poolMbrMons);
+    $cmd = '/usr/bin/python2 /var/www/chaniq/py/new_pool_build2.py '. escapeshellarg($poolDevIp) .' '. escapeshellarg($poolName) .' '. escapeshellarg($poolPort) .' '. escapeshellarg($poolEnv) .' '. escapeshellarg($poolMon) .' '. escapeshellarg($poolMbrNames) .' '. escapeshellarg($poolMbrIps).' '. escapeshellarg($poolMbrPorts) .' '. escapeshellarg($poolMbrMons);
     
     $output = shell_exec($cmd);
     #error_log(date("y-m-d H:i:s").": After python call -new_pool_build2.php() new_pool_build2() function called!\n", 3, "/var/log/chaniqphp.log");

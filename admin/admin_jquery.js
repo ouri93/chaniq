@@ -221,7 +221,6 @@ $(function () {
 				url: '/content/newuser_ajax.php',
 				type: 'POST',
 				dataType: 'JSON',
-				async: false,
 				data: {'jsonPassData' : JSON.stringify(passData)},
 				error: function(jqXHR, textStatus, errorThrown){
 					alert("Ajax call to create a new user has failed!");

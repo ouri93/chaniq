@@ -33,7 +33,7 @@ require_once(__DIR__ . '/../utility/chaniqLogger.php');
      */
     function get_names($active_ltm, $objType, $logger)
     {
-        $cmd = '/usr/bin/python /var/www/chaniq/py/get_ltmobj_names.py '.$active_ltm.' ' . escapeshellarg($objType);
+        $cmd = '/usr/bin/python2 /var/www/chaniq/py/get_ltmobj_names.py '.$active_ltm.' ' . escapeshellarg($objType);
         //echo "<br>Command:" .$cmd." <br>";
         #error_log(date("y-m-d H:i:s").": get_ltmobj_names() - get_names() called. Dev IP: " . $active_ltm . " Profile Type: " . $objType . "\n", 3, "/var/log/chaniqphp.log");
         $logger->info("get_ltmobj_names() - get_names() called. Dev IP: " . $active_ltm . " Profile Type: " . $objType);

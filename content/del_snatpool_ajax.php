@@ -48,7 +48,7 @@ function del_snatpool_ajax($snatData, $logger) {
     #file_put_contents("/var/log/chaniqphp.log", "del_snatpool_ajax() Device IP: " . $DevIp . " Snatpool name: " . $snatpoolName. " Snatpool Partition: " .$snatPartName. "\n", FILE_APPEND);
     $logger->info("del_snatpool_ajax() Device IP: " . $DevIp . " Snatpool name: " . $snatpoolName. " Snatpool Partition: " .$snatPartName);
     
-    $cmd = '/usr/bin/python /var/www/chaniq/py/del_snatpool_ajax.py ' .escapeshellarg($DevIp). ' ' .escapeshellarg($snatpoolName). ' ' .escapeshellarg($snatPartName);
+    $cmd = '/usr/bin/python2 /var/www/chaniq/py/del_snatpool_ajax.py ' .escapeshellarg($DevIp). ' ' .escapeshellarg($snatpoolName). ' ' .escapeshellarg($snatPartName);
     
     $output = shell_exec($cmd);
     #error_log(date("y-m-d H:i:s").": After python call -del_snatpool_ajax.php() del_snatpool_ajax() function called!\n", 3, "/var/log/chaniqphp.log");

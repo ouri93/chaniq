@@ -46,7 +46,7 @@ function get_pool_config($poolData, $logger) {
     #file_put_contents("/var/log/chaniqphp.log", "get_pool_config() \nDevice IP: " . $poolDevIp . "\nPool Name: " .$poolName. "\nPartition: " . $poolPartition . "\n", FILE_APPEND);
     $logger->info("get_pool_config() \nDevice IP: " . $poolDevIp . "\nPool Name: " .$poolName. "\nPartition: " . $poolPartition);
     
-    $cmd = '/usr/bin/python /var/www/chaniq/py/get_pool_config.py '. escapeshellarg($poolDevIp) .' '. escapeshellarg($poolName) .' '. escapeshellarg($poolPartition);
+    $cmd = '/usr/bin/python2 /var/www/chaniq/py/get_pool_config.py '. escapeshellarg($poolDevIp) .' '. escapeshellarg($poolName) .' '. escapeshellarg($poolPartition);
     
     $output = shell_exec($cmd);
     #error_log(date("y-m-d H:i:s").": After python call -get_pool_config.php() get_pool_config() function called!\n", 3, "/var/log/chaniqphp.log");

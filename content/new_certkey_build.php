@@ -53,7 +53,7 @@ require_once(__DIR__ . '/../utility/chaniqLogger.php');
         #file_put_contents("/var/log/chaniqphp.log", "new_certkey_build() Device IP: " . $certkeyDevIp . " Import Type: " .$certkeyImpType. " Import Name: " .$certkeyImpName." Key Source: " .$certkeyKeySource." KeySource Data: " .$certkeyKeySourceData." Security Type: " .$certkeySecType." Security Type Data: " .$certkeySecTypeData." PKCS Password: " .$certkeyPKCSPw."\n", FILE_APPEND);
         $logger->info("new_certkey_build() Device IP: " . $certkeyDevIp . " Import Type: " .$certkeyImpType. " Import Name: " .$certkeyImpName." Key Source: " .$certkeyKeySource." KeySource Data: " .$certkeyKeySourceData." Security Type: " .$certkeySecType." Security Type Data: " .$certkeySecTypeData." PKCS Password: " .$certkeyPKCSPw);
         
-        $cmd = '/usr/bin/python /var/www/chaniq/py/new_certkey_build.py '. escapeshellarg($certkeyDevIp) .' '. escapeshellarg($certkeyImpType) .' '. escapeshellarg($certkeyImpName) .' '. escapeshellarg($certkeyKeySource) .' '. escapeshellarg($certkeyKeySourceData) .' '. escapeshellarg($certkeySecType) .' '. escapeshellarg($certkeySecTypeData) .' '. escapeshellarg($certkeyPKCSPw);
+        $cmd = '/usr/bin/python2 /var/www/chaniq/py/new_certkey_build.py '. escapeshellarg($certkeyDevIp) .' '. escapeshellarg($certkeyImpType) .' '. escapeshellarg($certkeyImpName) .' '. escapeshellarg($certkeyKeySource) .' '. escapeshellarg($certkeyKeySourceData) .' '. escapeshellarg($certkeySecType) .' '. escapeshellarg($certkeySecTypeData) .' '. escapeshellarg($certkeyPKCSPw);
         
         $output = shell_exec($cmd);
         #error_log(date("y-m-d H:i:s").": After python call -new_certkey_build.php() new_certkey_build() function called!\n", 3, "/var/log/chaniqphp.log");

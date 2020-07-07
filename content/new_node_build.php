@@ -48,7 +48,7 @@ function new_node_build($nodeData, $logger) {
     #file_put_contents("/var/log/chaniqphp.log", "new_node_build() Device IP: " . $nodeDevIp . " Node names: " .$nodeMbrNames. " Node IPs: " .$nodeMbrIps."\n", FILE_APPEND);
     $logger->info("new_node_build() Device IP: " . $nodeDevIp . " Node names: " .$nodeMbrNames. " Node IPs: " .$nodeMbrIps);
     
-    $cmd = '/usr/bin/python /var/www/chaniq/py/new_node_build.py '. escapeshellarg($nodeDevIp) .' '. escapeshellarg($nodeMbrNames) .' '. escapeshellarg($nodeMbrIps);
+    $cmd = '/usr/bin/python2 /var/www/chaniq/py/new_node_build.py '. escapeshellarg($nodeDevIp) .' '. escapeshellarg($nodeMbrNames) .' '. escapeshellarg($nodeMbrIps);
     
     $output = shell_exec($cmd);
     #error_log(date("y-m-d H:i:s").": After python call -new_node_build.php() new_node_build() function called!\n", 3, "/var/log/chaniqphp.log");

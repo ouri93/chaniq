@@ -30,7 +30,7 @@ require_once(__DIR__ . '/../utility/chaniqLogger.php');
      */
     function get_poolNames($active_ltm, $partName, $logger)
     {
-        $cmd = '/usr/bin/python /var/www/chaniq/py/get_pool_names.py '.$active_ltm. ' ' .$partName;
+        $cmd = '/usr/bin/python2 /var/www/chaniq/py/get_pool_names.py '.$active_ltm. ' ' .$partName;
         //echo "<br>Command:" .$cmd." <br>";
         #error_log(date("y-m-d H:i:s").": get_poolNames() - get_poolNames() called\n", 3, "/var/log/chaniqphp.log");
         $logger->info("get_poolNames() - get_poolNames() called");

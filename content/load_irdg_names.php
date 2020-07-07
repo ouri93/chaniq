@@ -49,7 +49,7 @@ require_once(__DIR__ . '/../utility/chaniqLogger.php');
         #file_put_contents("/var/log/chaniqphp.log", "load_irdg_names() Device IP: " . $irDevIp . " Partition name: " .$irDgPart. " iRule or Data Group: " .$irType. "\n", FILE_APPEND);
         $logger->info("load_irdg_names() Device IP: " . $irDevIp . " Partition name: " .$irDgPart. " iRule or Data Group: " .$irType);
         
-        $cmd = '/usr/bin/python /var/www/chaniq/py/load_irdg_names.py '. escapeshellarg($irDevIp) .' '. escapeshellarg($irType) .' '. escapeshellarg($irDgPart);
+        $cmd = '/usr/bin/python2 /var/www/chaniq/py/load_irdg_names.py '. escapeshellarg($irDevIp) .' '. escapeshellarg($irType) .' '. escapeshellarg($irDgPart);
 
         #file_put_contents("/var/log/chaniqphp.log", "Python CMD output: " . $cmd . "\n", FILE_APPEND);
         $logger->info("Python CMD output: " . $cmd);

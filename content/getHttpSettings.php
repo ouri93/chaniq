@@ -35,7 +35,7 @@ require_once(__DIR__ . '/../utility/chaniqLogger.php');
      */
     function getSettings($active_ltm, $proxyType, $prfType, $prfName, $prfMode, $logger)
     {
-        $cmd = '/usr/bin/python /var/www/chaniq/py/getHttpSettings.py '.$active_ltm.' ' . escapeshellarg($proxyType) .' '.escapeshellarg($prfType) .' '.escapeshellarg($prfName).' '.escapeshellarg($prfMode);
+        $cmd = '/usr/bin/python2 /var/www/chaniq/py/getHttpSettings.py '.$active_ltm.' ' . escapeshellarg($proxyType) .' '.escapeshellarg($prfType) .' '.escapeshellarg($prfName).' '.escapeshellarg($prfMode);
         //echo "<br>Command:" .$cmd." <br>";
         #error_log(date("y-m-d H:i:s").": getSettings() called\n", 3, "/var/log/chaniqphp.log");
         $logger->info("getSettings() called");

@@ -50,7 +50,7 @@ require_once(__DIR__ . '/../utility/chaniqLogger.php');
         #file_put_contents("/var/log/chaniqphp.log", "get_healthmon_names() Device IP: " . $devIp . " Partition name: " .$monPart. " iRule or Data Group: " .$monType. "\n", FILE_APPEND);
         $logger->info("get_healthmon_names() Device IP: " . $devIp . " Partition name: " .$monPart. " iRule or Data Group: " .$monType);
         
-        $cmd = '/usr/bin/python /var/www/chaniq/py/get_healthmon_names.py '. escapeshellarg($devIp) .' '. escapeshellarg($monType) .' '. escapeshellarg($monPart);
+        $cmd = '/usr/bin/python2 /var/www/chaniq/py/get_healthmon_names.py '. escapeshellarg($devIp) .' '. escapeshellarg($monType) .' '. escapeshellarg($monPart);
 
         #file_put_contents("/var/log/chaniqphp.log", "Python CMD output: " . $cmd . "\n", FILE_APPEND);
         $logger->info("Python CMD output: " . $cmd);

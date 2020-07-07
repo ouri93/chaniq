@@ -53,7 +53,7 @@ require_once(__DIR__ . '/../utility/chaniqLogger.php');
 
         //file_put_contents("/var/log/chaniqphp.log", "del_monitor_ajax() Device IP: " . $mDevIp . " Desc: " .$mDesc. " Reverse: " .$mReverse." Alias Port: " .$mAliasPort." Cipherlist: " .$mCipherlist."\n", FILE_APPEND);
         
-        $cmd = '/usr/bin/python /var/www/chaniq/py/del_monitor_ajax.py '. escapeshellarg($mDevIp) .' '. escapeshellarg($monName) .' '. escapeshellarg($mDesc) .' '. escapeshellarg($mMonType) .' '. escapeshellarg($mParMonType);
+        $cmd = '/usr/bin/python2 /var/www/chaniq/py/del_monitor_ajax.py '. escapeshellarg($mDevIp) .' '. escapeshellarg($monName) .' '. escapeshellarg($mDesc) .' '. escapeshellarg($mMonType) .' '. escapeshellarg($mParMonType);
         
         $output = shell_exec($cmd);
         #error_log(date("y-m-d H:i:s").": After python call -del_monitor_ajax.php() del_monitor_ajax() function called!\n", 3, "/var/log/chaniqphp.log");

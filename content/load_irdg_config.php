@@ -49,7 +49,7 @@ $logger->info("load_irdg_config.php UN: " .$_SESSION['username'] . " Role: " . $
         #file_put_contents("/var/log/chaniqphp.log", "load_irdg_config() Device IP: " . $irDevIp . " iRule or DG name: " .$irDgName. " iRule or Data Group: " .$irType. "\n", FILE_APPEND);
         $logger->info("load_irdg_config() Device IP: " . $irDevIp . " iRule or DG name: " .$irDgName. " iRule or Data Group: " .$irType);
         
-        $cmd = '/usr/bin/python /var/www/chaniq/py/load_irdg_config.py '. escapeshellarg($irDevIp) .' '. escapeshellarg($irType) .' '. escapeshellarg($irDgName);
+        $cmd = '/usr/bin/python2 /var/www/chaniq/py/load_irdg_config.py '. escapeshellarg($irDevIp) .' '. escapeshellarg($irType) .' '. escapeshellarg($irDgName);
 
         #file_put_contents("/var/log/chaniqphp.log", "Python CMD output: " . $cmd . "\n", FILE_APPEND);
         $logger->info("Python CMD output: " . $cmd);

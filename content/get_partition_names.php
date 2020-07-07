@@ -42,7 +42,7 @@ require_once(__DIR__ . '/../utility/chaniqLogger.php');
         #file_put_contents("/var/log/chaniqphp.log", "get_partition_names() Device IP: " . $active_ltm . "\n", FILE_APPEND);
         $logger->info("get_partition_names() Device IP: " . $active_ltm);
         
-        $cmd = '/usr/bin/python /var/www/chaniq/py/get_partition_names.py '.$active_ltm;
+        $cmd = '/usr/bin/python2 /var/www/chaniq/py/get_partition_names.py '.$active_ltm;
         //echo "<br>Command:" .$cmd." <br>";
         #error_log(date("y-m-d H:i:s").": get_partition_names() called\n", 3, "/var/log/chaniqphp.log");
         $logger->info("get_partition_names() called");

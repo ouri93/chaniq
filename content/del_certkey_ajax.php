@@ -48,7 +48,7 @@ function del_certkey_ajax($jsonParam, $certData, $logger) {
     // Ref: https://stackoverflow.com/questions/46866730/sending-array-from-php-to-python-and-then-parse-in-python/46866791
     $CertData = json_encode($certData);
     
-    $cmd = '/usr/bin/python /var/www/chaniq/py/del_certkey_ajax.py ' . escapeshellarg($devIP) . ' ' . escapeshellarg($CertData);
+    $cmd = '/usr/bin/python2 /var/www/chaniq/py/del_certkey_ajax.py ' . escapeshellarg($devIP) . ' ' . escapeshellarg($CertData);
         
     $output = shell_exec($cmd);
     #error_log(date("y-m-d H:i:s").": After python call -del_certkey_ajax.php() del_certkey_ajax() function called!\n", 3, "/var/log/chaniqphp.log");

@@ -48,7 +48,8 @@ function del_vs_ajax($vsData, $logger) {
     #file_put_contents("/var/log/chaniqphp.log", "del_vs_ajax() Device IP: " . $vsDevIp . " VS Name: " .$vs_name. " Partition: " .$partition. "\n", FILE_APPEND);
     $logger->info("del_vs_ajax() Device IP: " . $vsDevIp . " VS Name: " .$vs_name. " Partition: " .$partition);
     
-    $cmd = '/usr/bin/python /var/www/chaniq/py/del_vs_ajax.py '. escapeshellarg($vsDevIp) .' '. escapeshellarg($vs_name) .' '. escapeshellarg($partition);
+    $cmd = '/usr/bin/python2 /var/www/chaniq/py/del_vs_ajax.py '. escapeshellarg($vsDevIp) .' '. escapeshellarg($vs_name) .' '. escapeshellarg($partition);
+    #$logger->info("cmd String: " . $cmd);
     
     $output = shell_exec($cmd);
     #error_log(date("y-m-d H:i:s").": After python call -del_vs_ajax.php() del_vs_ajax() function called!\n", 3, "/var/log/chaniqphp.log");

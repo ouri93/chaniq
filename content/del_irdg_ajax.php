@@ -52,7 +52,7 @@ require_once(__DIR__ . '/../utility/chaniqLogger.php');
         #file_put_contents("/var/log/chaniqphp.log", "del_irdg_ajax() Device IP: " . $irDevIp . " iRule/DataGroup name: " .$irDgName. " Config Type: " .$irOrDg. " DataGroup Type: " .$dgType. "\n", FILE_APPEND);
         $logger->info("del_irdg_ajax() Device IP: " . $irDevIp . " iRule/DataGroup name: " .$irDgName. " Config Type: " .$irOrDg. " DataGroup Type: " .$dgType);
         
-        $cmd = '/usr/bin/python /var/www/chaniq/py/del_irdg_ajax.py '. escapeshellarg($irDevIp) .' '. escapeshellarg($irDgName) .' '. escapeshellarg($irOrDg) .' '. escapeshellarg($dgType);
+        $cmd = '/usr/bin/python2 /var/www/chaniq/py/del_irdg_ajax.py '. escapeshellarg($irDevIp) .' '. escapeshellarg($irDgName) .' '. escapeshellarg($irOrDg) .' '. escapeshellarg($dgType);
 
         #file_put_contents("/var/log/chaniqphp.log", "Python CMD output: " . $cmd . "\n", FILE_APPEND);
         $logger->info("Python CMD output: " . $cmd);

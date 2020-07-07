@@ -48,7 +48,7 @@ function new_snatpool_build($snatData, $logger) {
     #file_put_contents("/var/log/chaniqphp.log", "new_snatpool_build() Device IP: " . $DevIp . " Snatpool Name: " .$snat_name. " Snatpool members: " .$snat_members."\n", FILE_APPEND);
     $logger->info("new_snatpool_build() Device IP: " . $DevIp . " Snatpool Name: " .$snat_name. " Snatpool members: " .$snat_members);
     
-    $cmd = '/usr/bin/python /var/www/chaniq/py/new_snatpool_build.py '. escapeshellarg($DevIp) .' '. escapeshellarg($snat_name) .' '. escapeshellarg($snat_members);
+    $cmd = '/usr/bin/python2 /var/www/chaniq/py/new_snatpool_build.py '. escapeshellarg($DevIp) .' '. escapeshellarg($snat_name) .' '. escapeshellarg($snat_members);
     
     $output = shell_exec($cmd);
     #error_log(date("y-m-d H:i:s").": After python call -new_snatpool_build.php() new_snatpool_build() function called!\n", 3, "/var/log/chaniqphp.log");

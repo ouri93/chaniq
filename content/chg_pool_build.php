@@ -79,7 +79,7 @@ function chg_pool_build($poolData, $logger) {
         " Pool Member Ratios: " . $pmRatios .
         " Pool Member Monitors: " . $pmMons .
         " Pool Member Priority Group: " . $pmPriGroup);
-    $cmd = '/usr/bin/python /var/www/chaniq/py/chg_pool_build.py '
+    $cmd = '/usr/bin/python2 /var/www/chaniq/py/chg_pool_build.py '
         . escapeshellarg($pDevIp) .' '. escapeshellarg($pName) .' '. escapeshellarg($pPart) .' '
         . escapeshellarg($pMon) .' '. escapeshellarg($pLB) .' '. escapeshellarg($pPriGroup) .' '
         . escapeshellarg($pLessthan) .' '. escapeshellarg($pmNames).' '. escapeshellarg($pmIPs) .' '

@@ -55,7 +55,7 @@ function del_pol_ajax($jsonParam, $polData, $logger) {
     // Ref: https://stackoverflow.com/questions/46866730/sending-array-from-php-to-python-and-then-parse-in-python/46866791
     $PolData = json_encode($polData);
     
-    $cmd = '/usr/bin/python /var/www/chaniq/py/del_pol_ajax.py ' . escapeshellarg($devIP) . ' ' . escapeshellarg($PolData) . ' ' . escapeshellarg($polType);
+    $cmd = '/usr/bin/python2 /var/www/chaniq/py/del_pol_ajax.py ' . escapeshellarg($devIP) . ' ' . escapeshellarg($PolData) . ' ' . escapeshellarg($polType);
         
     $output = shell_exec($cmd);
     #error_log(date("y-m-d H:i:s").": After python call -del_pol_ajax.php() del_pol_ajax() function called!\n", 3, "/var/log/chaniqphp.log");

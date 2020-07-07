@@ -45,7 +45,7 @@ require_once(__DIR__ . '/../utility/chaniqLogger.php');
             $logger->info("del_profile_ajax() Device IP: " . $bigipIP);
         }
         
-        $cmd = '/usr/bin/python /var/www/chaniq/py/del_profile_ajax.py ' .$bigipIP. ' ' .escapeshellarg($prfType). ' ' .escapeshellarg($partition). ' ' .escapeshellarg($prfName);
+        $cmd = '/usr/bin/python2 /var/www/chaniq/py/del_profile_ajax.py ' .$bigipIP. ' ' .escapeshellarg($prfType). ' ' .escapeshellarg($partition). ' ' .escapeshellarg($prfName);
         #error_log(date("y-m-d H:i:s").": del_profile_ajax() - get_names() called. Dev IP: " . $bigipIP. " Profile Type: " . $prfType . "\n", 3, "/var/log/chaniqphp.log");
         $logger->info("del_profile_ajax() - get_names() called. Dev IP: " . $bigipIP. " Profile Type: " . $prfType);
         $output = shell_exec($cmd);

@@ -45,8 +45,8 @@ require_once(__DIR__ . '/../utility/chaniqLogger.php');
         #file_put_contents("/var/log/chaniqphp.log", "new_pool_build() Device IP: " . $devIp . "\n", FILE_APPEND);
         $logger->info("new_pool_build() Device IP: " . $devIp);
         
-        $cmd = '/usr/bin/python /var/www/chaniq/py/new_pool_build.py '.$devIp.' '. $pVsName.' '. $pVsPort.' '. $pEnv.' '. $pMon.' '. $pLBMethod.' '. $pPriGroup.' '. $pPriGroupLessThan.' '. $pmPoolMemberName .' '. $pmPoolMemberIp .' '. $pmPoolMemberPort .' '. $pmPoolMemberRatio . ' '. $pmPoolMemberMon .' '. $pmPriGroup;
-        //$cmd = '/usr/bin/python /var/www/chaniq/py/new_pool_build.py '.$devIp.' '. $pVsName.' '. $pVsPort.' '. $pEnv.' '. $pMon.' '. $pLBMethod;
+        $cmd = '/usr/bin/python2 /var/www/chaniq/py/new_pool_build.py '.$devIp.' '. $pVsName.' '. $pVsPort.' '. $pEnv.' '. $pMon.' '. $pLBMethod.' '. $pPriGroup.' '. $pPriGroupLessThan.' '. $pmPoolMemberName .' '. $pmPoolMemberIp .' '. $pmPoolMemberPort .' '. $pmPoolMemberRatio . ' '. $pmPoolMemberMon .' '. $pmPriGroup;
+        //$cmd = '/usr/bin/python2 /var/www/chaniq/py/new_pool_build.py '.$devIp.' '. $pVsName.' '. $pVsPort.' '. $pEnv.' '. $pMon.' '. $pLBMethod;
         
         $output = shell_exec($cmd);
         #error_log(date("y-m-d H:i:s").": After python call -new_pool_build.php() new_pool_build() function called!\n", 3, "/var/log/chaniqphp.log");

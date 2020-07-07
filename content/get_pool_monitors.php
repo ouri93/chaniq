@@ -37,7 +37,7 @@ require_once(__DIR__ . '/../utility/chaniqLogger.php');
      */
     function get_healthmon($active_ltm, $mon_type, $logger)
     {
-        $cmd = '/usr/bin/python /var/www/chaniq/py/get_healthmon.py '.$active_ltm.' ' . escapeshellarg($mon_type);
+        $cmd = '/usr/bin/python2 /var/www/chaniq/py/get_healthmon.py '.$active_ltm.' ' . escapeshellarg($mon_type);
         //echo "<br>Command:" .$cmd." <br>";
         #error_log(date("y-m-d H:i:s").": get_pool_monitors() - get_healthmon() called\n", 3, "/var/log/chaniqphp.log");
         $logger->info("get_pool_monitors() - get_healthmon() called");

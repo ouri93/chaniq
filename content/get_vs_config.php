@@ -30,7 +30,7 @@ require_once(__DIR__ . '/../utility/chaniqLogger.php');
      */
     function get_vsconfig($active_ltm, $vsname, $vspart, $logger)
     {
-        $cmd = '/usr/bin/python /var/www/chaniq/py/get_vs_config.py '. $active_ltm . ' ' . $vsname .' '. $vspart;
+        $cmd = '/usr/bin/python2 /var/www/chaniq/py/get_vs_config.py '. $active_ltm . ' ' . $vsname .' '. $vspart;
         //echo "<br>Command:" .$cmd." <br>";
         #error_log(date("y-m-d H:i:s").": get_vs_config() - get_vsconfig() called\n", 3, "/var/log/chaniqphp.log");
         $logger->info("get_vs_config() - get_vsconfig() called");

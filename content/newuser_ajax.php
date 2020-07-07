@@ -46,7 +46,7 @@ function newuser_ajax($passData, $logger) {
     #file_put_contents("/var/log/chaniqphp.log", "newuser_ajax() DB IP: " . $db_ip . "\n", FILE_APPEND);
     $logger->info("newuser_ajax() DB IP: " . $db_ip);
     
-    $cmd = '/usr/bin/python /var/www/chaniq/py/newuser_ajax.py ' . escapeshellarg($db_ip) .' '. escapeshellarg($un) .' '. escapeshellarg($userrole) .' '. escapeshellarg($pass1);
+    $cmd = '/usr/bin/python2 /var/www/chaniq/py/newuser_ajax.py ' . escapeshellarg($db_ip) .' '. escapeshellarg($un) .' '. escapeshellarg($userrole) .' '. escapeshellarg($pass1);
     
         
     $output = shell_exec($cmd);
@@ -72,5 +72,6 @@ function newuser_ajax($passData, $logger) {
     $json = json_encode($rtnOutput);
 
     echo $json;
+
 }
 ?>

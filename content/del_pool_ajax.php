@@ -49,7 +49,7 @@ function del_pool_ajax($poolData, $logger) {
     #    " Pool Partition: " . $pPart . "\n", FILE_APPEND);
     
     $logger->info("del_pool_ajax() Device IP: " . $pDevIp . " Pool Name: " . $pName . " Pool Partition: " . $pPart);
-    $cmd = '/usr/bin/python /var/www/chaniq/py/del_pool_ajax.py '
+    $cmd = '/usr/bin/python2 /var/www/chaniq/py/del_pool_ajax.py '
         . escapeshellarg($pDevIp) .' '. escapeshellarg($pName) .' '. escapeshellarg($pPart);
     
         

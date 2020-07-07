@@ -45,7 +45,7 @@ function load_snatpool_names($snatData, $logger) {
     #file_put_contents("/var/log/chaniqphp.log", "load_snatpool_names() Device IP: " . $DevIp . "\n", FILE_APPEND);
     $logger->info("load_snatpool_names() Device IP: " . $DevIp);
     
-    $cmd = '/usr/bin/python /var/www/chaniq/py/load_snatpool_names.py '. escapeshellarg($DevIp);
+    $cmd = '/usr/bin/python2 /var/www/chaniq/py/load_snatpool_names.py '. escapeshellarg($DevIp);
     
     $output = shell_exec($cmd);
     #error_log(date("y-m-d H:i:s").": After python call -load_snatpool_names.php() load_snatpool_names() function called!\n", 3, "/var/log/chaniqphp.log");

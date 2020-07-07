@@ -43,7 +43,7 @@ function load_certkey_ajax($jsonParam, $logger) {
     #file_put_contents("/var/log/chaniqphp.log", "load_certkey_ajax() Device IP: " . $devIP . "\n", FILE_APPEND);
     $logger->info("load_certkey_ajax() Device IP: " . $devIP);
     
-    $cmd = '/usr/bin/python /var/www/chaniq/py/load_certkey_ajax.py ' . escapeshellarg($devIP);
+    $cmd = '/usr/bin/python2 /var/www/chaniq/py/load_certkey_ajax.py ' . escapeshellarg($devIP);
         
     $output = shell_exec($cmd);
     #error_log(date("y-m-d H:i:s").": After python call -load_certkey_ajax.php() load_certkey_ajax() function called!\n", 3, "/var/log/chaniqphp.log");
