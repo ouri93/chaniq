@@ -186,21 +186,6 @@ function loadOptNamesProcessData(response_in, selID) {
 	$('#' + selID).append(strResult);
 }
 
-// Process return data from BIG-IP after deleting a virtual server
-function deleteVsProcess(response_in){
-	var strResult = '';
-	$.each(response_in, function(index) {
-		if(index == 0) 
-			strResult = "<b>" + response_in[index] + "</b><br>";
-		else
-			strResult += response_in[index] + "<br>";
-	});
-	
-	//alert("Return output: " + strResult);
-	$('#newvs_EvalReview').html(strResult);
-}
-
-
 function loadOptNames(ltmIP, loadType, selID){
 	var callingUrl = '';
 	
@@ -821,7 +806,20 @@ $(function () {
                 console.log(errorThrown);
     		}
     	});
-    	ajxOut.done(deleteVsProcess);
+		
+    	ajxOut.done(function (response_in){
+    		var strResult = '';
+    		$.each(response_in, function(index) {
+    			if(index == 0) 
+    				strResult = "<b>" + response_in[index] + "</b><br>";
+    			else
+    				strResult += response_in[index] + "<br>";
+    		});
+    		
+    		//alert("Return output: " + strResult);
+    		$('#newvs_EvalReview').html(strResult);    		
+    	});
+    	
     	// Update Virtual Server list after deletion
     	loadObjNames(arr[1], 'VS', 'del_vs_sel_vs');
 	});
