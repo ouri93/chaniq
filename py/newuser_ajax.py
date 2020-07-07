@@ -88,7 +88,7 @@ def newuser_ajax(db_ip, un, userrole, pass1):
     
     try:
         #logger.info("Try to connection established DB IP: " + db_ip + " Passwd: " + pass1)
-        con = mysql.connector.connect(user=username, password=password, database=dbname)
+        con = mysql.connector.connect(user=username, password=password, database=dbname, auth_plugin='mysql_native_password')
         logger.info("Connection established")
 
         #Create hashed password
@@ -107,7 +107,7 @@ def newuser_ajax(db_ip, un, userrole, pass1):
         strReturn[str(idx)] = 'DB Connection or SQL execution failed. Error Details: ' + str(e)
         idx += 1
         return json.dumps(strReturn)    
-    strReturn[str(idx)] = 'New user ' + un + 'has been created successfully'
+    strReturn[str(idx)] = 'New user ' + un + ' has been created successfully'
     idx += 1
         
     return json.dumps(strReturn)

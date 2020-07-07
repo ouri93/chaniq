@@ -38,7 +38,7 @@ def get_one_db_val(tabId, colId, un, userPass):
     
     try:
         #logger.info("Try to connection established DB IP: " + db_ip + " Passwd: " + userPass)
-        con = mysql.connector.connect(user=username, password=password, database=dbname)
+        con = mysql.connector.connect(user=username, password=password, database=dbname, auth_plugin='mysql_native_password')
         logger.info("Connection established")
 
         # Update hashed password

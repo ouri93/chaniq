@@ -102,7 +102,7 @@ def modpass_ajax(db_ip, curpass, newpass, bigip_type):
     
     try:
         #logger.info("Try to connection established DB IP: " + db_ip + " Passwd: " + curpass)
-        con = mysql.connector.connect(user=username, password=password, database=dbname)
+        con = mysql.connector.connect(user=username, password=password, database=dbname, auth_plugin='mysql_native_password')
         logger.info("Connection established")
         mycursor = con.cursor()
         

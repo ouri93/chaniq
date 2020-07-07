@@ -301,7 +301,7 @@ function find_active_ltm($section_name, $env_name){
         // Check which device of a pair is an active LTM
         foreach ($device_group_members as $dgkey => $dgval){
             echo "<br> Key: " . $dgkey . "Value: " . $dgval . "<br>";
-            $cmd = '/usr/bin/python /var/www/chaniq/py/get_tcpprofiles.py '.$dgkey. ' ' .$dgval;
+            $cmd = '/usr/bin/python2 /var/www/chaniq/py/get_tcpprofiles.py '.$dgkey. ' ' .$dgval;
             exec($cmd, $output);
             if ($output) return $dgval;
         }
@@ -323,7 +323,7 @@ function find_active_ltm($section_name, $env_name){
 function get_tcpprofiles($active_ltm)
 {
     echo "<br>Calling get_tcpprofiles.py: ".$active_ltm;
-    $cmd = '/usr/bin/python /var/www/chaniq/py/get_tcpprofiles.py '.$active_ltm;
+    $cmd = '/usr/bin/python2 /var/www/chaniq/py/get_tcpprofiles.py '.$active_ltm;
     echo "<br>Command:" .$cmd." <br>";
     exec($cmd, $output);
 
@@ -352,7 +352,7 @@ function get_tcpprofiles($active_ltm)
 function get_profiles($active_ltm, $pf_type)
 {
     //echo "<br>Calling get_profiles.py: ".$active_ltm;
-    $cmd = '/usr/bin/python /var/www/chaniq/py/get_profiles.py '.$active_ltm.' ' .$pf_type;
+    $cmd = '/usr/bin/python2 /var/www/chaniq/py/get_profiles.py '.$active_ltm.' ' .$pf_type;
     //echo "<br>Command:" .$cmd." <br>";
     exec($cmd, $output);
 
@@ -377,7 +377,7 @@ function get_profiles($active_ltm, $pf_type)
  */
 function get_healthmon($active_ltm, $mon_type)
 {
-    $cmd = '/usr/bin/python /var/www/chaniq/py/get_healthmon.py '.$active_ltm.' ' .$mon_type;
+    $cmd = '/usr/bin/python2 /var/www/chaniq/py/get_healthmon.py '.$active_ltm.' ' .$mon_type;
     //echo "<br>Command:" .$cmd." <br>";
     error_log(date("y-m-d H:i:s").": get_healthmon() - get_healthmon() called\n", 3, __DIR__ . "/../log/chaniq-php.log");
     exec($cmd, $output);
@@ -505,7 +505,7 @@ function check_object_conflict($active_ltm, $vs_env, $vs_dnsname, $vs_dest, $vs_
     // Node Name and IP conflict check
     // echo 'arry: ' .escapeshellarg(json_encode($vs_poolmembername));
     
-    $cmd = '/usr/bin/python /var/www/chaniq/py/check_object_conflict.py '.$active_ltm.' ' .$vs_env.' ' .$vs_dnsname.' '.$vs_dest.' '.$vs_port.' '. escapeshellarg(json_encode($vs_poolmembername)).' '. escapeshellarg(json_encode($pool_memberip)).' '. escapeshellarg(json_encode($pool_memberport));
+    $cmd = '/usr/bin/python2 /var/www/chaniq/py/check_object_conflict.py '.$active_ltm.' ' .$vs_env.' ' .$vs_dnsname.' '.$vs_dest.' '.$vs_port.' '. escapeshellarg(json_encode($vs_poolmembername)).' '. escapeshellarg(json_encode($pool_memberip)).' '. escapeshellarg(json_encode($pool_memberport));
     
     //exec($cmd, $output);
     $output = shell_exec($cmd);
@@ -550,7 +550,7 @@ function build_nodes($allPostData) {
     */
     
     //1. Create nodes
-    $cmd = '/usr/bin/python /var/www/chaniq/py/build_nodes.py '.$active_ltm.' '. escapeshellarg(json_encode($pool_membername)).' '. escapeshellarg(json_encode($pool_memberip));
+    $cmd = '/usr/bin/python2 /var/www/chaniq/py/build_nodes.py '.$active_ltm.' '. escapeshellarg(json_encode($pool_membername)).' '. escapeshellarg(json_encode($pool_memberip));
         
     $output = shell_exec($cmd);
     //echo "Output: " .$output ."<br>";
@@ -572,7 +572,7 @@ function build_nodes2($active_ltm, $pool_membername, $pool_memberip) {
      }
     
     //1. Create nodes
-    $cmd = '/usr/bin/python /var/www/chaniq/py/build_nodes.py '.$active_ltm.' '. escapeshellarg(json_encode($pool_membername)).' '. escapeshellarg(json_encode($pool_memberip));
+    $cmd = '/usr/bin/python2 /var/www/chaniq/py/build_nodes.py '.$active_ltm.' '. escapeshellarg(json_encode($pool_membername)).' '. escapeshellarg(json_encode($pool_memberip));
     
     $output = shell_exec($cmd);
     //echo "Output: " .$output ."<br>";
@@ -607,7 +607,7 @@ function build_pools($allPostData) {
     $active_ltm = $allPostData['active_ltm'];
     
     //2. Create pool
-    $cmd = '/usr/bin/python /var/www/chaniq/py/build_pools.py '.$active_ltm.' '. $vs_dnsname.' '. $vs_port.' '. $vs_env.' '. $vs_poolmon.' '. escapeshellarg(json_encode($pool_membername)).' '. escapeshellarg(json_encode($pool_memberip)).' '. escapeshellarg(json_encode($pool_memberport)).' '. escapeshellarg(json_encode($pool_membermon));
+    $cmd = '/usr/bin/python2 /var/www/chaniq/py/build_pools.py '.$active_ltm.' '. $vs_dnsname.' '. $vs_port.' '. $vs_env.' '. $vs_poolmon.' '. escapeshellarg(json_encode($pool_membername)).' '. escapeshellarg(json_encode($pool_memberip)).' '. escapeshellarg(json_encode($pool_memberport)).' '. escapeshellarg(json_encode($pool_membermon));
     
     $output = shell_exec($cmd);
     //echo "Output: " .$output ."<br>";
@@ -648,7 +648,7 @@ function build_vs_s($allPostData) {
     //3. Create VS
     // Use escapeshellarg() with $vs_desc variable so that if the variable includes space, the whole string description is considered as one variable
     // e.g. $vs_desc="Web Server" W/O escapeshellarg(), Web and Server are considered as two separate arguments
-    $cmd = '/usr/bin/python /var/www/chaniq/py/build_vs_s.py '.$active_ltm.' '. $vs_dnsname.' '. $vs_dest.' '. $vs_port.' '. escapeshellarg($vs_desc) .' '. $vs_env .' '. $vs_tcpprofile.' '. $vs_persistence.' '. $vs_redirect.' '. $vs_type.' '. $vs_httpprofile.' '. $vs_sslclient.' '. $vs_sslserver.' '. $vs_irule.' '. $vs_snatpool.' '. $vs_policy;
+    $cmd = '/usr/bin/python2 /var/www/chaniq/py/build_vs_s.py '.$active_ltm.' '. $vs_dnsname.' '. $vs_dest.' '. $vs_port.' '. escapeshellarg($vs_desc) .' '. $vs_env .' '. $vs_tcpprofile.' '. $vs_persistence.' '. $vs_redirect.' '. $vs_type.' '. $vs_httpprofile.' '. $vs_sslclient.' '. $vs_sslserver.' '. $vs_irule.' '. $vs_snatpool.' '. $vs_policy;
 
     $output = shell_exec($cmd);
     //echo "Output: " .$output ."<br>";

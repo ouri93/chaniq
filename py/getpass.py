@@ -60,7 +60,7 @@ def getpass(bigip_type, un):
     #logger.info("DB name: " + dbname + " username: " + username + " password: " + password)
     
     try:
-        con = mysql.connector.connect(user=username, password=password, database=dbname)
+        con = mysql.connector.connect(user=username, password=password, database=dbname, auth_plugin='mysql_native_password')
         logger.info("Connection established")
         mycursor = con.cursor()
         

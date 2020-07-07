@@ -9,6 +9,7 @@ import getpass
 logging.basicConfig(level=logging.INFO, filename='/var/www/chaniq/log/chaniq-py.log', format='%(asctime)s %(name)s %(levelname)s:%(message)s')
 logger = logging.getLogger(__name__)
 
+logger.info("del_vs_ajax is called")
 
 def check_vsname_conflict(mr, std_poolname):
     
@@ -36,7 +37,7 @@ def del_vs_ajax(active_ltm, vs_name, partition):
     idx = 1
     strReturn = {str(idx) : 'VS Deletion Report'}
     idx += 1
-    
+
     logger.info(str(active_ltm) + " VS Name:" + str(vs_name) + " Partition:" + partition )
     logger.info("Before VS Deletion - VS Name:" + str(vs_name) + " Partition:" + partition)
     

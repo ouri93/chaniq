@@ -32,6 +32,7 @@ def check_vsname_conflict(mr, std_poolname):
 def new_vs_build2(active_ltm, vs_dnsname, vs_dest, vs_port, vs_desc, vs_env, vs_tcpprofile, vs_persistence, vs_redirect, vs_type, vs_httpprofile, vs_sslclient, vs_sslserver, vs_irule, vs_snatpool, vs_policy, vs_poolname):
     
     admpass = getpass.getpass('LTM', 'admin')
+
     mr = ManagementRoot(str(active_ltm), 'admin', admpass)
 
     # Check if Standard naming is used

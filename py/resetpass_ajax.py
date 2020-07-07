@@ -88,7 +88,7 @@ def resetpass_ajax(db_ip, pass1, bigip_type):
     
     try:
         #logger.info("Try to connection established DB IP: " + db_ip + " Passwd: " + pass1)
-        con = mysql.connector.connect(user=username, password=password, database=dbname)
+        con = mysql.connector.connect(user=username, password=password, database=dbname, auth_plugin='mysql_native_password')
         logger.info("Connection established")
 
         #generate Symetric key and encrypt password

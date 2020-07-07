@@ -37,6 +37,7 @@ def get_ltmobj_names(active_ltm, obj_type):
 	
 	admpass = getpass.getpass('LTM', 'admin')
 	mr = ManagementRoot(str(active_ltm), 'admin', admpass)
+	
 	output = ''
 	
 	'''
