@@ -47,7 +47,7 @@ function resetpass_ajax($passData, $logger) {
     #file_put_contents("/var/log/chaniqphp.log", "resetpass_ajax() DB IP: " . $db_ip . "\n", FILE_APPEND);
     $logger->info("resetpass_ajax() DB IP: " . $db_ip);
     
-    $cmd = '/usr/bin/python /var/www/chaniq/py/resetpass_ajax.py ' . escapeshellarg($db_ip) .' '. escapeshellarg($pass1) .' '. escapeshellarg($bigip_type);
+    $cmd = '/usr/bin/python2 /var/www/chaniq/py/resetpass_ajax.py ' . escapeshellarg($db_ip) .' '. escapeshellarg($pass1) .' '. escapeshellarg($bigip_type);
     
         
     $output = shell_exec($cmd);

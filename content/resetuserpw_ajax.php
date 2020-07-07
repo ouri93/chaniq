@@ -48,7 +48,7 @@ function resetuserpw_ajax($passData, $logger) {
     #file_put_contents("/var/log/chaniqphp.log", "resetuserpw_ajax() DB IP: " . $db_ip . "\n", FILE_APPEND);
     $logger->info("resetuserpw_ajax() DB IP: " . $db_ip);
     
-    $cmd = '/usr/bin/python /var/www/chaniq/py/resetuserpw_ajax.py ' . escapeshellarg($db_ip) .' '. escapeshellarg($un) .' '. escapeshellarg($role) .' '. escapeshellarg($newpass);
+    $cmd = '/usr/bin/python2 /var/www/chaniq/py/resetuserpw_ajax.py ' . escapeshellarg($db_ip) .' '. escapeshellarg($un) .' '. escapeshellarg($role) .' '. escapeshellarg($newpass);
     
         
     $output = shell_exec($cmd);

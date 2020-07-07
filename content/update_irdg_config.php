@@ -53,7 +53,7 @@ require_once(__DIR__ . '/../utility/chaniqLogger.php');
         #file_put_contents("/var/log/chaniqphp.log", "update_irdg_config() Device IP: " . $irDevIp . " iRule/DataGroup name: " .$irDgName. " Config Type: " .$irType." Irule Code: " .$irCode." DataGroup Type: " .$irDgType." DG Data: " .$irDgData . "\n", FILE_APPEND);
         $logger->info("update_irdg_config() Device IP: " . $irDevIp . " iRule/DataGroup name: " .$irDgName. " Config Type: " .$irType." Irule Code: " .$irCode." DataGroup Type: " .$irDgType." DG Data: " .$irDgData);
         
-        $cmd = '/usr/bin/python /var/www/chaniq/py/update_irdg_config.py '. escapeshellarg($irDevIp) .' '. escapeshellarg($irDgName) .' '. escapeshellarg($irType) .' '. escapeshellarg($irCode) .' '. escapeshellarg($irDgType) .' '. escapeshellarg($irDgData);
+        $cmd = '/usr/bin/python2 /var/www/chaniq/py/update_irdg_config.py '. escapeshellarg($irDevIp) .' '. escapeshellarg($irDgName) .' '. escapeshellarg($irType) .' '. escapeshellarg($irCode) .' '. escapeshellarg($irDgType) .' '. escapeshellarg($irDgData);
 
         #file_put_contents("/var/log/chaniqphp.log", "Python CMD output: " . $cmd . "\n", FILE_APPEND);
         $logger->info("Python CMD output: " . $cmd);
