@@ -1,0 +1,47 @@
+** Useful Tips **
+
+1. How to know if there exists a specific property/attributes of an object?
+- Use Python builtin library - hasattr(object_name, attribute_name)
+  : Return value: True if exist. False if not. 
+  : Use case -  Used at get_vs_config.py to figure out if a given attribute/optional parameter 
+                of a virtual server such as iRule, policy, and so on exists)
+                
+2. How to update Virtual Server profiles such as http, tcp, ssl client and server, persistence?
+- Delete a target profile and create a new one(Create in this context is to update the profile with a new one)
+- E.g.: If loaded profile and new profile name is not matching, delete the loaded profile and then create(modify) a new profile
+        tx = mr.tm.transactions.transaction
+        with TransactionContextManager(tx) as api:
+            if loaded_prf_names['httpProfile'] !=  fieldNames['httpProfile']:
+                # Update VS profile - Delete and then add
+                loaded_httpprf = loaded_vs.profiles_s.profiles.load(partition='Common', name=loaded_prf_names['httpProfile'])
+                loaded_httpprf.delete()
+                loaded_vs.profiles_s.profiles.create(name=fieldNames['httpProfile'], partition='Common')
+                loaded_vs.update()
+                #update_httpprf = { 'name':fieldNames['httpProfile']}
+                print("HTTP Profile has been updated. Current: %s New: %s" % (loaded_prf_names['httpProfile'],fieldNames['httpProfile'] ))
+                pprint.pprint(loaded_httpprf.raw)
+            else:
+                print("HTTP Profile is NOT updated.  Current: %s New: %s" % (loaded_prf_names['httpProfile'],fieldNames['httpProfile'] ))
+
+3. Python Logging
+# Error Log Level: DEBUG INFO WARNING ERROR CRITICAL
+
+import logging
+
+logging.basicConfig(filename='/path/to/log-file.name', level=logging.INFO, format='%(asctime)s %(levelname)s %(name)s %(message)s')
+logger=logging.getLogger(__name__)
+
+logger.info("This is an informational log")
+logging.info("This is an informational log")
+
+logger.error("This is an error log")
+
+4. Input Type and Ajax auto reload
+- If Input Type is "submit" (<input type='submit'>) and there is any associated ajax call, after the ajax call the whole page will be reloaded.
+- If Input Type is set as "button" (<input type='button'>) and there is any associated ajax call, after the ajax call the page won't be reloaded.
+
+5. F5 token-based authentication through Python SDK
+- How to identify curl equivalent commands of a given python SDK call?
+ : https://f5-sdk.readthedocs.io/en/latest/userguide/debugging_api_calls.html
+
+ Symetric encryption: Encrypt password with key, save key in DB with user. Decrypt the encrypted password with the given key 
