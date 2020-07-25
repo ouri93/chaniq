@@ -16,14 +16,13 @@ include_once('../utility/utility.php');
     <head>
         <meta charset="UTF-8">
         <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
-        <!-- 
-        For Produciton 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js" </script>
-        <script> window.jQuery || document.write("<script src='/js/jquery-3.2.1.min.js'><\/script>");  
+        <!-- For Produciton 
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script> window.jQuery || document.write("<script src='/js/jquery-3.2.1.min.js'><\/script>"); </script>  
         -->
-
-        <!-- For Development --> 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.js" </script>
+        
+        <!-- For Development  -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.js"> </script>
         <script> window.jQuery || document.write("<script src='/js/jquery-3.2.1.js'><\/script>"); </script>  
                  
         <script type="text/javascript" src="/js/ssl_jquery.js"></script>
