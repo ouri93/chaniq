@@ -27,6 +27,8 @@ You can download Chan-IQ VM here.
 
 - Chan-IQ Git Repository (https://github.com/ouri93/chaniq)
 
+## Where to download the Chan-IQ Web VM?
+- Chan-IQ Web Download (https://drive.google.com/drive/folders/1W-SGOtxl1rHV-R2ZoZGrzI0Y89AJlTxj?usp=sharing)
 
 ## Contribution
 Are you interested in **Chan-IQ** project and want to join ths project?
