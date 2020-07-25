@@ -1,5 +1,6 @@
 # Configuration file #
-doc
+doc/Useful Tips.info
+doc/contentloading.info
 testcode
 vendor
 log
